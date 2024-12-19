@@ -11,24 +11,18 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.Notifier;
-import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.Constants;
 import frc.robot.Telemetry;
-import frc.robot.util.SysID;
+import frc.robot.util.Simulator;
 
 /**
  * Class that extends the Phoenix 6 SwerveDrivetrain class and implements
  * Subsystem so it can easily be used in command-based projects.
  */
 public class Swerve extends SwerveDrivetrain implements Subsystem {
-    private static final double SIM_LOOP_PERIOD = 0.005; // 5 ms
-    private Notifier simNotifier = null;
-    private double lastSimTime;
-
-    private final SysID sysID = new SysID(this);
+    private final Simulator sim = new Simulator(this);
 
     /* Keep track if we've ever applied the operator perspective before or not */
     private boolean hasAppliedDefaultRotation = false;
@@ -47,7 +41,7 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
         super(drivetrainConstants, modules);
         registerTelemetry(new Telemetry(Constants.MAX_VEL)::telemeterize);
         if (Utils.isSimulation()) {
-            startSimThread();
+            sim.startSimThread();
         }
     }
 
@@ -68,7 +62,7 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
         super(drivetrainConstants, odometryUpdateFrequency, modules);
         registerTelemetry(new Telemetry(Constants.MAX_VEL)::telemeterize);
         if (Utils.isSimulation()) {
-            startSimThread();
+            sim.startSimThread();
         }
     }
 
@@ -94,7 +88,7 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
         super(drivetrainConstants, odometryUpdateFrequency, odometryStandardDeviation, visionStandardDeviation, modules);
         registerTelemetry(new Telemetry(Constants.MAX_VEL)::telemeterize);
         if (Utils.isSimulation()) {
-            startSimThread();
+            sim.startSimThread();
         }
     }
 
@@ -123,10 +117,6 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
         return applyRequest(SwerveRequest.SwerveDriveBrake::new);
     }
 
-    public SysID getSysID() {
-        return sysID;
-    }
-
     @Override
     public void periodic() {
         /*
@@ -146,20 +136,5 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
                 hasAppliedDefaultRotation = true;
             });
         }
-    }
-
-    private void startSimThread() {
-        lastSimTime = Utils.getCurrentTimeSeconds();
-
-        /* Run simulation at a faster rate so PID gains behave more reasonably */
-        simNotifier = new Notifier(() -> {
-            final double currentTime = Utils.getCurrentTimeSeconds();
-            double deltaTime = currentTime - lastSimTime;
-            lastSimTime = currentTime;
-
-            /* use the measured time delta, get battery voltage from WPILib */
-            updateSimState(deltaTime, RobotController.getBatteryVoltage());
-        });
-        simNotifier.startPeriodic(SIM_LOOP_PERIOD);
     }
 }

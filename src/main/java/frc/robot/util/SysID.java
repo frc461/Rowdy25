@@ -18,11 +18,36 @@ public class SysID {
     private final SwerveRequest.SysIdSwerveSteerGains steerCharacterization = new SwerveRequest.SysIdSwerveSteerGains();
     private final SwerveRequest.SysIdSwerveRotation rotCharacterization = new SwerveRequest.SysIdSwerveRotation();
 
-    private final SysIdRoutine sysIDRoutineToApply;
+    private final SysIdRoutine swerveRoutine;
 
     public SysID(Swerve swerve) {
         this.swerve = swerve;
+        swerveRoutine = configureSwerveRoutine();
+    }
 
+    /**
+     * Runs the SysId Quasistatic test in the given direction for the routine
+     * specified by {@link #swerveRoutine}.
+     *
+     * @param direction Direction of the SysId Quasistatic test
+     * @return Command to run
+     */
+    public Command swerveQuasistatic(SysIdRoutine.Direction direction) {
+        return swerveRoutine.quasistatic(direction);
+    }
+
+    /**
+     * Runs the SysId Dynamic test in the given direction for the routine
+     * specified by {@link #swerveRoutine}.
+     *
+     * @param direction Direction of the SysId Dynamic test
+     * @return Command to run
+     */
+    public Command swerveDynamic(SysIdRoutine.Direction direction) {
+        return swerveRoutine.dynamic(direction);
+    }
+
+    public SysIdRoutine configureSwerveRoutine() {
         /* SysId routine for characterizing translation. This is used to find PID gains for the drive motors. */
         // Use default ramp rate (1 V/s)
         // Reduce dynamic step voltage to 4 V to prevent brownout
@@ -53,7 +78,7 @@ public class SysID {
                         state -> SignalLogger.writeString("SysIdSteer_State", state.toString())
                 ),
                 new SysIdRoutine.Mechanism(
-                        volts -> swerve.setControl(steerCharacterization.withVolts(volts)),
+                        volts -> this.swerve.setControl(steerCharacterization.withVolts(volts)),
                         null,
                         this.swerve
                 )
@@ -77,7 +102,7 @@ public class SysID {
                 new SysIdRoutine.Mechanism(
                         output -> {
                             /* output is actually radians per second, but SysId only supports "volts" */
-                            swerve.setControl(rotCharacterization.withRotationalRate(output.in(Volts)));
+                            this.swerve.setControl(rotCharacterization.withRotationalRate(output.in(Volts)));
                             /* also log the requested output for SysId */
                             SignalLogger.writeDouble("Rotational_Rate", output.in(Volts));
                         },
@@ -87,35 +112,13 @@ public class SysID {
         );
 
         /* The SysId routine to test */
-        sysIDRoutineToApply = sysIDTranslationRoutine;
-    }
-
-    /**
-     * Runs the SysId Quasistatic test in the given direction for the routine
-     * specified by {@link #sysIDRoutineToApply}.
-     *
-     * @param direction Direction of the SysId Quasistatic test
-     * @return Command to run
-     */
-    public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
-        return sysIDRoutineToApply.quasistatic(direction);
-    }
-
-    /**
-     * Runs the SysId Dynamic test in the given direction for the routine
-     * specified by {@link #sysIDRoutineToApply}.
-     *
-     * @param direction Direction of the SysId Dynamic test
-     * @return Command to run
-     */
-    public Command sysIdDynamic(SysIdRoutine.Direction direction) {
-        return sysIDRoutineToApply.dynamic(direction);
+        return sysIDTranslationRoutine;
     }
 
     public void configureBindings(CommandXboxController controller) {
-        controller.back().and(controller.y()).whileTrue(sysIdDynamic(SysIdRoutine.Direction.kForward));
-        controller.back().and(controller.x()).whileTrue(sysIdDynamic(SysIdRoutine.Direction.kReverse));
-        controller.start().and(controller.y()).whileTrue(sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-        controller.start().and(controller.x()).whileTrue(sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+        controller.back().and(controller.y()).whileTrue(swerveDynamic(SysIdRoutine.Direction.kForward));
+        controller.back().and(controller.x()).whileTrue(swerveDynamic(SysIdRoutine.Direction.kReverse));
+        controller.start().and(controller.y()).whileTrue(swerveQuasistatic(SysIdRoutine.Direction.kForward));
+        controller.start().and(controller.x()).whileTrue(swerveQuasistatic(SysIdRoutine.Direction.kReverse));
     }
 }

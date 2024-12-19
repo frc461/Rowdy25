@@ -9,10 +9,14 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 import frc.robot.subsystems.Swerve;
+import frc.robot.util.SysID;
 
 public class RobotContainer {
     /* Subsystems */
     public final Swerve swerve = Constants.SwerveConstants.createDrivetrain();
+
+    /* Sys ID */
+    public final SysID sysID = new SysID(swerve);
 
     private final CommandXboxController driverXbox = new CommandXboxController(0);
     /* Currently Allocated For Driver:
@@ -99,7 +103,7 @@ public class RobotContainer {
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
-        swerve.getSysID().configureBindings(driverXbox);
+        sysID.configureBindings(driverXbox);
     }
 
     public Command getAutonomousCommand() {
