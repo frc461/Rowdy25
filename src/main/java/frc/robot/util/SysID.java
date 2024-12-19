@@ -5,19 +5,13 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.subsystems.Swerve;
+import frc.robot.subsystems.drivetrain.Swerve;
 
 import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Volts;
 
 public class SysID {
     private final Swerve swerve;
-
-    /* Swerve requests to apply during SysId characterization */
-    private final SwerveRequest.SysIdSwerveTranslation driveCharacterization = new SwerveRequest.SysIdSwerveTranslation();
-    private final SwerveRequest.SysIdSwerveSteerGains steerCharacterization = new SwerveRequest.SysIdSwerveSteerGains();
-    private final SwerveRequest.SysIdSwerveRotation rotCharacterization = new SwerveRequest.SysIdSwerveRotation();
-
     private final SysIdRoutine swerveRoutine;
 
     public SysID(Swerve swerve) {
@@ -62,7 +56,9 @@ public class SysID {
                         state -> SignalLogger.writeString("SysIdTranslation_State", state.toString())
                 ),
                 new SysIdRoutine.Mechanism(
-                        output -> this.swerve.setControl(driveCharacterization.withVolts(output)),
+                        output -> this.swerve.setControl(
+                                new SwerveRequest.SysIdSwerveTranslation().withVolts(output)
+                        ),
                         null,
                         this.swerve
                 )
@@ -78,7 +74,9 @@ public class SysID {
                         state -> SignalLogger.writeString("SysIdSteer_State", state.toString())
                 ),
                 new SysIdRoutine.Mechanism(
-                        volts -> this.swerve.setControl(steerCharacterization.withVolts(volts)),
+                        volts -> this.swerve.setControl(
+                                new SwerveRequest.SysIdSwerveSteerGains().withVolts(volts)
+                        ),
                         null,
                         this.swerve
                 )
@@ -102,7 +100,9 @@ public class SysID {
                 new SysIdRoutine.Mechanism(
                         output -> {
                             /* output is actually radians per second, but SysId only supports "volts" */
-                            this.swerve.setControl(rotCharacterization.withRotationalRate(output.in(Volts)));
+                            this.swerve.setControl(
+                                    new SwerveRequest.SysIdSwerveRotation().withRotationalRate(output.in(Volts))
+                            );
                             /* also log the requested output for SysId */
                             SignalLogger.writeDouble("Rotational_Rate", output.in(Volts));
                         },
