@@ -13,11 +13,10 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.subsystems.Swerve;
 
 public class RobotContainer {
-    private final Telemetry logger = new Telemetry(Constants.MAX_VEL);
-
-    private final CommandXboxController joystick = new CommandXboxController(0);
-
+    /* Subsystems */
     public final Swerve swerve = Constants.SwerveConstants.createDrivetrain();
+
+    private final CommandXboxController driverXbox = new CommandXboxController(0);
 
     public RobotContainer() {
         configureBindings();
@@ -30,28 +29,26 @@ public class RobotContainer {
             // Drivetrain will execute this command periodically
             // TODO MOVE TO METHOD IN SWERVE
             swerve.applyRequest(() ->
-                swerve.fieldCentric.withVelocityX(-joystick.getLeftY() * Constants.MAX_VEL) // Drive forward with negative Y (forward)
-                    .withVelocityY(-joystick.getLeftX() * Constants.MAX_VEL) // Drive left with negative X (left)
-                    .withRotationalRate(-joystick.getRightX() * Constants.MAX_ANGULAR_VEL) // Drive counterclockwise with negative X (left)
+                swerve.fieldCentric.withVelocityX(-driverXbox.getLeftY() * Constants.MAX_VEL) // Drive forward with negative Y (forward)
+                    .withVelocityY(-driverXbox.getLeftX() * Constants.MAX_VEL) // Drive left with negative X (left)
+                    .withRotationalRate(-driverXbox.getRightX() * Constants.MAX_ANGULAR_VEL) // Drive counterclockwise with negative X (left)
             )
         );
 
-        joystick.a().whileTrue(swerve.applyRequest(() -> swerve.brake));
-        joystick.b().whileTrue(swerve.applyRequest(() ->
-            swerve.point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
+        driverXbox.a().whileTrue(swerve.applyRequest(() -> swerve.brake));
+        driverXbox.b().whileTrue(swerve.applyRequest(() ->
+            swerve.point.withModuleDirection(new Rotation2d(-driverXbox.getLeftY(), -driverXbox.getLeftX()))
         ));
 
         // reset the field-centric heading on y press
-        joystick.y().onTrue(swerve.runOnce(swerve::seedFieldCentric));
+        driverXbox.y().onTrue(swerve.runOnce(swerve::seedFieldCentric));
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
-        joystick.back().and(joystick.y()).whileTrue(swerve.sysIdDynamic(Direction.kForward));
-        joystick.back().and(joystick.x()).whileTrue(swerve.sysIdDynamic(Direction.kReverse));
-        joystick.start().and(joystick.y()).whileTrue(swerve.sysIdQuasistatic(Direction.kForward));
-        joystick.start().and(joystick.x()).whileTrue(swerve.sysIdQuasistatic(Direction.kReverse));
-
-        swerve.registerTelemetry(logger::telemeterize);
+        driverXbox.back().and(driverXbox.y()).whileTrue(swerve.getSysID().sysIdDynamic(Direction.kForward));
+        driverXbox.back().and(driverXbox.x()).whileTrue(swerve.getSysID().sysIdDynamic(Direction.kReverse));
+        driverXbox.start().and(driverXbox.y()).whileTrue(swerve.getSysID().sysIdQuasistatic(Direction.kForward));
+        driverXbox.start().and(driverXbox.x()).whileTrue(swerve.getSysID().sysIdQuasistatic(Direction.kReverse));
     }
 
     public Command getAutonomousCommand() {
