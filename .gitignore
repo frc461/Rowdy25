@@ -182,3 +182,5 @@ ctre_sim/
 # clangd
 /.cache
 compile_commands.json
+
+.factorypath
