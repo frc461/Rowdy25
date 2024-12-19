@@ -32,12 +32,16 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
      * This constructs the underlying hardware devices, so users should not construct
      * the devices themselves. If they need the devices, they can access them
      * through getters in the classes.
-     *
-     * @param drivetrainConstants Drivetrain-wide constants for the swerve drive
-     * @param modules             Constants for each specific module
      */
-    public Swerve(SwerveDrivetrainConstants drivetrainConstants, SwerveModuleConstants... modules) {
-        super(drivetrainConstants, modules);
+    public Swerve() {
+        super(
+                Constants.SwerveConstants.SWERVE_DRIVETRAIN_CONSTANTS,
+                Constants.SwerveConstants.FrontLeft.FRONT_LEFT,
+                Constants.SwerveConstants.FrontRight.FRONT_RIGHT,
+                Constants.SwerveConstants.BackLeft.BACK_LEFT,
+                Constants.SwerveConstants.BackRight.BACK_RIGHT
+        );
+
         configureSwerveUtils();
     }
 

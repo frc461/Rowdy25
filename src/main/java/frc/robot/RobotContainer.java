@@ -13,7 +13,7 @@ import frc.robot.util.SysID;
 
 public class RobotContainer {
     /* Subsystems */
-    public final Swerve swerve = Constants.SwerveConstants.createDrivetrain();
+    public final Swerve swerve = new Swerve();
 
     /* Sys ID */
     public final SysID sysID = new SysID(swerve);

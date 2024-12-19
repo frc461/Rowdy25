@@ -205,19 +205,5 @@ public final class Constants {
                     STEER_MOTOR_ID, DRIVE_MOTOR_ID, ENCODER_ID, ENCODER_OFFSET,
                     X_POS, Y_POS, INVERT_RIGHT_SIDE, STEER_MOTOR_INVERTED, CANCODER_INVERTED);
         }
-
-        /**
-         * Creates a CommandSwerveDrivetrain instance.
-         * This should only be called once in your robot program.
-         */
-        public static Swerve createDrivetrain() {
-            return new Swerve(
-                    SWERVE_DRIVETRAIN_CONSTANTS,
-                    SwerveConstants.FrontLeft.FRONT_LEFT,
-                    SwerveConstants.FrontRight.FRONT_RIGHT,
-                    SwerveConstants.BackLeft.BACK_LEFT,
-                    SwerveConstants.BackRight.BACK_RIGHT
-            );
-        }
     }
 }
