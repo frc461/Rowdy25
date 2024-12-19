@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.Constants;
-import frc.robot.Telemetry;
+import frc.robot.util.SwerveTelemetry;
 import frc.robot.util.Simulator;
 
 /**
@@ -39,10 +39,7 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
      */
     public Swerve(SwerveDrivetrainConstants drivetrainConstants, SwerveModuleConstants... modules) {
         super(drivetrainConstants, modules);
-        registerTelemetry(new Telemetry(Constants.MAX_VEL)::telemeterize);
-        if (Utils.isSimulation()) {
-            sim.startSimThread();
-        }
+        configureSwerveUtils();
     }
 
     /**
@@ -60,10 +57,7 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
      */
     public Swerve(SwerveDrivetrainConstants drivetrainConstants, double odometryUpdateFrequency, SwerveModuleConstants... modules) {
         super(drivetrainConstants, odometryUpdateFrequency, modules);
-        registerTelemetry(new Telemetry(Constants.MAX_VEL)::telemeterize);
-        if (Utils.isSimulation()) {
-            sim.startSimThread();
-        }
+        configureSwerveUtils();
     }
 
     /**
@@ -86,10 +80,7 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
             Matrix<N3, N1> odometryStandardDeviation, Matrix<N3, N1> visionStandardDeviation,
             SwerveModuleConstants... modules) {
         super(drivetrainConstants, odometryUpdateFrequency, odometryStandardDeviation, visionStandardDeviation, modules);
-        registerTelemetry(new Telemetry(Constants.MAX_VEL)::telemeterize);
-        if (Utils.isSimulation()) {
-            sim.startSimThread();
-        }
+        configureSwerveUtils();
     }
 
     /**
@@ -115,6 +106,13 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
 
     public Command xMode() {
         return applyRequest(SwerveRequest.SwerveDriveBrake::new);
+    }
+
+    public void configureSwerveUtils() {
+        registerTelemetry(new SwerveTelemetry(Constants.MAX_VEL)::telemeterize);
+        if (Utils.isSimulation()) {
+            sim.startSimThread();
+        }
     }
 
     @Override
