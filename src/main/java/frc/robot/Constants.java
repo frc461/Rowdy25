@@ -77,8 +77,8 @@ public final class Constants {
                     .withStatorCurrentLimitEnable(true)
             );
         private static final CANcoderConfiguration CANCODER_INITIAL_CONFIGS = new CANcoderConfiguration();
-        // Configs for the Pigeon 2; TODO CONFIG PIGEON
-        private static final Pigeon2Configuration PIGEON_CONFIGS = null;
+        // Configs for the Pigeon 2;
+        private static final Pigeon2Configuration PIGEON_CONFIGS = new Pigeon2Configuration();
 
         // Theoretical free speed (m/s) at 12 V applied output;
         // This needs to be tuned to your individual robot
