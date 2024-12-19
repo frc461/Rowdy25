@@ -3,6 +3,7 @@ package frc.robot.util;
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.subsystems.Swerve;
 
@@ -109,5 +110,12 @@ public class SysID {
      */
     public Command sysIdDynamic(SysIdRoutine.Direction direction) {
         return sysIDRoutineToApply.dynamic(direction);
+    }
+
+    public void configureBindings(CommandXboxController controller) {
+        controller.back().and(controller.y()).whileTrue(sysIdDynamic(SysIdRoutine.Direction.kForward));
+        controller.back().and(controller.x()).whileTrue(sysIdDynamic(SysIdRoutine.Direction.kReverse));
+        controller.start().and(controller.y()).whileTrue(sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+        controller.start().and(controller.x()).whileTrue(sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
     }
 }

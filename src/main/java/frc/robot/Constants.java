@@ -99,7 +99,7 @@ public final class Constants {
 
         // Simulation only
         private static final MomentOfInertia STEER_INERTIA = KilogramSquareMeters.of(0.01);
-        private static final MomentOfInertia kDriveInertia = KilogramSquareMeters.of(0.01);
+        private static final MomentOfInertia DRIVE_INERTIA = KilogramSquareMeters.of(0.01);
         // Simulated minimum voltage to overcome friction
         private static final Voltage STEER_FRICTION_VOLTAGE = Volts.of(0.2);
         private static final Voltage DRIVE_FRICTION_VOLTAGE = Volts.of(0.2);
@@ -125,7 +125,7 @@ public final class Constants {
                 .withSteerMotorInitialConfigs(STEER_INITIAL_CONFIGS)
                 .withCANcoderInitialConfigs(CANCODER_INITIAL_CONFIGS)
                 .withSteerInertia(STEER_INERTIA)
-                .withDriveInertia(kDriveInertia)
+                .withDriveInertia(DRIVE_INERTIA)
                 .withSteerFrictionVoltage(STEER_FRICTION_VOLTAGE)
                 .withDriveFrictionVoltage(DRIVE_FRICTION_VOLTAGE);
 
