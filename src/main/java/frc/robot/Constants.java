@@ -15,6 +15,7 @@ import com.ctre.phoenix6.swerve.SwerveModuleConstants.ClosedLoopOutputType;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants.SteerFeedbackType;
 import com.ctre.phoenix6.swerve.SwerveModuleConstantsFactory;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.*;
 import frc.robot.subsystems.Swerve;
 
@@ -25,6 +26,14 @@ public final class Constants {
     // CAN bus that the devices are located on;
     // If there is more than one CAN bus, create a CANBus constant for each one
     public static final CANBus CAN_BUS = new CANBus("", "./logs/example.hoot");
+
+    /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
+    public static final Rotation2d BLUE_DEFAULT_ROTATION = Rotation2d.fromDegrees(0);
+    /* Red alliance sees forward as 180 degrees (toward blue alliance wall) */
+    public static final Rotation2d RED_DEFAULT_ROTATION = Rotation2d.fromDegrees(180);
+
+    public static double MAX_VEL = SwerveConstants.SPEED_AT_12_VOLTS.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
+    public static double MAX_ANGULAR_VEL = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
 
     public static final class SwerveConstants {
         // Both sets of gains need to be tuned to your individual robot.
