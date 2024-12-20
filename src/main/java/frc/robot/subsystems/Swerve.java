@@ -6,6 +6,7 @@ import java.util.function.Supplier;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.*;
 
+import com.ctre.phoenix6.swerve.utility.PhoenixPIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -26,6 +27,12 @@ import frc.robot.util.TagLocation;
  */
 public class Swerve extends SwerveDrivetrain implements Subsystem {
     private final Simulator sim = new Simulator(this);
+
+    private final PhoenixPIDController yawController = new PhoenixPIDController(
+            Constants.SwerveConstants.ANGULAR_POSITION_P,
+            Constants.SwerveConstants.ANGULAR_POSITION_I,
+            Constants.SwerveConstants.ANGULAR_POSITION_D
+    );
 
     private final SwerveDrivePoseEstimator poseEstimator = new SwerveDrivePoseEstimator(
             this.getKinematics(),
@@ -54,11 +61,23 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
                 Constants.SwerveConstants.BackLeft.BACK_LEFT,
                 Constants.SwerveConstants.BackRight.BACK_RIGHT
         );
+        yawController.enableContinuousInput(Constants.SwerveConstants.ANGULAR_MINIMUM_ANGLE, Constants.SwerveConstants.ANGULAR_MAXIMUM_ANGLE);
         configureSwerveUtils();
     }
 
     public Pose2d getEstimatedPose() {
         return poseEstimator.getEstimatedPosition();
+    }
+
+    public Translation2d getTranslationToSpeaker() {
+        Translation2d robotTranslation = getEstimatedPose().getTranslation();
+        Translation2d tagTranslation = TagLocation.getSpeakerTagPose().getTranslation();
+        if (tagTranslation.getNorm() == 0) { return new Translation2d(); }
+        return tagTranslation.minus(robotTranslation);
+    }
+
+    public double getAngleToSpeaker() {
+        return getTranslationToSpeaker().getAngle().getDegrees();
     }
 
     /**
@@ -79,6 +98,23 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
                         .withVelocityX(-straight.getAsDouble() * Constants.MAX_VEL) // Drive forward with negative Y (forward)
                         .withVelocityY(-strafe.getAsDouble() * Constants.MAX_VEL) // Drive left with negative X (left)
                         .withRotationalRate(-rot.getAsDouble() * Constants.MAX_ANGULAR_VEL) // Drive counterclockwise with negative X (left)
+        );
+    }
+
+    public Command driveTurret(DoubleSupplier straight, DoubleSupplier strafe) {
+        return applyRequest(() ->
+                new SwerveRequest.FieldCentric()
+                        .withDeadband(Constants.MAX_VEL * 0.1)
+                        .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
+                        .withVelocityX(-straight.getAsDouble() * Constants.MAX_VEL)
+                        .withVelocityY(-strafe.getAsDouble() * Constants.MAX_VEL)
+                        .withRotationalRate(
+                            yawController.calculate(
+                                    getEstimatedPose().getRotation().getDegrees(),
+                                    getAngleToSpeaker(),
+                                    Timer.getFPGATimestamp()
+                            ) * Constants.MAX_ANGULAR_VEL
+                        )
         );
     }
 
