@@ -9,9 +9,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 import frc.robot.subsystems.Swerve;
-import frc.robot.telemetry.LimelightTelemetry;
-import frc.robot.telemetry.QuestNavTelemetry;
-import frc.robot.telemetry.SwerveTelemetry;
+import frc.robot.telemetry.VisionTelemetry;
 import frc.robot.util.SysID;
 
 public class RobotContainer {
@@ -19,8 +17,7 @@ public class RobotContainer {
     public final Swerve swerve = new Swerve();
 
     /* Telemetries */
-    public final LimelightTelemetry limelightTelemetry = new LimelightTelemetry();
-    public final QuestNavTelemetry questNavTelemetry = new QuestNavTelemetry();
+    public final VisionTelemetry visionTelemetry = new VisionTelemetry(swerve);
 
     /* Sys ID */
     public final SysID sysID = new SysID(swerve);
@@ -118,7 +115,6 @@ public class RobotContainer {
     }
 
     public void telemeterize() {
-        limelightTelemetry.publishValues();
-        questNavTelemetry.publishValues();
+        visionTelemetry.publishValues();
     }
 }

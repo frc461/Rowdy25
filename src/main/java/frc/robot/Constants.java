@@ -57,7 +57,6 @@ public final class Constants {
         public static final double CAMERA_UP = 0.0;
         public static final double CAMERA_PITCH = 0.0;
 
-        public static double ODOM_UPDATE_FREQ = 250.0;
         public static final Matrix<N3, N1> ODOM_STD_DEV = VecBuilder.fill(0.2, 0.2, Units.degreesToRadians(2.0));
         public static final Matrix<N3, N1> VISION_STD_DEV = VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(180.0));
     }
