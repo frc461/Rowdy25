@@ -110,15 +110,13 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
          * Otherwise, only check and apply the operator perspective if the DS is disabled.
          * This ensures driving behavior doesn't change until an explicit disable event occurs during testing.
          */
-        if (!hasAppliedDefaultRotation || DriverStation.isDisabled()) {
-            DriverStation.getAlliance().ifPresent(allianceColor -> {
-                setOperatorPerspectiveForward(
-                    allianceColor == Alliance.Red
-                        ? Constants.RED_DEFAULT_ROTATION
-                        : Constants.BLUE_DEFAULT_ROTATION
-                );
-                hasAppliedDefaultRotation = true;
-            });
+        if ((!hasAppliedDefaultRotation || DriverStation.isDisabled()) && Constants.ALLIANCE_SUPPLIER.get() != null) {
+            setOperatorPerspectiveForward(
+                    Constants.ALLIANCE_SUPPLIER.get() == Alliance.Blue
+                            ? Constants.BLUE_DEFAULT_ROTATION
+                            : Constants.RED_DEFAULT_ROTATION
+            );
+            hasAppliedDefaultRotation = true;
         }
     }
 }
