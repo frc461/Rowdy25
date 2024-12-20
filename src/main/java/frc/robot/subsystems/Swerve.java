@@ -1,4 +1,4 @@
-package frc.robot.subsystems.drivetrain;
+package frc.robot.subsystems;
 
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.Constants;
+import frc.robot.telemetry.SwerveTelemetry;
 import frc.robot.util.Simulator;
 
 /**
