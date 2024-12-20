@@ -20,7 +20,7 @@ public class LimelightUtil {
 
     // Get pipeline latency + capture latency
     public static double getLatency() {
-        return LIMELIGHT_NT.getEntry("tl").getDouble(0.0) + LIMELIGHT_NT.getEntry("cl").getDouble(0.0);
+        return (LIMELIGHT_NT.getEntry("tl").getDouble(0.0) + LIMELIGHT_NT.getEntry("cl").getDouble(0.0)) / 1000.0;
     }
 
     public static double getPrimaryFiducialID() {
