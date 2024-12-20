@@ -49,18 +49,19 @@ public class QuestNavTelemetry {
         SmartDashboard.putNumber("quest-timestamp", questTimestamp);
         SmartDashboard.putNumber("quest-battery-level", questBattery);
 
+        // physics coordinate plane (y is up)
         SmartDashboard.putNumber("quest-x-pos", questPosition[0]);
         SmartDashboard.putNumber("quest-y-pos", questPosition[1]);
         SmartDashboard.putNumber("quest-z-pos", questPosition[2]);
 
-        SmartDashboard.putNumber("quest-quaternion-x", questQuaternion[0]);
-        SmartDashboard.putNumber("quest-quaternion-y", questQuaternion[1]);
-        SmartDashboard.putNumber("quest-quaternion-z", questQuaternion[2]);
-        SmartDashboard.putNumber("quest-quaternion-w", questQuaternion[3]);
+        // SmartDashboard.putNumber("quest-quaternion-x", questQuaternion[0]);
+        // SmartDashboard.putNumber("quest-quaternion-y", questQuaternion[1]);
+        // SmartDashboard.putNumber("quest-quaternion-z", questQuaternion[2]);
+        // SmartDashboard.putNumber("quest-quaternion-w", questQuaternion[3]);
 
-
-        SmartDashboard.putNumber("quest-euler-angle-x", questEulerAngles[0]);
+        // euler angle y is for rotation (yaw)
+        // SmartDashboard.putNumber("quest-euler-angle-x", questEulerAngles[0]);
         SmartDashboard.putNumber("quest-euler-angle-y", questEulerAngles[1]);
-        SmartDashboard.putNumber("quest-euler-angle-z", questEulerAngles[2]);
+        // SmartDashboard.putNumber("quest-euler-angle-z", questEulerAngles[2]);
     }
 }
