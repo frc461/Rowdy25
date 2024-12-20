@@ -44,6 +44,15 @@ public final class Constants {
 
     public static final NetworkTableInstance NT_INSTANCE = NetworkTableInstance.getDefault();
 
+    public static final class VisionConstants {
+        public static final String LIMELIGHT_NT_NAME = "limelight";
+
+        // TODO SET CAMERA POSE OFFSET FROM CENTER OF ROBOT
+        public static final double CAMERA_FORWARD = 0.0;
+        public static final double CAMERA_UP = 0.0;
+        public static final double CAMERA_PITCH = 0.0;
+    }
+
     public static final class SwerveConstants {
         // Both sets of gains need to be tuned to your individual robot.
 
