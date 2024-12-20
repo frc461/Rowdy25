@@ -46,9 +46,9 @@ public class SwerveTelemetry {
     private final DoublePublisher driveOdometryFrequency = driveStateTable.getDoubleTopic("OdometryFrequency").publish();
 
     /* Robot pose for field positioning */
-    private final NetworkTable network = Constants.NT_INSTANCE.getTable("Pose");
-    private final DoubleArrayPublisher fieldPub = network.getDoubleArrayTopic("robotPose").publish();
-    private final StringPublisher fieldTypePub = network.getStringTopic(".type").publish();
+    private final NetworkTable robotPoseTable = Constants.NT_INSTANCE.getTable("Pose");
+    private final DoubleArrayPublisher fieldPub = robotPoseTable.getDoubleArrayTopic("robotPose").publish();
+    private final StringPublisher fieldTypePub = robotPoseTable.getStringTopic(".type").publish();
 
     /* Mechanisms to represent the swerve module states */
     private final Mechanism2d[] moduleMechanisms = new Mechanism2d[] {

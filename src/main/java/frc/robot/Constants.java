@@ -15,7 +15,12 @@ import com.ctre.phoenix6.swerve.SwerveModuleConstants.ClosedLoopOutputType;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants.SteerFeedbackType;
 import com.ctre.phoenix6.swerve.SwerveModuleConstantsFactory;
 
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.units.measure.*;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -51,9 +56,17 @@ public final class Constants {
         public static final double CAMERA_FORWARD = 0.0;
         public static final double CAMERA_UP = 0.0;
         public static final double CAMERA_PITCH = 0.0;
+
+        public static double ODOM_UPDATE_FREQ = 250.0;
+        public static final Matrix<N3, N1> ODOM_STD_DEV = VecBuilder.fill(0.2, 0.2, Units.degreesToRadians(2.0));
+        public static final Matrix<N3, N1> VISION_STD_DEV = VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(180.0));
     }
 
     public static final class SwerveConstants {
+        public static final double ANGULAR_POSITION_P = 0.001;
+        public static final double ANGULAR_POSITION_I = 0;
+        public static final double ANGULAR_POSITION_D = 0.00006;
+
         // Both sets of gains need to be tuned to your individual robot.
 
         // The steer motor uses any SwerveModule.SteerRequestType control request with the

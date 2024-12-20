@@ -9,11 +9,16 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 import frc.robot.subsystems.Swerve;
+import frc.robot.telemetry.LimelightTelemetry;
+import frc.robot.telemetry.SwerveTelemetry;
 import frc.robot.util.SysID;
 
 public class RobotContainer {
     /* Subsystems */
     public final Swerve swerve = new Swerve();
+
+    /* Telemetries */
+    public final LimelightTelemetry limelightTelemetry = new LimelightTelemetry();
 
     /* Sys ID */
     public final SysID sysID = new SysID(swerve);
@@ -108,5 +113,9 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() {
         return Commands.print("No autonomous command configured");
+    }
+
+    public void telemeterize() {
+        limelightTelemetry.publishValues();
     }
 }

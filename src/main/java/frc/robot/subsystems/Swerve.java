@@ -6,15 +6,15 @@ import java.util.function.Supplier;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.*;
 
-import edu.wpi.first.math.Matrix;
-import edu.wpi.first.math.numbers.N1;
-import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.Constants;
 import frc.robot.telemetry.SwerveTelemetry;
+import frc.robot.util.LimelightUtil;
 import frc.robot.util.Simulator;
 
 /**
@@ -37,35 +37,14 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
     public Swerve() {
         super(
                 Constants.SwerveConstants.SWERVE_DRIVETRAIN_CONSTANTS,
+                Constants.VisionConstants.ODOM_UPDATE_FREQ,
+                Constants.VisionConstants.ODOM_STD_DEV,
+                Constants.VisionConstants.VISION_STD_DEV,
                 Constants.SwerveConstants.FrontLeft.FRONT_LEFT,
                 Constants.SwerveConstants.FrontRight.FRONT_RIGHT,
                 Constants.SwerveConstants.BackLeft.BACK_LEFT,
                 Constants.SwerveConstants.BackRight.BACK_RIGHT
         );
-
-        configureSwerveUtils();
-    }
-
-    /**
-     * Constructs a CTRE SwerveDrivetrain using the specified constants.
-     * <p>
-     * This constructs the underlying hardware devices, so users should not construct
-     * the devices themselves. If they need the devices, they can access them through
-     * getters in the classes.
-     *
-     * @param drivetrainConstants        Drivetrain-wide constants for the swerve drive
-     * @param odometryUpdateFrequency    The frequency to run the odometry loop. If
-     *                                   unspecified or set to 0 Hz, this is 250 Hz on
-     *                                   CAN FD, and 100 Hz on CAN 2.0.
-     * @param odometryStandardDeviation  The standard deviation for odometry calculation
-     * @param visionStandardDeviation    The standard deviation for vision calculation
-     * @param modules                    Constants for each specific module
-     */
-    public Swerve(
-            SwerveDrivetrainConstants drivetrainConstants, double odometryUpdateFrequency,
-            Matrix<N3, N1> odometryStandardDeviation, Matrix<N3, N1> visionStandardDeviation,
-            SwerveModuleConstants... modules) {
-        super(drivetrainConstants, odometryUpdateFrequency, odometryStandardDeviation, visionStandardDeviation, modules);
         configureSwerveUtils();
     }
 
@@ -101,6 +80,16 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
         }
     }
 
+    public void updateFusedPose() {
+        Pose2d limelightPose = LimelightUtil.getMegaTagOnePose();
+        if (LimelightUtil.tagExists() && LimelightUtil.getNearestTagDist() < 2.0) {
+            this.addVisionMeasurement(
+                    limelightPose,
+                    Timer.getFPGATimestamp() - LimelightUtil.getLatency() / 1000.0
+            );
+        }
+    }
+
     @Override
     public void periodic() {
         /*
@@ -118,5 +107,6 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
             );
             hasAppliedDefaultRotation = true;
         }
+        updateFusedPose();
     }
 }
