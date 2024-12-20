@@ -24,6 +24,9 @@ public class VisionTelemetry {
     private final FloatArraySubscriber questQuaternionTopic = questNavTelemetryTable.getFloatArrayTopic("quaternion").subscribe(new float[] {0.0f, 0.0f, 0.0f, 0.0f});
     private final FloatArraySubscriber questEulerAnglesTopic = questNavTelemetryTable.getFloatArrayTopic("eulerAngles").subscribe(new float[] {0.0f, 0.0f, 0.0f});
 
+    private final StringPublisher questPrettyPositionTopic = questNavTelemetryTable.getStringTopic("Quest Position").publish();
+    private final StringPublisher questPrettyRotationTopic = questNavTelemetryTable.getStringTopic("Quest Rotation").publish();
+
     public VisionTelemetry(Swerve swerve) {
         this.swerve = swerve;
     }
@@ -44,5 +47,11 @@ public class VisionTelemetry {
         nearestTagDistPub.set(LimelightUtil.getNearestTagDist());
 
         canAddMeasurementsPub.set(LimelightUtil.tagExists() && LimelightUtil.getNearestTagDist() < 2.0);
+
+        float[] questPositions = questPositionTopic.get();
+        questPrettyPositionTopic.set("X: " + questPositions[2] + ", Y: " + questPositions[1] + ", Z: " + questPositions[0]);
+
+        float[] questRotations = questEulerAnglesTopic.get();
+        questPrettyRotationTopic.set("Pitch: " + questRotations[0] + ", Yaw: " + questRotations[1] + ", Roll: " + questRotations[2]);
     }
 }
