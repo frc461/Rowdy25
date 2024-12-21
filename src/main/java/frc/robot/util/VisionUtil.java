@@ -82,6 +82,10 @@ public class VisionUtil {
             return getTargetPoseRobotSpace().getTranslation().getNorm();
         }
 
+        public static boolean isTagClear() {
+            return tagExists() && getNearestTagDist() < Constants.VisionConstants.MIN_TAG_CLEAR_DIST;
+        }
+
         public static void configureCameraPose() {
             LIMELIGHT_NT.getEntry("camerapose_robotspace_set").setDoubleArray(
                     new double[] {
@@ -103,42 +107,50 @@ public class VisionUtil {
     }
 
     public static final class Oculus {
-        public static double getQuestX() {
+        public static Pose2d offset = new Pose2d();
+
+        public static double getX() {
             return questPositionTopic.get()[2];
         }
 
-        public static double getQuestY() {
+        public static double getY() {
             return -questPositionTopic.get()[0];
         }
 
-        public static double getQuestZ() {
+        public static double getZ() {
             return questPositionTopic.get()[2];
         }
 
-        public static double getQuestPitch() {
+        public static double getPitch() {
             return questEulerAnglesTopic.get()[0];
         }
 
-        public static double getQuestYaw() {
+        public static double getYaw() {
             return questEulerAnglesTopic.get()[1];
         }
 
-        public static double getQuestRoll() {
+        public static double getRoll() {
             return questEulerAnglesTopic.get()[2];
         }
 
-        public static double getQuestTime() {
+        public static double getTimestamp() {
             return questTimestampTopic.get();
         }
 
-        public static Pose2d getQuestPose() {
+        public static Pose2d getPose() {
             return new Pose2d(
                     new Translation2d(
-                            VisionUtil.Oculus.getQuestX(),
-                            VisionUtil.Oculus.getQuestY()
+                            getX(),
+                            getY()
                     ),
-                    new Rotation2d(VisionUtil.Oculus.getQuestYaw())
+                    new Rotation2d(getYaw())
             );
+        }
+
+        public static void setOffset() {
+            if (Limelight.isTagClear()) {
+                offset = Limelight.getMegaTagOnePose();
+            }
         }
     }
 }

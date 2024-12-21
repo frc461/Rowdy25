@@ -53,6 +53,8 @@ public final class Constants {
         public static final String LIMELIGHT_NT_NAME = "limelight";
         public static final String OCULUS_NT_NAME = "oculus";
 
+        public static final double MIN_TAG_CLEAR_DIST = 4.0;
+
         // TODO SET CAMERA POSE OFFSET FROM CENTER OF ROBOT
         public static final double CAMERA_FORWARD = 0.0;
         public static final double CAMERA_UP = 0.0;

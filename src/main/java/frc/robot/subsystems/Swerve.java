@@ -48,8 +48,6 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
             Constants.VisionConstants.VISION_STD_DEV
     );
 
-    private Pose2d poseDiffOdomQuest;
-
     /* Keep track if we've ever applied the operator perspective before or not */
     private boolean hasAppliedDefaultRotation = false;
 
@@ -140,14 +138,10 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
         }
     }
 
-    public void updateOdomPose() {
-        poseDiffOdomQuest = VisionUtil.Oculus.getQuestPose().relativeTo(this.getState().Pose);
-    }
-
     public void updateFusedPose() {
         poseEstimator.update(this.getState().RawHeading, this.getState().ModulePositions);
         Pose2d limelightPose = VisionUtil.Limelight.getMegaTagOnePose();
-        if (VisionUtil.Limelight.tagExists() && VisionUtil.Limelight.getNearestTagDist() < 4.0) {
+        if (VisionUtil.Limelight.isTagClear()) {
             poseEstimator.addVisionMeasurement(
                     limelightPose,
                     Timer.getFPGATimestamp() - VisionUtil.Limelight.getLatency()
@@ -176,7 +170,6 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
             );
             hasAppliedDefaultRotation = true;
         }
-        updateOdomPose();
         updateFusedPose();
         visionTelemetry.publishValues();
     }
