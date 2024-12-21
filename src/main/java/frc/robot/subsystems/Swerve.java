@@ -31,6 +31,9 @@ import frc.robot.util.TagLocation;
 public class Swerve extends SwerveDrivetrain implements Subsystem {
     private final Simulator sim = new Simulator(this);
 
+    private final SwerveTelemetry swerveTelemetry = new SwerveTelemetry(Constants.MAX_VEL);
+    private final VisionTelemetry visionTelemetry = new VisionTelemetry(this);
+
     private final PhoenixPIDController yawController = new PhoenixPIDController(
             Constants.SwerveConstants.ANGULAR_POSITION_P,
             Constants.SwerveConstants.ANGULAR_POSITION_I,
@@ -130,7 +133,7 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
     }
 
     public void configureSwerveUtils() {
-        registerTelemetry(new SwerveTelemetry(Constants.MAX_VEL)::telemeterize);
+        registerTelemetry(swerveTelemetry::telemeterize);
         if (Utils.isSimulation()) {
             sim.startSimThread();
         }
@@ -173,5 +176,6 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
             hasAppliedDefaultRotation = true;
         }
         updateFusedPose();
+        visionTelemetry.publishValues();
     }
 }

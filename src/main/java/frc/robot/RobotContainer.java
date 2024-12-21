@@ -16,9 +16,6 @@ public class RobotContainer {
     /* Subsystems */
     public final Swerve swerve = new Swerve();
 
-    /* Telemetries */
-    public final VisionTelemetry visionTelemetry = new VisionTelemetry(swerve);
-
     /* Sys ID */
     public final SysID sysID = new SysID(swerve);
 
@@ -115,9 +112,5 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() {
         return Commands.print("No autonomous command configured");
-    }
-
-    public void telemeterize() {
-        visionTelemetry.publishValues();
     }
 }
