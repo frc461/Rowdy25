@@ -3,10 +3,12 @@ package frc.robot.telemetry;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.networktables.*;
 import frc.robot.Constants;
 import frc.robot.subsystems.Swerve;
 import frc.robot.util.VisionUtil;
+import sun.rmi.runtime.Log;
 
 public class VisionTelemetry {
     private final Swerve swerve;
@@ -54,5 +56,6 @@ public class VisionTelemetry {
     private void logValues() {
         Logger.recordOutput("LimelightMegaTagPose", VisionUtil.Limelight.getMegaTagOnePose());
         Logger.recordOutput("PoseEstimate", swerve.getEstimatedPose());
+        Logger.recordOutput("QuestNavPose", VisionUtil.Oculus.getPose());
     }
 }
