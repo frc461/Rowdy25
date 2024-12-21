@@ -2,6 +2,7 @@ package frc.robot.util;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.DoubleSubscriber;
@@ -107,7 +108,8 @@ public class VisionUtil {
     }
 
     public static final class Oculus {
-        public static Pose2d offset = new Pose2d();
+        public static Transform2d poseEstimateOffset = new Transform2d();
+        public static Transform2d diffMegaTagOneQuest = new Transform2d();
 
         public static double getX() {
             return questPositionTopic.get()[2];
@@ -144,12 +146,25 @@ public class VisionUtil {
                             getY()
                     ),
                     new Rotation2d(getYaw())
-            );
+            ).plus(poseEstimateOffset);
         }
 
         public static void setOffset() {
             if (Limelight.isTagClear()) {
-                offset = Limelight.getMegaTagOnePose();
+                poseEstimateOffset = new Transform2d(
+                        Limelight.getMegaTagOnePose().getX(),
+                        Limelight.getMegaTagOnePose().getY(),
+                        Limelight.getMegaTagOnePose().getRotation()
+                );
+            }
+        }
+
+        public static void updateOffset() {
+            if (Limelight.isTagClear()) {
+                diffMegaTagOneQuest = Limelight.getMegaTagOnePose().minus(getPose());
+                if (diffMegaTagOneQuest.getTranslation().getNorm() > Constants.VisionConstants.UPDATE_QUEST_OFFSET_THRESHOLD) {
+                    poseEstimateOffset = poseEstimateOffset.plus(diffMegaTagOneQuest);
+                }
             }
         }
     }

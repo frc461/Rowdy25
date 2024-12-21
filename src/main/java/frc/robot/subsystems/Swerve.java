@@ -33,11 +33,7 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
     private final SwerveTelemetry swerveTelemetry = new SwerveTelemetry(Constants.MAX_VEL);
     private final VisionTelemetry visionTelemetry = new VisionTelemetry(this);
 
-    private final PhoenixPIDController yawController = new PhoenixPIDController(
-            Constants.SwerveConstants.ANGULAR_POSITION_P,
-            Constants.SwerveConstants.ANGULAR_POSITION_I,
-            Constants.SwerveConstants.ANGULAR_POSITION_D
-    );
+    private final PhoenixPIDController yawController;
     
     private final SwerveDrivePoseEstimator poseEstimator = new SwerveDrivePoseEstimator(
             this.getKinematics(),
@@ -66,7 +62,14 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
                 Constants.SwerveConstants.BackLeft.BACK_LEFT,
                 Constants.SwerveConstants.BackRight.BACK_RIGHT
         );
+
+        yawController = new PhoenixPIDController(
+                Constants.SwerveConstants.ANGULAR_POSITION_P,
+                Constants.SwerveConstants.ANGULAR_POSITION_I,
+                Constants.SwerveConstants.ANGULAR_POSITION_D
+        );
         yawController.enableContinuousInput(Constants.SwerveConstants.ANGULAR_MINIMUM_ANGLE, Constants.SwerveConstants.ANGULAR_MAXIMUM_ANGLE);
+
         configureSwerveUtils();
     }
 
@@ -132,13 +135,14 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
     }
 
     public void configureSwerveUtils() {
+        VisionUtil.Oculus.setOffset();
         registerTelemetry(swerveTelemetry::telemeterize);
         if (Utils.isSimulation()) {
             sim.startSimThread();
         }
     }
 
-    public void updateFusedPose() {
+    public void updatePoses() {
         poseEstimator.update(this.getState().RawHeading, this.getState().ModulePositions);
         Pose2d limelightPose = VisionUtil.Limelight.getMegaTagOnePose();
         if (VisionUtil.Limelight.isTagClear()) {
@@ -151,6 +155,8 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
                     Timer.getFPGATimestamp() - VisionUtil.Limelight.getLatency()
             );
         }
+
+        VisionUtil.Oculus.updateOffset();
     }
 
     @Override
@@ -170,7 +176,7 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
             );
             hasAppliedDefaultRotation = true;
         }
-        updateFusedPose();
+        updatePoses();
         visionTelemetry.publishValues();
     }
 }
