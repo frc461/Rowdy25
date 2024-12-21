@@ -8,6 +8,9 @@ import com.ctre.phoenix6.swerve.*;
 
 import com.ctre.phoenix6.swerve.utility.PhoenixPIDController;
 
+import org.photonvision.PhotonCamera;
+import org.photonvision.targeting.PhotonPipelineResult;
+
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -30,6 +33,7 @@ import frc.robot.util.TagLocation;
  */
 public class Swerve extends SwerveDrivetrain implements Subsystem {
     private final Simulator sim = new Simulator(this);
+    private final PhotonCamera camera = new PhotonCamera("ArducamColor");
 
     private final SwerveTelemetry swerveTelemetry = new SwerveTelemetry(Constants.MAX_VEL);
     private final VisionTelemetry visionTelemetry = new VisionTelemetry(this);
@@ -118,6 +122,25 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
                             yawController.calculate(
                                     getEstimatedPose().getRotation().getDegrees(),
                                     getAngleToSpeaker(),
+                                    Timer.getFPGATimestamp()
+                            ) * Constants.MAX_ANGULAR_VEL
+                        )
+        );
+    }
+
+    public Command centerOnNote(DoubleSupplier straight, DoubleSupplier strafe) {
+        PhotonPipelineResult result = camera.getLatestResult();
+        double currentAngle = getEstimatedPose().getRotation().getDegrees();
+        return applyRequest(() ->
+                new SwerveRequest.FieldCentric()
+                        .withDeadband(Constants.MAX_VEL * 0.1)
+                        .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
+                        .withVelocityX(-straight.getAsDouble() * Constants.MAX_VEL)
+                        .withVelocityY(-strafe.getAsDouble() * Constants.MAX_VEL)
+                        .withRotationalRate(
+                            yawController.calculate(
+                                    currentAngle,
+                                    result.hasTargets() ? currentAngle - result.getBestTarget().getYaw() : currentAngle,
                                     Timer.getFPGATimestamp()
                             ) * Constants.MAX_ANGULAR_VEL
                         )
