@@ -10,7 +10,6 @@ import com.ctre.phoenix6.swerve.utility.PhoenixPIDController;
 
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -48,6 +47,8 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
             Constants.VisionConstants.ODOM_STD_DEV,
             Constants.VisionConstants.VISION_STD_DEV
     );
+
+    private Pose2d poseDiffOdomQuest;
 
     /* Keep track if we've ever applied the operator perspective before or not */
     private boolean hasAppliedDefaultRotation = false;
@@ -139,6 +140,10 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
         }
     }
 
+    public void updateOdomPose() {
+        poseDiffOdomQuest = VisionUtil.Oculus.getQuestPose().relativeTo(this.getState().Pose);
+    }
+
     public void updateFusedPose() {
         poseEstimator.update(this.getState().RawHeading, this.getState().ModulePositions);
         Pose2d limelightPose = VisionUtil.Limelight.getMegaTagOnePose();
@@ -152,16 +157,6 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
                     Timer.getFPGATimestamp() - VisionUtil.Limelight.getLatency()
             );
         }
-        poseEstimator.addVisionMeasurement(
-                new Pose2d(
-                        new Translation2d(
-                                VisionUtil.Oculus.getQuestX(),
-                                VisionUtil.Oculus.getQuestY()
-                        ),
-                        new Rotation2d(VisionUtil.Oculus.getQuestYaw())
-                ),
-                VisionUtil.Oculus.getQuestTime()
-        );
     }
 
     @Override
@@ -181,6 +176,7 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
             );
             hasAppliedDefaultRotation = true;
         }
+        updateOdomPose();
         updateFusedPose();
         visionTelemetry.publishValues();
     }
