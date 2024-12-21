@@ -23,20 +23,20 @@ public class Robot extends LoggedRobot {
 
     public Robot() {
         robotContainer = new RobotContainer();
-//        Logger.recordMetadata("ProjectName", "Rowdy25");
-//
-//        if (isReal()) {
-//            Logger.addDataReceiver(new WPILOGWriter());
-//            Logger.addDataReceiver(new NT4Publisher());
-//            new PowerDistribution(1, ModuleType.kRev);
-//        } else {
-//            setUseTiming(false);
-//            String logPath = LogFileUtil.findReplayLog();
-//            Logger.setReplaySource(new WPILOGReader(logPath));
-//            Logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath, "_sim")));
-//        }
-//
-//        Logger.start();
+        Logger.recordMetadata("ProjectName", "Rowdy25");
+
+        if (isReal()) {
+            Logger.addDataReceiver(new WPILOGWriter());
+            // Logger.addDataReceiver(new NT4Publisher()); // We need a USB on the roboRIO for this to work
+            new PowerDistribution(1, ModuleType.kRev);
+        } else {
+            setUseTiming(false);
+            String logPath = LogFileUtil.findReplayLog();
+            Logger.setReplaySource(new WPILOGReader(logPath));
+            Logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath, "_sim")));
+        }
+
+        Logger.start();
     }
 
     @Override
