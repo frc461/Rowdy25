@@ -49,7 +49,7 @@ public class VisionTelemetry {
         canAddMeasurementsPub.set(LimelightUtil.tagExists() && LimelightUtil.getNearestTagDist() < 2.0);
 
         float[] questPositions = questPositionTopic.get();
-        questPrettyPositionTopic.set("X: " + questPositions[2] + ", Y: " + questPositions[1] + ", Z: " + questPositions[0]);
+        questPrettyPositionTopic.set("X: " + questPositions[2] + ", Y: " + questPositions[0] + ", Z: " + questPositions[1]);
 
         float[] questRotations = questEulerAnglesTopic.get();
         questPrettyRotationTopic.set("Pitch: " + questRotations[0] + ", Yaw: " + questRotations[1] + ", Roll: " + questRotations[2]);
