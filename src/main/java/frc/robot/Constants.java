@@ -62,9 +62,9 @@ public final class Constants {
     }
 
     public static final class SwerveConstants {
-        public static final double ANGULAR_POSITION_P = 0.05;
+        public static final double ANGULAR_POSITION_P = 0.035;
         public static final double ANGULAR_POSITION_I = 0;
-        public static final double ANGULAR_POSITION_D = 0.002;
+        public static final double ANGULAR_POSITION_D = 0.0015;
         public static final double ANGULAR_MINIMUM_ANGLE = -180.0;
         public static final double ANGULAR_MAXIMUM_ANGLE = 180.0;
 
