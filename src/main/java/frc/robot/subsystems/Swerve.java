@@ -37,11 +37,7 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
     private final SwerveTelemetry swerveTelemetry = new SwerveTelemetry(Constants.MAX_VEL);
     private final VisionTelemetry visionTelemetry = new VisionTelemetry(this);
 
-    private final PhoenixPIDController yawController = new PhoenixPIDController(
-            Constants.SwerveConstants.ANGULAR_POSITION_P,
-            Constants.SwerveConstants.ANGULAR_POSITION_I,
-            Constants.SwerveConstants.ANGULAR_POSITION_D
-    );
+    private final PhoenixPIDController yawController;
     
     private final SwerveDrivePoseEstimator poseEstimator = new SwerveDrivePoseEstimator(
             this.getKinematics(),
@@ -51,8 +47,6 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
             Constants.VisionConstants.ODOM_STD_DEV,
             Constants.VisionConstants.VISION_STD_DEV
     );
-
-    private Pose2d poseDiffOdomQuest;
 
     /* Keep track if we've ever applied the operator perspective before or not */
     private boolean hasAppliedDefaultRotation = false;
@@ -72,7 +66,14 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
                 Constants.SwerveConstants.BackLeft.BACK_LEFT,
                 Constants.SwerveConstants.BackRight.BACK_RIGHT
         );
+
+        yawController = new PhoenixPIDController(
+                Constants.SwerveConstants.ANGULAR_POSITION_P,
+                Constants.SwerveConstants.ANGULAR_POSITION_I,
+                Constants.SwerveConstants.ANGULAR_POSITION_D
+        );
         yawController.enableContinuousInput(Constants.SwerveConstants.ANGULAR_MINIMUM_ANGLE, Constants.SwerveConstants.ANGULAR_MAXIMUM_ANGLE);
+
         configureSwerveUtils();
     }
 
@@ -152,25 +153,24 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
         return applyRequest(SwerveRequest.SwerveDriveBrake::new);
     }
 
-    public void setEstimatedPose(Pose2d pose) {
+    public void setPoses(Pose2d pose) {
+        this.resetPose(pose);
         poseEstimator.resetPose(pose);
+        VisionUtil.Oculus.setPose(pose);
     }
 
     public void configureSwerveUtils() {
+        VisionUtil.Oculus.setOffset();
         registerTelemetry(swerveTelemetry::telemeterize);
         if (Utils.isSimulation()) {
             sim.startSimThread();
         }
     }
 
-    public void updateOdomPose() {
-        poseDiffOdomQuest = VisionUtil.Oculus.getQuestPose().relativeTo(this.getState().Pose);
-    }
-
-    public void updateFusedPose() {
+    public void updatePoses() {
         poseEstimator.update(this.getState().RawHeading, this.getState().ModulePositions);
         Pose2d limelightPose = VisionUtil.Limelight.getMegaTagOnePose();
-        if (VisionUtil.Limelight.tagExists() && VisionUtil.Limelight.getNearestTagDist() < 4.0) {
+        if (VisionUtil.Limelight.isTagClear()) {
             poseEstimator.addVisionMeasurement(
                     limelightPose,
                     Timer.getFPGATimestamp() - VisionUtil.Limelight.getLatency()
@@ -180,6 +180,8 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
                     Timer.getFPGATimestamp() - VisionUtil.Limelight.getLatency()
             );
         }
+
+        VisionUtil.Oculus.updateOffset();
     }
 
     @Override
@@ -199,8 +201,7 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
             );
             hasAppliedDefaultRotation = true;
         }
-        updateOdomPose();
-        updateFusedPose();
+        updatePoses();
         visionTelemetry.publishValues();
     }
 }

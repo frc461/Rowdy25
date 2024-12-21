@@ -15,6 +15,7 @@ import com.ctre.phoenix6.swerve.SwerveModuleConstants.ClosedLoopOutputType;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants.SteerFeedbackType;
 import com.ctre.phoenix6.swerve.SwerveModuleConstantsFactory;
 
+import com.ctre.phoenix6.swerve.utility.PhoenixPIDController;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -53,6 +54,8 @@ public final class Constants {
         public static final String LIMELIGHT_NT_NAME = "limelight";
         public static final String OCULUS_NT_NAME = "oculus";
 
+        public static final double MIN_TAG_CLEAR_DIST = 4.0;
+
         // TODO SET CAMERA POSE OFFSET FROM CENTER OF ROBOT
         public static final double CAMERA_FORWARD = 0.0;
         public static final double CAMERA_UP = 0.0;
@@ -60,6 +63,8 @@ public final class Constants {
 
         public static final Matrix<N3, N1> ODOM_STD_DEV = VecBuilder.fill(0.2, 0.2, Units.degreesToRadians(2.0));
         public static final Matrix<N3, N1> VISION_STD_DEV = VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(180.0));
+
+        public static final double UPDATE_QUEST_OFFSET_THRESHOLD = 0.5;
     }
 
     public static final class SwerveConstants {

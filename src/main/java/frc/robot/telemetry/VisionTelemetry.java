@@ -14,7 +14,7 @@ public class VisionTelemetry {
 
     private final StringPublisher megaTagOnePub = limelightTelemetryTable.getStringTopic("MegaTag Pose").publish();
     private final DoublePublisher nearestTagDistPub = limelightTelemetryTable.getDoubleTopic("Nearest Tag Distance").publish();
-    private final BooleanPublisher canAddMeasurementsPub = limelightTelemetryTable.getBooleanTopic("Can Add Measurements").publish();
+    private final BooleanPublisher canAddMeasurementsPub = limelightTelemetryTable.getBooleanTopic("Adding Limelight Measurements").publish();
 
     private final StringPublisher poseEstimatePub = visionTelemetryTable.getStringTopic("Robot Estimated Pose").publish();
 
@@ -40,10 +40,10 @@ public class VisionTelemetry {
 
         nearestTagDistPub.set(VisionUtil.Limelight.getNearestTagDist());
 
-        canAddMeasurementsPub.set(VisionUtil.Limelight.tagExists() && VisionUtil.Limelight.getNearestTagDist() < 4.0);
+        canAddMeasurementsPub.set(VisionUtil.Limelight.isTagClear());
 
-        questPrettyPositionTopic.set("X: " + VisionUtil.Oculus.getQuestX() + ", Y: " + VisionUtil.Oculus.getQuestY() + ", Z: " + VisionUtil.Oculus.getQuestZ());
+        questPrettyPositionTopic.set("X: " + VisionUtil.Oculus.getX() + ", Y: " + VisionUtil.Oculus.getY() + ", Z: " + VisionUtil.Oculus.getZ());
 
-        questPrettyRotationTopic.set("Pitch: " + VisionUtil.Oculus.getQuestPitch() + ", Yaw: " + VisionUtil.Oculus.getQuestYaw() + ", Roll: " + VisionUtil.Oculus.getQuestRoll());
+        questPrettyRotationTopic.set("Pitch: " + VisionUtil.Oculus.getPitch() + ", Yaw: " + VisionUtil.Oculus.getYaw() + ", Roll: " + VisionUtil.Oculus.getRoll());
     }
 }
