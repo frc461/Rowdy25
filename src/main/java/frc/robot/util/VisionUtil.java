@@ -167,5 +167,9 @@ public class VisionUtil {
                 }
             }
         }
+
+        public static void setPose(Pose2d pose) {
+            poseEstimateOffset = poseEstimateOffset.plus(pose.minus(getPose()));
+        }
     }
 }

@@ -130,8 +130,10 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
         return applyRequest(SwerveRequest.SwerveDriveBrake::new);
     }
 
-    public void setEstimatedPose(Pose2d pose) {
+    public void setPoses(Pose2d pose) {
+        this.resetPose(pose);
         poseEstimator.resetPose(pose);
+        VisionUtil.Oculus.setPose(pose);
     }
 
     public void configureSwerveUtils() {
