@@ -1,5 +1,7 @@
 package frc.robot.telemetry;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.networktables.*;
 import frc.robot.Constants;
@@ -45,5 +47,12 @@ public class VisionTelemetry {
         questPrettyPositionTopic.set("X: " + VisionUtil.Oculus.getQuestX() + ", Y: " + VisionUtil.Oculus.getQuestY() + ", Z: " + VisionUtil.Oculus.getQuestZ());
 
         questPrettyRotationTopic.set("Pitch: " + VisionUtil.Oculus.getQuestPitch() + ", Yaw: " + VisionUtil.Oculus.getQuestYaw() + ", Roll: " + VisionUtil.Oculus.getQuestRoll());
+
+        logValues();
+    }
+
+    private void logValues() {
+        Logger.recordOutput("LimelightMegaTagPose", VisionUtil.Limelight.getMegaTagOnePose());
+        Logger.recordOutput("PoseEstimate", swerve.getEstimatedPose());
     }
 }

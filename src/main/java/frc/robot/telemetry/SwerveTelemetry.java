@@ -1,5 +1,7 @@
 package frc.robot.telemetry;
 
+import org.littletonrobotics.junction.Logger;
+
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
 
@@ -119,5 +121,11 @@ public class SwerveTelemetry {
 
             SmartDashboard.putData("Module " + i, moduleMechanisms[i]);
         }
+
+        logValues(state);
+    }
+
+    private void logValues(SwerveDriveState state) {
+        Logger.recordOutput("OdemetryPose", state.Pose);
     }
 }
