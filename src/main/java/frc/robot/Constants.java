@@ -51,6 +51,7 @@ public final class Constants {
 
     public static final class VisionConstants {
         public static final String LIMELIGHT_NT_NAME = "limelight";
+        public static final String OCULUS_NT_NAME = "oculus";
 
         // TODO SET CAMERA POSE OFFSET FROM CENTER OF ROBOT
         public static final double CAMERA_FORWARD = 0.0;

@@ -20,7 +20,7 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.Constants;
 import frc.robot.telemetry.SwerveTelemetry;
 import frc.robot.telemetry.VisionTelemetry;
-import frc.robot.util.LimelightUtil;
+import frc.robot.util.VisionUtil;
 import frc.robot.util.Simulator;
 import frc.robot.util.TagLocation;
 
@@ -141,20 +141,26 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
 
     public void updateFusedPose() {
         poseEstimator.update(this.getState().RawHeading, this.getState().ModulePositions);
-        Pose2d limelightPose = LimelightUtil.getMegaTagOnePose();
-        if (LimelightUtil.tagExists() && LimelightUtil.getNearestTagDist() < 4.0) {
+        Pose2d limelightPose = VisionUtil.Limelight.getMegaTagOnePose();
+        if (VisionUtil.Limelight.tagExists() && VisionUtil.Limelight.getNearestTagDist() < 4.0) {
             poseEstimator.addVisionMeasurement(
                     limelightPose,
-                    Timer.getFPGATimestamp() - LimelightUtil.getLatency()
+                    Timer.getFPGATimestamp() - VisionUtil.Limelight.getLatency()
             );
             this.addVisionMeasurement(
                     limelightPose,
-                    Timer.getFPGATimestamp() - LimelightUtil.getLatency()
+                    Timer.getFPGATimestamp() - VisionUtil.Limelight.getLatency()
             );
         }
         poseEstimator.addVisionMeasurement(
-            new Pose2d(new Translation2d(VisionTelemetry.getQuestX(), VisionTelemetry.getQuestY()), new Rotation2d(VisionTelemetry.getQuestYaw())),
-            VisionTelemetry.getQuestTime()
+                new Pose2d(
+                        new Translation2d(
+                                VisionUtil.Oculus.getQuestX(),
+                                VisionUtil.Oculus.getQuestY()
+                        ),
+                        new Rotation2d(VisionUtil.Oculus.getQuestYaw())
+                ),
+                VisionUtil.Oculus.getQuestTime()
         );
     }
 
