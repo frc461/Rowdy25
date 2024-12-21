@@ -46,7 +46,7 @@ public class VisionTelemetry {
 
         nearestTagDistPub.set(LimelightUtil.getNearestTagDist());
 
-        canAddMeasurementsPub.set(LimelightUtil.tagExists() && LimelightUtil.getNearestTagDist() < 2.0);
+        canAddMeasurementsPub.set(LimelightUtil.tagExists() && LimelightUtil.getNearestTagDist() < 4.0);
 
         float[] questPositions = questPositionTopic.get();
         questPrettyPositionTopic.set("X: " + questPositions[2] + ", Y: " + questPositions[0] + ", Z: " + questPositions[1]);
