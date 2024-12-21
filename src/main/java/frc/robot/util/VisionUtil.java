@@ -130,5 +130,15 @@ public class VisionUtil {
         public static double getQuestTime() {
             return questTimestampTopic.get();
         }
+
+        public static Pose2d getQuestPose() {
+            return new Pose2d(
+                    new Translation2d(
+                            VisionUtil.Oculus.getQuestX(),
+                            VisionUtil.Oculus.getQuestY()
+                    ),
+                    new Rotation2d(VisionUtil.Oculus.getQuestYaw())
+            );
+        }
     }
 }
