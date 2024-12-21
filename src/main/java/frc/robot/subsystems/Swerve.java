@@ -7,8 +7,10 @@ import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.*;
 
 import com.ctre.phoenix6.swerve.utility.PhoenixPIDController;
+
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -17,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.Constants;
 import frc.robot.telemetry.SwerveTelemetry;
+import frc.robot.telemetry.VisionTelemetry;
 import frc.robot.util.LimelightUtil;
 import frc.robot.util.Simulator;
 import frc.robot.util.TagLocation;
@@ -33,7 +36,7 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
             Constants.SwerveConstants.ANGULAR_POSITION_I,
             Constants.SwerveConstants.ANGULAR_POSITION_D
     );
-
+    
     private final SwerveDrivePoseEstimator poseEstimator = new SwerveDrivePoseEstimator(
             this.getKinematics(),
             this.getState().RawHeading,
@@ -146,6 +149,10 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
                     Timer.getFPGATimestamp() - LimelightUtil.getLatency()
             );
         }
+        poseEstimator.addVisionMeasurement(
+            new Pose2d(new Translation2d(VisionTelemetry.getQuestX(), VisionTelemetry.getQuestY()), new Rotation2d(VisionTelemetry.getQuestYaw())),
+            VisionTelemetry.getQuestTime()
+        );
     }
 
     @Override
