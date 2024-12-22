@@ -10,8 +10,15 @@ import edu.wpi.first.networktables.FloatArraySubscriber;
 import edu.wpi.first.networktables.IntegerSubscriber;
 import edu.wpi.first.networktables.NetworkTable;
 import frc.robot.Constants;
+import org.photonvision.PhotonCamera;
+import org.photonvision.targeting.PhotonPipelineResult;
+
+import java.util.List;
 
 public class VisionUtil {
+    private static final PhotonCamera CAMERA_BW = new PhotonCamera(Constants.NT_INSTANCE, "ArducamBW");
+    private static final PhotonCamera CAMERA_COLOR = new PhotonCamera(Constants.NT_INSTANCE, "ArducamColor");
+
     private static final NetworkTable LIMELIGHT_NT = Constants.NT_INSTANCE.getTable(Constants.VisionConstants.LIMELIGHT_NT_NAME);
     private static final NetworkTable OCULUS_NT = Constants.NT_INSTANCE.getTable(Constants.VisionConstants.OCULUS_NT_NAME);
 
@@ -149,6 +156,7 @@ public class VisionUtil {
             ).plus(poseEstimateOffset);
         }
 
+        // TODO SET OFFSET WITH POSE ESTIMATE AS REFERENCE INSTEAD OF LIMELIGHT MEGATAG
         public static void setOffset() {
             if (Limelight.isTagClear()) {
                 poseEstimateOffset = new Transform2d(
@@ -170,6 +178,26 @@ public class VisionUtil {
 
         public static void setPose(Pose2d pose) {
             poseEstimateOffset = poseEstimateOffset.plus(pose.minus(getPose()));
+        }
+    }
+
+    public static final class Photon {
+        public static List<PhotonPipelineResult> getColorResults() {
+            return CAMERA_COLOR.getAllUnreadResults();
+        }
+
+        public static List<PhotonPipelineResult> getBWResults() {
+            return CAMERA_BW.getAllUnreadResults();
+        }
+
+        public static boolean hasColorResults() {
+            return getColorResults().isEmpty();
+        }
+
+        public static double getObjectYaw() {
+            List<PhotonPipelineResult> results = getColorResults();
+            PhotonPipelineResult result = results.get(results.size() - 1);
+            return result.getBestTarget().getYaw();
         }
     }
 }
