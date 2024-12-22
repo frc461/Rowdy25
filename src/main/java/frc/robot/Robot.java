@@ -26,8 +26,8 @@ public class Robot extends LoggedRobot {
         Logger.recordMetadata("ProjectName", "Rowdy25");
 
         if (isReal()) {
-            Logger.addDataReceiver(new WPILOGWriter());
-            // Logger.addDataReceiver(new NT4Publisher()); // TODO NEED USB ON ROBORIO TO WORK
+            // Logger.addDataReceiver(new WPILOGWriter()); // TODO NEED USB ON ROBORIO TO WORK
+            Logger.addDataReceiver(new NT4Publisher());
             new PowerDistribution(1, ModuleType.kRev);
         } else {
             setUseTiming(false);
