@@ -106,11 +106,13 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
                         .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
                         .withVelocityX(-straight.getAsDouble() * Constants.MAX_VEL)
                         .withVelocityY(-strafe.getAsDouble() * Constants.MAX_VEL)
-                        .withRotationalRate(yawController.calculate(
+                        .withRotationalRate(VisionUtil.Photon.Color.hasTargets()
+                                ? yawController.calculate(
                                         currentYaw,
                                         currentYaw - VisionUtil.Photon.Color.getBestObjectYaw(),
                                         Timer.getFPGATimestamp()
                                 ) * Constants.MAX_ANGULAR_VEL
+                                : 0.0
                         )
         );
     }
@@ -125,6 +127,10 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
 
     public void switchLocalizationMode() {
         localizer.switchMode();
+    }
+
+    public void recalibrate() {
+        localizer.recalibrate();
     }
 
     @Override

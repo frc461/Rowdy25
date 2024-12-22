@@ -6,6 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 import frc.robot.subsystems.drivetrain.Swerve;
@@ -101,6 +102,8 @@ public class RobotContainer {
 
         // toggle between robot choosing quest nav pose and pose estimation with cameras
         driverXbox.b().onTrue(swerve.runOnce(swerve::switchLocalizationMode));
+
+        driverXbox.x().onTrue(swerve.runOnce(swerve::recalibrate));
 
         // reset the field-centric heading on y press
         driverXbox.y().onTrue(swerve.runOnce(swerve::seedFieldCentric));

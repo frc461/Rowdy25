@@ -225,24 +225,28 @@ public class VisionUtil {
         }
 
         public static double getYaw() {
-            return questEulerAnglesTopic.get()[1];
+            return stabilize(-questEulerAnglesTopic.get()[1]);
         }
 
         public static double getRoll() {
             return questEulerAnglesTopic.get()[2];
         }
 
+        public static double stabilize(double angle) {
+            return angle >= 180 ? angle - 180 : angle;
+        }
+
         public static double getTimestamp() {
             return questTimestampTopic.get();
         }
 
-        public static Pose2d getPose() {
+        public static Pose2d getRawPose() {
             return new Pose2d(
                     new Translation2d(
                             getX(),
                             getY()
                     ),
-                    new Rotation2d(getYaw())
+                    Rotation2d.fromDegrees(getYaw())
             );
         }
     }

@@ -63,9 +63,9 @@ public final class Constants {
             // TODO SET LL CAMERA TO CENTER OF ROBOT OFFSETS
             public static final double LL_FORWARD = 0.0;
             public static final double LL_RIGHT = 0.0;
-            public static final double LL_UP = 0.0;
+            public static final double LL_UP = Units.inchesToMeters(22.5);
             public static final double LL_ROLL = 0.0;
-            public static final double LL_PITCH = 0.0;
+            public static final double LL_PITCH = 25.5;
             public static final double LL_YAW = 0.0;
 
             public static final double LL_MAX_TAG_CLEAR_DIST = 4.0;
