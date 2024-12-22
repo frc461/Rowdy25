@@ -50,25 +50,37 @@ public final class Constants {
     public static final NetworkTableInstance NT_INSTANCE = NetworkTableInstance.getDefault();
 
     public static final class VisionConstants {
-        public static final String LIMELIGHT_NT_NAME = "limelight";
-        public static final String QUESTNAV_NT_NAME = "oculus";
+        public static final class LimelightConstants {
+            public static final String LIMELIGHT_NT_NAME = "limelight";
 
-        public static final double MIN_TAG_CLEAR_DIST = 4.0;
+            // TODO SET LL CAMERA TO CENTER OF ROBOT OFFSETS
+            public static final double LL_FORWARD = 0.0;
+            public static final double LL_RIGHT = 0.0;
+            public static final double LL_UP = 0.0;
+            public static final double LL_ROLL = 0.0;
+            public static final double LL_PITCH = 0.0;
+            public static final double LL_YAW = 0.0;
 
-        // TODO SET CAMERAS TO CENTER OF ROBOT OFFSETS
-        public static final double LL_FORWARD = 0.0;
-        public static final double LL_RIGHT = 0.0;
-        public static final double LL_UP = 0.0;
-        public static final double LL_ROLL = 0.0;
-        public static final double LL_PITCH = 0.0;
-        public static final double LL_YAW = 0.0;
+            public static final double LL_MIN_TAG_CLEAR_DIST = 4.0;
+        }
+        
+        public static final class PhotonConstants {
+            // TODO SET ARDUCAM BW CAMERA TO CENTER OF ROBOT OFFSETS
+            public static final double BW_FORWARD = 0.0;
+            public static final double BW_LEFT = 0.0;
+            public static final double BW_UP = 0.0;
+            public static final double BW_ROLL = 0.0;
+            public static final double BW_PITCH = 0.0;
+            public static final double BW_YAW = 0.0;
 
-        public static final double BW_FORWARD = 0.0;
-        public static final double BW_LEFT = 0.0;
-        public static final double BW_UP = 0.0;
-        public static final double BW_ROLL = 0.0;
-        public static final double BW_PITCH = 0.0;
-        public static final double BW_YAW = 0.0;
+            public static final double BW_MIN_TAG_CLEAR_DIST = 2.5;
+        }
+
+        public static final class QuestNavConstants {
+            public static final String QUESTNAV_NT_NAME = "oculus";
+
+
+        }
 
         public static final Matrix<N3, N1> ODOM_STD_DEV = VecBuilder.fill(0.2, 0.2, Units.degreesToRadians(2.0));
         public static final Matrix<N3, N1> VISION_STD_DEV = VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(180.0));

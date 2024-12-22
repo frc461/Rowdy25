@@ -1,10 +1,11 @@
 package frc.robot.util;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.networktables.FloatArraySubscriber;
-import edu.wpi.first.networktables.IntegerSubscriber;
 import edu.wpi.first.networktables.NetworkTable;
 import frc.robot.Constants;
 import org.photonvision.PhotonCamera;
@@ -16,7 +17,7 @@ import java.util.List;
 public class VisionUtil {
 
     public static final class Limelight {
-        private static final NetworkTable LIMELIGHT_NT = Constants.NT_INSTANCE.getTable(Constants.VisionConstants.LIMELIGHT_NT_NAME);
+        private static final NetworkTable LIMELIGHT_NT = Constants.NT_INSTANCE.getTable(Constants.VisionConstants.LimelightConstants.LIMELIGHT_NT_NAME);
 
         private static double[] getTargetPoseRobotSpaceValues() {
             return LIMELIGHT_NT.getEntry("targetpose_robotspace").getDoubleArray(new double[0]);
@@ -78,18 +79,18 @@ public class VisionUtil {
         }
 
         public static boolean isTagClear() {
-            return tagExists() && getNearestTagDist() < Constants.VisionConstants.MIN_TAG_CLEAR_DIST;
+            return tagExists() && getNearestTagDist() < Constants.VisionConstants.LimelightConstants.LL_MIN_TAG_CLEAR_DIST;
         }
 
         public static void configureCameraPose() {
             LIMELIGHT_NT.getEntry("camerapose_robotspace_set").setDoubleArray(
                     new double[] {
-                            Constants.VisionConstants.LL_FORWARD,
-                            Constants.VisionConstants.LL_RIGHT,
-                            Constants.VisionConstants.LL_UP,
-                            Constants.VisionConstants.LL_ROLL,
-                            Constants.VisionConstants.LL_PITCH,
-                            Constants.VisionConstants.LL_YAW
+                            Constants.VisionConstants.LimelightConstants.LL_FORWARD,
+                            Constants.VisionConstants.LimelightConstants.LL_RIGHT,
+                            Constants.VisionConstants.LimelightConstants.LL_UP,
+                            Constants.VisionConstants.LimelightConstants.LL_ROLL,
+                            Constants.VisionConstants.LimelightConstants.LL_PITCH,
+                            Constants.VisionConstants.LimelightConstants.LL_YAW
                     }
             );
         }
@@ -142,11 +143,16 @@ public class VisionUtil {
                 return getLatestBWResult().getBestTarget().fiducialId;
             }
 
-            // TODO TEST THIS FUNCTION WTIH PHOTON POSE IF METHOD BELOW DOESN'T WORK
-            public static Transform2d getCameraToTag(Rotation2d robotYaw) {
-                Translation2d cameraToTagTranslation = getLatestBWResult().getBestTarget().getBestCameraToTarget().getTranslation().toTranslation2d();
-                Pose2d tagPose = TagLocation.getTagLocation(getBestTagID());
-                return PhotonUtils.estimateCameraToTarget(cameraToTagTranslation, tagPose, robotYaw);
+            public static double getBestTagDist() {
+                return getLatestBWResult().getBestTarget().getBestCameraToTarget().getTranslation().toTranslation2d().getNorm();
+            }
+
+            public static double getLatency() {
+                return getLatestBWResult().getTimestampSeconds();
+            }
+
+            public static boolean isTagClear() {
+                return hasBWResults() && getBestTagDist() < Constants.VisionConstants.PhotonConstants.BW_MIN_TAG_CLEAR_DIST;
             }
 
             public static Pose2d getPhotonPose() {
@@ -154,29 +160,32 @@ public class VisionUtil {
                         getLatestBWResult().getBestTarget().getBestCameraToTarget(),
                         TagLocation.getTagLocation3d(getBestTagID()),
                         new Transform3d(
-                                Constants.VisionConstants.BW_FORWARD,
-                                Constants.VisionConstants.BW_LEFT,
-                                Constants.VisionConstants.BW_UP,
+                                Constants.VisionConstants.PhotonConstants.BW_FORWARD,
+                                Constants.VisionConstants.PhotonConstants.BW_LEFT,
+                                Constants.VisionConstants.PhotonConstants.BW_UP,
                                 new Rotation3d(
-                                        Units.degreesToRadians(Constants.VisionConstants.BW_ROLL),
-                                        Units.degreesToRadians(Constants.VisionConstants.BW_PITCH),
-                                        Units.degreesToRadians(Constants.VisionConstants.BW_YAW)
+                                        Units.degreesToRadians(Constants.VisionConstants.PhotonConstants.BW_ROLL),
+                                        Units.degreesToRadians(Constants.VisionConstants.PhotonConstants.BW_PITCH),
+                                        Units.degreesToRadians(Constants.VisionConstants.PhotonConstants.BW_YAW)
                                 )
                         )
                 ).toPose2d();
+            }
+
+            // TODO TEST THIS BEFORE ABOVE
+            public static final class MultiTag { // TODO UPDATE FOR 2025
+                public static AprilTagFieldLayout tagLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
+
+
             }
         }
     }
 
     public static final class QuestNav {
-        private static final NetworkTable QUESTNAV_NT = Constants.NT_INSTANCE.getTable(Constants.VisionConstants.QUESTNAV_NT_NAME);
+        private static final NetworkTable QUESTNAV_NT = Constants.NT_INSTANCE.getTable(Constants.VisionConstants.QuestNavConstants.QUESTNAV_NT_NAME);
 
-        // TODO USE FOR ADSCOPE
-        private static final IntegerSubscriber questFrameCountTopic = QUESTNAV_NT.getIntegerTopic("frameCount").subscribe(0);
         private static final DoubleSubscriber questTimestampTopic = QUESTNAV_NT.getDoubleTopic("timestamp").subscribe(0.0f);
-        private static final DoubleSubscriber questBatteryTopic = QUESTNAV_NT.getDoubleTopic("batteryLevel").subscribe(0.0f);
         private static final FloatArraySubscriber questPositionTopic = QUESTNAV_NT.getFloatArrayTopic("position").subscribe(new float[] {0.0f, 0.0f, 0.0f});
-        private static final FloatArraySubscriber questQuaternionTopic = QUESTNAV_NT.getFloatArrayTopic("quaternion").subscribe(new float[] {0.0f, 0.0f, 0.0f, 0.0f});
         private static final FloatArraySubscriber questEulerAnglesTopic = QUESTNAV_NT.getFloatArrayTopic("eulerAngles").subscribe(new float[] {0.0f, 0.0f, 0.0f});
 
         public static Transform2d poseEstimateOffset = new Transform2d();

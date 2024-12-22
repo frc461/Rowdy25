@@ -33,6 +33,7 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
     private final SwerveTelemetry swerveTelemetry = new SwerveTelemetry(Constants.MAX_VEL);
     private final VisionTelemetry visionTelemetry = new VisionTelemetry(this);
 
+    // TODO TEST WITH REGULAR PID CONTROLLER
     private final PhoenixPIDController yawController;
 
     // TODO LOCALIZER "SUBSYSTEM" FOR SIMPLICITY, THEN A SUPPLIER FOR SWERVE MODULE STATES FOR AN UPDATE METHOD TO BE CALLED IN SWERVE PERIODIC
@@ -172,6 +173,7 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
     public void updatePoses() {
         poseEstimator.update(this.getState().RawHeading, this.getState().ModulePositions);
         Pose2d limelightPose = VisionUtil.Limelight.getMegaTagOnePose();
+        Pose2d photonPose = VisionUtil.Photon.BW.getPhotonPose();
         if (VisionUtil.Limelight.isTagClear()) {
             poseEstimator.addVisionMeasurement(
                     limelightPose,
@@ -180,6 +182,12 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
             this.addVisionMeasurement(
                     limelightPose,
                     Timer.getFPGATimestamp() - VisionUtil.Limelight.getLatency()
+            );
+        }
+        if (VisionUtil.Photon.BW.isTagClear()) {
+            poseEstimator.addVisionMeasurement(
+                    photonPose,
+                    Timer.getFPGATimestamp() - VisionUtil.Photon.BW.getLatency()
             );
         }
 
