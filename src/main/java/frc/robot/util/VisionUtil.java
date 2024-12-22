@@ -16,6 +16,16 @@ import java.util.List;
 
 public class VisionUtil {
 
+    public static void configureOffsets() {
+        Limelight.configureRobotToCameraOffset();
+        QuestNav.setOffset();
+    }
+
+    public static void updateOffsets() {
+        Photon.updateResults();
+        QuestNav.updateOffset();
+    }
+
     public static final class Limelight {
         private static final NetworkTable LIMELIGHT_NT = Constants.NT_INSTANCE.getTable(Constants.VisionConstants.LimelightConstants.LIMELIGHT_NT_NAME);
 
@@ -82,7 +92,7 @@ public class VisionUtil {
             return tagExists() && getNearestTagDist() < Constants.VisionConstants.LimelightConstants.LL_MAX_TAG_CLEAR_DIST;
         }
 
-        public static void configureRobotToCameraTransform() {
+        public static void configureRobotToCameraOffset() {
             LIMELIGHT_NT.getEntry("camerapose_robotspace_set").setDoubleArray(
                     new double[] {
                             Constants.VisionConstants.LimelightConstants.LL_FORWARD,
@@ -103,6 +113,10 @@ public class VisionUtil {
     }
 
     public static final class Photon {
+        public static void updateResults() {
+            Color.updateResults();
+            BW.updateResults();
+        }
 
         public static final class Color {
             private static final PhotonCamera COLOR = new PhotonCamera(Constants.NT_INSTANCE, "ArducamColor");
@@ -117,7 +131,7 @@ public class VisionUtil {
             }
 
             // TODO UPDATE ONCE EVERY TICK
-            public static void updateColorResults() {
+            public static void updateResults() {
                 List<PhotonPipelineResult> results = COLOR.getAllUnreadResults();
                 if (!results.isEmpty()) {
                     latestResult = results.get(results.size() - 1);
@@ -128,7 +142,7 @@ public class VisionUtil {
         public static final class BW {
             private static final PhotonCamera BW = new PhotonCamera(Constants.NT_INSTANCE, "ArducamBW");
             public static final AprilTagFieldLayout tagLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField(); // TODO UPDATE FOR 2025
-            public static final Transform3d cameraTransform = new Transform3d(
+            public static final Transform3d robotToCameraOffset = new Transform3d(
                     Constants.VisionConstants.PhotonConstants.BW_FORWARD,
                     Constants.VisionConstants.PhotonConstants.BW_LEFT,
                     Constants.VisionConstants.PhotonConstants.BW_UP,
@@ -168,13 +182,13 @@ public class VisionUtil {
                         ? PhotonUtils.estimateFieldToRobotAprilTag(
                                 latestResult.getBestTarget().getBestCameraToTarget(),
                                 TagLocation.getTagLocation3d(getBestTagID()),
-                                cameraTransform
+                        robotToCameraOffset
                         ).toPose2d()
                         : new Pose2d();
             }
 
             // TODO UPDATE ONCE EVERY TICK
-            public static void updateBWResults() {
+            public static void updateResults() {
                 List<PhotonPipelineResult> results = BW.getAllUnreadResults();
                 if (!results.isEmpty()) {
                     latestResult = results.get(results.size() - 1);

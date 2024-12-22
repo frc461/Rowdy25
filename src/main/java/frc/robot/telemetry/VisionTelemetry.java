@@ -3,11 +3,16 @@ package frc.robot.telemetry;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.networktables.*;
 import frc.robot.Constants;
-import frc.robot.subsystems.Swerve;
+import frc.robot.subsystems.drivetrain.Localizer;
 import frc.robot.util.VisionUtil;
 
 public class VisionTelemetry {
-    private final Swerve swerve;
+    private final Localizer localizer;
+
+    public VisionTelemetry(Localizer localizer) {
+        this.localizer = localizer;
+    }
+
     private final NetworkTable visionTelemetryTable = Constants.NT_INSTANCE.getTable("VisionTelemetry");
     private final NetworkTable limelightTelemetryTable = Constants.NT_INSTANCE.getTable("LimelightTelemetry");
     private final NetworkTable photonTelemetryTable = Constants.NT_INSTANCE.getTable("PhotonTelemetry");
@@ -24,12 +29,8 @@ public class VisionTelemetry {
     private final StringPublisher questPositionTopic = questNavTelemetryTable.getStringTopic("Quest Position").publish();
     private final StringPublisher questRotationTopic = questNavTelemetryTable.getStringTopic("Quest Rotation").publish();
 
-    public VisionTelemetry(Swerve swerve) {
-        this.swerve = swerve;
-    }
-
     public void publishValues() {
-        Pose2d estimatedPose = swerve.getEstimatedPose();
+        Pose2d estimatedPose = localizer.getEstimatedPose();
         double estimateX = estimatedPose.getX();
         double estimateY = estimatedPose.getY();
         double estimateYaw = estimatedPose.getRotation().getDegrees();
