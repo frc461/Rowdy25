@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import java.util.Optional;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
@@ -22,6 +23,7 @@ import frc.robot.telemetry.VisionTelemetry;
 import frc.robot.util.VisionUtil;
 import frc.robot.util.Simulator;
 import frc.robot.util.TagLocation;
+import org.photonvision.PhotonPoseEstimator;
 
 /**
  * Class that extends the Phoenix 6 SwerveDrivetrain class and implements
@@ -44,6 +46,12 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
             this.getState().Pose,
             Constants.VisionConstants.ODOM_STD_DEV,
             Constants.VisionConstants.VISION_STD_DEV
+    );
+
+    private final PhotonPoseEstimator photonPoseEstimator = new PhotonPoseEstimator(
+            VisionUtil.Photon.BW.tagLayout,
+            PhotonPoseEstimator.PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
+            VisionUtil.Photon.BW.cameraTransform
     );
 
     /* Keep track if we've ever applied the operator perspective before or not */
@@ -72,7 +80,7 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
         );
         yawController.enableContinuousInput(Constants.SwerveConstants.ANGULAR_MINIMUM_ANGLE, Constants.SwerveConstants.ANGULAR_MAXIMUM_ANGLE);
 
-        VisionUtil.Limelight.configureCameraPose();
+        VisionUtil.Limelight.configureRobotToCameraTransform();
 
         configureSwerveUtils();
     }
@@ -131,20 +139,18 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
     }
 
     public Command centerOnNote(DoubleSupplier straight, DoubleSupplier strafe) {
-        double currentAngle = getEstimatedPose().getRotation().getDegrees();
+        double currentYaw = getEstimatedPose().getRotation().getDegrees();
         return applyRequest(() ->
                 new SwerveRequest.FieldCentric()
                         .withDeadband(Constants.MAX_VEL * 0.1)
                         .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
                         .withVelocityX(-straight.getAsDouble() * Constants.MAX_VEL)
                         .withVelocityY(-strafe.getAsDouble() * Constants.MAX_VEL)
-                        .withRotationalRate(VisionUtil.Photon.Color.hasColorResults()
-                                ? yawController.calculate(
-                                        currentAngle,
-                                        currentAngle - VisionUtil.Photon.Color.getBestObjectYaw(),
+                        .withRotationalRate(yawController.calculate(
+                                        currentYaw,
+                                        currentYaw - VisionUtil.Photon.Color.getBestObjectYaw(),
                                         Timer.getFPGATimestamp()
                                 ) * Constants.MAX_ANGULAR_VEL
-                                : 0
                         )
         );
     }
@@ -176,10 +182,6 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
         Pose2d photonPose = VisionUtil.Photon.BW.getPhotonPose();
         if (VisionUtil.Limelight.isTagClear()) {
             poseEstimator.addVisionMeasurement(
-                    limelightPose,
-                    Timer.getFPGATimestamp() - VisionUtil.Limelight.getLatency()
-            );
-            this.addVisionMeasurement(
                     limelightPose,
                     Timer.getFPGATimestamp() - VisionUtil.Limelight.getLatency()
             );

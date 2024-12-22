@@ -61,7 +61,7 @@ public final class Constants {
             public static final double LL_PITCH = 0.0;
             public static final double LL_YAW = 0.0;
 
-            public static final double LL_MIN_TAG_CLEAR_DIST = 4.0;
+            public static final double LL_MAX_TAG_CLEAR_DIST = 4.0;
         }
         
         public static final class PhotonConstants {
@@ -73,13 +73,11 @@ public final class Constants {
             public static final double BW_PITCH = 0.0;
             public static final double BW_YAW = 0.0;
 
-            public static final double BW_MIN_TAG_CLEAR_DIST = 2.5;
+            public static final double BW_MAX_TAG_CLEAR_DIST = 2.5;
         }
 
         public static final class QuestNavConstants {
             public static final String QUESTNAV_NT_NAME = "oculus";
-
-
         }
 
         public static final Matrix<N3, N1> ODOM_STD_DEV = VecBuilder.fill(0.2, 0.2, Units.degreesToRadians(2.0));
