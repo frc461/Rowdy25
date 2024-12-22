@@ -15,7 +15,6 @@ import com.ctre.phoenix6.swerve.SwerveModuleConstants.ClosedLoopOutputType;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants.SteerFeedbackType;
 import com.ctre.phoenix6.swerve.SwerveModuleConstantsFactory;
 
-import com.ctre.phoenix6.swerve.utility.PhoenixPIDController;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -51,20 +50,41 @@ public final class Constants {
     public static final NetworkTableInstance NT_INSTANCE = NetworkTableInstance.getDefault();
 
     public static final class VisionConstants {
-        public static final String LIMELIGHT_NT_NAME = "limelight";
-        public static final String OCULUS_NT_NAME = "oculus";
+        public static final class LimelightConstants {
+            public static final String LIMELIGHT_NT_NAME = "limelight";
 
-        public static final double MIN_TAG_CLEAR_DIST = 4.0;
+            // TODO SET LL CAMERA TO CENTER OF ROBOT OFFSETS
+            public static final double LL_FORWARD = 0.0;
+            public static final double LL_RIGHT = 0.0;
+            public static final double LL_UP = 0.0;
+            public static final double LL_ROLL = 0.0;
+            public static final double LL_PITCH = 0.0;
+            public static final double LL_YAW = 0.0;
 
-        // TODO SET CAMERA POSE OFFSET FROM CENTER OF ROBOT
-        public static final double CAMERA_FORWARD = 0.0;
-        public static final double CAMERA_UP = 0.0;
-        public static final double CAMERA_PITCH = 0.0;
+            public static final double LL_MAX_TAG_CLEAR_DIST = 4.0;
+        }
+        
+        public static final class PhotonConstants {
+            // TODO SET ARDUCAM BW CAMERA TO CENTER OF ROBOT OFFSETS
+            public static final double BW_FORWARD = 0.0;
+            public static final double BW_LEFT = 0.0;
+            public static final double BW_UP = 0.0;
+            public static final double BW_ROLL = 0.0;
+            public static final double BW_PITCH = 0.0;
+            public static final double BW_YAW = 0.0;
+
+            public static final double BW_MAX_TAG_CLEAR_DIST = 2.5;
+        }
+
+        public static final class QuestNavConstants {
+            public static final String QUESTNAV_NT_NAME = "oculus";
+        }
 
         public static final Matrix<N3, N1> ODOM_STD_DEV = VecBuilder.fill(0.2, 0.2, Units.degreesToRadians(2.0));
         public static final Matrix<N3, N1> VISION_STD_DEV = VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(180.0));
 
-        public static final double UPDATE_QUEST_OFFSET_THRESHOLD = 0.5;
+        public static final double UPDATE_QUEST_OFFSET_TRANSLATION_ERROR_THRESHOLD = 0.5;
+        public static final double UPDATE_QUEST_OFFSET_ROTATION_ERROR_THRESHOLD = 10.0;
     }
 
     public static final class SwerveConstants {

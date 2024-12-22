@@ -21,17 +21,18 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import frc.robot.Constants;
+import frc.robot.subsystems.drivetrain.Swerve;
 
 public class SwerveTelemetry {
-    private final double maxSpeed;
+    private final Swerve swerve;
 
     /**
-     * Construct a telemetry object, with the specified max speed of the robot
-     * 
-     * @param maxSpeed Maximum speed in meters per second
+     * Construct a telemetry object, with the specified swerve subsystem
+     *
+     * @param swerve Instance of the swerve subsystem
      */
-    public SwerveTelemetry(double maxSpeed) {
-        this.maxSpeed = maxSpeed;
+    public SwerveTelemetry(Swerve swerve) {
+        this.swerve = swerve;
         SignalLogger.start();
     }
 
@@ -83,7 +84,8 @@ public class SwerveTelemetry {
     private final double[] moduleTargetsArray = new double[8];
 
     /** Accept the swerve drive state and telemeterize it to SmartDashboard and SignalLogger. */
-    public void telemeterize(SwerveDriveState state) {
+    public void publishValues() {
+        SwerveDriveState state = swerve.getState();
         /* Telemeterize the swerve drive state */
         drivePose.set(state.Pose);
         driveSpeeds.set(state.Speeds);
@@ -117,7 +119,7 @@ public class SwerveTelemetry {
         for (int i = 0; i < 4; ++i) {
             moduleSpeeds[i].setAngle(state.ModuleStates[i].angle);
             moduleDirections[i].setAngle(state.ModuleStates[i].angle);
-            moduleSpeeds[i].setLength(state.ModuleStates[i].speedMetersPerSecond / (2 * maxSpeed));
+            moduleSpeeds[i].setLength(state.ModuleStates[i].speedMetersPerSecond / (2 * Constants.MAX_VEL));
 
             SmartDashboard.putData("Module " + i, moduleMechanisms[i]);
         }

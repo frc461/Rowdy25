@@ -3,7 +3,7 @@ package frc.robot.util;
 import com.ctre.phoenix6.Utils;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
-import frc.robot.subsystems.Swerve;
+import frc.robot.subsystems.drivetrain.Swerve;
 
 public class Simulator {
     private final Swerve swerve;
