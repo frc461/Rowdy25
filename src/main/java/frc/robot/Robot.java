@@ -27,7 +27,7 @@ public class Robot extends LoggedRobot {
 
         if (isReal()) {
             Logger.addDataReceiver(new WPILOGWriter());
-            // Logger.addDataReceiver(new NT4Publisher()); // We need a USB on the roboRIO for this to work
+            // Logger.addDataReceiver(new NT4Publisher()); // TODO NEED USB ON ROBORIO TO WORK
             new PowerDistribution(1, ModuleType.kRev);
         } else {
             setUseTiming(false);

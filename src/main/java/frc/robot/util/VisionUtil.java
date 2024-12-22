@@ -16,16 +16,6 @@ import java.util.List;
 
 public class VisionUtil {
 
-    public static void configureOffsets() {
-        Limelight.configureRobotToCameraOffset();
-        QuestNav.setOffset();
-    }
-
-    public static void updateOffsets() {
-        Photon.updateResults();
-        QuestNav.updateOffset();
-    }
-
     public static final class Limelight {
         private static final NetworkTable LIMELIGHT_NT = Constants.NT_INSTANCE.getTable(Constants.VisionConstants.LimelightConstants.LIMELIGHT_NT_NAME);
 
@@ -130,7 +120,6 @@ public class VisionUtil {
                 return hasTargets() ? latestResult.getBestTarget().getYaw() : 0.0;
             }
 
-            // TODO UPDATE ONCE EVERY TICK
             public static void updateResults() {
                 List<PhotonPipelineResult> results = COLOR.getAllUnreadResults();
                 if (!results.isEmpty()) {
@@ -187,7 +176,6 @@ public class VisionUtil {
                         : new Pose2d();
             }
 
-            // TODO UPDATE ONCE EVERY TICK
             public static void updateResults() {
                 List<PhotonPipelineResult> results = BW.getAllUnreadResults();
                 if (!results.isEmpty()) {
@@ -203,9 +191,6 @@ public class VisionUtil {
         private static final DoubleSubscriber questTimestampTopic = QUESTNAV_NT.getDoubleTopic("timestamp").subscribe(0.0f);
         private static final FloatArraySubscriber questPositionTopic = QUESTNAV_NT.getFloatArrayTopic("position").subscribe(new float[] {0.0f, 0.0f, 0.0f});
         private static final FloatArraySubscriber questEulerAnglesTopic = QUESTNAV_NT.getFloatArrayTopic("eulerAngles").subscribe(new float[] {0.0f, 0.0f, 0.0f});
-
-        public static Transform2d poseEstimateOffset = new Transform2d();
-        public static Transform2d diffMegaTagOneQuest = new Transform2d();
 
         public static double getX() {
             return questPositionTopic.get()[2];
@@ -242,34 +227,7 @@ public class VisionUtil {
                             getY()
                     ),
                     new Rotation2d(getYaw())
-            ).plus(poseEstimateOffset);
-        }
-
-        // TODO SET OFFSET WITH POSE ESTIMATE AS REFERENCE INSTEAD OF LIMELIGHT MEGATAG
-        public static void setOffset() {
-            if (Limelight.isTagClear()) {
-                poseEstimateOffset = new Transform2d(
-                        Limelight.getMegaTagOnePose().getX(),
-                        Limelight.getMegaTagOnePose().getY(),
-                        Limelight.getMegaTagOnePose().getRotation()
-                );
-            }
-        }
-
-        public static void updateOffset() {
-            if (Limelight.isTagClear()) {
-                diffMegaTagOneQuest = Limelight.getMegaTagOnePose().minus(getPose());
-                double dist = diffMegaTagOneQuest.getTranslation().getNorm();
-                double rot = diffMegaTagOneQuest.getRotation().getDegrees();
-                if (dist > Constants.VisionConstants.UPDATE_QUEST_OFFSET_TRANSLATION_ERROR_THRESHOLD
-                        || rot > Constants.VisionConstants.UPDATE_QUEST_OFFSET_ROTATION_ERROR_THRESHOLD) {
-                    poseEstimateOffset = poseEstimateOffset.plus(diffMegaTagOneQuest);
-                }
-            }
-        }
-
-        public static void setPose(Pose2d pose) {
-            poseEstimateOffset = poseEstimateOffset.plus(pose.minus(getPose()));
+            );
         }
     }
 }

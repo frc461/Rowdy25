@@ -120,7 +120,7 @@ public final class Constants {
         private static final SteerFeedbackType STEER_FEEDBACK_TYPE = SteerFeedbackType.FusedCANcoder;
 
         // The stator current at which the wheels start to slip;
-        // TODO TUNE TO ROBOT
+        // TODO TUNE TO 2025 ROBOT
         private static final Current SLIP_CURRENT = Amps.of(120.0);
 
         // Initial configs for the drive and steer motors and the CANcoder; these cannot be null.
@@ -139,7 +139,7 @@ public final class Constants {
         private static final Pigeon2Configuration PIGEON_CONFIGS = new Pigeon2Configuration();
 
         // Theoretical free speed (m/s) at 12 V applied output;
-        // This needs to be tuned to your individual robot
+        // TODO TUNE TO 2025 ROBOT
         public static final LinearVelocity SPEED_AT_12_VOLTS = MetersPerSecond.of(5.21);
 
         // Every 1 rotation of the azimuth results in COUPLE_RATIO drive motor turns;
