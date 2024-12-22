@@ -71,6 +71,8 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
         );
         yawController.enableContinuousInput(Constants.SwerveConstants.ANGULAR_MINIMUM_ANGLE, Constants.SwerveConstants.ANGULAR_MAXIMUM_ANGLE);
 
+        VisionUtil.Limelight.configureCameraPose();
+
         configureSwerveUtils();
     }
 
