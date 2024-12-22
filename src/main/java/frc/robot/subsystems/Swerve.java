@@ -1,6 +1,5 @@
 package frc.robot.subsystems;
 
-import java.util.Optional;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
@@ -189,7 +188,7 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
         if (VisionUtil.Photon.BW.isTagClear()) {
             poseEstimator.addVisionMeasurement(
                     photonPose,
-                    Timer.getFPGATimestamp() - VisionUtil.Photon.BW.getLatency()
+                    VisionUtil.Photon.BW.getTimestamp()
             );
         }
 

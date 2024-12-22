@@ -11,10 +11,8 @@ import frc.robot.Constants;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonPipelineResult;
-import org.photonvision.targeting.PhotonTrackedTarget;
 
 import java.util.List;
-import java.util.Optional;
 
 public class VisionUtil {
 
@@ -108,27 +106,22 @@ public class VisionUtil {
 
         public static final class Color {
             private static final PhotonCamera COLOR = new PhotonCamera(Constants.NT_INSTANCE, "ArducamColor");
-            private static List<PhotonPipelineResult> results;
-
-            public static boolean hasResults() {
-                return !results.isEmpty();
-            }
+            private static PhotonPipelineResult latestResult = new PhotonPipelineResult();
 
             public static boolean hasTargets() {
-                return hasResults() && results.get(results.size() - 1).hasTargets();
-            }
-
-            public static PhotonTrackedTarget getBestObject() {
-                return results.get(results.size() - 1).getBestTarget();
+                return latestResult.hasTargets();
             }
 
             public static double getBestObjectYaw() {
-                return hasTargets() ? getBestObject().getYaw() : 0.0;
+                return hasTargets() ? latestResult.getBestTarget().getYaw() : 0.0;
             }
 
             // TODO UPDATE ONCE EVERY TICK
             public static void updateColorResults() {
-                results = COLOR.getAllUnreadResults();
+                List<PhotonPipelineResult> results = COLOR.getAllUnreadResults();
+                if (!results.isEmpty()) {
+                    latestResult = results.get(results.size() - 1);
+                }
             }
         }
 
@@ -145,31 +138,23 @@ public class VisionUtil {
                             Units.degreesToRadians(Constants.VisionConstants.PhotonConstants.BW_YAW)
                     )
             );
-            public static List<PhotonPipelineResult> results;
-
-            public static boolean hasResults() {
-                return !results.isEmpty();
-            }
+            public static PhotonPipelineResult latestResult = new PhotonPipelineResult();
 
             public static boolean hasTargets() {
-                return hasResults() && results.get(results.size() - 1).hasTargets();
+                return latestResult.hasTargets();
             }
 
-            public static PhotonTrackedTarget getBestTag() {
-                return results.get(results.size() - 1).getBestTarget();
-            }
-
-            public static double getLatency() {
-                return hasResults() ? results.get(results.size() - 1).getTimestampSeconds() : 0.0;
+            public static double getTimestamp() {
+                return latestResult.getTimestampSeconds();
             }
 
             public static double getBestTagID() {
-                return hasTargets() ? getBestTag().fiducialId : 0.0;
+                return hasTargets() ? latestResult.getBestTarget().fiducialId : 0.0;
             }
 
             public static double getBestTagDist() {
                 return hasTargets()
-                        ? getBestTag().getBestCameraToTarget().getTranslation().toTranslation2d().getNorm()
+                        ? latestResult.getBestTarget().getBestCameraToTarget().getTranslation().toTranslation2d().getNorm()
                         : 0.0;
             }
 
@@ -179,16 +164,21 @@ public class VisionUtil {
 
             // TODO TEST THIS AFTER MULTITAG IF MULTITAG DOESN'T WORK
             public static Pose2d getPhotonPose() {
-                return PhotonUtils.estimateFieldToRobotAprilTag(
-                        getBestTag().getBestCameraToTarget(),
-                        TagLocation.getTagLocation3d(getBestTagID()),
-                        cameraTransform
-                ).toPose2d();
+                return hasTargets()
+                        ? PhotonUtils.estimateFieldToRobotAprilTag(
+                                latestResult.getBestTarget().getBestCameraToTarget(),
+                                TagLocation.getTagLocation3d(getBestTagID()),
+                                cameraTransform
+                        ).toPose2d()
+                        : new Pose2d();
             }
 
             // TODO UPDATE ONCE EVERY TICK
             public static void updateBWResults() {
-                results = BW.getAllUnreadResults();
+                List<PhotonPipelineResult> results = BW.getAllUnreadResults();
+                if (!results.isEmpty()) {
+                    latestResult = results.get(results.size() - 1);
+                }
             }
         }
     }
