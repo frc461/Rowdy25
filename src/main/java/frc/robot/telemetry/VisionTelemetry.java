@@ -38,6 +38,8 @@ public class VisionTelemetry {
     private final StringPublisher questCorrectedPoseTopic = questNavTelemetryTable.getStringTopic("Quest Corrected Pose").publish();
     private final StringPublisher questOffsetTopic = questNavTelemetryTable.getStringTopic("Quest Offset").publish();
     private final BooleanPublisher questMode = questNavTelemetryTable.getBooleanTopic("Quest Mode").publish();
+    private final StringPublisher questOdometryTopic = questNavTelemetryTable.getStringTopic("Quest Odometry").publish();
+    private final StringPublisher questOdometryOffsetTopic = questNavTelemetryTable.getStringTopic("Quest Odometry Offset").publish();
 
     public void publishValues() {
         Pose2d estimatedPose = localizer.getEstimatedPose();
@@ -70,12 +72,17 @@ public class VisionTelemetry {
 
         questRawPose.set("X: " + VisionUtil.QuestNav.getX() + ", Y: " + VisionUtil.QuestNav.getY() + ", Yaw: " + VisionUtil.QuestNav.getYaw());
         questRotationTopic.set("Pitch: " + VisionUtil.QuestNav.getPitch() + ", Yaw: " + VisionUtil.QuestNav.getYaw() + ", Roll: " + VisionUtil.QuestNav.getRoll());
-        Pose2d questCorrectedPose = localizer.getQuestCorrectedPose();
-        questCorrectedPoseTopic.set("X: " + questCorrectedPose.getX() + ", Y: " + questCorrectedPose.getY() + ", Yaw: " + questCorrectedPose.getRotation().getDegrees());
-        Translation2d questTransOffset = localizer.getQuestTransOffset();
-        Rotation2d questRotOffset = localizer.getQuestRotOffset();
-        questOffsetTopic.set("X: " + questTransOffset.getX() + ", Y: " + questTransOffset.getY() + ", Yaw: " + questRotOffset.getDegrees());
+        // Pose2d questCorrectedPose = localizer.getQuestCorrectedPose();
+        // questCorrectedPoseTopic.set("X: " + questCorrectedPose.getX() + ", Y: " + questCorrectedPose.getY() + ", Yaw: " + questCorrectedPose.getRotation().getDegrees());
+        // Translation2d questTransOffset = localizer.getQuestTransOffset();
+        // Rotation2d questRotOffset = localizer.getQuestRotOffset();
+        // questOffsetTopic.set("X: " + questTransOffset.getX() + ", Y: " + questTransOffset.getY() + ", Yaw: " + questRotOffset.getDegrees());
         questMode.set(localizer.isQuestMode());
+
+        questOdometryTopic.set("X: " + VisionUtil.QuestNav.getQuestNavPosition().getX() + "Y: " + VisionUtil.QuestNav.getQuestNavPosition().getY() + "Rot: " + 
+                VisionUtil.QuestNav.getQuestNavYaw());
+        questOdometryOffsetTopic.set("X: " + VisionUtil.QuestNav.getQuestPoseOffset().getX() + "Y: " + VisionUtil.QuestNav.getQuestPoseOffset().getY() + "Rot: " + 
+                VisionUtil.QuestNav.getQuestYawOffset());
 
         logValues();
     }
@@ -83,6 +90,6 @@ public class VisionTelemetry {
     private void logValues() {
         Logger.recordOutput("LimelightMegaTagPose", VisionUtil.Limelight.getMegaTagOnePose());
         Logger.recordOutput("PoseEstimate", localizer.getEstimatedPose());
-        Logger.recordOutput("QuestNavPose", localizer.getQuestCorrectedPose());
+        // Logger.recordOutput("QuestNavPose", localizer.getQuestCorrectedPose());
     }
 }

@@ -30,8 +30,6 @@ public class Localizer {
     private final PhotonPoseEstimator photonPoseEstimator;
 
     // Transformation applied to QuestNav pose to adjust origin to the pose estimator's origin
-    private Translation2d questTransOffset = new Translation2d();
-    private Rotation2d questRotOffset = new Rotation2d();
 
     // The pose extrapolation method that the robot will use. It will be set to QuestNav by default.
     private Mode localizationMode = Mode.QUEST_NAV;
@@ -74,35 +72,35 @@ public class Localizer {
         return isMegaTagTwoConfigured;
     }
 
-    public Pose2d getQuestCorrectedPose() {
-        return new Pose2d(
-                getQuestCorrectedTranslation(),
-                getQuestCorrectedRotation()
-        );
-    }
+    // public Pose2d getQuestCorrectedPose() {
+    //     return new Pose2d(
+    //             getQuestCorrectedTranslation(),
+    //             getQuestCorrectedRotation()
+    //     );
+    // }
 
     public Translation2d getQuestCorrectedTranslation() {
-        Pose2d rawPose = VisionUtil.QuestNav.getRawPose();
-        return questTransOffset.plus(new Translation2d(
-                rawPose.getX() * Math.cos(questRotOffset.getRadians()) - rawPose.getY() * Math.sin(questRotOffset.getRadians()),
-                rawPose.getX() * Math.sin(questRotOffset.getRadians()) + rawPose.getY() * Math.cos(questRotOffset.getRadians())
+        Translation2d rawPose = VisionUtil.QuestNav.getQuestNavRawPosition();
+        return VisionUtil.QuestNav.getQuestPoseOffset().plus(new Translation2d(
+                rawPose.getX() * Math.cos(Math.toRadians(VisionUtil.QuestNav.getQuestYawOffset())) - rawPose.getY() * Math.sin(Math.toRadians(VisionUtil.QuestNav.getQuestYawOffset())),
+                rawPose.getX() * Math.sin(Math.toRadians(VisionUtil.QuestNav.getQuestYawOffset())) + rawPose.getY() * Math.cos(Math.toRadians(VisionUtil.QuestNav.getQuestYawOffset()))
         ));
     }
 
-    public Rotation2d getQuestCorrectedRotation() {
-        return questRotOffset.rotateBy(VisionUtil.QuestNav.getRawPose().getRotation());
-    }
+    // public Rotation2d getQuestCorrectedRotation() {
+    //     return questRotOffset.rotateBy(VisionUtil.QuestNav.getRawPose().getRotation());
+    // }
 
-    public Translation2d getQuestTransOffset() {
-        return questTransOffset;
-    }
+    // public Translation2d getQuestTransOffset() {
+    //     return questTransOffset;
+    // }
 
-    public Rotation2d getQuestRotOffset() {
-        return questRotOffset;
-    }
+    // public Rotation2d getQuestRotOffset() {
+    //     return questRotOffset;
+    // }
 
     public Pose2d getModePose() {
-        return localizationMode == Mode.QUEST_NAV ? getQuestCorrectedPose() : getEstimatedPose();
+        return localizationMode == Mode.QUEST_NAV ? VisionUtil.QuestNav.getQuestNavPose() : getEstimatedPose();
     }
 
     public boolean isQuestMode() {
@@ -126,24 +124,26 @@ public class Localizer {
     public void recalibrate() {
         isMegaTagTwoConfigured = false;
         poseEstimator.resetPose(new Pose2d());
+        VisionUtil.QuestNav.resetQuestPose(new Translation2d());
+        VisionUtil.QuestNav.resetHeading(0);
     }
 
     public void configureQuestOffset() {
-        if (highConfidenceEstimate()) {
-            questRotOffset = getEstimatedPose().getRotation().minus(VisionUtil.QuestNav.getRawPose().getRotation());
-            questTransOffset = getEstimatedPose().getTranslation();
-        }
+        // TODO: tried setting to fused pose but for some reason kept going to 0
+        VisionUtil.QuestNav.resetQuestPose(VisionUtil.Limelight.getMegaTagOnePose().getTranslation());
+        VisionUtil.QuestNav.resetHeading(VisionUtil.Limelight.getMegaTagOnePose().getRotation().getDegrees());
     }
 
-    public void setQuestNavPose(Pose2d pose) {
-        questRotOffset = pose.getRotation().minus(VisionUtil.QuestNav.getRawPose().getRotation());
-        questTransOffset = pose.getTranslation();
-    }
+    // public void setQuestNavPose(Pose2d pose) {
+    //     VisionUtil.QuestNav.resetHeading(pose.getRotation().getDegrees());
+    //     VisionUtil.QuestNav.resetQuestPose(pose.getTranslation());
+    // }
 
     public void setPoses(Pose2d pose) {
         this.swerve.resetPose(pose);
         poseEstimator.resetPose(pose);
-        setQuestNavPose(pose);
+        VisionUtil.QuestNav.resetHeading(pose.getRotation().getDegrees());
+        VisionUtil.QuestNav.resetQuestPose(pose.getTranslation());
     }
 
     public void updateLimelightPoseEstimation() {
@@ -158,7 +158,7 @@ public class Localizer {
             );
             if (megaTagTwoOffset.getTranslation().getNorm() < Constants.VisionConstants.CONFIGURED_TRANSLATION_THRESHOLD) {
                 poseEstimator.setVisionMeasurementStdDevs(Constants.VisionConstants.VISION_STD_DEV_CONFIGURED);
-                isMegaTagTwoConfigured = true;
+                // TODO: mega tag 2 doesn't work still
             }
             return;
         }
@@ -195,26 +195,26 @@ public class Localizer {
     }
 
     // changes offset based on error between pose estimate and corrected QuestNav pose
-    public void updateQuestNavPose() {
-        if (highConfidenceEstimate()) {
-            // Accumulated error between pose estimator and corrected QuestNav pose
-            Transform2d correctionError = getEstimatedPose().minus(getQuestCorrectedPose());
-            double transDiff = correctionError.getTranslation().getNorm();
-            double rotDiff = correctionError.getRotation().getDegrees();
-            if (transDiff > Constants.VisionConstants.QuestNavConstants.TRANSLATION_ERROR_TOLERANCE
-                    || rotDiff > Constants.VisionConstants.QuestNavConstants.ROTATION_ERROR_TOLERANCE) {
-                configureQuestOffset();
-            }
-        }
-    }
+    // public void updateQuestNavPose() {
+    //     if (highConfidenceEstimate()) {
+    //         // Accumulated error between pose estimator and corrected QuestNav pose
+    //         Transform2d correctionError = getEstimatedPose().minus(getQuestCorrectedPose());
+    //         double transDiff = correctionError.getTranslation().getNorm();
+    //         double rotDiff = correctionError.getRotation().getDegrees();
+    //         if (transDiff > Constants.VisionConstants.QuestNavConstants.TRANSLATION_ERROR_TOLERANCE
+    //                 || rotDiff > Constants.VisionConstants.QuestNavConstants.ROTATION_ERROR_TOLERANCE) {
+    //             configureQuestOffset();
+    //         }
+    //     }
+    // }
 
-    public void updatePoses() {
-        updatePoseEstimation();
-        updateQuestNavPose();
-    }
+    // public void updatePoses() {
+    //     updatePoseEstimation();
+    //     updateQuestNavPose();
+    // }
 
     public void periodic() {
-        updatePoses();
+        //updatePoses();
         visionTelemetry.publishValues();
     }
 }

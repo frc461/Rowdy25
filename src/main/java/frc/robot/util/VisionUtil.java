@@ -207,6 +207,8 @@ public class VisionUtil {
         private static final DoubleSubscriber questTimestampTopic = QUESTNAV_NT.getDoubleTopic("timestamp").subscribe(0.0f);
         private static final FloatArraySubscriber questPositionTopic = QUESTNAV_NT.getFloatArrayTopic("position").subscribe(new float[] {0.0f, 0.0f, 0.0f});
         private static final FloatArraySubscriber questEulerAnglesTopic = QUESTNAV_NT.getFloatArrayTopic("eulerAngles").subscribe(new float[] {0.0f, 0.0f, 0.0f});
+        public static Translation2d poseEstimateOffset = new Translation2d();
+        public static double yawOffset = 0.0f;
 
         public static double getX() {
             return questPositionTopic.get()[2];
@@ -217,7 +219,7 @@ public class VisionUtil {
         }
 
         public static double getZ() {
-            return questPositionTopic.get()[1];
+            return questPositionTopic.get()[2];
         }
 
         public static double getPitch() {
@@ -225,29 +227,51 @@ public class VisionUtil {
         }
 
         public static double getYaw() {
-            return stabilize(-questEulerAnglesTopic.get()[1]);
+            return questEulerAnglesTopic.get()[1];
         }
 
         public static double getRoll() {
             return questEulerAnglesTopic.get()[2];
         }
 
-        public static double stabilize(double angle) {
-            return angle >= 180 ? angle - 180 : angle;
+        public static double getQuestNavHeading() {
+            return Rotation2d.fromDegrees(getQuestNavYaw()).getDegrees();
         }
 
-        public static double getTimestamp() {
-            return questTimestampTopic.get();
+        public static void resetQuestPose(Translation2d pose) {
+            poseEstimateOffset = getQuestNavRawPosition().minus(pose);
         }
 
-        public static Pose2d getRawPose() {
-            return new Pose2d(
-                    new Translation2d(
-                            getX(),
-                            getY()
-                    ),
-                    Rotation2d.fromDegrees(getYaw())
-            );
+        public static void resetHeading(double angleDegrees) {
+            yawOffset = getYaw() + angleDegrees;
         }
+
+        public static double getQuestNavYaw() {
+            double ret = getYaw() - yawOffset;
+            ret %= 360;
+            if (ret < 0) {
+                ret += 360;
+            }
+            return ret;
+        }
+        
+        public static Translation2d getQuestNavRawPosition() {
+            return new Translation2d(getX(), getY());
+        }
+
+        public static Translation2d getQuestNavPosition() {
+            return getQuestNavRawPosition().minus(poseEstimateOffset);
+        }
+        public static Translation2d getQuestPoseOffset() {
+            return poseEstimateOffset;
+        }
+        public static double getQuestYawOffset() {
+            return yawOffset;
+        }            
+        public static Pose2d getQuestNavPose() {
+            Translation2d questPositionCompensated = getQuestNavRawPosition().minus(poseEstimateOffset);
+            return new Pose2d(questPositionCompensated, Rotation2d.fromDegrees(getQuestNavYaw()));
+        }
+        
     }
 }
