@@ -50,6 +50,13 @@ public final class Constants {
     public static final NetworkTableInstance NT_INSTANCE = NetworkTableInstance.getDefault();
 
     public static final class VisionConstants {
+        public static final Matrix<N3, N1> ODOM_STD_DEV = VecBuilder.fill(0.2, 0.2, Units.degreesToRadians(2.0));
+        public static final Matrix<N3, N1> VISION_STD_DEV_UNCONFIGURED = VecBuilder.fill(0.0001, 0.0001, Units.degreesToRadians(0.1));
+        public static final Matrix<N3, N1> VISION_STD_DEV_CONFIGURED = VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(180.0));
+        public static final double CONFIGURED_TRANSLATION_THRESHOLD = 0.02;
+        public static final double CONFIGURED_ROTATION_THRESHOLD = 2.0;
+        public static final double CONFIGURED_MAX_ANG_VEL = 720.0;
+
         public static final class LimelightConstants {
             public static final String LIMELIGHT_NT_NAME = "limelight";
 
@@ -78,14 +85,11 @@ public final class Constants {
 
         public static final class QuestNavConstants {
             public static final String QUESTNAV_NT_NAME = "oculus";
+
+            // The thresholds through which the QuestNav's correctional offset will be recorrected by the error amount.
+            public static final double TRANSLATION_ERROR_TOLERANCE = 0.5;
+            public static final double ROTATION_ERROR_TOLERANCE = 10.0;
         }
-
-        public static final Matrix<N3, N1> ODOM_STD_DEV = VecBuilder.fill(0.2, 0.2, Units.degreesToRadians(2.0));
-        public static final Matrix<N3, N1> VISION_STD_DEV = VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(180.0));
-
-        // The thresholds through which the QuestNav's correctional offset will be recorrected by the error amount.
-        public static final double TRANSLATION_ERROR_TOLERANCE = 0.5;
-        public static final double ROTATION_ERROR_TOLERANCE = 10.0;
     }
 
     public static final class SwerveConstants {

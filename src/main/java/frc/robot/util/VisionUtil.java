@@ -27,6 +27,10 @@ public class VisionUtil {
             return LIMELIGHT_NT.getEntry("botpose_wpiblue").getDoubleArray(new double[0]);
         }
 
+        private static double[] getMegaTagTwoValues() {
+            return LIMELIGHT_NT.getEntry("botpose_orb_wpiblue").getDoubleArray(new double[0]);
+        }
+
         // Get pipeline latency + capture latency
         public static double getLatency() {
             return (LIMELIGHT_NT.getEntry("tl").getDouble(0.0) + LIMELIGHT_NT.getEntry("cl").getDouble(0.0)) / 1000.0;
@@ -64,6 +68,18 @@ public class VisionUtil {
 
         public static Pose2d getMegaTagOnePose() {
             double[] values = getMegaTagOneValues();
+
+            if (values.length < 6) {
+                return new Pose2d();
+            }
+            return new Pose2d(
+                    new Translation2d(values[0], values[1]),
+                    new Rotation2d(Units.degreesToRadians(values[5]))
+            );
+        }
+
+        public static Pose2d getMegaTagTwoPose() {
+            double[] values = getMegaTagTwoValues();
 
             if (values.length < 6) {
                 return new Pose2d();
