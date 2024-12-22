@@ -217,7 +217,7 @@ public class VisionUtil {
         }
 
         public static double getZ() {
-            return questPositionTopic.get()[2];
+            return questPositionTopic.get()[1];
         }
 
         public static double getPitch() {
