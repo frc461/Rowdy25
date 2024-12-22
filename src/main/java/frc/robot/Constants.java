@@ -83,8 +83,9 @@ public final class Constants {
         public static final Matrix<N3, N1> ODOM_STD_DEV = VecBuilder.fill(0.2, 0.2, Units.degreesToRadians(2.0));
         public static final Matrix<N3, N1> VISION_STD_DEV = VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(180.0));
 
-        public static final double UPDATE_QUEST_OFFSET_TRANSLATION_ERROR_THRESHOLD = 0.5;
-        public static final double UPDATE_QUEST_OFFSET_ROTATION_ERROR_THRESHOLD = 10.0;
+        // The thresholds through which the QuestNav's correctional offset will be recorrected by the error amount.
+        public static final double TRANSLATION_ERROR_TOLERANCE = 0.5;
+        public static final double ROTATION_ERROR_TOLERANCE = 10.0;
     }
 
     public static final class SwerveConstants {

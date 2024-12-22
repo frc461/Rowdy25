@@ -115,11 +115,16 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
         );
     }
 
-    public void moveToNote() { // TODO IMPLEMENT THIS AFTER CALIBRATING AUTO
+    public Command moveToNote() { // TODO IMPLEMENT THIS AFTER CALIBRATING AUTO
+        return applyRequest(SwerveRequest.SwerveDriveBrake::new);
     }
 
     public Command xMode() {
         return applyRequest(SwerveRequest.SwerveDriveBrake::new);
+    }
+
+    public void switchLocalizationMode() {
+        localizer.switchMode();
     }
 
     @Override

@@ -15,6 +15,11 @@ import org.photonvision.PhotonPoseEstimator;
 import java.util.Optional;
 
 public class Localizer {
+    private enum Mode {
+        POSE_ESTIMATOR,
+        QUEST_NAV
+    }
+
     private final Swerve swerve; // localizer is a dependent of swerve
     private final VisionTelemetry visionTelemetry;
 
@@ -24,6 +29,9 @@ public class Localizer {
 
     // Transformation applied to QuestNav pose to adjust origin to the pose estimator's origin
     private Transform2d questNavToPoseEstimateOffset = new Transform2d();
+
+    // The pose extrapolation method that the robot will use. It will be set to QuestNav by default.
+    private Mode localizationMode = Mode.QUEST_NAV;
 
     public Localizer(Swerve swerve) {
         this.swerve = swerve;
@@ -57,15 +65,26 @@ public class Localizer {
         return poseEstimator.getEstimatedPosition();
     }
 
+    public Pose2d getModePose() {
+        return localizationMode == Mode.QUEST_NAV ? getQuestNavCorrectedPose() : getEstimatedPose();
+    }
+
+    public boolean highConfidenceEstimate() {
+        return VisionUtil.Limelight.isTagClear(); // TODO TEST && VisionUtil.Photon.BW.isTagClear();
+    }
+
     public Translation2d getTranslationToSpeaker() {
-        Translation2d robotTranslation = getEstimatedPose().getTranslation();
+        Translation2d robotTranslation = getModePose().getTranslation();
         Translation2d tagTranslation = TagLocation.getSpeakerTagPose().getTranslation();
-        if (tagTranslation.getNorm() == 0) { return new Translation2d(); }
         return tagTranslation.minus(robotTranslation);
     }
 
     public double getAngleToSpeaker() {
         return getTranslationToSpeaker().getAngle().getDegrees();
+    }
+
+    public void switchMode() {
+        localizationMode = localizationMode == Mode.QUEST_NAV ? Mode.POSE_ESTIMATOR : Mode.QUEST_NAV;
     }
 
     public void setPoses(Pose2d pose) {
@@ -76,24 +95,24 @@ public class Localizer {
 
     // TODO SET OFFSET WITH POSE ESTIMATE AS REFERENCE INSTEAD OF LIMELIGHT MEGATAG
     public void setQuestNavOffset() {
-        if (VisionUtil.Limelight.isTagClear()) {
+        if (highConfidenceEstimate()) {
             questNavToPoseEstimateOffset = new Transform2d(
-                    VisionUtil.Limelight.getMegaTagOnePose().getX(),
-                    VisionUtil.Limelight.getMegaTagOnePose().getY(),
-                    VisionUtil.Limelight.getMegaTagOnePose().getRotation()
+                    getEstimatedPose().getX(),
+                    getEstimatedPose().getY(),
+                    getEstimatedPose().getRotation()
             );
         }
     }
 
     public void updateQuestNavOffset() {
-        if (VisionUtil.Limelight.isTagClear()) {
+        if (highConfidenceEstimate()) {
             // Accumulated error between pose estimator and corrected QuestNav pose
-            Transform2d diffMegaTagOneQuest = VisionUtil.Limelight.getMegaTagOnePose().minus(getQuestNavCorrectedPose());
-            double dist = diffMegaTagOneQuest.getTranslation().getNorm();
-            double rot = diffMegaTagOneQuest.getRotation().getDegrees();
-            if (dist > Constants.VisionConstants.UPDATE_QUEST_OFFSET_TRANSLATION_ERROR_THRESHOLD
-                    || rot > Constants.VisionConstants.UPDATE_QUEST_OFFSET_ROTATION_ERROR_THRESHOLD) {
-                questNavToPoseEstimateOffset = questNavToPoseEstimateOffset.plus(diffMegaTagOneQuest);
+            Transform2d correctionError = getEstimatedPose().minus(getQuestNavCorrectedPose());
+            double transDiff = correctionError.getTranslation().getNorm();
+            double rotDiff = correctionError.getRotation().getDegrees();
+            if (transDiff > Constants.VisionConstants.TRANSLATION_ERROR_TOLERANCE
+                    || rotDiff > Constants.VisionConstants.ROTATION_ERROR_TOLERANCE) {
+                questNavToPoseEstimateOffset = questNavToPoseEstimateOffset.plus(correctionError);
             }
         }
     }
@@ -104,6 +123,7 @@ public class Localizer {
 
     public void updatePoses() {
         poseEstimator.update(this.swerve.getState().RawHeading, this.swerve.getState().ModulePositions);
+        VisionUtil.Photon.updateResults();
         Optional<EstimatedRobotPose> photonPose = photonPoseEstimator.update(VisionUtil.Photon.BW.latestResult);
         // TODO TEST IF OTHER DOESN'T WORK Pose2d photonPose = VisionUtil.Photon.BW.getPhotonPose();
         Pose2d limelightPose = VisionUtil.Limelight.getMegaTagOnePose();
@@ -120,12 +140,12 @@ public class Localizer {
                     // TODO TEST IF OTHER DOESN'T WORK VisionUtil.Photon.BW.getTimestamp()
             );
         }
+
+        updateQuestNavOffset();
     }
 
     public void periodic() {
         updatePoses();
-        updateQuestNavOffset();
-        VisionUtil.Photon.updateResults();
         visionTelemetry.publishValues();
     }
 }
