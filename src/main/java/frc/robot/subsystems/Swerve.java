@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import java.util.Optional;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
@@ -22,6 +23,7 @@ import frc.robot.telemetry.VisionTelemetry;
 import frc.robot.util.VisionUtil;
 import frc.robot.util.Simulator;
 import frc.robot.util.TagLocation;
+import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonPoseEstimator;
 
 /**
@@ -177,18 +179,20 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
 
     public void updatePoses() {
         poseEstimator.update(this.getState().RawHeading, this.getState().ModulePositions);
+        Optional<EstimatedRobotPose> photonPose = photonPoseEstimator.update(VisionUtil.Photon.BW.latestResult);
+        // TODO TEST IF OTHER DOESN'T WORK Pose2d photonPose = VisionUtil.Photon.BW.getPhotonPose();
         Pose2d limelightPose = VisionUtil.Limelight.getMegaTagOnePose();
-        Pose2d photonPose = VisionUtil.Photon.BW.getPhotonPose();
         if (VisionUtil.Limelight.isTagClear()) {
             poseEstimator.addVisionMeasurement(
                     limelightPose,
                     Timer.getFPGATimestamp() - VisionUtil.Limelight.getLatency()
             );
         }
-        if (VisionUtil.Photon.BW.isTagClear()) {
+        if (VisionUtil.Photon.BW.isTagClear() && photonPose.isPresent()) {
             poseEstimator.addVisionMeasurement(
-                    photonPose,
-                    VisionUtil.Photon.BW.getTimestamp()
+                    photonPose.get().estimatedPose.toPose2d(),
+                    photonPose.get().timestampSeconds
+                    // TODO TEST IF OTHER DOESN'T WORK VisionUtil.Photon.BW.getTimestamp()
             );
         }
 
