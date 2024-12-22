@@ -70,13 +70,6 @@ public final class Constants {
         public static final double BW_PITCH = 0.0;
         public static final double BW_YAW = 0.0;
 
-        public static final double QUEST_FORWARD = 0.0;
-        public static final double QUEST_RIGHT = 0.0;
-        public static final double QUEST_UP = 0.0;
-        public static final double QUEST_ROLL = 0.0;
-        public static final double QUEST_PITCH = 0.0;
-        public static final double QUEST_YAW = 0.0;
-
         public static final Matrix<N3, N1> ODOM_STD_DEV = VecBuilder.fill(0.2, 0.2, Units.degreesToRadians(2.0));
         public static final Matrix<N3, N1> VISION_STD_DEV = VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(180.0));
 
