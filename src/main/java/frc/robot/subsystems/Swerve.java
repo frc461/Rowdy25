@@ -123,7 +123,7 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
                             yawController.calculate(
                                     getEstimatedPose().getRotation().getDegrees(),
                                     getAngleToSpeaker(),
-                                    Timer.getFPGATimestamp() // TODO TEST this.getPigeon2().getYaw().getTimestamp().getTime()
+                                    Timer.getFPGATimestamp() // TODO TEST this.getPigeon2().getYaw().getTimestamp().getTime() (TEST FOR CENTER ON NOTE TOO)
                             ) * Constants.MAX_ANGULAR_VEL
                         )
         );
@@ -137,10 +137,10 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
                         .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
                         .withVelocityX(-straight.getAsDouble() * Constants.MAX_VEL)
                         .withVelocityY(-strafe.getAsDouble() * Constants.MAX_VEL)
-                        .withRotationalRate(VisionUtil.Photon.hasColorResults()
+                        .withRotationalRate(VisionUtil.Photon.Color.hasColorResults()
                                 ? yawController.calculate(
                                         currentAngle,
-                                        currentAngle - VisionUtil.Photon.getObjectYaw(),
+                                        currentAngle - VisionUtil.Photon.Color.getBestObjectYaw(),
                                         Timer.getFPGATimestamp()
                                 ) * Constants.MAX_ANGULAR_VEL
                                 : 0
@@ -158,11 +158,11 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
     public void setPoses(Pose2d pose) {
         this.resetPose(pose);
         poseEstimator.resetPose(pose);
-        VisionUtil.Oculus.setPose(pose);
+        VisionUtil.QuestNav.setPose(pose);
     }
 
     public void configureSwerveUtils() {
-        VisionUtil.Oculus.setOffset();
+        VisionUtil.QuestNav.setOffset();
         registerTelemetry(swerveTelemetry::telemeterize);
         if (Utils.isSimulation()) {
             sim.startSimThread();
@@ -183,7 +183,7 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
             );
         }
 
-        VisionUtil.Oculus.updateOffset();
+        VisionUtil.QuestNav.updateOffset();
     }
 
     @Override

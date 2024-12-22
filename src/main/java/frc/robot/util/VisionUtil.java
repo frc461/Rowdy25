@@ -1,9 +1,6 @@
 package frc.robot.util;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.networktables.FloatArraySubscriber;
@@ -11,26 +8,16 @@ import edu.wpi.first.networktables.IntegerSubscriber;
 import edu.wpi.first.networktables.NetworkTable;
 import frc.robot.Constants;
 import org.photonvision.PhotonCamera;
+import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonPipelineResult;
 
 import java.util.List;
 
 public class VisionUtil {
-    private static final PhotonCamera CAMERA_BW = new PhotonCamera(Constants.NT_INSTANCE, "ArducamBW");
-    private static final PhotonCamera CAMERA_COLOR = new PhotonCamera(Constants.NT_INSTANCE, "ArducamColor");
-
-    private static final NetworkTable LIMELIGHT_NT = Constants.NT_INSTANCE.getTable(Constants.VisionConstants.LIMELIGHT_NT_NAME);
-    private static final NetworkTable OCULUS_NT = Constants.NT_INSTANCE.getTable(Constants.VisionConstants.OCULUS_NT_NAME);
-
-    // TODO USE FOR ADSCOPE
-    private static final IntegerSubscriber questFrameCountTopic = OCULUS_NT.getIntegerTopic("frameCount").subscribe(0);
-    private static final DoubleSubscriber questTimestampTopic = OCULUS_NT.getDoubleTopic("timestamp").subscribe(0.0f);
-    private static final DoubleSubscriber questBatteryTopic = OCULUS_NT.getDoubleTopic("batteryLevel").subscribe(0.0f);
-    private static final FloatArraySubscriber questPositionTopic = OCULUS_NT.getFloatArrayTopic("position").subscribe(new float[] {0.0f, 0.0f, 0.0f});
-    private static final FloatArraySubscriber questQuaternionTopic = OCULUS_NT.getFloatArrayTopic("quaternion").subscribe(new float[] {0.0f, 0.0f, 0.0f, 0.0f});
-    private static final FloatArraySubscriber questEulerAnglesTopic = OCULUS_NT.getFloatArrayTopic("eulerAngles").subscribe(new float[] {0.0f, 0.0f, 0.0f});
 
     public static final class Limelight {
+        private static final NetworkTable LIMELIGHT_NT = Constants.NT_INSTANCE.getTable(Constants.VisionConstants.LIMELIGHT_NT_NAME);
+
         private static double[] getTargetPoseRobotSpaceValues() {
             return LIMELIGHT_NT.getEntry("targetpose_robotspace").getDoubleArray(new double[0]);
         }
@@ -97,12 +84,12 @@ public class VisionUtil {
         public static void configureCameraPose() {
             LIMELIGHT_NT.getEntry("camerapose_robotspace_set").setDoubleArray(
                     new double[] {
-                            Constants.VisionConstants.CAMERA_FORWARD,
-                            0,
-                            Constants.VisionConstants.CAMERA_UP,
-                            0,
-                            Constants.VisionConstants.CAMERA_PITCH,
-                            0
+                            Constants.VisionConstants.LL_FORWARD,
+                            Constants.VisionConstants.LL_RIGHT,
+                            Constants.VisionConstants.LL_UP,
+                            Constants.VisionConstants.LL_ROLL,
+                            Constants.VisionConstants.LL_PITCH,
+                            Constants.VisionConstants.LL_YAW
                     }
             );
         }
@@ -114,7 +101,84 @@ public class VisionUtil {
         }
     }
 
-    public static final class Oculus {
+    public static final class Photon {
+        private static final PhotonCamera CAMERA_BW = new PhotonCamera(Constants.NT_INSTANCE, "ArducamBW");
+        private static final PhotonCamera CAMERA_COLOR = new PhotonCamera(Constants.NT_INSTANCE, "ArducamColor");
+
+        public static final class Color {
+            public static List<PhotonPipelineResult> getColorResults() {
+                return CAMERA_COLOR.getAllUnreadResults();
+            }
+
+            public static boolean hasColorResults() {
+                return getColorResults().isEmpty();
+            }
+
+            public static PhotonPipelineResult getLatestColorResult() {
+                List<PhotonPipelineResult> results = getColorResults();
+                return results.get(results.size() - 1);
+            }
+
+            public static double getBestObjectYaw() {
+                return getLatestColorResult().getBestTarget().getYaw();
+            }
+        }
+
+        public static final class BW {
+            public static List<PhotonPipelineResult> getBWResults() {
+                return CAMERA_BW.getAllUnreadResults();
+            }
+
+            public static boolean hasBWResults() {
+                return getBWResults().isEmpty();
+            }
+
+            public static PhotonPipelineResult getLatestBWResult() {
+                List<PhotonPipelineResult> results = getBWResults();
+                return results.get(results.size() - 1);
+            }
+
+            public static double getBestTagID() {
+                return getLatestBWResult().getBestTarget().fiducialId;
+            }
+
+            // TODO TEST THIS FUNCTION WTIH PHOTON POSE IF METHOD BELOW DOESN'T WORK
+            public static Transform2d getCameraToTag(Rotation2d robotYaw) {
+                Translation2d cameraToTagTranslation = getLatestBWResult().getBestTarget().getBestCameraToTarget().getTranslation().toTranslation2d();
+                Pose2d tagPose = TagLocation.getTagLocation(getBestTagID());
+                return PhotonUtils.estimateCameraToTarget(cameraToTagTranslation, tagPose, robotYaw);
+            }
+
+            public static Pose2d getPhotonPose() {
+                return PhotonUtils.estimateFieldToRobotAprilTag(
+                        getLatestBWResult().getBestTarget().getBestCameraToTarget(),
+                        TagLocation.getTagLocation3d(getBestTagID()),
+                        new Transform3d(
+                                Constants.VisionConstants.BW_FORWARD,
+                                Constants.VisionConstants.BW_LEFT,
+                                Constants.VisionConstants.BW_UP,
+                                new Rotation3d(
+                                        Units.degreesToRadians(Constants.VisionConstants.BW_ROLL),
+                                        Units.degreesToRadians(Constants.VisionConstants.BW_PITCH),
+                                        Units.degreesToRadians(Constants.VisionConstants.BW_YAW)
+                                )
+                        )
+                ).toPose2d();
+            }
+        }
+    }
+
+    public static final class QuestNav {
+        private static final NetworkTable QUESTNAV_NT = Constants.NT_INSTANCE.getTable(Constants.VisionConstants.QUESTNAV_NT_NAME);
+
+        // TODO USE FOR ADSCOPE
+        private static final IntegerSubscriber questFrameCountTopic = QUESTNAV_NT.getIntegerTopic("frameCount").subscribe(0);
+        private static final DoubleSubscriber questTimestampTopic = QUESTNAV_NT.getDoubleTopic("timestamp").subscribe(0.0f);
+        private static final DoubleSubscriber questBatteryTopic = QUESTNAV_NT.getDoubleTopic("batteryLevel").subscribe(0.0f);
+        private static final FloatArraySubscriber questPositionTopic = QUESTNAV_NT.getFloatArrayTopic("position").subscribe(new float[] {0.0f, 0.0f, 0.0f});
+        private static final FloatArraySubscriber questQuaternionTopic = QUESTNAV_NT.getFloatArrayTopic("quaternion").subscribe(new float[] {0.0f, 0.0f, 0.0f, 0.0f});
+        private static final FloatArraySubscriber questEulerAnglesTopic = QUESTNAV_NT.getFloatArrayTopic("eulerAngles").subscribe(new float[] {0.0f, 0.0f, 0.0f});
+
         public static Transform2d poseEstimateOffset = new Transform2d();
         public static Transform2d diffMegaTagOneQuest = new Transform2d();
 
@@ -170,7 +234,10 @@ public class VisionUtil {
         public static void updateOffset() {
             if (Limelight.isTagClear()) {
                 diffMegaTagOneQuest = Limelight.getMegaTagOnePose().minus(getPose());
-                if (diffMegaTagOneQuest.getTranslation().getNorm() > Constants.VisionConstants.UPDATE_QUEST_OFFSET_THRESHOLD) {
+                double dist = diffMegaTagOneQuest.getTranslation().getNorm();
+                double rot = diffMegaTagOneQuest.getRotation().getDegrees();
+                if (dist > Constants.VisionConstants.UPDATE_QUEST_OFFSET_TRANSLATION_ERROR_THRESHOLD
+                        || rot > Constants.VisionConstants.UPDATE_QUEST_OFFSET_ROTATION_ERROR_THRESHOLD) {
                     poseEstimateOffset = poseEstimateOffset.plus(diffMegaTagOneQuest);
                 }
             }
@@ -178,26 +245,6 @@ public class VisionUtil {
 
         public static void setPose(Pose2d pose) {
             poseEstimateOffset = poseEstimateOffset.plus(pose.minus(getPose()));
-        }
-    }
-
-    public static final class Photon {
-        public static List<PhotonPipelineResult> getColorResults() {
-            return CAMERA_COLOR.getAllUnreadResults();
-        }
-
-        public static List<PhotonPipelineResult> getBWResults() {
-            return CAMERA_BW.getAllUnreadResults();
-        }
-
-        public static boolean hasColorResults() {
-            return getColorResults().isEmpty();
-        }
-
-        public static double getObjectYaw() {
-            List<PhotonPipelineResult> results = getColorResults();
-            PhotonPipelineResult result = results.get(results.size() - 1);
-            return result.getBestTarget().getYaw();
         }
     }
 }
