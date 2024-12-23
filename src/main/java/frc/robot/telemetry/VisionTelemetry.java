@@ -36,8 +36,6 @@ public class VisionTelemetry {
     private final StringPublisher questCorrectedPoseTopic = questNavTelemetryTable.getStringTopic("Quest Corrected Pose").publish();
     private final StringPublisher questOffsetTopic = questNavTelemetryTable.getStringTopic("Quest Offset").publish();
     private final BooleanPublisher questMode = questNavTelemetryTable.getBooleanTopic("Quest Mode").publish();
-    private final StringPublisher questOdometryTopic = questNavTelemetryTable.getStringTopic("Quest Odometry").publish();
-    private final StringPublisher questOdometryOffsetTopic = questNavTelemetryTable.getStringTopic("Quest Odometry Offset").publish();
 
     public void publishValues() {
         Pose2d estimatedPose = localizer.getEstimatedPose();
@@ -70,17 +68,9 @@ public class VisionTelemetry {
 
         questRawPose.set("X: " + VisionUtil.QuestNav.getRawX() + ", Y: " + VisionUtil.QuestNav.getRawY() + ", Yaw: " + VisionUtil.QuestNav.getRawYaw());
         questRotationTopic.set("Pitch: " + VisionUtil.QuestNav.getRawPitch() + ", Yaw: " + VisionUtil.QuestNav.getRawYaw() + ", Roll: " + VisionUtil.QuestNav.getRawRoll());
-        // Pose2d questCorrectedPose = localizer.getQuestCorrectedPose();
-        // questCorrectedPoseTopic.set("X: " + questCorrectedPose.getX() + ", Y: " + questCorrectedPose.getY() + ", Yaw: " + questCorrectedPose.getRotation().getDegrees());
-        // Translation2d questTransOffset = localizer.getQuestTransOffset();
-        // Rotation2d questRotOffset = localizer.getQuestRotOffset();
-        // questOffsetTopic.set("X: " + questTransOffset.getX() + ", Y: " + questTransOffset.getY() + ", Yaw: " + questRotOffset.getDegrees());
+        Pose2d questCorrectedPose = localizer.getQuestPose();
+        questCorrectedPoseTopic.set("X: " + questCorrectedPose.getX() + ", Y: " + questCorrectedPose.getY() + ", Yaw: " + questCorrectedPose.getRotation().getDegrees());
         questMode.set(localizer.isQuestMode());
-
-        questOdometryTopic.set("X: " + VisionUtil.QuestNav.getQuestCorrectedPosition().getX() + "Y: " + VisionUtil.QuestNav.getQuestCorrectedPosition().getY() + "Rot: " +
-                VisionUtil.QuestNav.getQuestCorrectedRotation());
-        questOdometryOffsetTopic.set("X: " + VisionUtil.QuestNav.getQuestPoseOffset().getX() + "Y: " + VisionUtil.QuestNav.getQuestPoseOffset().getY() + "Rot: " + 
-                VisionUtil.QuestNav.getQuestRotationOffset());
 
         logValues();
     }

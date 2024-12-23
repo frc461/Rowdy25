@@ -102,6 +102,14 @@ public final class Constants {
         public static final class QuestNavConstants {
             public static final String QUESTNAV_NT_NAME = "oculus";
 
+            // TODO SET QUEST TO CENTER OF ROBOT OFFSETS
+            public static final double QUEST_FORWARD = Units.inchesToMeters(2.5);
+            public static final double QUEST_LEFT = Units.inchesToMeters(5.25);
+            public static final double QUEST_UP = 0.0;
+            public static final double QUEST_ROLL = 0.0;
+            public static final double QUEST_PITCH = 0.0;
+            public static final double QUEST_YAW = 0.0;
+
             // The thresholds through which the QuestNav's correctional offset will be recorrected by the error amount.
             public static final double TRANSLATION_ERROR_TOLERANCE = 0.5;
             public static final double ROTATION_ERROR_TOLERANCE = 10.0;

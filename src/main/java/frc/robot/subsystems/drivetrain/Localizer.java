@@ -72,32 +72,12 @@ public class Localizer {
         return isMegaTagTwoConfigured;
     }
 
-    // public Pose2d getQuestCorrectedPose() {
-    //     return new Pose2d(
-    //             getQuestCorrectedTranslation(),
-    //             getQuestCorrectedRotation()
-    //     );
-    // }
-
-    public Translation2d getQuestCorrectedTranslation() {
-        Translation2d rawPose = VisionUtil.QuestNav.getQuestRawPosition();
-        return VisionUtil.QuestNav.getQuestPoseOffset();
+    public Pose2d getQuestPose() {
+        return VisionUtil.QuestNav.getFinalRobotPose();
     }
 
-    // public Rotation2d getQuestCorrectedRotation() {
-    //     return questRotOffset.rotateBy(VisionUtil.QuestNav.getRawPose().getRotation());
-    // }
-
-    // public Translation2d getQuestTransOffset() {
-    //     return questTransOffset;
-    // }
-
-    // public Rotation2d getQuestRotOffset() {
-    //     return questRotOffset;
-    // }
-
     public Pose2d getModePose() {
-        return localizationMode == PoseMode.QUEST_NAV ? VisionUtil.QuestNav.getQuestCorrectedPose() : getEstimatedPose();
+        return localizationMode == PoseMode.QUEST_NAV ? getQuestPose() : getEstimatedPose();
     }
 
     public boolean isQuestMode() {
@@ -124,17 +104,13 @@ public class Localizer {
     }
 
     public void configureQuestOffset() {
-        // TODO: tried setting to fused pose but for some reason kept going to 0
-        VisionUtil.QuestNav.resetQuestTranslation(VisionUtil.Limelight.getMegaTagOnePose().getTranslation());
-        VisionUtil.QuestNav.resetQuestRotation(VisionUtil.Limelight.getMegaTagOnePose().getRotation().getDegrees());
+        VisionUtil.QuestNav.setQuestPose(poseEstimator.getEstimatedPosition());
     }
-
-     public void setQuestNavPose(Pose2d pose) {
-     }
 
     public void setPoses(Pose2d pose) {
         this.swerve.resetPose(pose);
         poseEstimator.resetPose(pose);
+        VisionUtil.QuestNav.setQuestPose(pose);
     }
 
     public void updateLimelightPoseEstimation() {
@@ -186,22 +162,23 @@ public class Localizer {
     }
 
     // changes offset based on error between pose estimate and corrected QuestNav pose
-    // public void updateQuestNavPose() {
-    //     if (highConfidenceEstimate()) {
-    //         // Accumulated error between pose estimator and corrected QuestNav pose
-    //         Transform2d correctionError = getEstimatedPose().minus(getQuestCorrectedPose());
-    //         double transDiff = correctionError.getTranslation().getNorm();
-    //         double rotDiff = correctionError.getRotation().getDegrees();
-    //         if (transDiff > Constants.VisionConstants.QuestNavConstants.TRANSLATION_ERROR_TOLERANCE
-    //                 || rotDiff > Constants.VisionConstants.QuestNavConstants.ROTATION_ERROR_TOLERANCE) {
-    //             configureQuestOffset();
-    //         }
-    //     }
-    // }
+    public void updateQuestNavPose() {
+        VisionUtil.QuestNav.completeQuestPose();
+//        if (highConfidenceEstimate()) {
+//            // Accumulated error between pose estimator and corrected QuestNav pose
+//            Transform2d correctionError = getEstimatedPose().minus(getQuestCorrectedPose());
+//            double transDiff = correctionError.getTranslation().getNorm();
+//            double rotDiff = correctionError.getRotation().getDegrees();
+//            if (transDiff > Constants.VisionConstants.QuestNavConstants.TRANSLATION_ERROR_TOLERANCE
+//                    || rotDiff > Constants.VisionConstants.QuestNavConstants.ROTATION_ERROR_TOLERANCE) {
+//                configureQuestOffset();
+//            }
+//        }
+    }
 
      public void updatePoses() {
          updatePoseEstimation();
-         // updateQuestNavPose();
+         updateQuestNavPose();
      }
 
     public void periodic() {
