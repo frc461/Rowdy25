@@ -10,8 +10,10 @@ import choreo.auto.AutoTrajectory;
 import choreo.auto.AutoFactory.AutoBindings;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.drivetrain.Swerve;
 import frc.robot.util.SysID;
 import frc.robot.util.VisionUtil;
@@ -144,7 +146,8 @@ public class RobotContainer {
                 )
         );
 
-        start.done().onTrue(VisionUtil.Photon.Color.hasTargets() ? end1.cmd() : end2.cmd());
+        start.done().and(VisionUtil.Photon.Color::hasTargets).onTrue(end1.cmd());
+        start.done().and(() -> !VisionUtil.Photon.Color.hasTargets()).onTrue(end2.cmd());
 
         return autoRoutine.cmd();
     }
