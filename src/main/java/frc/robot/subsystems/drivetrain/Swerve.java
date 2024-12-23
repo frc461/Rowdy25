@@ -9,6 +9,7 @@ import com.ctre.phoenix6.swerve.*;
 import com.ctre.phoenix6.swerve.utility.PhoenixPIDController;
 
 import choreo.trajectory.SwerveSample;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -32,7 +33,8 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
     // TODO TEST WITH REGULAR PID CONTROLLER
     private final PhoenixPIDController yawController;
     private final PhoenixPIDController objectDetectionController;
-    private final PhoenixPIDController driveController;
+    private final PIDController driveController;
+    private final PIDController steerController;
 
     /* Keep track if we've ever applied the operator perspective before or not */
     private boolean hasAppliedDefaultRotation = false;
@@ -68,11 +70,18 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
         );
         objectDetectionController.enableContinuousInput(Constants.SwerveConstants.ANGULAR_MINIMUM_ANGLE, Constants.SwerveConstants.ANGULAR_MAXIMUM_ANGLE);
 
-        driveController = new PhoenixPIDController(
-            Constants.SwerveConstants.DRIVE_GAINS.kP,
-            Constants.SwerveConstants.DRIVE_GAINS.kI,
-            Constants.SwerveConstants.DRIVE_GAINS.kD
+        driveController = new PIDController(
+                Constants.SwerveConstants.DRIVE_GAINS.kP,
+                Constants.SwerveConstants.DRIVE_GAINS.kI,
+                Constants.SwerveConstants.DRIVE_GAINS.kD
         );
+
+        steerController = new PIDController(
+                Constants.SwerveConstants.STEER_GAINS.kP,
+                Constants.SwerveConstants.STEER_GAINS.kI,
+                Constants.SwerveConstants.STEER_GAINS.kD
+        );
+        steerController.enableContinuousInput(-Math.PI, Math.PI);
 
         if (Utils.isSimulation()) {
             new Simulator(this).startSimThread();
@@ -146,8 +155,7 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
                         .withVelocityX(VisionUtil.Photon.Color.hasTargets()
                             ? driveController.calculate(
                                 currentPitch,
-                                currentPitch - VisionUtil.Photon.Color.getBestObjectPitch(),
-                                Timer.getFPGATimestamp()
+                                currentPitch - VisionUtil.Photon.Color.getBestObjectPitch()
                             ) * Constants.MAX_VEL
                             : 0.0
 
@@ -173,17 +181,15 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
         Pose2d pose = localizer.getModePose();
 
         ChassisSpeeds speeds = new ChassisSpeeds(
-                sample.vx + driveController.calculate(pose.getX(), sample.x, Timer.getFPGATimestamp()),
-                sample.vy + driveController.calculate(pose.getY(), sample.y, Timer.getFPGATimestamp()),
-                sample.omega + yawController.calculate(pose.getRotation().getRadians(), sample.heading, Timer.getFPGATimestamp())
+                sample.vx + driveController.calculate(pose.getX(), sample.x),
+                sample.vy + driveController.calculate(pose.getY(), sample.y),
+                sample.omega + steerController.calculate(pose.getRotation().getRadians(), sample.heading)
         );
 
-        setControl(new SwerveRequest.FieldCentric()
-                .withDriveRequestType(SwerveModule.DriveRequestType.Velocity)
-                .withSteerRequestType(SwerveModule.SteerRequestType.Position)
-                .withVelocityX(speeds.vxMetersPerSecond)
-                .withVelocityY(speeds.vyMetersPerSecond)
-                .withRotationalRate(speeds.omegaRadiansPerSecond)
+        setControl(new SwerveRequest.ApplyFieldSpeeds()
+                .withSpeeds(speeds)
+                .withWheelForceFeedforwardsX(sample.moduleForcesX())
+                .withWheelForceFeedforwardsY(sample.moduleForcesY())
         );
     }
 
