@@ -30,6 +30,7 @@ public class VisionTelemetry {
 
     private final StringPublisher photonPosePub = photonTelemetryTable.getStringTopic("Photon Pose").publish();
     private final BooleanPublisher canAddPhotonMeasurementsPub = photonTelemetryTable.getBooleanTopic("Adding Photon Measurements").publish();
+    private final BooleanPublisher hasObjectTargets = photonTelemetryTable.getBooleanTopic("Has Object Targets").publish();
 
     private final StringPublisher questRawPose = questNavTelemetryTable.getStringTopic("Quest Position").publish();
     private final StringPublisher questRotationTopic = questNavTelemetryTable.getStringTopic("Quest Rotation").publish();
@@ -65,6 +66,7 @@ public class VisionTelemetry {
         double photonPoseYaw = photonPose.getRotation().getDegrees();
         photonPosePub.set("X: " + photonPoseX + ", Y: " + photonPoseY + ", Yaw: " + photonPoseYaw);
         canAddPhotonMeasurementsPub.set(VisionUtil.Photon.BW.isTagClear());
+        hasObjectTargets.set(VisionUtil.Photon.Color.hasTargets());
 
         questRawPose.set("X: " + VisionUtil.QuestNav.getRawX() + ", Y: " + VisionUtil.QuestNav.getRawY() + ", Yaw: " + VisionUtil.QuestNav.getRawYaw());
         questRotationTopic.set("Pitch: " + VisionUtil.QuestNav.getRawPitch() + ", Yaw: " + VisionUtil.QuestNav.getRawYaw() + ", Roll: " + VisionUtil.QuestNav.getRawRoll());
