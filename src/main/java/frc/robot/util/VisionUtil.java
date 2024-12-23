@@ -136,6 +136,10 @@ public class VisionUtil {
                 return hasTargets() ? latestResult.getBestTarget().getYaw() : 0.0;
             }
 
+            public static double getBestObjectPitch() {
+                return hasTargets() ? latestResult.getBestTarget().getPitch() : 0.0;
+            }
+
             public static void updateResults() {
                 List<PhotonPipelineResult> results = COLOR.getAllUnreadResults();
                 if (!results.isEmpty()) {
