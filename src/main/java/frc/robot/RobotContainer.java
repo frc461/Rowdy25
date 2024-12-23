@@ -19,6 +19,7 @@ import frc.robot.util.VisionUtil;
 public class RobotContainer {
     /* Subsystems */
     public final Swerve swerve = new Swerve();
+
     private final AutoFactory autoFactory;
 
     /* Sys ID */
@@ -85,7 +86,7 @@ public class RobotContainer {
         configureBindings();
 
         autoFactory = new AutoFactory(
-            swerve.getLocalizer()::getEstimatedPose, // A function that returns the current robot pose
+            swerve.getLocalizer()::getModePose, // A function that returns the current robot pose
             swerve.getLocalizer()::setPoses, // A function that resets the current robot pose to the provided Pose2d
             swerve::followTrajectory, // The drive subsystem trajectory follower 
             true, // If alliance flipping should be enabled 

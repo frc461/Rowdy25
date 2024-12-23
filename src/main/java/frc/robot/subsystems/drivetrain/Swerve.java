@@ -165,19 +165,26 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
 
     }
 
-    public void followTrajectory(SwerveSample sample) {
-        Pose2d pose = localizer.getEstimatedPose();
-
-        ChassisSpeeds speeds = new ChassisSpeeds(
-            sample.vx + driveController.calculate(pose.getX(), sample.x, Timer.getFPGATimestamp()),
-            sample.vy + driveController.calculate(pose.getY(), sample.y, Timer.getFPGATimestamp()),
-            sample.omega + yawController.calculate(pose.getRotation().getRadians(), sample.heading, Timer.getFPGATimestamp()) 
-        );
-        driveFieldCentric(() -> speeds.vxMetersPerSecond, () -> speeds.vyMetersPerSecond, () -> speeds.omegaRadiansPerSecond);
-    }
-
     public Command xMode() {
         return applyRequest(SwerveRequest.SwerveDriveBrake::new);
+    }
+
+    public void followTrajectory(SwerveSample sample) {
+        Pose2d pose = localizer.getModePose();
+
+        ChassisSpeeds speeds = new ChassisSpeeds(
+                sample.vx + driveController.calculate(pose.getX(), sample.x, Timer.getFPGATimestamp()),
+                sample.vy + driveController.calculate(pose.getY(), sample.y, Timer.getFPGATimestamp()),
+                sample.omega + yawController.calculate(pose.getRotation().getRadians(), sample.heading, Timer.getFPGATimestamp())
+        );
+
+        setControl(new SwerveRequest.FieldCentric()
+                .withDriveRequestType(SwerveModule.DriveRequestType.Velocity)
+                .withSteerRequestType(SwerveModule.SteerRequestType.Position)
+                .withVelocityX(speeds.vxMetersPerSecond)
+                .withVelocityY(speeds.vyMetersPerSecond)
+                .withRotationalRate(speeds.omegaRadiansPerSecond)
+        );
     }
 
     public void switchLocalizationMode() {
