@@ -27,8 +27,8 @@ public class RobotContainer {
      * Right:
      *
      * Triggers:
-     * Left: align
-     * Right:
+     * Left: "speaker tag" align
+     * Right: note align
      *
      * Joysticks:
      * Left: Translation
@@ -43,7 +43,7 @@ public class RobotContainer {
      * Buttons:
      * A: X mode
      * B: Point directions
-     * X:
+     * X: recalibrate
      * Y: Re-zero gyro
      */
 

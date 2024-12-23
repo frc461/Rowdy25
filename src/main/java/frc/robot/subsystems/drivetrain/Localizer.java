@@ -164,16 +164,16 @@ public class Localizer {
     // changes offset based on error between pose estimate and corrected QuestNav pose
     public void updateQuestNavPose() {
         VisionUtil.QuestNav.completeQuestPose();
-//        if (highConfidenceEstimate()) {
-//            // Accumulated error between pose estimator and corrected QuestNav pose
-//            Transform2d correctionError = getEstimatedPose().minus(getQuestCorrectedPose());
-//            double transDiff = correctionError.getTranslation().getNorm();
-//            double rotDiff = correctionError.getRotation().getDegrees();
-//            if (transDiff > Constants.VisionConstants.QuestNavConstants.TRANSLATION_ERROR_TOLERANCE
-//                    || rotDiff > Constants.VisionConstants.QuestNavConstants.ROTATION_ERROR_TOLERANCE) {
-//                configureQuestOffset();
-//            }
-//        }
+        if (highConfidenceEstimate()) {
+            // Accumulated error between pose estimator and corrected QuestNav pose
+            Transform2d correctionError = getEstimatedPose().minus(getQuestPose());
+            double transDiff = correctionError.getTranslation().getNorm();
+            double rotDiff = correctionError.getRotation().getDegrees();
+            if (transDiff > Constants.VisionConstants.QuestNavConstants.TRANSLATION_ERROR_TOLERANCE
+                    || rotDiff > Constants.VisionConstants.QuestNavConstants.ROTATION_ERROR_TOLERANCE) {
+                configureQuestOffset();
+            }
+        }
     }
 
      public void updatePoses() {
