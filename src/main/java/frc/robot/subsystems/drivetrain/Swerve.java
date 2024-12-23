@@ -8,6 +8,9 @@ import com.ctre.phoenix6.swerve.*;
 
 import com.ctre.phoenix6.swerve.utility.PhoenixPIDController;
 
+import choreo.trajectory.SwerveSample;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
@@ -162,6 +165,17 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
 
     }
 
+    public void followTrajectory(SwerveSample sample) {
+        Pose2d pose = localizer.getEstimatedPose();
+
+        ChassisSpeeds speeds = new ChassisSpeeds(
+            sample.vx + driveController.calculate(pose.getX(), sample.x, Timer.getFPGATimestamp()),
+            sample.vy + driveController.calculate(pose.getY(), sample.y, Timer.getFPGATimestamp()),
+            sample.omega + yawController.calculate(pose.getRotation().getRadians(), sample.heading, Timer.getFPGATimestamp()) 
+        );
+        driveFieldCentric(() -> speeds.vxMetersPerSecond, () -> speeds.vyMetersPerSecond, () -> speeds.omegaRadiansPerSecond);
+    }
+
     public Command xMode() {
         return applyRequest(SwerveRequest.SwerveDriveBrake::new);
     }
@@ -172,6 +186,10 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
 
     public void recalibrate() {
         localizer.recalibrate();
+    }
+
+    public Localizer getLocalizer() {
+        return localizer;
     }
 
     @Override
