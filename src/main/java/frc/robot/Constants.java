@@ -120,11 +120,12 @@ public final class Constants {
         public static final double ANGULAR_POSITION_P = 0.035;
         public static final double ANGULAR_POSITION_I = 0;
         public static final double ANGULAR_POSITION_D = 0.0015;
-        public static final double GAME_PIECE_POSITION_P = 0.02;
-        public static final double GAME_PIECE_POSITION_I = 0.0001;
-        public static final double GAME_PIECE_POSITION_D = 0.001;
         public static final double ANGULAR_MINIMUM_ANGLE = -180.0;
         public static final double ANGULAR_MAXIMUM_ANGLE = 180.0;
+
+        public static final double ANGULAR_OBJECT_DETECTION_P = 0.02;
+        public static final double ANGULAR_OBJECT_DETECTION_I = 0.0001;
+        public static final double ANGULAR_OBJECT_DETECTION_D = 0.001;
 
         // Both sets of gains need to be tuned to your individual robot.
 
