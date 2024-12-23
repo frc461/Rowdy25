@@ -2,6 +2,7 @@ package frc.robot.subsystems.drivetrain;
 
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Timer;
@@ -15,7 +16,7 @@ import org.photonvision.PhotonPoseEstimator;
 import java.util.Optional;
 
 public class Localizer {
-    private enum Mode {
+    private enum PoseMode {
         POSE_ESTIMATOR,
         QUEST_NAV
     }
@@ -31,7 +32,7 @@ public class Localizer {
     // Transformation applied to QuestNav pose to adjust origin to the pose estimator's origin
 
     // The pose extrapolation method that the robot will use. It will be set to QuestNav by default.
-    private Mode localizationMode = Mode.QUEST_NAV;
+    private PoseMode localizationMode = PoseMode.QUEST_NAV;
 
     private boolean isMegaTagTwoConfigured = false;
 
@@ -96,11 +97,11 @@ public class Localizer {
     // }
 
     public Pose2d getModePose() {
-        return localizationMode == Mode.QUEST_NAV ? VisionUtil.QuestNav.getQuestCorrectedPose() : getEstimatedPose();
+        return localizationMode == PoseMode.QUEST_NAV ? VisionUtil.QuestNav.getQuestCorrectedPose() : getEstimatedPose();
     }
 
     public boolean isQuestMode() {
-        return localizationMode == Mode.QUEST_NAV;
+        return localizationMode == PoseMode.QUEST_NAV;
     }
 
     public Translation2d getTranslationToSpeaker() {
@@ -114,7 +115,7 @@ public class Localizer {
     }
 
     public void switchMode() {
-        localizationMode = localizationMode == Mode.QUEST_NAV ? Mode.POSE_ESTIMATOR : Mode.QUEST_NAV;
+        localizationMode = localizationMode == PoseMode.QUEST_NAV ? PoseMode.POSE_ESTIMATOR : PoseMode.QUEST_NAV;
     }
 
     public void recalibrate() {
