@@ -5,6 +5,8 @@
 package frc.robot;
 
 import choreo.auto.AutoFactory;
+import choreo.auto.AutoRoutine;
+import choreo.auto.AutoTrajectory;
 import choreo.auto.AutoFactory.AutoBindings;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -13,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 import frc.robot.subsystems.drivetrain.Swerve;
 import frc.robot.util.SysID;
+import frc.robot.util.VisionUtil;
 
 public class RobotContainer {
     /* Subsystems */
@@ -129,6 +132,21 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        return Commands.print("No autonomous command configured");
+        AutoRoutine autoRoutine = autoFactory.newRoutine("branched");
+        AutoTrajectory start = autoRoutine.trajectory("start");
+        AutoTrajectory end1 = autoRoutine.trajectory("end1");
+        AutoTrajectory end2 = autoRoutine.trajectory("end2");
+
+        autoRoutine.active().onTrue(
+                Commands.sequence(
+                    autoRoutine.resetOdometry(start),
+                    start.cmd()
+                )
+        );
+
+        start.done().onTrue(VisionUtil.Photon.Color.hasTargets() ? end1.cmd() : end2.cmd());
+
+        return autoRoutine.cmd();
     }
+
 }
