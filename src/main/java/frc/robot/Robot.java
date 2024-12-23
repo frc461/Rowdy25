@@ -4,8 +4,6 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.PowerDistribution;
-import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -25,7 +23,7 @@ public class Robot extends LoggedRobot {
         robotContainer = new RobotContainer();
         Logger.recordMetadata("ProjectName", "Rowdy25");
 
-        switch (Constants.currentMode) {
+        switch (Constants.Logger.currentMode) {
             case REAL:
                 Logger.addDataReceiver(new WPILOGWriter());
                 Logger.addDataReceiver(new NT4Publisher());

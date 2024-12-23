@@ -52,15 +52,17 @@ public final class Constants {
 
     public static final NetworkTableInstance NT_INSTANCE = NetworkTableInstance.getDefault();
 
-    String logPath = LogFileUtil.findReplayLog();
+    public static final class Logger {
+        String logPath = LogFileUtil.findReplayLog();
 
-    public static final Mode simMode = Mode.SIM;
-    public static final Mode currentMode = RobotBase.isReal() ? Mode.REAL : simMode;
+        public static enum Mode {
+            REAL,
+            SIM,
+            REPLAY
+        }
 
-    public static enum Mode {
-        REAL,
-        SIM,
-        REPLAY
+        public static final Mode simMode = Mode.SIM;
+        public static final Mode currentMode = RobotBase.isReal() ? Mode.REAL : simMode;
     }
 
     public static final class VisionConstants {
