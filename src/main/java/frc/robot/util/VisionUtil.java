@@ -4,9 +4,7 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.networktables.DoubleSubscriber;
-import edu.wpi.first.networktables.FloatArraySubscriber;
-import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.*;
 import frc.robot.Constants;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonUtils;
@@ -208,49 +206,101 @@ public class VisionUtil {
     public static final class QuestNav {
         private static final NetworkTable QUESTNAV_NT = Constants.NT_INSTANCE.getTable(Constants.VisionConstants.QuestNavConstants.QUESTNAV_NT_NAME);
 
+        private static final IntegerSubscriber questMiso = QUESTNAV_NT.getIntegerTopic("miso").subscribe(0);
+        private static final IntegerPublisher questMosi = QUESTNAV_NT.getIntegerTopic("mosi").publish();
+
         private static final DoubleSubscriber questTimestampTopic = QUESTNAV_NT.getDoubleTopic("timestamp").subscribe(0.0f);
         private static final FloatArraySubscriber questPositionTopic = QUESTNAV_NT.getFloatArrayTopic("position").subscribe(new float[] {0.0f, 0.0f, 0.0f});
         private static final FloatArraySubscriber questEulerAnglesTopic = QUESTNAV_NT.getFloatArrayTopic("eulerAngles").subscribe(new float[] {0.0f, 0.0f, 0.0f});
 
-        public static double getX() {
+        public static final Transform2d robotToCameraOffset = new Transform2d(
+                new Translation2d(
+                        Constants.VisionConstants.QuestNavConstants.QUEST_FORWARD,
+                        Constants.VisionConstants.QuestNavConstants.QUEST_LEFT
+                ),
+                new Rotation2d(Units.degreesToRadians(Constants.VisionConstants.QuestNavConstants.QUEST_YAW))
+        );
+
+        public static Transform2d questToFieldOffset = new Transform2d();
+
+        public static double getRawX() {
             return questPositionTopic.get()[2];
         }
 
-        public static double getY() {
+        public static double getRawY() {
             return -questPositionTopic.get()[0];
         }
 
-        public static double getZ() {
+        public static double getRawZ() {
             return questPositionTopic.get()[1];
         }
 
-        public static double getPitch() {
-            return questEulerAnglesTopic.get()[0];
+        public static double stabilize(double angle) {
+            return angle >= 180
+                    ? angle - ((int) ((angle - 180) / 360)) * 360 - 360
+                    : angle <= -180
+                            ? angle - ((int) ((angle + 180) / 360)) * 360 + 360
+                            : angle;
         }
 
-        public static double getYaw() {
+        public static double getRawPitch() {
+            return stabilize(questEulerAnglesTopic.get()[0]);
+        }
+
+        public static double getRawYaw() {
             return stabilize(-questEulerAnglesTopic.get()[1]);
         }
 
-        public static double getRoll() {
-            return questEulerAnglesTopic.get()[2];
-        }
-
-        public static double stabilize(double angle) {
-            return angle >= 180 ? angle - 180 : angle;
-        }
-
-        public static double getTimestamp() {
-            return questTimestampTopic.get();
+        public static double getRawRoll() {
+            return stabilize(questEulerAnglesTopic.get()[2]);
         }
 
         public static Pose2d getRawPose() {
             return new Pose2d(
-                    new Translation2d(
-                            getX(),
-                            getY()
-                    ),
-                    Rotation2d.fromDegrees(getYaw())
+                    new Translation2d(getRawX(), getRawY()),
+                    new Rotation2d(Units.degreesToRadians(getRawYaw()))
+            );
+        }
+
+        public static Pose2d getFinalCameraPose() {
+            Pose2d rawPose = getRawPose();
+            Translation2d correctedTranslation = rawPose.getTranslation().rotateBy(questToFieldOffset.getRotation());
+            return new Pose2d(
+                    questToFieldOffset.getTranslation().plus(correctedTranslation),
+                    questToFieldOffset.getRotation().rotateBy(rawPose.getRotation())
+            );
+        }
+
+        public static Pose2d getFinalRobotPose() {
+            Pose2d finalCameraPose = getFinalCameraPose();
+            Transform2d correctedRobotToCameraOffset = new Transform2d(
+                    robotToCameraOffset.getTranslation().rotateBy(finalCameraPose.getRotation()),
+                    robotToCameraOffset.getRotation()
+            );
+            return finalCameraPose.plus(correctedRobotToCameraOffset.inverse());
+        }
+
+        public static void zeroQuestPose() {
+            if (questMiso.get() != 99) {
+                questMosi.set(1);
+            }
+        }
+
+        public static void completeQuestPose() {
+            if (questMiso.get() == 99) {
+                questMosi.set(0);
+            }
+        }
+
+        public static void setQuestPose(Pose2d pose) {
+            zeroQuestPose();
+            Transform2d correctedRobotToCameraOffset = new Transform2d(
+                    robotToCameraOffset.getTranslation().rotateBy(pose.getRotation()),
+                    robotToCameraOffset.getRotation()
+            );
+            questToFieldOffset = new Transform2d(
+                    pose.getTranslation().plus(correctedRobotToCameraOffset.getTranslation()),
+                    pose.getRotation().rotateBy(correctedRobotToCameraOffset.getRotation())
             );
         }
     }

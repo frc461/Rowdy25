@@ -4,8 +4,6 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.PowerDistribution;
-import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -25,15 +23,20 @@ public class Robot extends LoggedRobot {
         robotContainer = new RobotContainer();
         Logger.recordMetadata("ProjectName", "Rowdy25");
 
-        if (isReal()) {
-            // Logger.addDataReceiver(new WPILOGWriter()); // TODO NEED USB ON ROBORIO TO WORK
-            Logger.addDataReceiver(new NT4Publisher());
-            new PowerDistribution(1, ModuleType.kRev);
-        } else {
-            setUseTiming(false);
-            String logPath = LogFileUtil.findReplayLog();
-            Logger.setReplaySource(new WPILOGReader(logPath));
-            Logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath, "_sim")));
+        switch (Constants.Logger.currentMode) {
+            case REAL:
+//                Logger.addDataReceiver(new WPILOGWriter());
+                Logger.addDataReceiver(new NT4Publisher());
+                break;
+            case SIM:
+                Logger.addDataReceiver(new NT4Publisher());
+                break;
+            case REPLAY:
+                setUseTiming(false);
+                String logPath = LogFileUtil.findReplayLog();
+                Logger.setReplaySource(new WPILOGReader(logPath));
+                Logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath, "_sim")));
+                break;
         }
 
         Logger.start();

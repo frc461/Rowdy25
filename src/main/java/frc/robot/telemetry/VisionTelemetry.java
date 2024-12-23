@@ -1,7 +1,5 @@
 package frc.robot.telemetry;
 
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -68,13 +66,10 @@ public class VisionTelemetry {
         photonPosePub.set("X: " + photonPoseX + ", Y: " + photonPoseY + ", Yaw: " + photonPoseYaw);
         canAddPhotonMeasurementsPub.set(VisionUtil.Photon.BW.isTagClear());
 
-        questRawPose.set("X: " + VisionUtil.QuestNav.getX() + ", Y: " + VisionUtil.QuestNav.getY() + ", Yaw: " + VisionUtil.QuestNav.getYaw());
-        questRotationTopic.set("Pitch: " + VisionUtil.QuestNav.getPitch() + ", Yaw: " + VisionUtil.QuestNav.getYaw() + ", Roll: " + VisionUtil.QuestNav.getRoll());
-        Pose2d questCorrectedPose = localizer.getQuestCorrectedPose();
+        questRawPose.set("X: " + VisionUtil.QuestNav.getRawX() + ", Y: " + VisionUtil.QuestNav.getRawY() + ", Yaw: " + VisionUtil.QuestNav.getRawYaw());
+        questRotationTopic.set("Pitch: " + VisionUtil.QuestNav.getRawPitch() + ", Yaw: " + VisionUtil.QuestNav.getRawYaw() + ", Roll: " + VisionUtil.QuestNav.getRawRoll());
+        Pose2d questCorrectedPose = localizer.getQuestPose();
         questCorrectedPoseTopic.set("X: " + questCorrectedPose.getX() + ", Y: " + questCorrectedPose.getY() + ", Yaw: " + questCorrectedPose.getRotation().getDegrees());
-        Translation2d questTransOffset = localizer.getQuestTransOffset();
-        Rotation2d questRotOffset = localizer.getQuestRotOffset();
-        questOffsetTopic.set("X: " + questTransOffset.getX() + ", Y: " + questTransOffset.getY() + ", Yaw: " + questRotOffset.getDegrees());
         questMode.set(localizer.isQuestMode());
 
         logValues();
@@ -83,6 +78,6 @@ public class VisionTelemetry {
     private void logValues() {
         Logger.recordOutput("LimelightMegaTagPose", VisionUtil.Limelight.getMegaTagOnePose());
         Logger.recordOutput("PoseEstimate", localizer.getEstimatedPose());
-        Logger.recordOutput("QuestNavPose", localizer.getQuestCorrectedPose());
+        // Logger.recordOutput("QuestNavPose", localizer.getQuestCorrectedPose());
     }
 }

@@ -31,7 +31,7 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
 
     // TODO TEST WITH REGULAR PID CONTROLLER
     private final PhoenixPIDController yawController;
-    private final PhoenixPIDController gamePieceYawController;
+    private final PhoenixPIDController objectDetectionController;
     private final PhoenixPIDController driveController;
 
     /* Keep track if we've ever applied the operator perspective before or not */
@@ -61,12 +61,12 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
         yawController.enableContinuousInput(Constants.SwerveConstants.ANGULAR_MINIMUM_ANGLE, Constants.SwerveConstants.ANGULAR_MAXIMUM_ANGLE);
 
 
-        gamePieceYawController = new PhoenixPIDController(
-                Constants.SwerveConstants.GAME_PIECE_POSITION_P,
-                Constants.SwerveConstants.GAME_PIECE_POSITION_I,
-                Constants.SwerveConstants.GAME_PIECE_POSITION_D
+        objectDetectionController = new PhoenixPIDController(
+                Constants.SwerveConstants.ANGULAR_OBJECT_DETECTION_P,
+                Constants.SwerveConstants.ANGULAR_OBJECT_DETECTION_I,
+                Constants.SwerveConstants.ANGULAR_OBJECT_DETECTION_D
         );
-        yawController.enableContinuousInput(Constants.SwerveConstants.ANGULAR_MINIMUM_ANGLE, Constants.SwerveConstants.ANGULAR_MAXIMUM_ANGLE);
+        objectDetectionController.enableContinuousInput(Constants.SwerveConstants.ANGULAR_MINIMUM_ANGLE, Constants.SwerveConstants.ANGULAR_MAXIMUM_ANGLE);
 
         driveController = new PhoenixPIDController(
             Constants.SwerveConstants.DRIVE_GAINS.kP,
@@ -126,7 +126,7 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
                         .withVelocityX(-straight.getAsDouble() * Constants.MAX_VEL)
                         .withVelocityY(-strafe.getAsDouble() * Constants.MAX_VEL)
                         .withRotationalRate(VisionUtil.Photon.Color.hasTargets()
-                                ? gamePieceYawController.calculate(
+                                ? objectDetectionController.calculate(
                                         currentYaw,
                                         currentYaw - VisionUtil.Photon.Color.getBestObjectYaw(),
                                         Timer.getFPGATimestamp()

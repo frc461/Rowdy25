@@ -10,7 +10,6 @@ import choreo.auto.AutoTrajectory;
 import choreo.auto.AutoFactory.AutoBindings;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 import frc.robot.subsystems.drivetrain.Swerve;
@@ -34,8 +33,8 @@ public class RobotContainer {
      * Right:
      *
      * Triggers:
-     * Left: align
-     * Right:
+     * Left: "speaker tag" align
+     * Right: note align
      *
      * Joysticks:
      * Left: Translation
@@ -50,7 +49,7 @@ public class RobotContainer {
      * Buttons:
      * A: X mode
      * B: Point directions
-     * X:
+     * X: recalibrate
      * Y: Re-zero gyro
      */
 
