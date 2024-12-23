@@ -2,7 +2,6 @@ package frc.robot.subsystems.drivetrain;
 
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Timer;
@@ -80,11 +79,8 @@ public class Localizer {
     // }
 
     public Translation2d getQuestCorrectedTranslation() {
-        Translation2d rawPose = VisionUtil.QuestNav.getQuestNavRawPosition();
-        return VisionUtil.QuestNav.getQuestPoseOffset().plus(new Translation2d(
-                rawPose.getX() * Math.cos(Math.toRadians(VisionUtil.QuestNav.getQuestYawOffset())) - rawPose.getY() * Math.sin(Math.toRadians(VisionUtil.QuestNav.getQuestYawOffset())),
-                rawPose.getX() * Math.sin(Math.toRadians(VisionUtil.QuestNav.getQuestYawOffset())) + rawPose.getY() * Math.cos(Math.toRadians(VisionUtil.QuestNav.getQuestYawOffset()))
-        ));
+        Translation2d rawPose = VisionUtil.QuestNav.getQuestRawPosition();
+        return VisionUtil.QuestNav.getQuestPoseOffset();
     }
 
     // public Rotation2d getQuestCorrectedRotation() {
@@ -100,7 +96,7 @@ public class Localizer {
     // }
 
     public Pose2d getModePose() {
-        return localizationMode == Mode.QUEST_NAV ? VisionUtil.QuestNav.getQuestNavPose() : getEstimatedPose();
+        return localizationMode == Mode.QUEST_NAV ? VisionUtil.QuestNav.getQuestCorrectedPose() : getEstimatedPose();
     }
 
     public boolean isQuestMode() {
@@ -124,26 +120,20 @@ public class Localizer {
     public void recalibrate() {
         isMegaTagTwoConfigured = false;
         poseEstimator.resetPose(new Pose2d());
-        VisionUtil.QuestNav.resetQuestPose(new Translation2d());
-        VisionUtil.QuestNav.resetHeading(0);
     }
 
     public void configureQuestOffset() {
         // TODO: tried setting to fused pose but for some reason kept going to 0
-        VisionUtil.QuestNav.resetQuestPose(VisionUtil.Limelight.getMegaTagOnePose().getTranslation());
-        VisionUtil.QuestNav.resetHeading(VisionUtil.Limelight.getMegaTagOnePose().getRotation().getDegrees());
+        VisionUtil.QuestNav.resetQuestTranslation(VisionUtil.Limelight.getMegaTagOnePose().getTranslation());
+        VisionUtil.QuestNav.resetQuestRotation(VisionUtil.Limelight.getMegaTagOnePose().getRotation().getDegrees());
     }
 
-    // public void setQuestNavPose(Pose2d pose) {
-    //     VisionUtil.QuestNav.resetHeading(pose.getRotation().getDegrees());
-    //     VisionUtil.QuestNav.resetQuestPose(pose.getTranslation());
-    // }
+     public void setQuestNavPose(Pose2d pose) {
+     }
 
     public void setPoses(Pose2d pose) {
         this.swerve.resetPose(pose);
         poseEstimator.resetPose(pose);
-        VisionUtil.QuestNav.resetHeading(pose.getRotation().getDegrees());
-        VisionUtil.QuestNav.resetQuestPose(pose.getTranslation());
     }
 
     public void updateLimelightPoseEstimation() {
@@ -208,13 +198,13 @@ public class Localizer {
     //     }
     // }
 
-    // public void updatePoses() {
-    //     updatePoseEstimation();
-    //     updateQuestNavPose();
-    // }
+     public void updatePoses() {
+         updatePoseEstimation();
+         // updateQuestNavPose();
+     }
 
     public void periodic() {
-        //updatePoses();
+        updatePoses();
         visionTelemetry.publishValues();
     }
 }

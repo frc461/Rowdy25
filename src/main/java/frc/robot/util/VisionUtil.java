@@ -208,70 +208,65 @@ public class VisionUtil {
         private static final FloatArraySubscriber questPositionTopic = QUESTNAV_NT.getFloatArrayTopic("position").subscribe(new float[] {0.0f, 0.0f, 0.0f});
         private static final FloatArraySubscriber questEulerAnglesTopic = QUESTNAV_NT.getFloatArrayTopic("eulerAngles").subscribe(new float[] {0.0f, 0.0f, 0.0f});
         public static Translation2d poseEstimateOffset = new Translation2d();
-        public static double yawOffset = 0.0f;
+        public static Rotation2d rotationOffset = new Rotation2d();
 
-        public static double getX() {
+        public static double getRawX() {
             return questPositionTopic.get()[2];
         }
 
-        public static double getY() {
+        public static double getRawY() {
             return -questPositionTopic.get()[0];
         }
 
-        public static double getZ() {
-            return questPositionTopic.get()[2];
+        public static double getRawZ() {
+            return questPositionTopic.get()[1];
         }
 
-        public static double getPitch() {
+        public static double getRawPitch() {
             return questEulerAnglesTopic.get()[0];
         }
 
-        public static double getYaw() {
+        public static double getRawYaw() {
             return questEulerAnglesTopic.get()[1];
         }
 
-        public static double getRoll() {
+        public static double getRawRoll() {
             return questEulerAnglesTopic.get()[2];
         }
 
-        public static double getQuestNavHeading() {
-            return Rotation2d.fromDegrees(getQuestNavYaw()).getDegrees();
-        }
-
-        public static void resetQuestPose(Translation2d pose) {
-            poseEstimateOffset = getQuestNavRawPosition().minus(pose);
-        }
-
-        public static void resetHeading(double angleDegrees) {
-            yawOffset = getYaw() + angleDegrees;
-        }
-
-        public static double getQuestNavYaw() {
-            double ret = getYaw() - yawOffset;
-            ret %= 360;
-            if (ret < 0) {
-                ret += 360;
-            }
-            return ret;
-        }
-        
-        public static Translation2d getQuestNavRawPosition() {
-            return new Translation2d(getX(), getY());
-        }
-
-        public static Translation2d getQuestNavPosition() {
-            return getQuestNavRawPosition().minus(poseEstimateOffset);
+        public static Translation2d getQuestRawPosition() {
+            return new Translation2d(getRawX(), getRawY());
         }
         public static Translation2d getQuestPoseOffset() {
             return poseEstimateOffset;
         }
-        public static double getQuestYawOffset() {
-            return yawOffset;
-        }            
-        public static Pose2d getQuestNavPose() {
-            Translation2d questPositionCompensated = getQuestNavRawPosition().minus(poseEstimateOffset);
-            return new Pose2d(questPositionCompensated, Rotation2d.fromDegrees(getQuestNavYaw()));
+
+        public static Rotation2d getQuestRotationOffset() {
+            return rotationOffset;
         }
-        
+
+        public static Translation2d getQuestCorrectedPosition() {
+            return getQuestRawPosition().minus(poseEstimateOffset);
+        }
+
+        public static Rotation2d getQuestCorrectedRotation() {
+            double correctedYaw = (getRawYaw() - rotationOffset.getDegrees()) % 360;
+            if (correctedYaw > 180) {
+                correctedYaw -= 360;
+            }
+            return Rotation2d.fromDegrees(correctedYaw);
+        }
+
+        public static Pose2d getQuestCorrectedPose() {
+            return new Pose2d(getQuestCorrectedPosition(), getQuestCorrectedRotation());
+        }
+
+        public static void resetQuestTranslation(Translation2d pose) {
+            poseEstimateOffset = getQuestRawPosition().minus(pose);
+        }
+
+        public static void resetQuestRotation(double angleDegrees) {
+            rotationOffset = Rotation2d.fromDegrees(getRawYaw() + angleDegrees);
+        }
     }
 }
