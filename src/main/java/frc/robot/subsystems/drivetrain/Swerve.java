@@ -28,6 +28,7 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
 
     // TODO TEST WITH REGULAR PID CONTROLLER
     private final PhoenixPIDController yawController;
+    private final PhoenixPIDController driveController;
 
     /* Keep track if we've ever applied the operator perspective before or not */
     private boolean hasAppliedDefaultRotation = false;
@@ -54,6 +55,12 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
                 Constants.SwerveConstants.ANGULAR_POSITION_D
         );
         yawController.enableContinuousInput(Constants.SwerveConstants.ANGULAR_MINIMUM_ANGLE, Constants.SwerveConstants.ANGULAR_MAXIMUM_ANGLE);
+
+        driveController = new PhoenixPIDController(
+            Constants.SwerveConstants.DRIVE_GAINS.kP,
+            Constants.SwerveConstants.DRIVE_GAINS.kI,
+            Constants.SwerveConstants.DRIVE_GAINS.kD
+        );
 
         if (Utils.isSimulation()) {
             new Simulator(this).startSimThread();
@@ -118,7 +125,32 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
     }
 
     public Command moveToNote() { // TODO IMPLEMENT THIS AFTER CALIBRATING AUTO
-        return applyRequest(SwerveRequest.SwerveDriveBrake::new);
+        double currentYaw = localizer.getEstimatedPose().getRotation().getDegrees();
+        double currentPitch = 25; // TODO: MATCH REAL PITCH
+        return applyRequest(() ->
+                new SwerveRequest.FieldCentric()
+                        .withDeadband(Constants.MAX_VEL * 0.1)
+                        .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
+                        .withVelocityX(VisionUtil.Photon.Color.hasTargets()
+                            ? driveController.calculate(
+                                currentPitch,
+                                currentPitch - VisionUtil.Photon.Color.getBestObjectPitch(),
+                                Timer.getFPGATimestamp()
+                            ) * Constants.MAX_VEL
+                            : 0.0
+
+                        )
+                        .withVelocityY(0.0)
+                        .withRotationalRate(VisionUtil.Photon.Color.hasTargets()
+                                ? yawController.calculate(
+                                        currentYaw,
+                                        currentYaw - VisionUtil.Photon.Color.getBestObjectYaw(),
+                                        Timer.getFPGATimestamp()
+                                ) * Constants.MAX_ANGULAR_VEL
+                                : 0.0
+                        )
+        );
+
     }
 
     public Command xMode() {
