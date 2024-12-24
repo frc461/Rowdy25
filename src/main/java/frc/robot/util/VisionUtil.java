@@ -223,7 +223,7 @@ public class VisionUtil {
         private static final DoubleSubscriber questTimestampTopic = QUESTNAV_NT.getDoubleTopic("timestamp").subscribe(0.0f);
         private static final FloatArraySubscriber questPositionTopic = QUESTNAV_NT.getFloatArrayTopic("position").subscribe(new float[] {0.0f, 0.0f, 0.0f});
         private static final FloatArraySubscriber questEulerAnglesTopic = QUESTNAV_NT.getFloatArrayTopic("eulerAngles").subscribe(new float[] {0.0f, 0.0f, 0.0f});
-        private static final DoubleSubscriber questBattery = QUESTNAV_NT.getDoubleTopic("batteryLevel").subscribe(0.0f);
+        private static final DoubleSubscriber questBatteryTopic = QUESTNAV_NT.getDoubleTopic("batteryLevel").subscribe(0.0f);
 
         public static final Transform2d robotToCameraOffset = new Transform2d(
                 new Translation2d(
@@ -248,7 +248,11 @@ public class VisionUtil {
         }
 
         public static double getBatteryLevel() {
-            return questBattery.get();
+            return questBatteryTopic.get(461);
+        }
+
+        public static boolean isQuestAlive() {
+            return questTimestampTopic.readQueueValues().length != 0;
         }
 
         public static double stabilize(double angle) {
