@@ -166,8 +166,8 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
         return applyRequest(SwerveRequest.SwerveDriveBrake::new);
     }
 
-    public void switchLocalizationMode() {
-        localizer.switchMode();
+    public void toggleLocalizationStrategy() {
+        localizer.toggleStrategy();
     }
 
     public void recalibrate() {

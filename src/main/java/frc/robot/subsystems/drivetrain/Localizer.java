@@ -9,12 +9,9 @@ import frc.robot.Constants;
 import frc.robot.telemetry.VisionTelemetry;
 import frc.robot.util.TagLocation;
 import frc.robot.util.VisionUtil;
-import org.photonvision.EstimatedRobotPose;
-
-import java.util.Optional;
 
 public class Localizer {
-    private enum PoseMode {
+    private enum LocalizationStrategy {
         POSE_ESTIMATOR,
         QUEST_NAV
     }
@@ -28,7 +25,7 @@ public class Localizer {
     // Transformation applied to QuestNav pose to adjust origin to the pose estimator's origin
 
     // The pose extrapolation method that the robot will use. It will be set to QuestNav by default.
-    private PoseMode localizationMode = PoseMode.QUEST_NAV;
+    private LocalizationStrategy strategy = LocalizationStrategy.QUEST_NAV;
 
     private boolean isMegaTagTwoConfigured = false;
 
@@ -66,16 +63,16 @@ public class Localizer {
         return VisionUtil.QuestNav.getFinalRobotPose();
     }
 
-    public Pose2d getModePose() {
-        return localizationMode == PoseMode.QUEST_NAV ? getQuestPose() : getEstimatedPose();
+    public Pose2d getStrategyPose() {
+        return strategy == LocalizationStrategy.QUEST_NAV ? getQuestPose() : getEstimatedPose();
     }
 
     public boolean isQuestMode() {
-        return localizationMode == PoseMode.QUEST_NAV;
+        return strategy == LocalizationStrategy.QUEST_NAV;
     }
 
     public Translation2d getTranslationToSpeaker() {
-        Translation2d robotTranslation = getModePose().getTranslation();
+        Translation2d robotTranslation = getStrategyPose().getTranslation();
         Translation2d tagTranslation = TagLocation.getSpeakerTagPose().getTranslation();
         return tagTranslation.minus(robotTranslation);
     }
@@ -84,8 +81,8 @@ public class Localizer {
         return getTranslationToSpeaker().getAngle().getDegrees();
     }
 
-    public void switchMode() {
-        localizationMode = localizationMode == PoseMode.QUEST_NAV ? PoseMode.POSE_ESTIMATOR : PoseMode.QUEST_NAV;
+    public void toggleStrategy() {
+        strategy = strategy == LocalizationStrategy.QUEST_NAV ? LocalizationStrategy.POSE_ESTIMATOR : LocalizationStrategy.QUEST_NAV;
     }
 
     public void recalibrate() {
