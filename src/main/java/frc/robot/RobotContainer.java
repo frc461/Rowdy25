@@ -84,8 +84,6 @@ public class RobotContainer {
         DogLog.setOptions(new DogLogOptions().withCaptureDs(true));
         DogLog.setOptions(new DogLogOptions().withLogExtras(true));
         DogLog.setPdh(new PowerDistribution());
-
-        VisionUtil.QuestNav.registerListeners();
     }
 
     /* Each subsystem will execute their corresponding command periodically */

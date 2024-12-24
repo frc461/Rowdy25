@@ -11,14 +11,13 @@ import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.targeting.PhotonPipelineResult;
 
-import dev.doglog.DogLog;
-
-import java.util.Arrays;
-import java.util.EnumSet;
 import java.util.List;
 import java.util.Optional;
 
 public class VisionUtil {
+    public static boolean highConfidenceEstimation() {
+        return Limelight.isTagClear() && Photon.BW.isTagClear();
+    }
 
     public static final class Limelight {
         private static final NetworkTable LIMELIGHT_NT = Constants.NT_INSTANCE.getTable(Constants.VisionConstants.LimelightConstants.LIMELIGHT_NT_NAME);
@@ -224,10 +223,8 @@ public class VisionUtil {
         private static final IntegerSubscriber questMiso = QUESTNAV_NT.getIntegerTopic("miso").subscribe(0);
         private static final IntegerPublisher questMosi = QUESTNAV_NT.getIntegerTopic("mosi").publish();
 
-        private static final DoubleSubscriber questTimestampTopic = QUESTNAV_NT.getDoubleTopic("timestamp").subscribe(0.0f);
         private static final FloatArraySubscriber questPositionTopic = QUESTNAV_NT.getFloatArrayTopic("position").subscribe(new float[] {0.0f, 0.0f, 0.0f});
         private static final FloatArraySubscriber questEulerAnglesTopic = QUESTNAV_NT.getFloatArrayTopic("eulerAngles").subscribe(new float[] {0.0f, 0.0f, 0.0f});
-        private static final DoubleSubscriber questBatteryTopic = QUESTNAV_NT.getDoubleTopic("batteryLevel").subscribe(0.0f);
 
         public static final Transform2d robotToCameraOffset = new Transform2d(
                 new Translation2d(
@@ -249,35 +246,6 @@ public class VisionUtil {
 
         public static double getRawZ() {
             return questPositionTopic.get()[1];
-        }
-
-        public static double getBatteryLevel() {
-            return questBatteryTopic.get();
-        }
-
-        public static boolean isQuestAlive() {
-            return questTimestampTopic.readQueueValues().length != 0;
-        }
-
-        public static void registerListeners() {
-            QUESTNAV_NT.addListener("questDisconnect", EnumSet.of(NetworkTableEvent.Kind.kDisconnected), (table, key, event) -> {
-                if (!event.is(NetworkTableEvent.Kind.kDisconnected)) { return; }
-
-                DogLog.logFault(Constants.Logger.RobotFault.QUEST_DISCONNECT);
-            });
-
-            QUESTNAV_NT.addListener("questBatteryLevel", EnumSet.of(NetworkTableEvent.Kind.kValueAll), (table, key, event) -> {
-                if (!event.is(NetworkTableEvent.Kind.kValueAll)) { return; }
-
-                if (!Arrays.stream(questBatteryTopic.readQueueValues()).anyMatch(x -> x <= 0.005)
-                        && getBatteryLevel() <= 0.005) { 
-                    DogLog.logFault(Constants.Logger.RobotFault.QUEST_DIED);
-                }
-                if (!Arrays.stream(questBatteryTopic.readQueueValues()).anyMatch(x -> x <= 0.1)
-                        && getBatteryLevel() <= 0.1) {
-                    DogLog.logFault(Constants.Logger.RobotFault.QUEST_LOW_BATTERY);
-                }
-            });
         }
 
         public static double stabilize(double angle) {

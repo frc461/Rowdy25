@@ -6,7 +6,7 @@ import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants;
-import frc.robot.telemetry.VisionTelemetry;
+import frc.robot.telemetry.LocalizationTelemetry;
 import frc.robot.util.TagLocation;
 import frc.robot.util.VisionUtil;
 
@@ -18,7 +18,7 @@ public class Localizer {
 
     // localizer is a dependent of swerve
     private final Swerve swerve;
-    private final VisionTelemetry visionTelemetry;
+    private final LocalizationTelemetry localizationTelemetry = new LocalizationTelemetry(this);
 
     private final SwerveDrivePoseEstimator poseEstimator;
 
@@ -32,7 +32,7 @@ public class Localizer {
     public Localizer(Swerve swerve) {
         this.swerve = swerve;
 
-        visionTelemetry = new VisionTelemetry(this);
+        localizationTelemetry.registerListeners();
 
         poseEstimator = new SwerveDrivePoseEstimator(
                 this.swerve.getKinematics(),
@@ -47,28 +47,24 @@ public class Localizer {
         VisionUtil.Limelight.configureRobotToCameraOffset();
     }
 
-    public Pose2d getEstimatedPose() {
-        return poseEstimator.getEstimatedPosition();
+    public Pose2d getStrategyPose() {
+        return strategy == LocalizationStrategy.QUEST_NAV ? getQuestPose() : getEstimatedPose();
     }
 
-    public boolean highConfidenceEstimate() {
-        return VisionUtil.Limelight.isTagClear(); // TODO IMPLEMENT THIS ONCE BW IS SET UP && VisionUtil.Photon.BW.isTagClear();
+    public String getLocalizationStrategy() {
+        return strategy == LocalizationStrategy.QUEST_NAV ? "Quest Nav" : "Pose Estimator";
     }
 
     public boolean isMegaTagTwoConfigured() {
         return isMegaTagTwoConfigured;
     }
 
+    public Pose2d getEstimatedPose() {
+        return poseEstimator.getEstimatedPosition();
+    }
+
     public Pose2d getQuestPose() {
         return VisionUtil.QuestNav.getFinalRobotPose();
-    }
-
-    public Pose2d getStrategyPose() {
-        return strategy == LocalizationStrategy.QUEST_NAV ? getQuestPose() : getEstimatedPose();
-    }
-
-    public boolean isQuestMode() {
-        return strategy == LocalizationStrategy.QUEST_NAV;
     }
 
     public Translation2d getTranslationToSpeaker() {
@@ -85,7 +81,7 @@ public class Localizer {
         strategy = strategy == LocalizationStrategy.QUEST_NAV ? LocalizationStrategy.POSE_ESTIMATOR : LocalizationStrategy.QUEST_NAV;
     }
 
-    public void recalibrate() {
+    public void recalibrateMegaTag() {
         isMegaTagTwoConfigured = false;
         poseEstimator.resetPose(new Pose2d());
     }
@@ -148,7 +144,7 @@ public class Localizer {
     // changes offset based on error between pose estimate and corrected QuestNav pose
     public void updateQuestNavPose() {
         VisionUtil.QuestNav.completeQuestPose();
-        if (highConfidenceEstimate()) {
+        if (VisionUtil.highConfidenceEstimation()) {
             // Accumulated error between pose estimator and corrected QuestNav pose
             Transform2d correctionError = getEstimatedPose().minus(getQuestPose());
             double transDiff = correctionError.getTranslation().getNorm();
@@ -167,6 +163,6 @@ public class Localizer {
 
     public void periodic() {
         updatePoses();
-        visionTelemetry.publishValues();
+        localizationTelemetry.publishValues();
     }
 }
