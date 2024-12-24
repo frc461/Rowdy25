@@ -127,18 +127,18 @@ public final class Constants {
         public static final double ANGULAR_OBJECT_DETECTION_I = 0;
         public static final double ANGULAR_OBJECT_DETECTION_D = 0.001;
 
-        // Both sets of gains need to be tuned to your individual robot.
+        // TODO TUNE FOR 2025 ROBOT
 
         // The steer motor uses any SwerveModule.SteerRequestType control request with the
         // output type specified by SwerveModuleConstants.SteerMotorClosedLoopOutput
         public static final Slot0Configs STEER_GAINS = new Slot0Configs()
-            .withKP(7.5).withKI(0).withKD(0)
+            .withKP(2.5).withKI(0).withKD(0)
             .withKS(0.1).withKV(2.66).withKA(0)
             .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign);
         // When using closed-loop control, the drive motor uses the control
         // output type specified by SwerveModuleConstants.DriveMotorClosedLoopOutput
         public static final Slot0Configs DRIVE_GAINS = new Slot0Configs()
-            .withKP(10.0).withKI(0).withKD(0)
+            .withKP(5.0).withKI(0).withKD(0)
             .withKS(0).withKV(0.124);
 
         // The closed-loop output type to use for the steer motors;
