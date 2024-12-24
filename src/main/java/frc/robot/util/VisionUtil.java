@@ -11,6 +11,10 @@ import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.targeting.PhotonPipelineResult;
 
+import dev.doglog.DogLog;
+
+import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -248,11 +252,32 @@ public class VisionUtil {
         }
 
         public static double getBatteryLevel() {
-            return questBatteryTopic.get(461);
+            return questBatteryTopic.get();
         }
 
         public static boolean isQuestAlive() {
             return questTimestampTopic.readQueueValues().length != 0;
+        }
+
+        public static void registerListeners() {
+            QUESTNAV_NT.addListener("questDisconnect", EnumSet.of(NetworkTableEvent.Kind.kDisconnected), (table, key, event) -> {
+                if (!event.is(NetworkTableEvent.Kind.kDisconnected)) { return; }
+
+                DogLog.logFault(Constants.Logger.RobotFault.QUEST_DISCONNECT);
+            });
+
+            QUESTNAV_NT.addListener("questBatteryLevel", EnumSet.of(NetworkTableEvent.Kind.kValueAll), (table, key, event) -> {
+                if (!event.is(NetworkTableEvent.Kind.kValueAll)) { return; }
+
+                if (!Arrays.stream(questBatteryTopic.readQueueValues()).anyMatch(x -> x <= 0.005)
+                        && getBatteryLevel() <= 0.005) { 
+                    DogLog.logFault(Constants.Logger.RobotFault.QUEST_DIED);
+                }
+                if (!Arrays.stream(questBatteryTopic.readQueueValues()).anyMatch(x -> x <= 0.1)
+                        && getBatteryLevel() <= 0.1) {
+                    DogLog.logFault(Constants.Logger.RobotFault.QUEST_LOW_BATTERY);
+                }
+            });
         }
 
         public static double stabilize(double angle) {

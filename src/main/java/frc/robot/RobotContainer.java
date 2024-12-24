@@ -12,6 +12,7 @@ import dev.doglog.DogLogOptions;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import frc.robot.subsystems.drivetrain.Swerve;
 import frc.robot.util.SysID;
+import frc.robot.util.VisionUtil;
 
 public class RobotContainer {
     /* Subsystems */
@@ -83,6 +84,8 @@ public class RobotContainer {
         DogLog.setOptions(new DogLogOptions().withCaptureDs(true));
         DogLog.setOptions(new DogLogOptions().withLogExtras(true));
         DogLog.setPdh(new PowerDistribution());
+
+        VisionUtil.QuestNav.registerListeners();
     }
 
     /* Each subsystem will execute their corresponding command periodically */
