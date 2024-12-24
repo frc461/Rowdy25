@@ -6,11 +6,13 @@ import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.*;
 import frc.robot.Constants;
+import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
-import org.photonvision.PhotonUtils;
+import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.targeting.PhotonPipelineResult;
 
 import java.util.List;
+import java.util.Optional;
 
 public class VisionUtil {
 
@@ -159,6 +161,14 @@ public class VisionUtil {
                             Units.degreesToRadians(Constants.VisionConstants.PhotonConstants.BW_YAW)
                     )
             );
+
+            // Photon Vision's integrated estimator, to be integrated into the localizer's pose estimator
+            private static final PhotonPoseEstimator photonPoseEstimator = new PhotonPoseEstimator(
+                    tagLayout,
+                    PhotonPoseEstimator.PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
+                    robotToCameraOffset
+            );
+
             public static PhotonPipelineResult latestResult = new PhotonPipelineResult();
 
             public static boolean hasTargets() {
@@ -183,15 +193,16 @@ public class VisionUtil {
                 return hasTargets() && getBestTagDist() < Constants.VisionConstants.PhotonConstants.BW_MAX_TAG_CLEAR_DIST;
             }
 
-            // TODO TEST THIS AFTER MULTITAG IF MULTITAG DOESN'T WORK
-            public static Pose2d getPhotonPose() {
-                return hasTargets()
-                        ? PhotonUtils.estimateFieldToRobotAprilTag(
-                                latestResult.getBestTarget().getBestCameraToTarget(),
-                                TagLocation.getTagLocation3d(getBestTagID()),
-                        robotToCameraOffset
-                        ).toPose2d()
-                        : new Pose2d();
+            public static Optional<EstimatedRobotPose> getOptionalPoseData() {
+                if (hasTargets()) {
+                    return photonPoseEstimator.update(Photon.BW.latestResult);
+                }
+                return Optional.empty();
+            }
+
+            public static Pose2d getPose() {
+                Optional<EstimatedRobotPose> pose = getOptionalPoseData();
+                return pose.isPresent() ? pose.get().estimatedPose.toPose2d() : new Pose2d();
             }
 
             public static void updateResults() {

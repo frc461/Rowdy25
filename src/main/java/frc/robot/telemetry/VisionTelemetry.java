@@ -64,7 +64,7 @@ public class VisionTelemetry {
         canAddLLMeasurementsPub.set(VisionUtil.Limelight.isTagClear());
         megaTagTwoCalibrated.set(localizer.isMegaTagTwoConfigured());
 
-        Pose2d photonPose = VisionUtil.Photon.BW.getPhotonPose();
+        Pose2d photonPose = VisionUtil.Photon.BW.getPose();
         double photonPoseX = photonPose.getX();
         double photonPoseY = photonPose.getY();
         double photonPoseYaw = photonPose.getRotation().getDegrees();
@@ -86,7 +86,7 @@ public class VisionTelemetry {
         DogLog.log("PoseEstimate", localizer.getEstimatedPose());
         DogLog.log("LimelightMegaTagPose", VisionUtil.Limelight.getMegaTagOnePose());
         DogLog.log("LimelightMegaTagTwoPose", VisionUtil.Limelight.getMegaTagTwoPose());
-        DogLog.log("PhotonPose", VisionUtil.Photon.BW.getPhotonPose());
+        DogLog.log("PhotonPose", VisionUtil.Photon.BW.getPose());
         DogLog.log("QuestNavPose", localizer.getQuestPose());
         DogLog.log("QuestMode", localizer.isQuestMode());
 

@@ -10,7 +10,6 @@ import frc.robot.telemetry.VisionTelemetry;
 import frc.robot.util.TagLocation;
 import frc.robot.util.VisionUtil;
 import org.photonvision.EstimatedRobotPose;
-import org.photonvision.PhotonPoseEstimator;
 
 import java.util.Optional;
 
@@ -25,8 +24,6 @@ public class Localizer {
     private final VisionTelemetry visionTelemetry;
 
     private final SwerveDrivePoseEstimator poseEstimator;
-    // Photon Vision's integrated estimator, to be integrated into the above estimator
-    private final PhotonPoseEstimator photonPoseEstimator;
 
     // Transformation applied to QuestNav pose to adjust origin to the pose estimator's origin
 
@@ -47,12 +44,6 @@ public class Localizer {
                 this.swerve.getState().Pose,
                 Constants.VisionConstants.ODOM_STD_DEV,
                 Constants.VisionConstants.VISION_STD_DEV_UNCONFIGURED
-        );
-
-        photonPoseEstimator = new PhotonPoseEstimator(
-                VisionUtil.Photon.BW.tagLayout,
-                PhotonPoseEstimator.PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
-                VisionUtil.Photon.BW.robotToCameraOffset
         );
 
         configureQuestOffset();
@@ -142,15 +133,12 @@ public class Localizer {
 
     public void updatePhotonPoseEstimation() {
         VisionUtil.Photon.updateResults();
-        if (!VisionUtil.Photon.BW.hasTargets()) { return; }
-        Optional<EstimatedRobotPose> photonPose = photonPoseEstimator.update(VisionUtil.Photon.BW.latestResult);
         // TODO TEST IF OTHER DOESN'T WORK Pose2d photonPose = VisionUtil.Photon.BW.getPhotonPose();
-        if (VisionUtil.Photon.BW.isTagClear() && photonPose.isPresent()) {
-            poseEstimator.addVisionMeasurement(
-                    photonPose.get().estimatedPose.toPose2d(),
-                    photonPose.get().timestampSeconds
-                    // TODO TEST IF OTHER DOESN'T WORK VisionUtil.Photon.BW.getTimestamp()
-            );
+        if (VisionUtil.Photon.BW.isTagClear()) {
+            VisionUtil.Photon.BW.getOptionalPoseData().ifPresent(photonPose -> poseEstimator.addVisionMeasurement(
+                    photonPose.estimatedPose.toPose2d(),
+                    photonPose.timestampSeconds
+            ));
         }
     }
 
