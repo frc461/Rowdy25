@@ -7,7 +7,9 @@ package frc.robot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-
+import dev.doglog.DogLog;
+import dev.doglog.DogLogOptions;
+import edu.wpi.first.wpilibj.PowerDistribution;
 import frc.robot.subsystems.drivetrain.Swerve;
 import frc.robot.util.SysID;
 
@@ -77,6 +79,10 @@ public class RobotContainer {
     public RobotContainer() {
         setDefaultCommands();
         configureBindings();
+       
+        DogLog.setOptions(new DogLogOptions().withCaptureDs(true));
+        DogLog.setOptions(new DogLogOptions().withLogExtras(true));
+        DogLog.setPdh(new PowerDistribution());
     }
 
     /* Each subsystem will execute their corresponding command periodically */

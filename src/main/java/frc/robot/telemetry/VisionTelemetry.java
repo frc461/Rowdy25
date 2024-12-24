@@ -1,7 +1,6 @@
 package frc.robot.telemetry;
 
-import org.littletonrobotics.junction.Logger;
-
+import dev.doglog.DogLog;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.networktables.*;
 import frc.robot.Constants;
@@ -21,6 +20,7 @@ public class VisionTelemetry {
     private final NetworkTable questNavTelemetryTable = Constants.NT_INSTANCE.getTable("oculus");
 
     private final StringPublisher poseEstimatePub = visionTelemetryTable.getStringTopic("Robot Estimated Pose").publish();
+    private final StructPublisher<Pose2d> fusedPosePub = visionTelemetryTable.getStructTopic("Real Fused Pose", Pose2d.struct).publish();
 
     private final StringPublisher megaTagOnePub = limelightTelemetryTable.getStringTopic("MegaTagOne Pose").publish();
     private final StringPublisher megaTagTwoPub = limelightTelemetryTable.getStringTopic("MegaTagTwo Pose").publish();
@@ -29,6 +29,8 @@ public class VisionTelemetry {
     private final BooleanPublisher megaTagTwoCalibrated = limelightTelemetryTable.getBooleanTopic("MegaTagTwo Calibrated").publish();
 
     private final StringPublisher photonPosePub = photonTelemetryTable.getStringTopic("Photon Pose").publish();
+    private final StructPublisher<Pose2d> cameraPosePub = photonTelemetryTable.getStructTopic("Real Photon Pose", Pose2d.struct).publish();
+
     private final BooleanPublisher canAddPhotonMeasurementsPub = photonTelemetryTable.getBooleanTopic("Adding Photon Measurements").publish();
 
     private final StringPublisher questRawPose = questNavTelemetryTable.getStringTopic("Quest Position").publish();
@@ -36,6 +38,8 @@ public class VisionTelemetry {
     private final StringPublisher questCorrectedPoseTopic = questNavTelemetryTable.getStringTopic("Quest Corrected Pose").publish();
     private final StringPublisher questOffsetTopic = questNavTelemetryTable.getStringTopic("Quest Offset").publish();
     private final BooleanPublisher questMode = questNavTelemetryTable.getBooleanTopic("Quest Mode").publish();
+    private final StructPublisher<Pose2d> questPosePub = questNavTelemetryTable.getStructTopic("Real Quest Pose", Pose2d.struct).publish();
+
 
     public void publishValues() {
         Pose2d estimatedPose = localizer.getEstimatedPose();
@@ -43,6 +47,7 @@ public class VisionTelemetry {
         double estimateY = estimatedPose.getY();
         double estimateYaw = estimatedPose.getRotation().getDegrees();
         poseEstimatePub.set("X: " + estimateX + ", Y: " + estimateY + ", Yaw: " + estimateYaw);
+        fusedPosePub.set(estimatedPose);
 
         Pose2d megaTagOnePose = VisionUtil.Limelight.getMegaTagOnePose();
         double megaTagOneX = megaTagOnePose.getX();
@@ -64,6 +69,7 @@ public class VisionTelemetry {
         double photonPoseY = photonPose.getY();
         double photonPoseYaw = photonPose.getRotation().getDegrees();
         photonPosePub.set("X: " + photonPoseX + ", Y: " + photonPoseY + ", Yaw: " + photonPoseYaw);
+        cameraPosePub.set(photonPose);
         canAddPhotonMeasurementsPub.set(VisionUtil.Photon.BW.isTagClear());
 
         questRawPose.set("X: " + VisionUtil.QuestNav.getRawX() + ", Y: " + VisionUtil.QuestNav.getRawY() + ", Yaw: " + VisionUtil.QuestNav.getRawYaw());
@@ -71,13 +77,26 @@ public class VisionTelemetry {
         Pose2d questCorrectedPose = localizer.getQuestPose();
         questCorrectedPoseTopic.set("X: " + questCorrectedPose.getX() + ", Y: " + questCorrectedPose.getY() + ", Yaw: " + questCorrectedPose.getRotation().getDegrees());
         questMode.set(localizer.isQuestMode());
+        questPosePub.set(questCorrectedPose);
 
         logValues();
     }
 
     private void logValues() {
-        Logger.recordOutput("LimelightMegaTagPose", VisionUtil.Limelight.getMegaTagOnePose());
-        Logger.recordOutput("PoseEstimate", localizer.getEstimatedPose());
-        // Logger.recordOutput("QuestNavPose", localizer.getQuestCorrectedPose());
+        DogLog.log("PoseEstimate", localizer.getEstimatedPose());
+        DogLog.log("LimelightMegaTagPose", VisionUtil.Limelight.getMegaTagOnePose());
+        DogLog.log("LimelightMegaTagTwoPose", VisionUtil.Limelight.getMegaTagTwoPose());
+        DogLog.log("PhotonPose", VisionUtil.Photon.BW.getPhotonPose());
+        DogLog.log("QuestNavPose", localizer.getQuestPose());
+        DogLog.log("QuestMode", localizer.isQuestMode());
+
+        DogLog.log("PhotonColorHasTarget", VisionUtil.Photon.Color.hasTargets());
+        DogLog.log("PhotonBWHasTarget", VisionUtil.Photon.BW.hasTargets());
+        DogLog.log("LimelightHasTarget", VisionUtil.Limelight.tagExists());
+        DogLog.log("MegaTagTwoActive", localizer.isMegaTagTwoConfigured());
+
+        if (VisionUtil.QuestNav.getBatteryLevel() == 0) {
+            DogLog.logFault("Quest dead");
+        }
     }
 }
