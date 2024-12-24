@@ -1,10 +1,9 @@
 package frc.robot.telemetry;
 
-import org.littletonrobotics.junction.Logger;
-
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
 
+import dev.doglog.DogLog;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -128,6 +127,11 @@ public class SwerveTelemetry {
     }
 
     private void logValues(SwerveDriveState state) {
-        Logger.recordOutput("OdemetryPose", state.Pose);
+        DogLog.log("OdometryPose", state.Pose);
+        DogLog.log("ChassisSpeeds", state.Speeds);
+        DogLog.log("ModuleStates", state.ModuleStates);
+        DogLog.log("ModuleTargets", state.ModuleTargets);
+        DogLog.log("ModulePositions", state.ModulePositions);
+        DogLog.log("OdometryPeriod", state.OdometryPeriod);
     }
 }

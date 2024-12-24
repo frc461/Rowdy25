@@ -12,6 +12,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import dev.doglog.DogLog;
+import dev.doglog.DogLogOptions;
+import edu.wpi.first.wpilibj.PowerDistribution;
 
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.drivetrain.Swerve;
@@ -88,13 +91,17 @@ public class RobotContainer {
         configureBindings();
 
         autoFactory = new AutoFactory(
-            swerve.getLocalizer()::getModePose, // A function that returns the current robot pose
+            swerve.getLocalizer()::getStrategyPose, // A function that returns the current robot pose
             swerve.getLocalizer()::setPoses, // A function that resets the current robot pose to the provided Pose2d
-            swerve::followTrajectory, // The drive subsystem trajectory follower 
-            true, // If alliance flipping should be enabled 
+            swerve::followTrajectory, // The drive subsystem trajectory follower
+            true, // If alliance flipping should be enabled
             swerve, // The drive subsystem
-            new AutoBindings() // An empty AutoBindings object 
+            new AutoBindings() // An empty AutoBindings object
         );
+
+        DogLog.setOptions(new DogLogOptions().withCaptureDs(true));
+        DogLog.setOptions(new DogLogOptions().withLogExtras(true));
+        DogLog.setPdh(new PowerDistribution());
     }
 
     /* Each subsystem will execute their corresponding command periodically */
@@ -118,7 +125,7 @@ public class RobotContainer {
         driverXbox.a().whileTrue(swerve.xMode());
 
         // toggle between robot choosing quest nav pose and pose estimation with cameras
-        driverXbox.b().onTrue(swerve.runOnce(swerve::switchLocalizationMode));
+        driverXbox.b().onTrue(swerve.runOnce(swerve::toggleLocalizationStrategy));
 
         driverXbox.x().onTrue(swerve.runOnce(swerve::recalibrate));
 
@@ -151,5 +158,4 @@ public class RobotContainer {
 
         return autoRoutine.cmd();
     }
-
 }

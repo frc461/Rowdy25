@@ -118,7 +118,7 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
                         .withVelocityY(-strafe.getAsDouble() * Constants.MAX_VEL)
                         .withRotationalRate(
                             yawController.calculate(
-                                    localizer.getEstimatedPose().getRotation().getDegrees(),
+                                    localizer.getStrategyPose().getRotation().getDegrees(),
                                     localizer.getAngleToSpeaker(),
                                     Timer.getFPGATimestamp() // TODO TEST this.getPigeon2().getYaw().getTimestamp().getTime() (TEST FOR CENTER ON NOTE TOO)
                             ) * Constants.MAX_ANGULAR_VEL
@@ -127,7 +127,7 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
     }
 
     public Command centerOnNote(DoubleSupplier straight, DoubleSupplier strafe) {
-        double currentYaw = localizer.getEstimatedPose().getRotation().getDegrees();
+        double currentYaw = localizer.getStrategyPose().getRotation().getDegrees();
         return applyRequest(() ->
                 new SwerveRequest.FieldCentric()
                         .withDeadband(Constants.MAX_VEL * 0.1)
@@ -146,7 +146,7 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
     }
 
     public Command moveToNote() { // TODO IMPLEMENT THIS AFTER CALIBRATING AUTO
-        double currentYaw = localizer.getEstimatedPose().getRotation().getDegrees();
+        double currentYaw = localizer.getStrategyPose().getRotation().getDegrees();
         double currentPitch = 25; // TODO: MATCH REAL PITCH
         return applyRequest(() ->
                 new SwerveRequest.FieldCentric()
@@ -178,7 +178,7 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
     }
 
     public void followTrajectory(SwerveSample sample) {
-        Pose2d pose = localizer.getModePose();
+        Pose2d pose = localizer.getStrategyPose();
 
         ChassisSpeeds speeds = new ChassisSpeeds(
                 sample.vx + driveController.calculate(pose.getX(), sample.x),
@@ -193,12 +193,12 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
         );
     }
 
-    public void switchLocalizationMode() {
-        localizer.switchMode();
+    public void toggleLocalizationStrategy() {
+        localizer.toggleStrategy();
     }
 
     public void recalibrate() {
-        localizer.recalibrate();
+        localizer.recalibrateMegaTag();
     }
 
     public Localizer getLocalizer() {
