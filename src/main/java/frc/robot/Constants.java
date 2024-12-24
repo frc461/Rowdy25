@@ -61,7 +61,7 @@ public final class Constants {
         public static final Matrix<N3, N1> ODOM_STD_DEV = VecBuilder.fill(0.2, 0.2, Units.degreesToRadians(2.0));
         public static final Matrix<N3, N1> VISION_STD_DEV_UNCONFIGURED = VecBuilder.fill(0.0001, 0.0001, Units.degreesToRadians(0.1));
         public static final Matrix<N3, N1> VISION_STD_DEV_CONFIGURED = VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(180.0));
-        // TODO FIX MEGATAG2 CALIBRATION
+        // TODO FINALIZE MEGATAG2 CALIBRATION
         public static final double CONFIGURED_TRANSLATION_THRESHOLD = 0.02;
         public static final double CONFIGURED_ROTATION_THRESHOLD = 2.0;
         public static final double CONFIGURED_MAX_ANG_VEL = 720.0;
@@ -95,7 +95,6 @@ public final class Constants {
         public static final class QuestNavConstants {
             public static final String QUESTNAV_NT_NAME = "oculus";
 
-            // TODO SET QUEST TO CENTER OF ROBOT OFFSETS
             public static final double QUEST_FORWARD = Units.inchesToMeters(-2.5);
             public static final double QUEST_LEFT = Units.inchesToMeters(4.5);
             public static final double QUEST_UP = 0.0;

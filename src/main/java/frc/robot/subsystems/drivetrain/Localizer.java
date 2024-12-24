@@ -107,8 +107,8 @@ public class Localizer {
                     Timer.getFPGATimestamp() - VisionUtil.Limelight.getLatency()
             );
             if (megaTagTwoOffset.getTranslation().getNorm() < Constants.VisionConstants.CONFIGURED_TRANSLATION_THRESHOLD) {
+                isMegaTagTwoConfigured = true;
                 poseEstimator.setVisionMeasurementStdDevs(Constants.VisionConstants.VISION_STD_DEV_CONFIGURED);
-                // TODO: mega tag 2 doesn't work still
             }
             return;
         }
@@ -126,7 +126,6 @@ public class Localizer {
 
     public void updatePhotonPoseEstimation() {
         VisionUtil.Photon.updateResults();
-        // TODO TEST IF OTHER DOESN'T WORK Pose2d photonPose = VisionUtil.Photon.BW.getPhotonPose();
         if (VisionUtil.Photon.BW.isTagClear()) {
             VisionUtil.Photon.BW.getOptionalPoseData().ifPresent(photonPose -> poseEstimator.addVisionMeasurement(
                     photonPose.estimatedPose.toPose2d(),

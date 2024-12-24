@@ -120,14 +120,13 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
                             yawController.calculate(
                                     localizer.getStrategyPose().getRotation().getDegrees(),
                                     localizer.getAngleToSpeaker(),
-                                    Timer.getFPGATimestamp() // TODO TEST this.getPigeon2().getYaw().getTimestamp().getTime() (TEST FOR CENTER ON NOTE TOO)
+                                    Timer.getFPGATimestamp()
                             ) * Constants.MAX_ANGULAR_VEL
                         )
         );
     }
 
     public Command centerOnNote(DoubleSupplier straight, DoubleSupplier strafe) {
-        double currentYaw = localizer.getStrategyPose().getRotation().getDegrees();
         return applyRequest(() ->
                 new SwerveRequest.FieldCentric()
                         .withDeadband(Constants.MAX_VEL * 0.1)
@@ -136,8 +135,8 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
                         .withVelocityY(-strafe.getAsDouble() * Constants.MAX_VEL)
                         .withRotationalRate(VisionUtil.Photon.Color.hasTargets()
                                 ? objectDetectionController.calculate(
-                                        currentYaw,
-                                        currentYaw - VisionUtil.Photon.Color.getBestObjectYaw(),
+                                        0,
+                                        -VisionUtil.Photon.Color.getBestObjectYaw(),
                                         Timer.getFPGATimestamp()
                                 ) * Constants.MAX_ANGULAR_VEL
                                 : 0.0
@@ -145,17 +144,14 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
         );
     }
 
-    public Command moveToNote() { // TODO IMPLEMENT THIS AFTER CALIBRATING AUTO
-        double currentYaw = localizer.getStrategyPose().getRotation().getDegrees();
-        double currentPitch = 25; // TODO: MATCH REAL PITCH
+    public Command moveToNote() { // TODO CALIBRATE THIS AFTER CALIBRATING AUTO
         return applyRequest(() ->
-                new SwerveRequest.FieldCentric()
-                        .withDeadband(Constants.MAX_VEL * 0.1)
+                new SwerveRequest.RobotCentric()
                         .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
                         .withVelocityX(VisionUtil.Photon.Color.hasTargets()
                             ? driveController.calculate(
-                                currentPitch,
-                                currentPitch - VisionUtil.Photon.Color.getBestObjectPitch()
+                                0,
+                                -VisionUtil.Photon.Color.getBestObjectPitch()
                             ) * Constants.MAX_VEL
                             : 0.0
 
@@ -163,8 +159,8 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
                         .withVelocityY(0.0)
                         .withRotationalRate(VisionUtil.Photon.Color.hasTargets()
                                 ? yawController.calculate(
-                                        currentYaw,
-                                        currentYaw - VisionUtil.Photon.Color.getBestObjectYaw(),
+                                        0,
+                                        -VisionUtil.Photon.Color.getBestObjectYaw(),
                                         Timer.getFPGATimestamp()
                                 ) * Constants.MAX_ANGULAR_VEL
                                 : 0.0
@@ -197,7 +193,7 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
         localizer.toggleStrategy();
     }
 
-    public void recalibrate() {
+    public void recalibrateMegaTag() {
         localizer.recalibrateMegaTag();
     }
 

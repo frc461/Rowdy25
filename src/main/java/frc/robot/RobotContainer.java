@@ -10,13 +10,11 @@ import choreo.auto.AutoTrajectory;
 import choreo.auto.AutoFactory.AutoBindings;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import dev.doglog.DogLog;
 import dev.doglog.DogLogOptions;
 import edu.wpi.first.wpilibj.PowerDistribution;
 
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.drivetrain.Swerve;
 import frc.robot.util.SysID;
 import frc.robot.util.VisionUtil;
@@ -127,7 +125,7 @@ public class RobotContainer {
         // toggle between robot choosing quest nav pose and pose estimation with cameras
         driverXbox.b().onTrue(swerve.runOnce(swerve::toggleLocalizationStrategy));
 
-        driverXbox.x().onTrue(swerve.runOnce(swerve::recalibrate));
+        driverXbox.x().onTrue(swerve.runOnce(swerve::recalibrateMegaTag));
 
         // reset the field-centric heading on y press
         driverXbox.y().onTrue(swerve.runOnce(swerve::seedFieldCentric));
