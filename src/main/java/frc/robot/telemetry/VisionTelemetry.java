@@ -95,8 +95,10 @@ public class VisionTelemetry {
         DogLog.log("LimelightHasTarget", VisionUtil.Limelight.tagExists());
         DogLog.log("MegaTagTwoActive", localizer.isMegaTagTwoConfigured());
 
-        if (VisionUtil.QuestNav.getBatteryLevel() == 0) {
-            DogLog.logFault("Quest dead");
+        if (VisionUtil.QuestNav.getBatteryLevel() <= 0.005) {
+            DogLog.logFault(Constants.Logger.RobotFault.QUEST_DIED);
+        } else if (VisionUtil.QuestNav.getBatteryLevel() <= 0.1) {
+            DogLog.logFault(Constants.Logger.RobotFault.QUEST_LOW_BATTERY);
         }
     }
 }
