@@ -1,7 +1,6 @@
-// Copyright (c) 2023-2024 Gold87 and other Elastic contributors
-// This software can be modified and/or shared under the terms
-// defined by the Elastic license:
-// https://github.com/Gold872/elastic-dashboard/blob/main/LICENSE
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.util;
 
