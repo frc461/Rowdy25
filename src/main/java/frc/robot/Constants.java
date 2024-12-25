@@ -50,7 +50,7 @@ public final class Constants {
     public static final NetworkTableInstance NT_INSTANCE = NetworkTableInstance.getDefault();
 
     public static final class Logger {
-        public enum RobotFault {
+        public enum QuestFault {
             QUEST_LOW_BATTERY,
             QUEST_DIED,
             QUEST_DISCONNECT
