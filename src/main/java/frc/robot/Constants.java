@@ -112,25 +112,29 @@ public final class Constants {
         public static final double ANGULAR_POSITION_P = 0.035;
         public static final double ANGULAR_POSITION_I = 0;
         public static final double ANGULAR_POSITION_D = 0.0015;
-        public static final double ANGULAR_MINIMUM_ANGLE = -180.0;
-        public static final double ANGULAR_MAXIMUM_ANGLE = 180.0;
 
         public static final double ANGULAR_OBJECT_DETECTION_P = 0.025;
         public static final double ANGULAR_OBJECT_DETECTION_I = 0;
         public static final double ANGULAR_OBJECT_DETECTION_D = 0.001;
+
+        public static final double ANGULAR_MINIMUM_ANGLE = -180.0;
+        public static final double ANGULAR_MAXIMUM_ANGLE = 180.0;
+
+        public static final double PATH_TRANSLATION_CONTROLLER_P = 5.0;
+        public static final double PATH_ROTATION_CONTROLLER_P = 2.5;
 
         // TODO TUNE FOR 2025 ROBOT
 
         // The steer motor uses any SwerveModule.SteerRequestType control request with the
         // output type specified by SwerveModuleConstants.SteerMotorClosedLoopOutput
         public static final Slot0Configs STEER_GAINS = new Slot0Configs()
-            .withKP(2.5).withKI(0).withKD(0)
+            .withKP(100).withKI(0).withKD(0)
             .withKS(0.1).withKV(2.66).withKA(0)
             .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign);
         // When using closed-loop control, the drive motor uses the control
         // output type specified by SwerveModuleConstants.DriveMotorClosedLoopOutput
         public static final Slot0Configs DRIVE_GAINS = new Slot0Configs()
-            .withKP(5.0).withKI(0).withKD(0)
+            .withKP(0.1).withKI(0).withKD(0)
             .withKS(0).withKV(0.124);
 
         // The closed-loop output type to use for the steer motors;
