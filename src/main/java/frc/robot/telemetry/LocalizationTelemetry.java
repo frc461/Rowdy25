@@ -89,7 +89,7 @@ public class LocalizationTelemetry {
             if (!event.is(NetworkTableEvent.Kind.kDisconnected)) { return; }
 
             DogLog.logFault(Constants.Logger.RobotFault.QUEST_DISCONNECT);
-            Elastic.sendNotification(new Elastic.Notification(Elastic.Notification.NotificationLevel.ERROR, "Quest Nav", "Quest has been disconnected!"));
+            Elastic.sendNotification(new Elastic.Notification(Elastic.Notification.NotificationLevel.ERROR, "Quest Nav", "Quest has been disconnected! Press B to switch to PoseEstimator."));
         });
 
         questNavTelemetryTable.addListener("questBatteryLevel", EnumSet.of(NetworkTableEvent.Kind.kValueAll), (table, key, event) -> {
@@ -98,7 +98,7 @@ public class LocalizationTelemetry {
             if (Arrays.stream(questBatterySub.readQueueValues()).noneMatch(x -> x <= 0.005)
                     && questBatterySub.get() <= 0.005) {
                 DogLog.logFault(Constants.Logger.RobotFault.QUEST_DIED);
-                Elastic.sendNotification(new Elastic.Notification(Elastic.Notification.NotificationLevel.ERROR, "Quest Nav", "Quest ran out of battery!"));
+                Elastic.sendNotification(new Elastic.Notification(Elastic.Notification.NotificationLevel.ERROR, "Quest Nav", "Quest ran out of battery! Press B to switch to PoseEstimator."));
             }
             if (Arrays.stream(questBatterySub.readQueueValues()).noneMatch(x -> x <= 0.1)
                     && questBatterySub.get() <= 0.1) {
