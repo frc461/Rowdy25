@@ -6,6 +6,7 @@ import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.networktables.*;
 import frc.robot.Constants;
 import frc.robot.subsystems.drivetrain.Localizer;
+import frc.robot.util.Elastic;
 import frc.robot.util.VisionUtil;
 
 import java.util.Arrays;
@@ -88,6 +89,7 @@ public class LocalizationTelemetry {
             if (!event.is(NetworkTableEvent.Kind.kDisconnected)) { return; }
 
             DogLog.logFault(Constants.Logger.RobotFault.QUEST_DISCONNECT);
+            Elastic.sendNotification(new Elastic.Notification(Elastic.Notification.NotificationLevel.ERROR, "Quest Nav", "Quest has been disconnected!"));
         });
 
         questNavTelemetryTable.addListener("questBatteryLevel", EnumSet.of(NetworkTableEvent.Kind.kValueAll), (table, key, event) -> {
@@ -96,10 +98,12 @@ public class LocalizationTelemetry {
             if (Arrays.stream(questBatterySub.readQueueValues()).noneMatch(x -> x <= 0.005)
                     && questBatterySub.get() <= 0.005) {
                 DogLog.logFault(Constants.Logger.RobotFault.QUEST_DIED);
+                Elastic.sendNotification(new Elastic.Notification(Elastic.Notification.NotificationLevel.ERROR, "Quest Nav", "Quest ran out of battery!"));
             }
             if (Arrays.stream(questBatterySub.readQueueValues()).noneMatch(x -> x <= 0.1)
                     && questBatterySub.get() <= 0.1) {
                 DogLog.logFault(Constants.Logger.RobotFault.QUEST_LOW_BATTERY);
+                Elastic.sendNotification(new Elastic.Notification(Elastic.Notification.NotificationLevel.WARNING, "Quest Nav", "Quest has less than 10% battery left! Current Percent: " + (int) (questBatterySub.get() * 100)));
             }
         });
     }
