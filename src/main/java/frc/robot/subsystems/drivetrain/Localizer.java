@@ -126,12 +126,10 @@ public class Localizer {
 
     public void updatePhotonPoseEstimation() {
         VisionUtil.Photon.updateResults();
-        if (VisionUtil.Photon.BW.isTagClear()) {
-            VisionUtil.Photon.BW.getOptionalPoseData().ifPresent(photonPose -> poseEstimator.addVisionMeasurement(
-                    photonPose.estimatedPose.toPose2d(),
-                    photonPose.timestampSeconds
-            ));
-        }
+        VisionUtil.Photon.BW.getOptionalPoseData().ifPresent(photonPose -> poseEstimator.addVisionMeasurement(
+                photonPose.estimatedPose.toPose2d(),
+                photonPose.timestampSeconds
+        ));
     }
 
     public void updatePoseEstimation() {

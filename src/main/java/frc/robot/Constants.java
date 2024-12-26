@@ -53,7 +53,7 @@ public final class Constants {
         public enum QuestFault {
             QUEST_LOW_BATTERY,
             QUEST_DIED,
-            QUEST_DISCONNECT
+            QUEST_DISCONNECTED
         }
     }
 
@@ -83,13 +83,11 @@ public final class Constants {
         public static final class PhotonConstants {
             // TODO SET ARDUCAM BW CAMERA TO CENTER OF ROBOT OFFSETS
             public static final double BW_FORWARD = 0.0;
-            public static final double BW_LEFT = 0.0;
+            public static final double BW_LEFT = -4.0;
             public static final double BW_UP = 0.0;
             public static final double BW_ROLL = 0.0;
-            public static final double BW_PITCH = 0.0;
+            public static final double BW_PITCH = 35.5;
             public static final double BW_YAW = 0.0;
-
-            public static final double BW_MAX_TAG_CLEAR_DIST = 2.5;
         }
 
         public static final class QuestNavConstants {
