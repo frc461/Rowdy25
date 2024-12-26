@@ -25,9 +25,9 @@ public class LocalizationTelemetry {
     private final NetworkTable questNavTelemetryTable = Constants.NT_INSTANCE.getTable("oculus");
 
     private final StringPublisher poseEstimatePrettyPub = localizationTelemetryTable.getStringTopic("Estimated Pose").publish();
-    private final StructPublisher<Pose2d> poseEstimatePub = localizationTelemetryTable.getStructTopic("Estimated Pose", Pose2d.struct).publish();
+    private final StructPublisher<Pose2d> poseEstimatePub = localizationTelemetryTable.getStructTopic("Estimated Pose2d", Pose2d.struct).publish();
     private final StringPublisher questPosePrettyPub = localizationTelemetryTable.getStringTopic("Quest-Based Pose").publish();
-    private final StructPublisher<Pose2d> questPosePub = localizationTelemetryTable.getStructTopic("Quest-Based Pose", Pose2d.struct).publish();
+    private final StructPublisher<Pose2d> questPosePub = localizationTelemetryTable.getStructTopic("Quest-Based Pose2d", Pose2d.struct).publish();
     private final StringPublisher localizationStrategyPub = localizationTelemetryTable.getStringTopic("Localization Strategy").publish();
 
     private final StringPublisher megaTagOnePub = limelightTelemetryTable.getStringTopic("MegaTagOne Pose").publish();
