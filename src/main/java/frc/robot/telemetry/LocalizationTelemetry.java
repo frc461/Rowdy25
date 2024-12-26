@@ -63,7 +63,7 @@ public class LocalizationTelemetry {
 
         Pose2d photonPose = VisionUtil.Photon.BW.getPose();
         photonPosePub.set("X: " + photonPose.getX() + ", Y: " + photonPose.getY() + ", Yaw: " + photonPose.getRotation().getDegrees());
-        canAddPhotonMeasurementsPub.set(VisionUtil.Photon.BW.isTagClear());
+        canAddPhotonMeasurementsPub.set(VisionUtil.Photon.BW.hasTargets());
 
         questRawPosePub.set("X: " + VisionUtil.QuestNav.getRawX() + ", Y: " + VisionUtil.QuestNav.getRawY() + ", Yaw: " + VisionUtil.QuestNav.getRawYaw());
         questRotationPub.set("Pitch: " + VisionUtil.QuestNav.getRawPitch() + ", Yaw: " + VisionUtil.QuestNav.getRawYaw() + ", Roll: " + VisionUtil.QuestNav.getRawRoll());
