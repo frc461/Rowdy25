@@ -49,6 +49,8 @@ public class LocalizationTelemetry {
     private final DoubleArrayPublisher poseEstimatePub = robotPoseTable.getDoubleArrayTopic("Estimated Pose").publish();
     private final StructPublisher<Pose2d> questPose2dPub = robotPoseTable.getStructTopic("Quest-Based Pose2d", Pose2d.struct).publish();
     private final DoubleArrayPublisher questPosePub = robotPoseTable.getDoubleArrayTopic("Quest-Based Pose").publish();
+    private final StructPublisher<Pose2d> questCameraPose2dPub = robotPoseTable.getStructTopic("Quest-Based Camera Pose2d", Pose2d.struct).publish();
+    private final DoubleArrayPublisher questCameraPosePub = robotPoseTable.getDoubleArrayTopic("Quest-Based Camera Pose").publish();
     private final StructPublisher<Pose2d> megaTagOnePose2dPub = robotPoseTable.getStructTopic("MegaTagOne Pose2d", Pose2d.struct).publish();
     private final DoubleArrayPublisher megaTagOnePosePub = robotPoseTable.getDoubleArrayTopic("MegaTagOne Pose").publish();
     private final StructPublisher<Pose2d> megaTagTwoPose2dPub = robotPoseTable.getStructTopic("MegaTagTwo Pose2d", Pose2d.struct).publish();
@@ -84,6 +86,9 @@ public class LocalizationTelemetry {
         fieldTypePub.set("Field2d");
         questPose2dPub.set(questPose);
         questPosePub.set(new double[] {questPose.getX(), questPose.getY(), questPose.getRotation().getDegrees()});
+        Pose2d questCameraPose = VisionUtil.QuestNav.getFinalCameraPose();
+        questCameraPose2dPub.set(questCameraPose);
+        questCameraPosePub.set(new double[] {questCameraPose.getX(), questCameraPose.getY(), questCameraPose.getRotation().getDegrees()});
         pose2dEstimatePub.set(poseEstimate);
         poseEstimatePub.set(new double[] {poseEstimate.getX(), poseEstimate.getY(), poseEstimate.getRotation().getDegrees()});
         megaTagOnePose2dPub.set(megaTag1Pose);

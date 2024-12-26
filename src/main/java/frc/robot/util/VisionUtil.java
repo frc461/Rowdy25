@@ -282,11 +282,7 @@ public class VisionUtil {
 
         public static Pose2d getFinalRobotPose() {
             Pose2d finalCameraPose = getFinalCameraPose();
-            Transform2d correctedRobotToCameraOffset = new Transform2d(
-                    robotToCameraOffset.getTranslation().rotateBy(finalCameraPose.getRotation()),
-                    robotToCameraOffset.getRotation()
-            );
-            return finalCameraPose.plus(correctedRobotToCameraOffset.inverse());
+            return finalCameraPose.plus(robotToCameraOffset.inverse());
         }
 
         public static void zeroQuestPose() {

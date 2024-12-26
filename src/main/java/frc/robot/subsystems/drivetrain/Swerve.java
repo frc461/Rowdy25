@@ -8,6 +8,7 @@ import com.ctre.phoenix6.swerve.*;
 
 import com.ctre.phoenix6.swerve.utility.PhoenixPIDController;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
@@ -27,9 +28,9 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
     private final SwerveTelemetry swerveTelemetry = new SwerveTelemetry(this);
 
     // TODO TEST WITH REGULAR PID CONTROLLER
-    private final PhoenixPIDController yawController;
-    private final PhoenixPIDController objectDetectionController;
-    private final PhoenixPIDController driveController;
+    private final PIDController yawController;
+    private final PIDController objectDetectionController;
+    private final PIDController driveController;
 
     /* Keep track if we've ever applied the operator perspective before or not */
     private boolean hasAppliedDefaultRotation = false;
@@ -50,7 +51,7 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
                 Constants.SwerveConstants.BackRight.BACK_RIGHT
         );
 
-        yawController = new PhoenixPIDController(
+        yawController = new PIDController(
                 Constants.SwerveConstants.ANGULAR_POSITION_P,
                 Constants.SwerveConstants.ANGULAR_POSITION_I,
                 Constants.SwerveConstants.ANGULAR_POSITION_D
@@ -58,14 +59,14 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
         yawController.enableContinuousInput(Constants.SwerveConstants.ANGULAR_MINIMUM_ANGLE, Constants.SwerveConstants.ANGULAR_MAXIMUM_ANGLE);
 
 
-        objectDetectionController = new PhoenixPIDController(
+        objectDetectionController = new PIDController(
                 Constants.SwerveConstants.ANGULAR_OBJECT_DETECTION_P,
                 Constants.SwerveConstants.ANGULAR_OBJECT_DETECTION_I,
                 Constants.SwerveConstants.ANGULAR_OBJECT_DETECTION_D
         );
         objectDetectionController.enableContinuousInput(Constants.SwerveConstants.ANGULAR_MINIMUM_ANGLE, Constants.SwerveConstants.ANGULAR_MAXIMUM_ANGLE);
 
-        driveController = new PhoenixPIDController(
+        driveController = new PIDController(
             Constants.SwerveConstants.DRIVE_GAINS.kP,
             Constants.SwerveConstants.DRIVE_GAINS.kI,
             Constants.SwerveConstants.DRIVE_GAINS.kD
@@ -107,8 +108,7 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
                         .withRotationalRate(
                             yawController.calculate(
                                     localizer.getStrategyPose().getRotation().getDegrees(),
-                                    localizer.getAngleToSpeaker(),
-                                    Timer.getFPGATimestamp() // TODO TEST this.getPigeon2().getYaw().getTimestamp().getTime() (TEST FOR CENTER ON NOTE TOO)
+                                    localizer.getAngleToSpeaker()
                             ) * Constants.MAX_ANGULAR_VEL
                         )
         );
@@ -125,8 +125,7 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
                         .withRotationalRate(VisionUtil.Photon.Color.hasTargets()
                                 ? objectDetectionController.calculate(
                                         currentYaw,
-                                        currentYaw - VisionUtil.Photon.Color.getBestObjectYaw(),
-                                        Timer.getFPGATimestamp()
+                                        currentYaw - VisionUtil.Photon.Color.getBestObjectYaw()
                                 ) * Constants.MAX_ANGULAR_VEL
                                 : 0.0
                         )
@@ -143,8 +142,7 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
                         .withVelocityX(VisionUtil.Photon.Color.hasTargets()
                             ? driveController.calculate(
                                 currentPitch,
-                                currentPitch - VisionUtil.Photon.Color.getBestObjectPitch(),
-                                Timer.getFPGATimestamp()
+                                currentPitch - VisionUtil.Photon.Color.getBestObjectPitch()
                             ) * Constants.MAX_VEL
                             : 0.0
 
@@ -153,8 +151,7 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
                         .withRotationalRate(VisionUtil.Photon.Color.hasTargets()
                                 ? yawController.calculate(
                                         currentYaw,
-                                        currentYaw - VisionUtil.Photon.Color.getBestObjectYaw(),
-                                        Timer.getFPGATimestamp()
+                                        currentYaw - VisionUtil.Photon.Color.getBestObjectYaw()
                                 ) * Constants.MAX_ANGULAR_VEL
                                 : 0.0
                         )
