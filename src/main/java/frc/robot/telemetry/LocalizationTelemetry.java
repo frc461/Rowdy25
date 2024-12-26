@@ -4,6 +4,7 @@ import dev.doglog.DogLog;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.networktables.*;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import frc.robot.Constants;
 import frc.robot.subsystems.drivetrain.Localizer;
 import frc.robot.util.Elastic;
@@ -25,9 +26,7 @@ public class LocalizationTelemetry {
     private final NetworkTable questNavTelemetryTable = Constants.NT_INSTANCE.getTable("oculus");
 
     private final StringPublisher poseEstimatePrettyPub = localizationTelemetryTable.getStringTopic("Estimated Pose").publish();
-    private final StructPublisher<Pose2d> poseEstimatePub = localizationTelemetryTable.getStructTopic("Estimated Pose2d", Pose2d.struct).publish();
     private final StringPublisher questPosePrettyPub = localizationTelemetryTable.getStringTopic("Quest-Based Pose").publish();
-    private final StructPublisher<Pose2d> questPosePub = localizationTelemetryTable.getStructTopic("Quest-Based Pose2d", Pose2d.struct).publish();
     private final StringPublisher localizationStrategyPub = localizationTelemetryTable.getStringTopic("Localization Strategy").publish();
 
     private final StringPublisher megaTagOnePub = limelightTelemetryTable.getStringTopic("MegaTagOne Pose").publish();
@@ -44,14 +43,20 @@ public class LocalizationTelemetry {
     private final StringPublisher questOffsetPub = questNavTelemetryTable.getStringTopic("Quest Offset").publish();
     private final DoubleSubscriber questBatterySub = questNavTelemetryTable.getDoubleTopic("batteryLevel").subscribe(0.0f);
 
+    private final NetworkTable robotPoseTable = Constants.NT_INSTANCE.getTable("Pose");
+    private final DoubleArrayPublisher poseEstimatePub = robotPoseTable.getDoubleArrayTopic("Estimated Pose2d").publish();
+    private final DoubleArrayPublisher questPosePub = robotPoseTable.getDoubleArrayTopic("Quest-Based Pose2d").publish();
+    private final StringPublisher fieldTypePub = robotPoseTable.getStringTopic(".type").publish();
+
     public void publishValues() {
         Pose2d questPose = localizer.getQuestPose();
         questPosePrettyPub.set("X: " + questPose.getX() + ", Y: " + questPose.getY() + ", Yaw: " + questPose.getRotation().getDegrees());
-        questPosePub.set(questPose);
+        questPosePub.set(new double[] {questPose.getX(), questPose.getY(), questPose.getRotation().getDegrees()});
         Pose2d poseEstimate = localizer.getEstimatedPose();
         poseEstimatePrettyPub.set("X: " + poseEstimate.getX() + ", Y: " + poseEstimate.getY() + ", Yaw: " + poseEstimate.getRotation().getDegrees());
-        poseEstimatePub.set(poseEstimate);
+        poseEstimatePub.set(new double[] {poseEstimate.getX(), poseEstimate.getY(), poseEstimate.getRotation().getDegrees()});
         localizationStrategyPub.set(localizer.getLocalizationStrategy());
+        fieldTypePub.set("Field2d");
 
         Pose2d megaTag1Pose = VisionUtil.Limelight.getMegaTagOnePose();
         megaTagOnePub.set("X: " + megaTag1Pose.getX() + ", Y: " + megaTag1Pose.getY() + ", Yaw: " + megaTag1Pose.getRotation().getDegrees());
