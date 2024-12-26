@@ -91,7 +91,7 @@ public final class Constants {
         }
 
         public static final class QuestNavConstants {
-            public static final String QUESTNAV_NT_NAME = "oculus";
+            public static final String QUESTNAV_NT_NAME = "questnav";
 
             // TODO SET QUEST TO CENTER OF ROBOT OFFSETS
             public static final double QUEST_FORWARD = Units.inchesToMeters(2.5);
