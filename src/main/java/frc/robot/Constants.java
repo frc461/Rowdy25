@@ -53,7 +53,7 @@ public final class Constants {
         public enum QuestFault {
             QUEST_LOW_BATTERY,
             QUEST_DIED,
-            QUEST_DISCONNECT
+            QUEST_DISCONNECTED
         }
     }
 

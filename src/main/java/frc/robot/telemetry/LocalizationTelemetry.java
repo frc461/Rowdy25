@@ -4,6 +4,7 @@ import dev.doglog.DogLog;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.networktables.*;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import frc.robot.Constants;
 import frc.robot.subsystems.drivetrain.Localizer;
@@ -42,6 +43,9 @@ public class LocalizationTelemetry {
     private final StringPublisher questRotationPub = questNavTelemetryTable.getStringTopic("Quest Rotation").publish();
     private final StringPublisher questOffsetPub = questNavTelemetryTable.getStringTopic("Quest Offset").publish();
     private final DoubleSubscriber questBatterySub = questNavTelemetryTable.getDoubleTopic("batteryLevel").subscribe(0.0f);
+    private final DoubleSubscriber questTimestampSub = questNavTelemetryTable.getDoubleTopic("timestamp").subscribe(0.0f);
+
+    private boolean questDisconnectedNotified = false;
 
     private final NetworkTable robotPoseTable = Constants.NT_INSTANCE.getTable("Pose");
     private final DoubleArrayPublisher poseEstimatePub = robotPoseTable.getDoubleArrayTopic("Estimated Pose2d").publish();
@@ -89,6 +93,12 @@ public class LocalizationTelemetry {
         DogLog.log("PhotonPose", VisionUtil.Photon.BW.getPose());
         DogLog.log("PhotonColorHasTarget", VisionUtil.Photon.Color.hasTargets());
         DogLog.log("PhotonBWHasTarget", VisionUtil.Photon.BW.hasTargets());
+
+        if (questTimestampSub.getLastChange() <= Timer.getFPGATimestamp() - 3 && !questDisconnectedNotified) {
+            DogLog.logFault(Constants.Logger.QuestFault.QUEST_DISCONNECTED);
+            Elastic.sendNotification(new Elastic.Notification(Elastic.Notification.NotificationLevel.ERROR, "Quest Nav", "Quest has been disconnected! Press B to switch to PoseEstimator."));
+            questDisconnectedNotified = true;
+        }
     }
 
     public void registerListeners() {
