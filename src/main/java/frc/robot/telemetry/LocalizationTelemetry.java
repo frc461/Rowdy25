@@ -121,8 +121,6 @@ public class LocalizationTelemetry {
 
     public void registerListeners() {
         Constants.NT_INSTANCE.addListener(questBatterySub, EnumSet.of(NetworkTableEvent.Kind.kValueAll), (event) -> {
-                DogLog.logFault(Constants.Logger.QuestFault.QUEST_DIED);
-
                 if (Arrays.stream(questBatterySub.readQueueValues()).noneMatch(x -> x <= 0.005)
                             && questBatterySub.get() <= 0.005) {
                         DogLog.logFault(Constants.Logger.QuestFault.QUEST_DIED);
