@@ -94,8 +94,8 @@ public final class Constants {
             public static final String QUESTNAV_NT_NAME = "questnav";
 
             // TODO SET QUEST TO CENTER OF ROBOT OFFSETS
-            public static final double QUEST_FORWARD = Units.inchesToMeters(-2.75);
-            public static final double QUEST_LEFT = Units.inchesToMeters(5.35);
+            public static final double QUEST_FORWARD = Units.inchesToMeters(-2.5);
+            public static final double QUEST_LEFT = Units.inchesToMeters(5.25);
             public static final double QUEST_UP = 0.0;
             public static final double QUEST_ROLL = 0.0;
             public static final double QUEST_PITCH = 0.0;
