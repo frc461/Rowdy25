@@ -47,8 +47,10 @@ public class LocalizationTelemetry {
     public void publishValues() {
         Pose2d questPose = localizer.getQuestPose();
         questPosePrettyPub.set("X: " + questPose.getX() + ", Y: " + questPose.getY() + ", Yaw: " + questPose.getRotation().getDegrees());
+        questPosePub.set(questPose);
         Pose2d poseEstimate = localizer.getEstimatedPose();
         poseEstimatePrettyPub.set("X: " + poseEstimate.getX() + ", Y: " + poseEstimate.getY() + ", Yaw: " + poseEstimate.getRotation().getDegrees());
+        poseEstimatePub.set(poseEstimate);
         localizationStrategyPub.set(localizer.getLocalizationStrategy());
 
         Pose2d megaTag1Pose = VisionUtil.Limelight.getMegaTagOnePose();
