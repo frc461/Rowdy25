@@ -23,7 +23,14 @@ public class RobotContainer {
     /* Subsystems */
     public final Swerve swerve = new Swerve();
 
-    private final AutoFactory autoFactory;
+    private final AutoFactory autoFactory = new AutoFactory(
+            swerve.getLocalizer()::getStrategyPose, // A function that returns the current robot pose
+            swerve.getLocalizer()::setPoses, // A function that resets the current robot pose to the provided Pose2d
+            swerve::followTrajectory, // The drive subsystem trajectory follower
+            true, // If alliance flipping should be enabled
+            swerve, // The drive subsystem
+            new AutoBindings() // An empty AutoBindings object
+    );
 
     /* Sys ID */
     public final SysID sysID = new SysID(swerve);
@@ -87,15 +94,6 @@ public class RobotContainer {
     public RobotContainer() {
         setDefaultCommands();
         configureBindings();
-
-        autoFactory = new AutoFactory(
-            swerve.getLocalizer()::getStrategyPose, // A function that returns the current robot pose
-            swerve.getLocalizer()::setPoses, // A function that resets the current robot pose to the provided Pose2d
-            swerve::followTrajectory, // The drive subsystem trajectory follower
-            true, // If alliance flipping should be enabled
-            swerve, // The drive subsystem
-            new AutoBindings() // An empty AutoBindings object
-        );
 
         DogLog.setOptions(new DogLogOptions().withCaptureDs(true));
         DogLog.setOptions(new DogLogOptions().withLogExtras(true));
