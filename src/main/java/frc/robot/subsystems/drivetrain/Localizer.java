@@ -107,8 +107,8 @@ public class Localizer {
                     Timer.getFPGATimestamp() - VisionUtil.Limelight.getLatency()
             );
             if (megaTagTwoOffset.getTranslation().getNorm() < Constants.VisionConstants.CONFIGURED_TRANSLATION_THRESHOLD) {
+                isMegaTagTwoConfigured = true;
                 poseEstimator.setVisionMeasurementStdDevs(Constants.VisionConstants.VISION_STD_DEV_CONFIGURED);
-                // TODO: mega tag 2 doesn't work still
             }
             return;
         }
