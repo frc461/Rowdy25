@@ -83,15 +83,15 @@ public final class Constants {
         public static final class PhotonConstants {
             // TODO SET ARDUCAM BW CAMERA TO CENTER OF ROBOT OFFSETS
             public static final double BW_FORWARD = 0.0;
-            public static final double BW_LEFT = -4.0;
+            public static final double BW_LEFT = Units.inchesToMeters(-4.0);
             public static final double BW_UP = 0.0;
             public static final double BW_ROLL = 0.0;
-            public static final double BW_PITCH = 35.5;
+            public static final double BW_PITCH = 25.5;
             public static final double BW_YAW = 0.0;
         }
 
         public static final class QuestNavConstants {
-            public static final String QUESTNAV_NT_NAME = "oculus";
+            public static final String QUESTNAV_NT_NAME = "questnav";
 
             // TODO SET QUEST TO CENTER OF ROBOT OFFSETS
             public static final double QUEST_FORWARD = Units.inchesToMeters(2.5);
