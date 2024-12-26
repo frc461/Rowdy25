@@ -16,7 +16,7 @@ import java.util.Optional;
 
 public class VisionUtil {
     public static boolean highConfidenceEstimation() {
-        return Limelight.isTagClear() && Photon.BW.isTagClear();
+        return Limelight.isTagClear() && Photon.BW.hasTargets();
     }
 
     public static final class Limelight {
@@ -172,7 +172,9 @@ public class VisionUtil {
                     robotToCameraOffset
             );
 
-            public static PhotonPipelineResult latestResult = new PhotonPipelineResult();
+            private static Optional<EstimatedRobotPose> poseEstimateOpt = Optional.empty();
+
+            private static PhotonPipelineResult latestResult = new PhotonPipelineResult();
 
             public static boolean hasTargets() {
                 return latestResult.hasTargets();
@@ -192,15 +194,8 @@ public class VisionUtil {
                         : 0.0;
             }
 
-            public static boolean isTagClear() {
-                return hasTargets() && getBestTagDist() < Constants.VisionConstants.PhotonConstants.BW_MAX_TAG_CLEAR_DIST;
-            }
-
             public static Optional<EstimatedRobotPose> getOptionalPoseData() {
-                if (hasTargets()) {
-                    return photonPoseEstimator.update(Photon.BW.latestResult);
-                }
-                return Optional.empty();
+                return poseEstimateOpt;
             }
 
             public static Pose2d getPose() {
@@ -212,6 +207,7 @@ public class VisionUtil {
                 List<PhotonPipelineResult> results = BW.getAllUnreadResults();
                 if (!results.isEmpty()) {
                     latestResult = results.get(results.size() - 1);
+                    poseEstimateOpt = hasTargets() ? photonPoseEstimator.update(Photon.BW.latestResult) : Optional.empty();
                 }
             }
         }
