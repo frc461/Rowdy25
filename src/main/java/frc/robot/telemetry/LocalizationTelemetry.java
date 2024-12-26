@@ -92,26 +92,19 @@ public class LocalizationTelemetry {
     }
 
     public void registerListeners() {
-        questNavTelemetryTable.addListener("questDisconnect", EnumSet.of(NetworkTableEvent.Kind.kDisconnected), (table, key, event) -> {
-            if (!event.is(NetworkTableEvent.Kind.kDisconnected)) { return; }
-
-            DogLog.logFault(Constants.Logger.QuestFault.QUEST_DISCONNECT);
-            Elastic.sendNotification(new Elastic.Notification(Elastic.Notification.NotificationLevel.ERROR, "Quest Nav", "Quest has been disconnected! Press B to switch to PoseEstimator."));
-        });
-
-        questNavTelemetryTable.addListener("questBatteryLevel", EnumSet.of(NetworkTableEvent.Kind.kValueAll), (table, key, event) -> {
-            if (!event.is(NetworkTableEvent.Kind.kValueAll)) { return; }
-
-            if (Arrays.stream(questBatterySub.readQueueValues()).noneMatch(x -> x <= 0.005)
-                    && questBatterySub.get() <= 0.005) {
+        Constants.NT_INSTANCE.addListener(questBatterySub, EnumSet.of(NetworkTableEvent.Kind.kValueAll), (event) -> {
                 DogLog.logFault(Constants.Logger.QuestFault.QUEST_DIED);
-                Elastic.sendNotification(new Elastic.Notification(Elastic.Notification.NotificationLevel.ERROR, "Quest Nav", "Quest ran out of battery! Press B to switch to PoseEstimator."));
-            }
-            if (Arrays.stream(questBatterySub.readQueueValues()).noneMatch(x -> x <= 0.1)
-                    && questBatterySub.get() <= 0.1) {
-                DogLog.logFault(Constants.Logger.QuestFault.QUEST_LOW_BATTERY);
-                Elastic.sendNotification(new Elastic.Notification(Elastic.Notification.NotificationLevel.WARNING, "Quest Nav", "Quest has less than 10% battery left! Current Percent: " + (int) (questBatterySub.get() * 100)));
-            }
+
+                if (Arrays.stream(questBatterySub.readQueueValues()).noneMatch(x -> x <= 0.005)
+                            && questBatterySub.get() <= 0.005) {
+                        DogLog.logFault(Constants.Logger.QuestFault.QUEST_DIED);
+                        Elastic.sendNotification(new Elastic.Notification(Elastic.Notification.NotificationLevel.ERROR, "Quest Nav", "Quest ran out of battery! Press B to switch to PoseEstimator."));
+                }
+                if (Arrays.stream(questBatterySub.readQueueValues()).noneMatch(x -> x <= 0.1)
+                            && questBatterySub.get() <= 0.1) {
+                        DogLog.logFault(Constants.Logger.QuestFault.QUEST_LOW_BATTERY);
+                        Elastic.sendNotification(new Elastic.Notification(Elastic.Notification.NotificationLevel.WARNING, "Quest Nav", "Quest has less than 10% battery left! Current Percent: " + (int) (questBatterySub.get() * 100)));
+                }
         });
     }
 }
