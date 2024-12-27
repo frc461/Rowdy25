@@ -1,18 +1,23 @@
 package frc.robot.subsystems.drivetrain;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.*;
 
+import choreo.trajectory.SwerveSample;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.Constants;
-import frc.robot.commands.DriveConsistentHeadingCommand;
+import frc.robot.commands.DriveCommand;
 import frc.robot.telemetry.SwerveTelemetry;
 import frc.robot.util.VisionUtil;
 import frc.robot.util.Simulator;
@@ -22,7 +27,9 @@ import frc.robot.util.Simulator;
  * Subsystem so it can easily be used in command-based projects.
  */
 public class Swerve extends SwerveDrivetrain implements Subsystem {
-    private final Localizer localizer = new Localizer(this);
+    /* An extension to the Swerve subsystem */
+    public final Localizer localizer = new Localizer(this);
+
     private final SwerveTelemetry swerveTelemetry = new SwerveTelemetry(this);
 
     /* Swerve Command Requests */
@@ -30,9 +37,9 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
     private final SwerveRequest.SwerveDriveBrake xMode = new SwerveRequest.SwerveDriveBrake();
 
     /* PID Controllers */
-    private final PIDController yawController;
+    private final PIDController pathTranslationController;
+    private final PIDController pathSteeringController;
     private final PIDController objectDetectionController;
-    private final PIDController driveController;
 
     /* Keep track if we've ever applied the operator perspective before or not */
     private boolean hasAppliedDefaultRotation = false;
@@ -55,26 +62,26 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
                 Constants.SwerveConstants.BackRight.BACK_RIGHT
         );
 
-        yawController = new PIDController(
-                Constants.SwerveConstants.ANGULAR_POSITION_P,
-                Constants.SwerveConstants.ANGULAR_POSITION_I,
-                Constants.SwerveConstants.ANGULAR_POSITION_D
-        );
-        yawController.enableContinuousInput(Constants.SwerveConstants.ANGULAR_MINIMUM_ANGLE, Constants.SwerveConstants.ANGULAR_MAXIMUM_ANGLE);
-
 
         objectDetectionController = new PIDController(
                 Constants.SwerveConstants.ANGULAR_OBJECT_DETECTION_P,
-                Constants.SwerveConstants.ANGULAR_OBJECT_DETECTION_I,
+                0,
                 Constants.SwerveConstants.ANGULAR_OBJECT_DETECTION_D
         );
         objectDetectionController.enableContinuousInput(Constants.SwerveConstants.ANGULAR_MINIMUM_ANGLE, Constants.SwerveConstants.ANGULAR_MAXIMUM_ANGLE);
 
-        driveController = new PIDController(
-            Constants.SwerveConstants.DRIVE_GAINS.kP,
-            Constants.SwerveConstants.DRIVE_GAINS.kI,
-            Constants.SwerveConstants.DRIVE_GAINS.kD
+        pathTranslationController = new PIDController(
+                Constants.SwerveConstants.PATH_TRANSLATION_CONTROLLER_P,
+                0,
+                0
         );
+
+        pathSteeringController = new PIDController(
+                Constants.SwerveConstants.PATH_ROTATION_CONTROLLER_P,
+                0,
+                0
+        );
+        pathSteeringController.enableContinuousInput(-Math.PI, Math.PI);
 
         if (Utils.isSimulation()) {
             new Simulator(this).startSimThread();
@@ -91,71 +98,43 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
         return run(() -> this.setControl(requestSupplier.get()));
     }
 
-    public Command driveFieldCentric(DoubleSupplier straight, DoubleSupplier strafe, DoubleSupplier rot) {
-        return new DriveConsistentHeadingCommand( // TODO TEST THIS COMMAND
+    public Command driveFieldCentric(
+            DoubleSupplier straight,
+            DoubleSupplier strafe,
+            DoubleSupplier rot,
+            BooleanSupplier tagTurret,
+            BooleanSupplier objectTurret
+    ) {
+        return new DriveCommand(
                 this,
                 fieldCentric,
-                yawController::calculate,
                 heading -> consistentHeading = heading,
                 () -> consistentHeading,
-                () -> localizer.getStrategyPose().getRotation().getDegrees(),
                 straight,
                 strafe,
-                rot
-        );
-    }
-
-    public Command driveTurret(DoubleSupplier straight, DoubleSupplier strafe) {
-        return applyRequest(() -> fieldCentric
-                .withDeadband(Constants.MAX_VEL * 0.1)
-                .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
-                .withVelocityX(-straight.getAsDouble() * Constants.MAX_VEL)
-                .withVelocityY(-strafe.getAsDouble() * Constants.MAX_VEL)
-                .withRotationalRate(
-                    yawController.calculate(
-                            localizer.getStrategyPose().getRotation().getDegrees(),
-                            localizer.getAngleToSpeaker()
-                    ) * Constants.MAX_ANGULAR_VEL
-                )
-        );
-    }
-
-    public Command centerOnNote(DoubleSupplier straight, DoubleSupplier strafe) {
-        double currentYaw = localizer.getStrategyPose().getRotation().getDegrees();
-        return applyRequest(() -> fieldCentric
-                .withDeadband(Constants.MAX_VEL * 0.1)
-                .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
-                .withVelocityX(-straight.getAsDouble() * Constants.MAX_VEL)
-                .withVelocityY(-strafe.getAsDouble() * Constants.MAX_VEL)
-                .withRotationalRate(VisionUtil.Photon.Color.hasTargets()
-                        ? objectDetectionController.calculate(
-                                currentYaw,
-                                currentYaw - VisionUtil.Photon.Color.getBestObjectYaw()
-                        ) * Constants.MAX_ANGULAR_VEL
-                        : 0.0
-                )
+                rot,
+                tagTurret,
+                objectTurret
         );
     }
 
     public Command moveToNote() { // TODO IMPLEMENT THIS AFTER CALIBRATING AUTO
-        double currentYaw = localizer.getStrategyPose().getRotation().getDegrees();
-        double currentPitch = 25; // TODO: MATCH REAL PITCH
         return applyRequest(() -> fieldCentric
                 .withDeadband(Constants.MAX_VEL * 0.1)
                 .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
                 .withVelocityX(VisionUtil.Photon.Color.hasTargets()
-                    ? driveController.calculate(
-                        currentPitch,
-                        currentPitch - VisionUtil.Photon.Color.getBestObjectPitch()
+                    ? pathTranslationController.calculate(
+                        0,
+                        -VisionUtil.Photon.Color.getBestObjectPitch()
                     ) * Constants.MAX_VEL
                     : 0.0
 
                 )
                 .withVelocityY(0.0)
                 .withRotationalRate(VisionUtil.Photon.Color.hasTargets()
-                        ? yawController.calculate(
-                                currentYaw,
-                                currentYaw - VisionUtil.Photon.Color.getBestObjectYaw()
+                        ? objectDetectionController.calculate(
+                                0,
+                                -VisionUtil.Photon.Color.getBestObjectYaw()
                         ) * Constants.MAX_ANGULAR_VEL
                         : 0.0
                 )
@@ -167,12 +146,30 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
         return applyRequest(() -> xMode);
     }
 
-    public void toggleLocalizationStrategy() {
-        localizer.toggleStrategy();
+    public Command resetGyro() {
+        return runOnce(() -> {
+                seedFieldCentric();
+                localizer.setPoses(new Pose2d(
+                        localizer.getStrategyPose().getTranslation(),
+                        new Rotation2d()
+                ));
+        });
     }
 
-    public void recalibrate() {
-        localizer.recalibrateMegaTag();
+    public void followTrajectory(SwerveSample sample) {
+        Pose2d pose = localizer.getStrategyPose();
+
+        ChassisSpeeds speeds = new ChassisSpeeds(
+                sample.vx + pathTranslationController.calculate(pose.getX(), sample.x),
+                sample.vy + pathTranslationController.calculate(pose.getY(), sample.y),
+                sample.omega + pathSteeringController.calculate(pose.getRotation().getRadians(), sample.heading)
+        );
+
+        setControl(new SwerveRequest.ApplyFieldSpeeds()
+                .withSpeeds(speeds)
+                .withWheelForceFeedforwardsX(sample.moduleForcesX())
+                .withWheelForceFeedforwardsY(sample.moduleForcesY())
+        );
     }
 
     @Override

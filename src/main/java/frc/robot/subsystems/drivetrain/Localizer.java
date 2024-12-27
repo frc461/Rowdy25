@@ -2,8 +2,10 @@ package frc.robot.subsystems.drivetrain;
 
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants;
 import frc.robot.telemetry.LocalizationTelemetry;
@@ -77,13 +79,17 @@ public class Localizer {
         return getTranslationToSpeaker().getAngle().getDegrees();
     }
 
-    public void toggleStrategy() {
+    public void toggleLocalizationStrategy() {
         strategy = strategy == LocalizationStrategy.QUEST_NAV ? LocalizationStrategy.POSE_ESTIMATOR : LocalizationStrategy.QUEST_NAV;
     }
 
     public void recalibrateMegaTag() {
         isMegaTagTwoConfigured = false;
-        poseEstimator.resetPose(new Pose2d());
+        poseEstimator.resetPose(new Pose2d(
+                poseEstimator.getEstimatedPosition().getTranslation(),
+                new Rotation2d()
+        ));
+        poseEstimator.setVisionMeasurementStdDevs(Constants.VisionConstants.VISION_STD_DEV_UNCONFIGURED);
     }
 
     public void configureQuestOffset() {
@@ -126,10 +132,12 @@ public class Localizer {
 
     public void updatePhotonPoseEstimation() {
         VisionUtil.Photon.updateResults();
-        VisionUtil.Photon.BW.getOptionalPoseData().ifPresent(photonPose -> poseEstimator.addVisionMeasurement(
-                photonPose.estimatedPose.toPose2d(),
-                photonPose.timestampSeconds
-        ));
+        if (VisionUtil.Photon.BW.isTagClear()) {
+            VisionUtil.Photon.BW.getOptionalPoseData().ifPresent(photonPose -> poseEstimator.addVisionMeasurement(
+                    photonPose.estimatedPose.toPose2d(),
+                    photonPose.timestampSeconds
+            ));
+        }
     }
 
     public void updatePoseEstimation() {
@@ -141,15 +149,11 @@ public class Localizer {
     // changes offset based on error between pose estimate and corrected QuestNav pose
     public void updateQuestNavPose() {
         VisionUtil.QuestNav.completeQuestPose();
-        if (VisionUtil.highConfidenceEstimation()) {
-            // Accumulated error between pose estimator and corrected QuestNav pose
-            Transform2d correctionError = getEstimatedPose().minus(getQuestPose());
-            double transDiff = correctionError.getTranslation().getNorm();
-            double rotDiff = correctionError.getRotation().getDegrees();
-            if (transDiff > Constants.VisionConstants.QuestNavConstants.TRANSLATION_ERROR_TOLERANCE
-                    || rotDiff > Constants.VisionConstants.QuestNavConstants.ROTATION_ERROR_TOLERANCE) {
-                configureQuestOffset();
-            }
+        if (VisionUtil.highConfidenceEstimation()
+                && this.swerve.getState().Speeds.vxMetersPerSecond == 0
+                && this.swerve.getState().Speeds.vyMetersPerSecond == 0
+                && Math.abs(this.swerve.getState().Speeds.omegaRadiansPerSecond) < 0.2) {
+            configureQuestOffset();
         }
     }
 

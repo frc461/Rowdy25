@@ -16,7 +16,7 @@ import java.util.Optional;
 
 public class VisionUtil {
     public static boolean highConfidenceEstimation() {
-        return Limelight.isTagClear() && Photon.BW.hasTargets();
+        return Limelight.isTagClear() && Photon.BW.isTagClear();
     }
 
     public static final class Limelight {
@@ -194,6 +194,10 @@ public class VisionUtil {
                         : 0.0;
             }
 
+            public static boolean isTagClear() {
+                return latestResult.targets.size() >= 2 && getBestTagDist() < Constants.VisionConstants.PhotonConstants.BW_MAX_TAG_CLEAR_DIST;
+            }
+
             public static Optional<EstimatedRobotPose> getOptionalPoseData() {
                 return poseEstimateOpt;
             }
@@ -207,7 +211,7 @@ public class VisionUtil {
                 List<PhotonPipelineResult> results = BW.getAllUnreadResults();
                 if (!results.isEmpty()) {
                     latestResult = results.get(results.size() - 1);
-                    poseEstimateOpt = hasTargets() ? photonPoseEstimator.update(Photon.BW.latestResult) : Optional.empty();
+                    poseEstimateOpt = isTagClear() ? photonPoseEstimator.update(Photon.BW.latestResult) : Optional.empty();
                 }
             }
         }

@@ -61,7 +61,7 @@ public final class Constants {
         public static final Matrix<N3, N1> ODOM_STD_DEV = VecBuilder.fill(0.2, 0.2, Units.degreesToRadians(2.0));
         public static final Matrix<N3, N1> VISION_STD_DEV_UNCONFIGURED = VecBuilder.fill(0.0001, 0.0001, Units.degreesToRadians(0.1));
         public static final Matrix<N3, N1> VISION_STD_DEV_CONFIGURED = VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(180.0));
-        // TODO FIX MEGATAG2 CALIBRATION
+        // TODO FINALIZE MEGATAG2 CALIBRATION
         public static final double CONFIGURED_TRANSLATION_THRESHOLD = 0.02;
         public static final double CONFIGURED_ROTATION_THRESHOLD = 2.0;
         public static final double CONFIGURED_MAX_ANG_VEL = 720.0;
@@ -77,7 +77,7 @@ public final class Constants {
             public static final double LL_PITCH = 25.5;
             public static final double LL_YAW = 0.0;
 
-            public static final double LL_MAX_TAG_CLEAR_DIST = 4.0;
+            public static final double LL_MAX_TAG_CLEAR_DIST = 3.0;
         }
         
         public static final class PhotonConstants {
@@ -88,6 +88,8 @@ public final class Constants {
             public static final double BW_ROLL = 0.0;
             public static final double BW_PITCH = 25.5;
             public static final double BW_YAW = 0.0;
+
+            public static final double BW_MAX_TAG_CLEAR_DIST = 3.0;
         }
 
         public static final class QuestNavConstants {
@@ -102,29 +104,31 @@ public final class Constants {
             public static final double QUEST_YAW = 0.0;
 
             // The thresholds through which the QuestNav's correctional offset will be recorrected by the error amount.
-            public static final double TRANSLATION_ERROR_TOLERANCE = 0.5;
-            public static final double ROTATION_ERROR_TOLERANCE = 10.0;
+            public static final double TRANSLATION_ERROR_TOLERANCE = 0.1;
+            public static final double ROTATION_ERROR_TOLERANCE = 3.0;
         }
     }
 
     public static final class SwerveConstants {
         public static final double ANGULAR_POSITION_P = 0.035;
-        public static final double ANGULAR_POSITION_I = 0;
         public static final double ANGULAR_POSITION_D = 0.0012;
+
+        public static final double ANGULAR_OBJECT_DETECTION_P = 0.025;
+        public static final double ANGULAR_OBJECT_DETECTION_D = 0.001;
+
         public static final double ANGULAR_MINIMUM_ANGLE = -180.0;
         public static final double ANGULAR_MAXIMUM_ANGLE = 180.0;
 
-        public static final double ANGULAR_OBJECT_DETECTION_P = 0.025;
-        public static final double ANGULAR_OBJECT_DETECTION_I = 0;
-        public static final double ANGULAR_OBJECT_DETECTION_D = 0.0005;
+        public static final double PATH_TRANSLATION_CONTROLLER_P = 10.0;
+        public static final double PATH_ROTATION_CONTROLLER_P = 7.5;
 
-        // Both sets of gains need to be tuned to your individual robot.
+        // TODO TUNE FOR 2025 ROBOT
 
         // The steer motor uses any SwerveModule.SteerRequestType control request with the
         // output type specified by SwerveModuleConstants.SteerMotorClosedLoopOutput
         private static final Slot0Configs STEER_GAINS = new Slot0Configs()
-            .withKP(100).withKI(0).withKD(0.5)
-            .withKS(0.1).withKV(2.66).withKA(0)
+            .withKP(75.0).withKI(0).withKD(0)
+            .withKS(0.1).withKV(2.00).withKA(0)
             .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign);
         // When using closed-loop control, the drive motor uses the control
         // output type specified by SwerveModuleConstants.DriveMotorClosedLoopOutput
