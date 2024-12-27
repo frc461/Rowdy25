@@ -6,15 +6,13 @@ import java.util.function.Supplier;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.*;
 
-import com.ctre.phoenix6.swerve.utility.PhoenixPIDController;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.Constants;
+import frc.robot.commands.DriveConsistentHeadingCommand;
 import frc.robot.telemetry.SwerveTelemetry;
 import frc.robot.util.VisionUtil;
 import frc.robot.util.Simulator;
@@ -94,25 +92,17 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
     }
 
     public Command driveFieldCentric(DoubleSupplier straight, DoubleSupplier strafe, DoubleSupplier rot) {
-        return ((applyRequest(() -> fieldCentric
-                .withDeadband(Constants.MAX_VEL * 0.1).withRotationalDeadband(Constants.MAX_ANGULAR_VEL * 0.1) // Add a 10% deadband
-                .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage) // Use open-loop control for drive motors
-                .withVelocityX(-straight.getAsDouble() * Constants.MAX_VEL) // Drive forward with negative Y (forward)
-                .withVelocityY(-strafe.getAsDouble() * Constants.MAX_VEL) // Drive left with negative X (left)
-                .withRotationalRate(-rot.getAsDouble() * Constants.MAX_ANGULAR_VEL)) // Drive counterclockwise with negative X (left)
-        .alongWith(runOnce(() -> consistentHeading = this.localizer.getStrategyPose().getRotation().getDegrees()))).onlyIf(
-                () -> (Math.abs(straight.getAsDouble()) < 0.1 && Math.abs(strafe.getAsDouble()) < 0.1) || Math.abs(rot.getAsDouble()) >= 0.1
-        )).alongWith(applyRequest(() ->
-                new SwerveRequest.FieldCentric()
-                        .withDeadband(Constants.MAX_VEL * 0.1).withRotationalDeadband(Constants.MAX_ANGULAR_VEL * 0.1)
-                        .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
-                        .withVelocityX(-straight.getAsDouble() * Constants.MAX_VEL)
-                        .withVelocityY(-strafe.getAsDouble() * Constants.MAX_VEL)
-                        .withRotationalRate(yawController.calculate(
-                                localizer.getStrategyPose().getRotation().getDegrees(),
-                                consistentHeading
-                        ) * Constants.MAX_ANGULAR_VEL))
-                .onlyIf(() -> Math.abs(rot.getAsDouble()) < 0.1 && Math.abs(straight.getAsDouble()) >= 0.1 && Math.abs(strafe.getAsDouble()) >= 0.1));
+        return new DriveConsistentHeadingCommand( // TODO TEST THIS COMMAND
+                this,
+                fieldCentric,
+                yawController::calculate,
+                heading -> consistentHeading = heading,
+                () -> consistentHeading,
+                () -> localizer.getStrategyPose().getRotation().getDegrees(),
+                straight,
+                strafe,
+                rot
+        );
     }
 
     public Command driveTurret(DoubleSupplier straight, DoubleSupplier strafe) {
