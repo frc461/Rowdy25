@@ -35,6 +35,8 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
     /* Keep track if we've ever applied the operator perspective before or not */
     private boolean hasAppliedDefaultRotation = false;
 
+    private double consistentHeading = 0.0;
+
     /**
      * Constructs a CTRE SwerveDrivetrain using the specified constants.
      * <p>
@@ -88,14 +90,26 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
     }
 
     public Command driveFieldCentric(DoubleSupplier straight, DoubleSupplier strafe, DoubleSupplier rot) {
-        return applyRequest(() ->
+        return ((applyRequest(() ->
                 new SwerveRequest.FieldCentric()
                         .withDeadband(Constants.MAX_VEL * 0.1).withRotationalDeadband(Constants.MAX_ANGULAR_VEL * 0.1) // Add a 10% deadband
                         .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage) // Use open-loop control for drive motors
                         .withVelocityX(-straight.getAsDouble() * Constants.MAX_VEL) // Drive forward with negative Y (forward)
                         .withVelocityY(-strafe.getAsDouble() * Constants.MAX_VEL) // Drive left with negative X (left)
-                        .withRotationalRate(-rot.getAsDouble() * Constants.MAX_ANGULAR_VEL) // Drive counterclockwise with negative X (left)
-        );
+                        .withRotationalRate(-rot.getAsDouble() * Constants.MAX_ANGULAR_VEL)) // Drive counterclockwise with negative X (left)
+                .alongWith(runOnce(() -> consistentHeading = this.localizer.getStrategyPose().getRotation().getDegrees()))).onlyIf(
+                        () -> (Math.abs(straight.getAsDouble()) < 0.1 && Math.abs(strafe.getAsDouble()) < 0.1) || Math.abs(rot.getAsDouble()) >= 0.1
+                )).alongWith(applyRequest(() ->
+                        new SwerveRequest.FieldCentric()
+                                .withDeadband(Constants.MAX_VEL * 0.1).withRotationalDeadband(Constants.MAX_ANGULAR_VEL * 0.1)
+                                .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
+                                .withVelocityX(-straight.getAsDouble() * Constants.MAX_VEL)
+                                .withVelocityY(-strafe.getAsDouble() * Constants.MAX_VEL)
+                                .withRotationalRate(yawController.calculate(
+                                        localizer.getStrategyPose().getRotation().getDegrees(),
+                                        consistentHeading
+                                ) * Constants.MAX_ANGULAR_VEL))
+                        .onlyIf(() -> Math.abs(rot.getAsDouble()) < 0.1 && Math.abs(straight.getAsDouble()) >= 0.1 && Math.abs(strafe.getAsDouble()) >= 0.1));
     }
 
     public Command driveTurret(DoubleSupplier straight, DoubleSupplier strafe) {
