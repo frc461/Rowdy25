@@ -110,7 +110,7 @@ public final class Constants {
     public static final class SwerveConstants {
         public static final double ANGULAR_POSITION_P = 0.035;
         public static final double ANGULAR_POSITION_I = 0;
-        public static final double ANGULAR_POSITION_D = 0.0015;
+        public static final double ANGULAR_POSITION_D = 0.0012;
 
         public static final double ANGULAR_OBJECT_DETECTION_P = 0.025;
         public static final double ANGULAR_OBJECT_DETECTION_I = 0;
@@ -133,8 +133,8 @@ public final class Constants {
         // When using closed-loop control, the drive motor uses the control
         // output type specified by SwerveModuleConstants.DriveMotorClosedLoopOutput
         public static final Slot0Configs DRIVE_GAINS = new Slot0Configs()
-            .withKP(0.1).withKI(0).withKD(0)
-            .withKS(0).withKV(0.124);
+            .withKP(2.5957).withKI(0).withKD(0)
+            .withKS(0.1).withKV(2.30).withKA(0.07);
 
         // The closed-loop output type to use for the steer motors;
         // This affects the PID/FF gains for the steer motors

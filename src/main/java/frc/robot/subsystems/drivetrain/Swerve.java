@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.Constants;
+import frc.robot.commands.DriveConsistentHeadingCommand;
 import frc.robot.telemetry.SwerveTelemetry;
 import frc.robot.util.VisionUtil;
 import frc.robot.util.Simulator;
@@ -29,7 +30,11 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
     private final Localizer localizer = new Localizer(this);
     private final SwerveTelemetry swerveTelemetry = new SwerveTelemetry(this);
 
-    // TODO TEST WITH REGULAR PID CONTROLLER
+    /* Swerve Command Requests */
+    private final SwerveRequest.FieldCentric fieldCentric = new SwerveRequest.FieldCentric();
+    private final SwerveRequest.SwerveDriveBrake xMode = new SwerveRequest.SwerveDriveBrake();
+
+    /* PID Controllers */
     private final PIDController pathTranslationController;
     private final PIDController pathRotationController;
     private final PIDController yawController;
@@ -38,6 +43,8 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
 
     /* Keep track if we've ever applied the operator perspective before or not */
     private boolean hasAppliedDefaultRotation = false;
+
+    private double consistentHeading = 0.0;
 
     /**
      * Constructs a CTRE SwerveDrivetrain using the specified constants.
@@ -105,75 +112,76 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
     }
 
     public Command driveFieldCentric(DoubleSupplier straight, DoubleSupplier strafe, DoubleSupplier rot) {
-        return applyRequest(() ->
-                new SwerveRequest.FieldCentric()
-                        .withDeadband(Constants.MAX_VEL * 0.1).withRotationalDeadband(Constants.MAX_ANGULAR_VEL * 0.1) // Add a 10% deadband
-                        .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage) // Use open-loop control for drive motors
-                        .withVelocityX(-straight.getAsDouble() * Constants.MAX_VEL) // Drive forward with negative Y (forward)
-                        .withVelocityY(-strafe.getAsDouble() * Constants.MAX_VEL) // Drive left with negative X (left)
-                        .withRotationalRate(-rot.getAsDouble() * Constants.MAX_ANGULAR_VEL) // Drive counterclockwise with negative X (left)
+        return new DriveConsistentHeadingCommand( // TODO TEST THIS COMMAND
+                this,
+                fieldCentric,
+                yawController::calculate,
+                heading -> consistentHeading = heading,
+                () -> consistentHeading,
+                () -> localizer.getStrategyPose().getRotation().getDegrees(),
+                straight,
+                strafe,
+                rot
         );
     }
 
     public Command driveTurret(DoubleSupplier straight, DoubleSupplier strafe) {
-        return applyRequest(() ->
-                new SwerveRequest.FieldCentric()
-                        .withDeadband(Constants.MAX_VEL * 0.1)
-                        .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
-                        .withVelocityX(-straight.getAsDouble() * Constants.MAX_VEL)
-                        .withVelocityY(-strafe.getAsDouble() * Constants.MAX_VEL)
-                        .withRotationalRate(
-                            yawController.calculate(
-                                    localizer.getStrategyPose().getRotation().getDegrees(),
-                                    localizer.getAngleToSpeaker()
-                            ) * Constants.MAX_ANGULAR_VEL
-                        )
+        return applyRequest(() -> fieldCentric
+                .withDeadband(Constants.MAX_VEL * 0.1)
+                .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
+                .withVelocityX(-straight.getAsDouble() * Constants.MAX_VEL)
+                .withVelocityY(-strafe.getAsDouble() * Constants.MAX_VEL)
+                .withRotationalRate(
+                    yawController.calculate(
+                            localizer.getStrategyPose().getRotation().getDegrees(),
+                            localizer.getAngleToSpeaker()
+                    ) * Constants.MAX_ANGULAR_VEL
+                )
         );
     }
 
     public Command centerOnNote(DoubleSupplier straight, DoubleSupplier strafe) {
-        return applyRequest(() ->
-                new SwerveRequest.FieldCentric()
-                        .withDeadband(Constants.MAX_VEL * 0.1)
-                        .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
-                        .withVelocityX(-straight.getAsDouble() * Constants.MAX_VEL)
-                        .withVelocityY(-strafe.getAsDouble() * Constants.MAX_VEL)
-                        .withRotationalRate(VisionUtil.Photon.Color.hasTargets()
-                                ? objectDetectionController.calculate(
-                                        0,
-                                        -VisionUtil.Photon.Color.getBestObjectYaw()
-                                ) * Constants.MAX_ANGULAR_VEL
-                                : 0.0
-                        )
+        return applyRequest(() -> fieldCentric
+                .withDeadband(Constants.MAX_VEL * 0.1)
+                .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
+                .withVelocityX(-straight.getAsDouble() * Constants.MAX_VEL)
+                .withVelocityY(-strafe.getAsDouble() * Constants.MAX_VEL)
+                .withRotationalRate(VisionUtil.Photon.Color.hasTargets()
+                        ? objectDetectionController.calculate(
+                                0,
+                                -VisionUtil.Photon.Color.getBestObjectYaw()
+                        ) * Constants.MAX_ANGULAR_VEL
+                        : 0.0
+                )
         );
     }
 
-    public Command moveToNote() { // TODO CALIBRATE THIS AFTER CALIBRATING AUTO
-        return applyRequest(() ->
-                new SwerveRequest.RobotCentric()
-                        .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
-                        .withVelocityX(VisionUtil.Photon.Color.hasTargets()
-                            ? pathTranslationController.calculate(
-                                0,
-                                -VisionUtil.Photon.Color.getBestObjectPitch()
-                            ) * Constants.MAX_VEL
-                            : 0.0
+    public Command moveToNote() { // TODO IMPLEMENT THIS AFTER CALIBRATING AUTO
+        return applyRequest(() -> fieldCentric
+                .withDeadband(Constants.MAX_VEL * 0.1)
+                .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
+                .withVelocityX(VisionUtil.Photon.Color.hasTargets()
+                    ? pathTranslationController.calculate(
+                        0,
+                        -VisionUtil.Photon.Color.getBestObjectPitch()
+                    ) * Constants.MAX_VEL
+                    : 0.0
 
-                        )
-                        .withVelocityY(0.0)
-                        .withRotationalRate(VisionUtil.Photon.Color.hasTargets()
-                                ? yawController.calculate(
-                                        0,
-                                        -VisionUtil.Photon.Color.getBestObjectYaw()
-                                ) * Constants.MAX_ANGULAR_VEL
-                                : 0.0
-                        )
+                )
+                .withVelocityY(0.0)
+                .withRotationalRate(VisionUtil.Photon.Color.hasTargets()
+                        ? yawController.calculate(
+                                0,
+                                -VisionUtil.Photon.Color.getBestObjectYaw()
+                        ) * Constants.MAX_ANGULAR_VEL
+                        : 0.0
+                )
         );
 
     }
 
     public Command xMode() {
-        return applyRequest(SwerveRequest.SwerveDriveBrake::new);
+        return applyRequest(() -> xMode);
     }
 
     public void followTrajectory(SwerveSample sample) {
