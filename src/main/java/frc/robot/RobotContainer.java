@@ -7,28 +7,23 @@ package frc.robot;
 import choreo.auto.AutoFactory.AutoBindings;
 import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
+import choreo.auto.AutoRoutine;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import dev.doglog.DogLog;
 import dev.doglog.DogLogOptions;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.autos.Auto;
+import frc.robot.autos.AutoManager;
 import frc.robot.subsystems.drivetrain.Swerve;
 import frc.robot.util.SysID;
+
+import java.util.Map;
+import java.util.function.Supplier;
 
 public class RobotContainer {
     /* Subsystems */
     public final Swerve swerve = new Swerve();
-
-    private final AutoFactory autoFactory = new AutoFactory(
-            swerve.localizer::getStrategyPose, // A function that returns the current robot pose
-            swerve.localizer::setPoses, // A function that resets the current robot pose to the provided Pose2d
-            swerve::followTrajectory, // The drive subsystem trajectory follower
-            true, // If alliance flipping should be enabled
-            swerve, // The drive subsystem
-            new AutoBindings() // An empty AutoBindings object
-    );
 
     private final AutoChooser autoChooser = new AutoChooser();
 
@@ -98,12 +93,21 @@ public class RobotContainer {
         DogLog.setOptions(new DogLogOptions().withCaptureDs(true));
         DogLog.setOptions(new DogLogOptions().withLogExtras(true));
         DogLog.setPdh(new PowerDistribution());
+
+        Map<String, Supplier<AutoRoutine>> routines = new AutoManager(new AutoFactory(
+                swerve.localizer::getStrategyPose, // A function that returns the current robot pose
+                swerve.localizer::setPoses, // A function that resets the current robot pose to the provided Pose2d
+                swerve::followTrajectory, // The drive subsystem trajectory follower
+                true, // If alliance flipping should be enabled
+                swerve, // The drive subsystem
+                new AutoBindings() // An empty AutoBindings object
+        )).allRoutines;
+
+        for (String name : routines.keySet()) {
+            autoChooser.addRoutine(name, routines.get(name));
+        }
         
-        Auto autoRoutine = new Auto(autoFactory);
-        autoChooser.addCmd("2,5Ce,4Ce", autoRoutine::rightThreePiece);
-        autoChooser.addCmd("branchingTest", autoRoutine::branchingTest);
-        
-        SmartDashboard.putData(autoChooser);
+        SmartDashboard.putData("Auto Chooser", autoChooser);
     }
 
     /* Each subsystem will execute their corresponding command periodically */
@@ -143,6 +147,6 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        return autoChooser.selectedCommand();
+        return autoChooser.selectedCommandScheduler();
     }
 }

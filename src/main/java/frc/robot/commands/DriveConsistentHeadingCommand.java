@@ -56,7 +56,6 @@ public class DriveConsistentHeadingCommand extends Command {
         } else {
             swerve.setControl(
                     fieldCentric.withDeadband(Constants.MAX_VEL * 0.1)
-                            .withRotationalDeadband(Constants.MAX_ANGULAR_VEL * 0.1)
                             .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
                             .withVelocityX(-straight.getAsDouble() * Constants.MAX_VEL)
                             .withVelocityY(-strafe.getAsDouble() * Constants.MAX_VEL)
