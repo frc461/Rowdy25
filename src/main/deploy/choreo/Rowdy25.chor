@@ -1,5 +1,5 @@
 {
- "name":"Untitled",
+ "name":"Rowdy25",
  "version":1,
  "type":"Swerve",
  "variables":{
@@ -44,8 +44,8 @@
    "val":0.0508
   },
   "vmax":{
-   "exp":"4000 RPM",
-   "val":418.87902047863906
+   "exp":"3500 RPM",
+   "val":366.5191429188092
   },
   "tmax":{
    "exp":"1.2 N * m",
