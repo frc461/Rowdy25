@@ -4,6 +4,8 @@ import dev.doglog.DogLog;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.networktables.*;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants;
 import frc.robot.subsystems.drivetrain.Localizer;
 import frc.robot.util.Elastic;
@@ -42,6 +44,10 @@ public class LocalizationTelemetry {
     private final StringPublisher questOffsetPub = questNavTelemetryTable.getStringTopic("Quest Offset").publish();
     private final DoubleSubscriber questBatterySub = questNavTelemetryTable.getDoubleTopic("batteryPerent").subscribe(0.0f);
     private final DoubleSubscriber questTimestampSub = questNavTelemetryTable.getDoubleTopic("timestamp").subscribe(0.0f);
+
+    private boolean questSendDisconnectMessage = true;
+    private boolean questSendDiedMessage = true;
+    private boolean questSendBatteryLowMessage = true;
 
     private final NetworkTable robotPoseTable = Constants.NT_INSTANCE.getTable("Pose");
     private final StringPublisher fieldTypePub = robotPoseTable.getStringTopic(".type").publish();
@@ -112,19 +118,25 @@ public class LocalizationTelemetry {
         DogLog.log("PhotonPose", VisionUtil.Photon.BW.getPose());
         DogLog.log("PhotonColorHasTarget", VisionUtil.Photon.Color.hasTargets());
         DogLog.log("PhotonBWHasTarget", VisionUtil.Photon.BW.hasTargets());
+
+        if (DriverStation.isEnabled() && questTimestampSub.getLastChange() <= (Timer.getTimestamp() - 2) * 1_000_000 && questSendDisconnectMessage) {
+            DogLog.logFault(Constants.Logger.QuestFault.QUEST_DISCONNECTED);
+            Elastic.sendNotification(new Elastic.Notification(Elastic.Notification.NotificationLevel.ERROR, "Quest Nav", "Quest has been disconnected! Press B to switch to PoseEstimator.", 5000));
+            questSendDisconnectMessage = false;
+        }
     }
 
     public void registerListeners() {
         Constants.NT_INSTANCE.addListener(questBatterySub, EnumSet.of(NetworkTableEvent.Kind.kValueAll), (event) -> {
-                if (Arrays.stream(questBatterySub.readQueueValues()).noneMatch(x -> x <= 0.5)
-                            && questBatterySub.get() <= 0.5) {
+                if (questBatterySub.get() <= 0.5 && questSendDiedMessage) {
                         DogLog.logFault(Constants.Logger.QuestFault.QUEST_DIED);
-                        Elastic.sendNotification(new Elastic.Notification(Elastic.Notification.NotificationLevel.ERROR, "Quest Nav", "Quest ran out of battery! Press B to switch to PoseEstimator."));
+                        Elastic.sendNotification(new Elastic.Notification(Elastic.Notification.NotificationLevel.ERROR, "Quest Nav", "Quest ran out of battery! Press B to switch to PoseEstimator.", 5000));
+                        questSendDiedMessage = false;
                 }
-                if (Arrays.stream(questBatterySub.readQueueValues()).noneMatch(x -> x <= 10)
-                            && questBatterySub.get() <= 10) {
+                if (questBatterySub.get() <= 10 && questSendBatteryLowMessage) {
                         DogLog.logFault(Constants.Logger.QuestFault.QUEST_LOW_BATTERY);
-                        Elastic.sendNotification(new Elastic.Notification(Elastic.Notification.NotificationLevel.WARNING, "Quest Nav", "Quest has less than 10% battery left! Current Percent: " + questBatterySub.get()));
+                        Elastic.sendNotification(new Elastic.Notification(Elastic.Notification.NotificationLevel.WARNING, "Quest Nav", "Quest has less than 10% battery left! Current Percent: " + questBatterySub.get(), 5000));
+                        questSendBatteryLowMessage = false;
                 }
         });
     }
