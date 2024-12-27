@@ -6,8 +6,6 @@ import java.util.function.Supplier;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.*;
 
-import com.ctre.phoenix6.swerve.utility.PhoenixPIDController;
-
 import choreo.trajectory.SwerveSample;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -27,7 +25,9 @@ import frc.robot.util.Simulator;
  * Subsystem so it can easily be used in command-based projects.
  */
 public class Swerve extends SwerveDrivetrain implements Subsystem {
-    private final Localizer localizer = new Localizer(this);
+    /* An extension to the Swerve subsystem */
+    public final Localizer localizer = new Localizer(this);
+
     private final SwerveTelemetry swerveTelemetry = new SwerveTelemetry(this);
 
     /* Swerve Command Requests */
@@ -36,10 +36,9 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
 
     /* PID Controllers */
     private final PIDController pathTranslationController;
-    private final PIDController pathRotationController;
+    private final PIDController pathSteeringController;
     private final PIDController yawController;
     private final PIDController objectDetectionController;
-    private final PIDController driveController;
 
     /* Keep track if we've ever applied the operator perspective before or not */
     private boolean hasAppliedDefaultRotation = false;
@@ -83,18 +82,12 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
                 0
         );
 
-        driveController = new PIDController(
-            Constants.SwerveConstants.DRIVE_GAINS.kP,
-            Constants.SwerveConstants.DRIVE_GAINS.kI,
-            Constants.SwerveConstants.DRIVE_GAINS.kD
-        );
-
-        pathRotationController = new PIDController(
+        pathSteeringController = new PIDController(
                 Constants.SwerveConstants.PATH_ROTATION_CONTROLLER_P,
                 0,
                 0
         );
-        pathRotationController.enableContinuousInput(-Math.PI, Math.PI);
+        pathSteeringController.enableContinuousInput(-Math.PI, Math.PI);
 
         if (Utils.isSimulation()) {
             new Simulator(this).startSimThread();
@@ -115,10 +108,9 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
         return new DriveConsistentHeadingCommand( // TODO TEST THIS COMMAND
                 this,
                 fieldCentric,
-                yawController::calculate,
+                yawController,
                 heading -> consistentHeading = heading,
                 () -> consistentHeading,
-                () -> localizer.getStrategyPose().getRotation().getDegrees(),
                 straight,
                 strafe,
                 rot
@@ -190,7 +182,7 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
         ChassisSpeeds speeds = new ChassisSpeeds(
                 sample.vx + pathTranslationController.calculate(pose.getX(), sample.x),
                 sample.vy + pathTranslationController.calculate(pose.getY(), sample.y),
-                sample.omega + pathRotationController.calculate(pose.getRotation().getRadians(), sample.heading)
+                sample.omega + pathSteeringController.calculate(pose.getRotation().getRadians(), sample.heading)
         );
 
         setControl(new SwerveRequest.ApplyFieldSpeeds()
@@ -198,18 +190,6 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
                 .withWheelForceFeedforwardsX(sample.moduleForcesX())
                 .withWheelForceFeedforwardsY(sample.moduleForcesY())
         );
-    }
-
-    public void toggleLocalizationStrategy() {
-        localizer.toggleStrategy();
-    }
-
-    public void recalibrateMegaTag() {
-        localizer.recalibrateMegaTag();
-    }
-
-    public Localizer getLocalizer() {
-        return localizer;
     }
 
     @Override

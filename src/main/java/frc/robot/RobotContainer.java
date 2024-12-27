@@ -17,14 +17,15 @@ import edu.wpi.first.wpilibj.PowerDistribution;
 
 import frc.robot.subsystems.drivetrain.Swerve;
 import frc.robot.util.SysID;
+import frc.robot.util.VisionUtil;
 
 public class RobotContainer {
     /* Subsystems */
     public final Swerve swerve = new Swerve();
 
     private final AutoFactory autoFactory = new AutoFactory(
-            swerve.getLocalizer()::getStrategyPose, // A function that returns the current robot pose
-            swerve.getLocalizer()::setPoses, // A function that resets the current robot pose to the provided Pose2d
+            swerve.localizer::getStrategyPose, // A function that returns the current robot pose
+            swerve.localizer::setPoses, // A function that resets the current robot pose to the provided Pose2d
             swerve::followTrajectory, // The drive subsystem trajectory follower
             true, // If alliance flipping should be enabled
             swerve, // The drive subsystem
@@ -120,9 +121,9 @@ public class RobotContainer {
         driverXbox.a().whileTrue(swerve.xMode());
 
         // toggle between robot choosing quest nav pose and pose estimation with cameras
-        driverXbox.b().onTrue(swerve.runOnce(swerve::toggleLocalizationStrategy));
+        driverXbox.b().onTrue(swerve.runOnce(swerve.localizer::toggleLocalizationStrategy));
 
-        driverXbox.x().onTrue(swerve.runOnce(swerve::recalibrateMegaTag));
+        driverXbox.x().onTrue(swerve.runOnce(swerve.localizer::recalibrateMegaTag));
 
         // reset the field-centric heading on y press
         driverXbox.y().onTrue(swerve.runOnce(swerve::seedFieldCentric));

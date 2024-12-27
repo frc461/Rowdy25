@@ -77,7 +77,7 @@ public class Localizer {
         return getTranslationToSpeaker().getAngle().getDegrees();
     }
 
-    public void toggleStrategy() {
+    public void toggleLocalizationStrategy() {
         strategy = strategy == LocalizationStrategy.QUEST_NAV ? LocalizationStrategy.POSE_ESTIMATOR : LocalizationStrategy.QUEST_NAV;
     }
 
