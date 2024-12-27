@@ -60,9 +60,7 @@ public class SysID {
                 new SysIdRoutine.Config(
                         null,        // Use default ramp rate (1 V/s)
                         Volts.of(4), // Reduce dynamic step voltage to 4 V to prevent brownout
-                        null,        // Use default timeout (10 s)
-                        // Log state with SignalLogger class
-                        state -> SignalLogger.writeString("SysIdTranslation_State", state.toString())
+                        null        // Use default timeout (10 s)
                 ),
                 new SysIdRoutine.Mechanism(
                         output -> this.swerve.setControl(
@@ -94,9 +92,7 @@ public class SysID {
                 new SysIdRoutine.Config(
                         null,        // Use default ramp rate (1 V/s)
                         Volts.of(7), // Use dynamic voltage of 7 V
-                        null,        // Use default timeout (10 s)
-                        // Log state with SignalLogger class
-                        state -> SignalLogger.writeString("SysIdSteer_State", state.toString())
+                        null        // Use default timeout (10 s)
                 ),
                 new SysIdRoutine.Mechanism(
                         volts -> this.swerve.setControl(
@@ -134,9 +130,7 @@ public class SysID {
                         Volts.of(Math.PI / 6).per(Second),
                         /* This is in radians per second, but SysId only supports "volts" */
                         Volts.of(Math.PI),
-                        null, // Use default timeout (10 s)
-                        // Log state with SignalLogger class
-                        state -> SignalLogger.writeString("SysIdRotation_State", state.toString())
+                        null // Use default timeout (10 s)
                 ),
                 new SysIdRoutine.Mechanism(
                         output -> {
