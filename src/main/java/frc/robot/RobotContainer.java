@@ -4,20 +4,18 @@
 
 package frc.robot;
 
-import choreo.auto.AutoFactory;
-import choreo.auto.AutoRoutine;
-import choreo.auto.AutoTrajectory;
 import choreo.auto.AutoFactory.AutoBindings;
+import choreo.auto.AutoChooser;
+import choreo.auto.AutoFactory;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import dev.doglog.DogLog;
 import dev.doglog.DogLogOptions;
 import edu.wpi.first.wpilibj.PowerDistribution;
-
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.autos.Auto;
 import frc.robot.subsystems.drivetrain.Swerve;
 import frc.robot.util.SysID;
-import frc.robot.util.VisionUtil;
 
 public class RobotContainer {
     /* Subsystems */
@@ -31,6 +29,8 @@ public class RobotContainer {
             swerve, // The drive subsystem
             new AutoBindings() // An empty AutoBindings object
     );
+
+    private final AutoChooser autoChooser = new AutoChooser();
 
     /* Sys ID */
     public final SysID sysID = new SysID(swerve);
@@ -98,6 +98,12 @@ public class RobotContainer {
         DogLog.setOptions(new DogLogOptions().withCaptureDs(true));
         DogLog.setOptions(new DogLogOptions().withLogExtras(true));
         DogLog.setPdh(new PowerDistribution());
+        
+        Auto autoRoutine = new Auto(autoFactory);
+        autoChooser.addCmd("2,5Ce,4Ce", autoRoutine::rightThreePiece);
+        autoChooser.addCmd("branchingTest", autoRoutine::branchingTest);
+        
+        SmartDashboard.putData(autoChooser);
     }
 
     /* Each subsystem will execute their corresponding command periodically */
@@ -137,39 +143,6 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        //AutoRoutine autoRoutine = autoFactory.newRoutine("branched");
-        //AutoTrajectory start = autoRoutine.trajectory("start");
-        //AutoTrajectory end1 = autoRoutine.trajectory("end1");
-        //AutoTrajectory end2 = autoRoutine.trajectory("end2");
-        //
-        //autoRoutine.active().onTrue(
-        //        Commands.sequence(
-        //            autoRoutine.resetOdometry(start),
-        //            start.cmd()
-        //        )
-        //);
-        //
-        //start.done().and(VisionUtil.Photon.Color::hasTargets).onTrue(end1.cmd());
-        //start.done().and(() -> !VisionUtil.Photon.Color.hasTargets()).onTrue(end2.cmd());
-        
-        AutoRoutine autoRoutine = autoFactory.newRoutine("2,5Ce,4Ce");
-        AutoTrajectory start = autoRoutine.trajectory("2,5Ce");
-        AutoTrajectory fiveExists = autoRoutine.trajectory("5Ce,shoot");
-        AutoTrajectory fiveDoesNotExist = autoRoutine.trajectory("5Ce,4Ce");
-        AutoTrajectory getFour = autoRoutine.trajectory("shoot,4Ce");
-
-        autoRoutine.active().onTrue(
-            Commands.sequence(
-            autoRoutine.resetOdometry(start),
-            start.cmd()
-            )
-        );
-
-        start.done().and(VisionUtil.Photon.Color::hasTargets).onTrue(fiveExists.cmd());
-        start.done().and(() -> !VisionUtil.Photon.Color.hasTargets()).onTrue(fiveDoesNotExist.cmd());
-
-        fiveExists.done().onTrue(getFour.cmd());
-
-        return autoRoutine.cmd();
+        return autoChooser.selectedCommand();
     }
 }
