@@ -281,8 +281,7 @@ public class VisionUtil {
         }
 
         public static Pose2d getFinalRobotPose() {
-            Pose2d finalCameraPose = getFinalCameraPose();
-            return finalCameraPose.plus(robotToCameraOffset.inverse());
+            return getFinalCameraPose().plus(robotToCameraOffset.inverse());
         }
 
         public static void zeroQuestPose() {
