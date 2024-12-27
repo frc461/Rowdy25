@@ -77,7 +77,7 @@ public final class Constants {
             public static final double LL_PITCH = 25.5;
             public static final double LL_YAW = 0.0;
 
-            public static final double LL_MAX_TAG_CLEAR_DIST = 4.0;
+            public static final double LL_MAX_TAG_CLEAR_DIST = 3.0;
         }
         
         public static final class PhotonConstants {
@@ -89,7 +89,7 @@ public final class Constants {
             public static final double BW_PITCH = 25.5;
             public static final double BW_YAW = 0.0;
 
-            public static final double BW_MAX_TAG_CLEAR_DIST = 4.0;
+            public static final double BW_MAX_TAG_CLEAR_DIST = 3.0;
         }
 
         public static final class QuestNavConstants {

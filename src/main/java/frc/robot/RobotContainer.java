@@ -130,7 +130,7 @@ public class RobotContainer {
 
     private void configureBindings() {
 
-        driverXbox.a().whileTrue(swerve.xMode());
+        driverXbox.a().whileTrue(swerve.runOnce(swerve.localizer::updateQuestNavPose));
 
         // toggle between robot choosing quest nav pose and pose estimation with cameras
         driverXbox.b().onTrue(swerve.runOnce(swerve.localizer::toggleLocalizationStrategy));
