@@ -1,5 +1,6 @@
 package frc.robot.subsystems.drivetrain;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
@@ -9,13 +10,14 @@ import com.ctre.phoenix6.swerve.*;
 import choreo.trajectory.SwerveSample;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.Constants;
-import frc.robot.commands.DriveConsistentHeadingCommand;
+import frc.robot.commands.DriveCommand;
 import frc.robot.telemetry.SwerveTelemetry;
 import frc.robot.util.VisionUtil;
 import frc.robot.util.Simulator;
@@ -37,7 +39,6 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
     /* PID Controllers */
     private final PIDController pathTranslationController;
     private final PIDController pathSteeringController;
-    private final PIDController yawController;
     private final PIDController objectDetectionController;
 
     /* Keep track if we've ever applied the operator perspective before or not */
@@ -61,17 +62,10 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
                 Constants.SwerveConstants.BackRight.BACK_RIGHT
         );
 
-        yawController = new PIDController(
-                Constants.SwerveConstants.ANGULAR_POSITION_P,
-                Constants.SwerveConstants.ANGULAR_POSITION_I,
-                Constants.SwerveConstants.ANGULAR_POSITION_D
-        );
-        yawController.enableContinuousInput(Constants.SwerveConstants.ANGULAR_MINIMUM_ANGLE, Constants.SwerveConstants.ANGULAR_MAXIMUM_ANGLE);
-
 
         objectDetectionController = new PIDController(
                 Constants.SwerveConstants.ANGULAR_OBJECT_DETECTION_P,
-                Constants.SwerveConstants.ANGULAR_OBJECT_DETECTION_I,
+                0,
                 Constants.SwerveConstants.ANGULAR_OBJECT_DETECTION_D
         );
         objectDetectionController.enableContinuousInput(Constants.SwerveConstants.ANGULAR_MINIMUM_ANGLE, Constants.SwerveConstants.ANGULAR_MAXIMUM_ANGLE);
@@ -104,47 +98,23 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
         return run(() -> this.setControl(requestSupplier.get()));
     }
 
-    public Command driveFieldCentric(DoubleSupplier straight, DoubleSupplier strafe, DoubleSupplier rot) {
-        return new DriveConsistentHeadingCommand( // TODO TEST THIS COMMAND
+    public Command driveFieldCentric(
+            DoubleSupplier straight,
+            DoubleSupplier strafe,
+            DoubleSupplier rot,
+            BooleanSupplier tagTurret,
+            BooleanSupplier objectTurret
+    ) {
+        return new DriveCommand(
                 this,
                 fieldCentric,
-                yawController,
                 heading -> consistentHeading = heading,
                 () -> consistentHeading,
                 straight,
                 strafe,
-                rot
-        );
-    }
-
-    public Command driveTurret(DoubleSupplier straight, DoubleSupplier strafe) {
-        return applyRequest(() -> fieldCentric
-                .withDeadband(Constants.MAX_VEL * 0.1)
-                .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
-                .withVelocityX(-straight.getAsDouble() * Constants.MAX_VEL)
-                .withVelocityY(-strafe.getAsDouble() * Constants.MAX_VEL)
-                .withRotationalRate(
-                    yawController.calculate(
-                            localizer.getStrategyPose().getRotation().getDegrees(),
-                            localizer.getAngleToSpeaker()
-                    ) * Constants.MAX_ANGULAR_VEL
-                )
-        );
-    }
-
-    public Command centerOnNote(DoubleSupplier straight, DoubleSupplier strafe) {
-        return applyRequest(() -> fieldCentric
-                .withDeadband(Constants.MAX_VEL * 0.1)
-                .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
-                .withVelocityX(-straight.getAsDouble() * Constants.MAX_VEL)
-                .withVelocityY(-strafe.getAsDouble() * Constants.MAX_VEL)
-                .withRotationalRate(VisionUtil.Photon.Color.hasTargets()
-                        ? objectDetectionController.calculate(
-                                0,
-                                -VisionUtil.Photon.Color.getBestObjectYaw()
-                        ) * Constants.MAX_ANGULAR_VEL
-                        : 0.0
-                )
+                rot,
+                tagTurret,
+                objectTurret
         );
     }
 
@@ -162,7 +132,7 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
                 )
                 .withVelocityY(0.0)
                 .withRotationalRate(VisionUtil.Photon.Color.hasTargets()
-                        ? yawController.calculate(
+                        ? objectDetectionController.calculate(
                                 0,
                                 -VisionUtil.Photon.Color.getBestObjectYaw()
                         ) * Constants.MAX_ANGULAR_VEL
@@ -174,6 +144,16 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
 
     public Command xMode() {
         return applyRequest(() -> xMode);
+    }
+
+    public Command resetGyro() {
+        return runOnce(() -> {
+                seedFieldCentric();
+                localizer.setPoses(new Pose2d(
+                        localizer.getStrategyPose().getTranslation(),
+                        new Rotation2d()
+                ));
+        });
     }
 
     public void followTrajectory(SwerveSample sample) {
