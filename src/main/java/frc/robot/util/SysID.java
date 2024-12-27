@@ -147,23 +147,7 @@ public class SysID {
                             /* also log the requested output for SysId */
                             SignalLogger.writeDouble("Rotational_Rate", output.in(Volts));
                         },
-                        log -> {
-                            SwerveModule[] modules = this.swerve.getModules();
-                            for (int i = 0; i < modules.length; i++) {
-                                log.motor("module" + i)
-                                        .voltage(
-                                                appliedVoltage.mut_replace(
-                                                        modules[i].getSteerMotor().get() * RobotController.getBatteryVoltage(), Volts
-                                                )
-                                        )
-                                        .angularPosition(
-                                                rotation.mut_replace(modules[i].getSteerMotor().getRotorPosition().getValueAsDouble(), Degrees)
-                                        )
-                                        .angularVelocity(
-                                                rotationalVelocity.mut_replace(modules[i].getSteerMotor().getRotorVelocity().getValueAsDouble(), DegreesPerSecond)
-                                        );
-                            }
-                        },
+                        null,
                         this.swerve
                 )
         );
