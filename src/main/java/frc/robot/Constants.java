@@ -88,6 +88,8 @@ public final class Constants {
             public static final double BW_ROLL = 0.0;
             public static final double BW_PITCH = 25.5;
             public static final double BW_YAW = 0.0;
+
+            public static final double BW_MAX_TAG_CLEAR_DIST = 4.0;
         }
 
         public static final class QuestNavConstants {
@@ -102,8 +104,8 @@ public final class Constants {
             public static final double QUEST_YAW = 0.0;
 
             // The thresholds through which the QuestNav's correctional offset will be recorrected by the error amount.
-            public static final double TRANSLATION_ERROR_TOLERANCE = 0.5;
-            public static final double ROTATION_ERROR_TOLERANCE = 10.0;
+            public static final double TRANSLATION_ERROR_TOLERANCE = 0.1;
+            public static final double ROTATION_ERROR_TOLERANCE = 3.0;
         }
     }
 
@@ -117,22 +119,22 @@ public final class Constants {
         public static final double ANGULAR_MINIMUM_ANGLE = -180.0;
         public static final double ANGULAR_MAXIMUM_ANGLE = 180.0;
 
-        public static final double PATH_TRANSLATION_CONTROLLER_P = 5.0;
-        public static final double PATH_ROTATION_CONTROLLER_P = 2.5;
+        public static final double PATH_TRANSLATION_CONTROLLER_P = 10.0;
+        public static final double PATH_ROTATION_CONTROLLER_P = 7.5;
 
         // TODO TUNE FOR 2025 ROBOT
 
         // The steer motor uses any SwerveModule.SteerRequestType control request with the
         // output type specified by SwerveModuleConstants.SteerMotorClosedLoopOutput
         private static final Slot0Configs STEER_GAINS = new Slot0Configs()
-            .withKP(100).withKI(0).withKD(0.5)
-            .withKS(0.1).withKV(2.66).withKA(0)
+            .withKP(75.0).withKI(0).withKD(0)
+            .withKS(0.1).withKV(2.00).withKA(0)
             .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign);
         // When using closed-loop control, the drive motor uses the control
         // output type specified by SwerveModuleConstants.DriveMotorClosedLoopOutput
         private static final Slot0Configs DRIVE_GAINS = new Slot0Configs()
-            .withKP(2.5957).withKI(0).withKD(0)
-            .withKS(0.1).withKV(2.30).withKA(0.07);
+            .withKP(0.01).withKI(0).withKD(0)
+            .withKS(0.15).withKV(0.25).withKA(0);
 
         // The closed-loop output type to use for the steer motors;
         // This affects the PID/FF gains for the steer motors
