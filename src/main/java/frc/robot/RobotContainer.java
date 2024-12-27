@@ -137,20 +137,38 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        AutoRoutine autoRoutine = autoFactory.newRoutine("branched");
-        AutoTrajectory start = autoRoutine.trajectory("start");
-        AutoTrajectory end1 = autoRoutine.trajectory("end1");
-        AutoTrajectory end2 = autoRoutine.trajectory("end2");
+        //AutoRoutine autoRoutine = autoFactory.newRoutine("branched");
+        //AutoTrajectory start = autoRoutine.trajectory("start");
+        //AutoTrajectory end1 = autoRoutine.trajectory("end1");
+        //AutoTrajectory end2 = autoRoutine.trajectory("end2");
+        //
+        //autoRoutine.active().onTrue(
+        //        Commands.sequence(
+        //            autoRoutine.resetOdometry(start),
+        //            start.cmd()
+        //        )
+        //);
+        //
+        //start.done().and(VisionUtil.Photon.Color::hasTargets).onTrue(end1.cmd());
+        //start.done().and(() -> !VisionUtil.Photon.Color.hasTargets()).onTrue(end2.cmd());
+        
+        AutoRoutine autoRoutine = autoFactory.newRoutine("2,5Ce,4Ce");
+        AutoTrajectory start = autoRoutine.trajectory("2,5Ce");
+        AutoTrajectory fiveExists = autoRoutine.trajectory("5Ce,shoot");
+        AutoTrajectory fiveDoesNotExist = autoRoutine.trajectory("5Ce,4Ce");
+        AutoTrajectory getFour = autoRoutine.trajectory("shoot,4Ce");
 
         autoRoutine.active().onTrue(
-                Commands.sequence(
-                    autoRoutine.resetOdometry(start),
-                    start.cmd()
-                )
+            Commands.sequence(
+            autoRoutine.resetOdometry(start),
+            start.cmd()
+            )
         );
 
-        start.done().and(VisionUtil.Photon.Color::hasTargets).onTrue(end1.cmd());
-        start.done().and(() -> !VisionUtil.Photon.Color.hasTargets()).onTrue(end2.cmd());
+        start.done().and(VisionUtil.Photon.Color::hasTargets).onTrue(fiveExists.cmd());
+        start.done().and(() -> !VisionUtil.Photon.Color.hasTargets()).onTrue(fiveDoesNotExist.cmd());
+
+        fiveExists.done().onTrue(getFour.cmd());
 
         return autoRoutine.cmd();
     }
