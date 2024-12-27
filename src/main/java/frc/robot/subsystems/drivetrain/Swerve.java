@@ -27,7 +27,11 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
     private final Localizer localizer = new Localizer(this);
     private final SwerveTelemetry swerveTelemetry = new SwerveTelemetry(this);
 
-    // TODO TEST WITH REGULAR PID CONTROLLER
+    /* Swerve Command Requests */
+    private final SwerveRequest.FieldCentric fieldCentric = new SwerveRequest.FieldCentric();
+    private final SwerveRequest.SwerveDriveBrake xMode = new SwerveRequest.SwerveDriveBrake();
+
+    /* PID Controllers */
     private final PIDController yawController;
     private final PIDController objectDetectionController;
     private final PIDController driveController;
@@ -90,91 +94,87 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
     }
 
     public Command driveFieldCentric(DoubleSupplier straight, DoubleSupplier strafe, DoubleSupplier rot) {
-        return ((applyRequest(() ->
+        return ((applyRequest(() -> fieldCentric
+                .withDeadband(Constants.MAX_VEL * 0.1).withRotationalDeadband(Constants.MAX_ANGULAR_VEL * 0.1) // Add a 10% deadband
+                .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage) // Use open-loop control for drive motors
+                .withVelocityX(-straight.getAsDouble() * Constants.MAX_VEL) // Drive forward with negative Y (forward)
+                .withVelocityY(-strafe.getAsDouble() * Constants.MAX_VEL) // Drive left with negative X (left)
+                .withRotationalRate(-rot.getAsDouble() * Constants.MAX_ANGULAR_VEL)) // Drive counterclockwise with negative X (left)
+        .alongWith(runOnce(() -> consistentHeading = this.localizer.getStrategyPose().getRotation().getDegrees()))).onlyIf(
+                () -> (Math.abs(straight.getAsDouble()) < 0.1 && Math.abs(strafe.getAsDouble()) < 0.1) || Math.abs(rot.getAsDouble()) >= 0.1
+        )).alongWith(applyRequest(() ->
                 new SwerveRequest.FieldCentric()
-                        .withDeadband(Constants.MAX_VEL * 0.1).withRotationalDeadband(Constants.MAX_ANGULAR_VEL * 0.1) // Add a 10% deadband
-                        .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage) // Use open-loop control for drive motors
-                        .withVelocityX(-straight.getAsDouble() * Constants.MAX_VEL) // Drive forward with negative Y (forward)
-                        .withVelocityY(-strafe.getAsDouble() * Constants.MAX_VEL) // Drive left with negative X (left)
-                        .withRotationalRate(-rot.getAsDouble() * Constants.MAX_ANGULAR_VEL)) // Drive counterclockwise with negative X (left)
-                .alongWith(runOnce(() -> consistentHeading = this.localizer.getStrategyPose().getRotation().getDegrees()))).onlyIf(
-                        () -> (Math.abs(straight.getAsDouble()) < 0.1 && Math.abs(strafe.getAsDouble()) < 0.1) || Math.abs(rot.getAsDouble()) >= 0.1
-                )).alongWith(applyRequest(() ->
-                        new SwerveRequest.FieldCentric()
-                                .withDeadband(Constants.MAX_VEL * 0.1).withRotationalDeadband(Constants.MAX_ANGULAR_VEL * 0.1)
-                                .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
-                                .withVelocityX(-straight.getAsDouble() * Constants.MAX_VEL)
-                                .withVelocityY(-strafe.getAsDouble() * Constants.MAX_VEL)
-                                .withRotationalRate(yawController.calculate(
-                                        localizer.getStrategyPose().getRotation().getDegrees(),
-                                        consistentHeading
-                                ) * Constants.MAX_ANGULAR_VEL))
-                        .onlyIf(() -> Math.abs(rot.getAsDouble()) < 0.1 && Math.abs(straight.getAsDouble()) >= 0.1 && Math.abs(strafe.getAsDouble()) >= 0.1));
-    }
-
-    public Command driveTurret(DoubleSupplier straight, DoubleSupplier strafe) {
-        return applyRequest(() ->
-                new SwerveRequest.FieldCentric()
-                        .withDeadband(Constants.MAX_VEL * 0.1)
+                        .withDeadband(Constants.MAX_VEL * 0.1).withRotationalDeadband(Constants.MAX_ANGULAR_VEL * 0.1)
                         .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
                         .withVelocityX(-straight.getAsDouble() * Constants.MAX_VEL)
                         .withVelocityY(-strafe.getAsDouble() * Constants.MAX_VEL)
-                        .withRotationalRate(
-                            yawController.calculate(
-                                    localizer.getStrategyPose().getRotation().getDegrees(),
-                                    localizer.getAngleToSpeaker()
-                            ) * Constants.MAX_ANGULAR_VEL
-                        )
+                        .withRotationalRate(yawController.calculate(
+                                localizer.getStrategyPose().getRotation().getDegrees(),
+                                consistentHeading
+                        ) * Constants.MAX_ANGULAR_VEL))
+                .onlyIf(() -> Math.abs(rot.getAsDouble()) < 0.1 && Math.abs(straight.getAsDouble()) >= 0.1 && Math.abs(strafe.getAsDouble()) >= 0.1));
+    }
+
+    public Command driveTurret(DoubleSupplier straight, DoubleSupplier strafe) {
+        return applyRequest(() -> fieldCentric
+                .withDeadband(Constants.MAX_VEL * 0.1)
+                .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
+                .withVelocityX(-straight.getAsDouble() * Constants.MAX_VEL)
+                .withVelocityY(-strafe.getAsDouble() * Constants.MAX_VEL)
+                .withRotationalRate(
+                    yawController.calculate(
+                            localizer.getStrategyPose().getRotation().getDegrees(),
+                            localizer.getAngleToSpeaker()
+                    ) * Constants.MAX_ANGULAR_VEL
+                )
         );
     }
 
     public Command centerOnNote(DoubleSupplier straight, DoubleSupplier strafe) {
         double currentYaw = localizer.getStrategyPose().getRotation().getDegrees();
-        return applyRequest(() ->
-                new SwerveRequest.FieldCentric()
-                        .withDeadband(Constants.MAX_VEL * 0.1)
-                        .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
-                        .withVelocityX(-straight.getAsDouble() * Constants.MAX_VEL)
-                        .withVelocityY(-strafe.getAsDouble() * Constants.MAX_VEL)
-                        .withRotationalRate(VisionUtil.Photon.Color.hasTargets()
-                                ? objectDetectionController.calculate(
-                                        currentYaw,
-                                        currentYaw - VisionUtil.Photon.Color.getBestObjectYaw()
-                                ) * Constants.MAX_ANGULAR_VEL
-                                : 0.0
-                        )
+        return applyRequest(() -> fieldCentric
+                .withDeadband(Constants.MAX_VEL * 0.1)
+                .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
+                .withVelocityX(-straight.getAsDouble() * Constants.MAX_VEL)
+                .withVelocityY(-strafe.getAsDouble() * Constants.MAX_VEL)
+                .withRotationalRate(VisionUtil.Photon.Color.hasTargets()
+                        ? objectDetectionController.calculate(
+                                currentYaw,
+                                currentYaw - VisionUtil.Photon.Color.getBestObjectYaw()
+                        ) * Constants.MAX_ANGULAR_VEL
+                        : 0.0
+                )
         );
     }
 
     public Command moveToNote() { // TODO IMPLEMENT THIS AFTER CALIBRATING AUTO
         double currentYaw = localizer.getStrategyPose().getRotation().getDegrees();
         double currentPitch = 25; // TODO: MATCH REAL PITCH
-        return applyRequest(() ->
-                new SwerveRequest.FieldCentric()
-                        .withDeadband(Constants.MAX_VEL * 0.1)
-                        .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
-                        .withVelocityX(VisionUtil.Photon.Color.hasTargets()
-                            ? driveController.calculate(
-                                currentPitch,
-                                currentPitch - VisionUtil.Photon.Color.getBestObjectPitch()
-                            ) * Constants.MAX_VEL
-                            : 0.0
+        return applyRequest(() -> fieldCentric
+                .withDeadband(Constants.MAX_VEL * 0.1)
+                .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
+                .withVelocityX(VisionUtil.Photon.Color.hasTargets()
+                    ? driveController.calculate(
+                        currentPitch,
+                        currentPitch - VisionUtil.Photon.Color.getBestObjectPitch()
+                    ) * Constants.MAX_VEL
+                    : 0.0
 
-                        )
-                        .withVelocityY(0.0)
-                        .withRotationalRate(VisionUtil.Photon.Color.hasTargets()
-                                ? yawController.calculate(
-                                        currentYaw,
-                                        currentYaw - VisionUtil.Photon.Color.getBestObjectYaw()
-                                ) * Constants.MAX_ANGULAR_VEL
-                                : 0.0
-                        )
+                )
+                .withVelocityY(0.0)
+                .withRotationalRate(VisionUtil.Photon.Color.hasTargets()
+                        ? yawController.calculate(
+                                currentYaw,
+                                currentYaw - VisionUtil.Photon.Color.getBestObjectYaw()
+                        ) * Constants.MAX_ANGULAR_VEL
+                        : 0.0
+                )
         );
 
     }
 
     public Command xMode() {
-        return applyRequest(SwerveRequest.SwerveDriveBrake::new);
+        return applyRequest(() -> xMode);
     }
 
     public void toggleLocalizationStrategy() {
