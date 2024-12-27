@@ -147,7 +147,7 @@ public class SysID {
         );
 
         /* The SysId routine to test */
-        return sysIDTranslationRoutine;
+        return sysIDSteerRoutine;
     }
 
     public void configureBindings(CommandXboxController controller) {
