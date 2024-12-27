@@ -12,7 +12,6 @@ import dev.doglog.DogLogOptions;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import frc.robot.subsystems.drivetrain.Swerve;
 import frc.robot.util.SysID;
-import frc.robot.util.VisionUtil;
 
 public class RobotContainer {
     /* Subsystems */

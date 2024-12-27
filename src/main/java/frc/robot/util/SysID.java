@@ -1,18 +1,27 @@
 package frc.robot.util;
 
 import com.ctre.phoenix6.SignalLogger;
+import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import edu.wpi.first.units.MutableMeasure;
+import edu.wpi.first.units.measure.*;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.subsystems.drivetrain.Swerve;
 
-import static edu.wpi.first.units.Units.Second;
-import static edu.wpi.first.units.Units.Volts;
+import static edu.wpi.first.units.Units.*;
 
 public class SysID {
     private final Swerve swerve;
     private final SysIdRoutine swerveRoutine;
+
+    private final MutVoltage appliedVoltage = Volts.mutable(0);
+    private final MutDistance translation = Meters.mutable(0);
+    private final MutLinearVelocity translationalVelocity = MetersPerSecond.mutable(0);
+    private final MutAngle rotation = Degrees.mutable(0);
+    private final MutAngularVelocity rotationalVelocity = DegreesPerSecond.mutable(0);
 
     public SysID(Swerve swerve) {
         this.swerve = swerve;
@@ -59,7 +68,23 @@ public class SysID {
                         output -> this.swerve.setControl(
                                 new SwerveRequest.SysIdSwerveTranslation().withVolts(output)
                         ),
-                        null,
+                        log -> {
+                            SwerveModule[] modules = this.swerve.getModules();
+                            for (int i = 0; i < modules.length; i++) {
+                                log.motor("module" + i)
+                                        .voltage(
+                                                appliedVoltage.mut_replace(
+                                                        modules[i].getDriveMotor().get() * RobotController.getBatteryVoltage(), Volts
+                                                )
+                                        )
+                                        .linearPosition(
+                                                translation.mut_replace(modules[i].getDriveMotor().getRotorPosition().getValueAsDouble(), Meters)
+                                        )
+                                        .linearVelocity(
+                                                translationalVelocity.mut_replace(modules[i].getDriveMotor().getRotorVelocity().getValueAsDouble(), MetersPerSecond)
+                                        );
+                            }
+                        },
                         this.swerve
                 )
         );
@@ -77,7 +102,23 @@ public class SysID {
                         volts -> this.swerve.setControl(
                                 new SwerveRequest.SysIdSwerveSteerGains().withVolts(volts)
                         ),
-                        null,
+                        log -> {
+                            SwerveModule[] modules = this.swerve.getModules();
+                            for (int i = 0; i < modules.length; i++) {
+                                log.motor("module" + i)
+                                        .voltage(
+                                                appliedVoltage.mut_replace(
+                                                        modules[i].getSteerMotor().get() * RobotController.getBatteryVoltage(), Volts
+                                                )
+                                        )
+                                        .angularPosition(
+                                                rotation.mut_replace(modules[i].getSteerMotor().getRotorPosition().getValueAsDouble(), Degrees)
+                                        )
+                                        .angularVelocity(
+                                                rotationalVelocity.mut_replace(modules[i].getSteerMotor().getRotorVelocity().getValueAsDouble(), DegreesPerSecond)
+                                        );
+                            }
+                        },
                         this.swerve
                 )
         );
@@ -106,7 +147,23 @@ public class SysID {
                             /* also log the requested output for SysId */
                             SignalLogger.writeDouble("Rotational_Rate", output.in(Volts));
                         },
-                        null,
+                        log -> {
+                            SwerveModule[] modules = this.swerve.getModules();
+                            for (int i = 0; i < modules.length; i++) {
+                                log.motor("module" + i)
+                                        .voltage(
+                                                appliedVoltage.mut_replace(
+                                                        modules[i].getSteerMotor().get() * RobotController.getBatteryVoltage(), Volts
+                                                )
+                                        )
+                                        .angularPosition(
+                                                rotation.mut_replace(modules[i].getSteerMotor().getRotorPosition().getValueAsDouble(), Degrees)
+                                        )
+                                        .angularVelocity(
+                                                rotationalVelocity.mut_replace(modules[i].getSteerMotor().getRotorVelocity().getValueAsDouble(), DegreesPerSecond)
+                                        );
+                            }
+                        },
                         this.swerve
                 )
         );
