@@ -14,7 +14,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.Constants;
@@ -31,10 +30,11 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
     private final SwerveTelemetry swerveTelemetry = new SwerveTelemetry(this);
 
     // TODO TEST WITH REGULAR PID CONTROLLER
-    private final PhoenixPIDController yawController;
-    private final PhoenixPIDController objectDetectionController;
     private final PIDController pathTranslationController;
     private final PIDController pathRotationController;
+    private final PIDController yawController;
+    private final PIDController objectDetectionController;
+    private final PIDController driveController;
 
     /* Keep track if we've ever applied the operator perspective before or not */
     private boolean hasAppliedDefaultRotation = false;
@@ -55,7 +55,7 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
                 Constants.SwerveConstants.BackRight.BACK_RIGHT
         );
 
-        yawController = new PhoenixPIDController(
+        yawController = new PIDController(
                 Constants.SwerveConstants.ANGULAR_POSITION_P,
                 Constants.SwerveConstants.ANGULAR_POSITION_I,
                 Constants.SwerveConstants.ANGULAR_POSITION_D
@@ -63,7 +63,7 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
         yawController.enableContinuousInput(Constants.SwerveConstants.ANGULAR_MINIMUM_ANGLE, Constants.SwerveConstants.ANGULAR_MAXIMUM_ANGLE);
 
 
-        objectDetectionController = new PhoenixPIDController(
+        objectDetectionController = new PIDController(
                 Constants.SwerveConstants.ANGULAR_OBJECT_DETECTION_P,
                 Constants.SwerveConstants.ANGULAR_OBJECT_DETECTION_I,
                 Constants.SwerveConstants.ANGULAR_OBJECT_DETECTION_D
@@ -74,6 +74,12 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
                 Constants.SwerveConstants.PATH_TRANSLATION_CONTROLLER_P,
                 0,
                 0
+        );
+
+        driveController = new PIDController(
+            Constants.SwerveConstants.DRIVE_GAINS.kP,
+            Constants.SwerveConstants.DRIVE_GAINS.kI,
+            Constants.SwerveConstants.DRIVE_GAINS.kD
         );
 
         pathRotationController = new PIDController(
@@ -119,8 +125,7 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
                         .withRotationalRate(
                             yawController.calculate(
                                     localizer.getStrategyPose().getRotation().getDegrees(),
-                                    localizer.getAngleToSpeaker(),
-                                    Timer.getFPGATimestamp()
+                                    localizer.getAngleToSpeaker()
                             ) * Constants.MAX_ANGULAR_VEL
                         )
         );
@@ -136,8 +141,7 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
                         .withRotationalRate(VisionUtil.Photon.Color.hasTargets()
                                 ? objectDetectionController.calculate(
                                         0,
-                                        -VisionUtil.Photon.Color.getBestObjectYaw(),
-                                        Timer.getFPGATimestamp()
+                                        -VisionUtil.Photon.Color.getBestObjectYaw()
                                 ) * Constants.MAX_ANGULAR_VEL
                                 : 0.0
                         )
@@ -160,8 +164,7 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
                         .withRotationalRate(VisionUtil.Photon.Color.hasTargets()
                                 ? yawController.calculate(
                                         0,
-                                        -VisionUtil.Photon.Color.getBestObjectYaw(),
-                                        Timer.getFPGATimestamp()
+                                        -VisionUtil.Photon.Color.getBestObjectYaw()
                                 ) * Constants.MAX_ANGULAR_VEL
                                 : 0.0
                         )

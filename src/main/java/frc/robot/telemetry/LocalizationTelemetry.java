@@ -22,7 +22,7 @@ public class LocalizationTelemetry {
     private final NetworkTable localizationTelemetryTable = Constants.NT_INSTANCE.getTable("VisionTelemetry");
     private final NetworkTable limelightTelemetryTable = Constants.NT_INSTANCE.getTable("LimelightTelemetry");
     private final NetworkTable photonTelemetryTable = Constants.NT_INSTANCE.getTable("PhotonTelemetry");
-    private final NetworkTable questNavTelemetryTable = Constants.NT_INSTANCE.getTable("oculus");
+    private final NetworkTable questNavTelemetryTable = Constants.NT_INSTANCE.getTable(Constants.VisionConstants.QuestNavConstants.QUESTNAV_NT_NAME);
 
     private final StringPublisher poseEstimatePrettyPub = localizationTelemetryTable.getStringTopic("Estimated Pose").publish();
     private final StringPublisher questPosePrettyPub = localizationTelemetryTable.getStringTopic("Quest-Based Pose").publish();
@@ -40,7 +40,7 @@ public class LocalizationTelemetry {
     private final StringPublisher questRawPosePub = questNavTelemetryTable.getStringTopic("Quest Position").publish();
     private final StringPublisher questRotationPub = questNavTelemetryTable.getStringTopic("Quest Rotation").publish();
     private final StringPublisher questOffsetPub = questNavTelemetryTable.getStringTopic("Quest Offset").publish();
-    private final DoubleSubscriber questBatterySub = questNavTelemetryTable.getDoubleTopic("batteryLevel").subscribe(0.0f);
+    private final DoubleSubscriber questBatterySub = questNavTelemetryTable.getDoubleTopic("batteryPerent").subscribe(0.0f);
     private final DoubleSubscriber questTimestampSub = questNavTelemetryTable.getDoubleTopic("timestamp").subscribe(0.0f);
 
     private final NetworkTable robotPoseTable = Constants.NT_INSTANCE.getTable("Pose");
@@ -49,6 +49,8 @@ public class LocalizationTelemetry {
     private final DoubleArrayPublisher poseEstimatePub = robotPoseTable.getDoubleArrayTopic("Estimated Pose").publish();
     private final StructPublisher<Pose2d> questPose2dPub = robotPoseTable.getStructTopic("Quest-Based Pose2d", Pose2d.struct).publish();
     private final DoubleArrayPublisher questPosePub = robotPoseTable.getDoubleArrayTopic("Quest-Based Pose").publish();
+    private final StructPublisher<Pose2d> questCameraPose2dPub = robotPoseTable.getStructTopic("Quest-Based Camera Pose2d", Pose2d.struct).publish();
+    private final DoubleArrayPublisher questCameraPosePub = robotPoseTable.getDoubleArrayTopic("Quest-Based Camera Pose").publish();
     private final StructPublisher<Pose2d> megaTagOnePose2dPub = robotPoseTable.getStructTopic("MegaTagOne Pose2d", Pose2d.struct).publish();
     private final DoubleArrayPublisher megaTagOnePosePub = robotPoseTable.getDoubleArrayTopic("MegaTagOne Pose").publish();
     private final StructPublisher<Pose2d> megaTagTwoPose2dPub = robotPoseTable.getStructTopic("MegaTagTwo Pose2d", Pose2d.struct).publish();
@@ -84,6 +86,9 @@ public class LocalizationTelemetry {
         fieldTypePub.set("Field2d");
         questPose2dPub.set(questPose);
         questPosePub.set(new double[] {questPose.getX(), questPose.getY(), questPose.getRotation().getDegrees()});
+        Pose2d questCameraPose = VisionUtil.QuestNav.getFinalCameraPose();
+        questCameraPose2dPub.set(questCameraPose);
+        questCameraPosePub.set(new double[] {questCameraPose.getX(), questCameraPose.getY(), questCameraPose.getRotation().getDegrees()});
         pose2dEstimatePub.set(poseEstimate);
         poseEstimatePub.set(new double[] {poseEstimate.getX(), poseEstimate.getY(), poseEstimate.getRotation().getDegrees()});
         megaTagOnePose2dPub.set(megaTag1Pose);
@@ -111,15 +116,15 @@ public class LocalizationTelemetry {
 
     public void registerListeners() {
         Constants.NT_INSTANCE.addListener(questBatterySub, EnumSet.of(NetworkTableEvent.Kind.kValueAll), (event) -> {
-                if (Arrays.stream(questBatterySub.readQueueValues()).noneMatch(x -> x <= 0.005)
-                            && questBatterySub.get() <= 0.005) {
+                if (Arrays.stream(questBatterySub.readQueueValues()).noneMatch(x -> x <= 0.5)
+                            && questBatterySub.get() <= 0.5) {
                         DogLog.logFault(Constants.Logger.QuestFault.QUEST_DIED);
                         Elastic.sendNotification(new Elastic.Notification(Elastic.Notification.NotificationLevel.ERROR, "Quest Nav", "Quest ran out of battery! Press B to switch to PoseEstimator."));
                 }
-                if (Arrays.stream(questBatterySub.readQueueValues()).noneMatch(x -> x <= 0.1)
-                            && questBatterySub.get() <= 0.1) {
+                if (Arrays.stream(questBatterySub.readQueueValues()).noneMatch(x -> x <= 10)
+                            && questBatterySub.get() <= 10) {
                         DogLog.logFault(Constants.Logger.QuestFault.QUEST_LOW_BATTERY);
-                        Elastic.sendNotification(new Elastic.Notification(Elastic.Notification.NotificationLevel.WARNING, "Quest Nav", "Quest has less than 10% battery left! Current Percent: " + (int) (questBatterySub.get() * 100)));
+                        Elastic.sendNotification(new Elastic.Notification(Elastic.Notification.NotificationLevel.WARNING, "Quest Nav", "Quest has less than 10% battery left! Current Percent: " + questBatterySub.get()));
                 }
         });
     }
