@@ -81,8 +81,10 @@ public class RobotContainer {
         configureBindings();
        
         DogLog.setOptions(new DogLogOptions().withCaptureDs(true));
-        DogLog.setOptions(new DogLogOptions().withLogExtras(true));
-        DogLog.setPdh(new PowerDistribution());
+        // DogLog.setOptions(new DogLogOptions().withLogExtras(true));
+        DogLog.setOptions(new DogLogOptions().withCaptureConsole(false));
+        DogLog.setOptions(new DogLogOptions().withLogEntryQueueCapacity(5000));
+        // DogLog.setPdh(new PowerDistribution());
     }
 
     /* Each subsystem will execute their corresponding command periodically */
