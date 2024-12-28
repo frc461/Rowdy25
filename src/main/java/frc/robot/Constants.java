@@ -48,6 +48,7 @@ public final class Constants {
     public static double MAX_ANGULAR_VEL = RotationsPerSecond.of(0.75).in(RadiansPerSecond);
 
     public static final NetworkTableInstance NT_INSTANCE = NetworkTableInstance.getDefault();
+    public static final int ONE_MILLION = 1_000_000;
 
     public static final class Logger {
         public enum QuestFault {
