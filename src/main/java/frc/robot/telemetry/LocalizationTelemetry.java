@@ -42,6 +42,7 @@ public class LocalizationTelemetry {
     private final StringPublisher questRawPosePub = questNavTelemetryTable.getStringTopic("Quest Position").publish();
     private final StringPublisher questRotationPub = questNavTelemetryTable.getStringTopic("Quest Rotation").publish();
     private final StringPublisher questOffsetPub = questNavTelemetryTable.getStringTopic("Quest Offset").publish();
+    private final BooleanPublisher questHasCalibratedOnceWhenNear = questNavTelemetryTable.getBooleanTopic("Quest Has Calibrated When Near").publish();
     private final DoubleSubscriber questBatterySub = questNavTelemetryTable.getDoubleTopic("batteryPerent").subscribe(0.0f);
     private final DoubleSubscriber questTimestampSub = questNavTelemetryTable.getDoubleTopic("timestamp").subscribe(0.0f);
 
@@ -88,6 +89,7 @@ public class LocalizationTelemetry {
         questRotationPub.set("Pitch: " + VisionUtil.QuestNav.getRawPitch() + ", Yaw: " + VisionUtil.QuestNav.getRawYaw() + ", Roll: " + VisionUtil.QuestNav.getRawRoll());
         Transform2d questOffset = VisionUtil.QuestNav.questToFieldOffset;
         questOffsetPub.set("X: " + questOffset.getX() + ", Y: " + questOffset.getY() + ", Yaw: " + questOffset.getRotation().getDegrees());
+        questHasCalibratedOnceWhenNear.set(localizer.hasCalibratedOnceWhenNear());
 
         fieldTypePub.set("Field2d");
         questPose2dPub.set(questPose);

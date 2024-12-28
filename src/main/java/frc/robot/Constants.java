@@ -90,6 +90,7 @@ public final class Constants {
             public static final double BW_YAW = 0.0;
 
             public static final double BW_MAX_TAG_CLEAR_DIST = 3.0;
+            public static final double BW_MIN_TAG_DIST_TO_BE_FAR = 5.0;
         }
 
         public static final class QuestNavConstants {
