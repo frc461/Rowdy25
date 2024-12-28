@@ -80,10 +80,7 @@ public class RobotContainer {
         setDefaultCommands();
         configureBindings();
        
-        DogLog.setOptions(new DogLogOptions().withCaptureDs(true));
-        // DogLog.setOptions(new DogLogOptions().withLogExtras(true));
-        DogLog.setOptions(new DogLogOptions().withCaptureConsole(false));
-        DogLog.setOptions(new DogLogOptions().withLogEntryQueueCapacity(5000));
+        DogLog.setOptions(new DogLogOptions(false, false, true, false, false, 5000));
         // DogLog.setPdh(new PowerDistribution());
     }
 
