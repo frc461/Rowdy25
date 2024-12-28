@@ -25,7 +25,6 @@ import frc.robot.autos.AutoManager;
 import frc.robot.subsystems.drivetrain.Swerve;
 import frc.robot.util.SysID;
 
-import java.sql.Array;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -98,12 +97,9 @@ public class RobotContainer {
     public RobotContainer() {
         setDefaultCommands();
         configureBindings();
-
-        DogLog.setOptions(new DogLogOptions().withCaptureDs(true));
-        // DogLog.setOptions(new DogLogOptions().withLogExtras(true));
-        DogLog.setOptions(new DogLogOptions().withCaptureConsole(false));
-        DogLog.setOptions(new DogLogOptions().withLogEntryQueueCapacity(5000));
-        // DogLog.setPdh(new PowerDistribution());
+       
+        DogLog.setOptions(new DogLogOptions(false, false, true, true, false, 5000));
+        DogLog.setPdh(new PowerDistribution());
 
         Map<String, Supplier<AutoRoutine>> routines = new AutoManager(new AutoFactory(
                 swerve.localizer::getStrategyPose, // A function that returns the current robot pose
