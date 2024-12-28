@@ -121,7 +121,7 @@ public class LocalizationTelemetry {
 
         if (DriverStation.isEnabled() && questTimestampSub.getLastChange() <= (Timer.getTimestamp() - 2) * 1_000_000 && questSendDisconnectMessage) {
             DogLog.logFault(Constants.Logger.QuestFault.QUEST_DISCONNECTED);
-            Elastic.sendNotification(new Elastic.Notification(Elastic.Notification.NotificationLevel.ERROR, "Quest Nav", "Quest has been disconnected! Press B to switch to PoseEstimator.", 5000));
+            Elastic.sendNotification(new Elastic.Notification(Elastic.Notification.NotificationLevel.ERROR, "Quest Nav", "Quest has been disconnected! Press B to switch to PoseEstimator.", 7000));
             questSendDisconnectMessage = false;
         }
     }
@@ -130,12 +130,12 @@ public class LocalizationTelemetry {
         Constants.NT_INSTANCE.addListener(questBatterySub, EnumSet.of(NetworkTableEvent.Kind.kValueAll), (event) -> {
                 if (questBatterySub.get() <= 0.5 && questSendDiedMessage) {
                         DogLog.logFault(Constants.Logger.QuestFault.QUEST_DIED);
-                        Elastic.sendNotification(new Elastic.Notification(Elastic.Notification.NotificationLevel.ERROR, "Quest Nav", "Quest ran out of battery! Press B to switch to PoseEstimator.", 5000));
+                        Elastic.sendNotification(new Elastic.Notification(Elastic.Notification.NotificationLevel.ERROR, "Quest Nav", "Quest ran out of battery! Press B to switch to PoseEstimator.", 7000));
                         questSendDiedMessage = false;
                 }
                 if (questBatterySub.get() <= 10 && questSendBatteryLowMessage) {
                         DogLog.logFault(Constants.Logger.QuestFault.QUEST_LOW_BATTERY);
-                        Elastic.sendNotification(new Elastic.Notification(Elastic.Notification.NotificationLevel.WARNING, "Quest Nav", "Quest has less than 10% battery left! Current Percent: " + questBatterySub.get(), 5000));
+                        Elastic.sendNotification(new Elastic.Notification(Elastic.Notification.NotificationLevel.WARNING, "Quest Nav", "Quest has less than 10% battery left! Current Percent: " + questBatterySub.get(), 7000));
                         questSendBatteryLowMessage = false;
                 }
         });
