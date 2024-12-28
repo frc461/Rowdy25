@@ -121,7 +121,7 @@ public class LocalizationTelemetry {
         DogLog.log("PhotonColorHasTarget", VisionUtil.Photon.Color.hasTargets());
         DogLog.log("PhotonBWHasTarget", VisionUtil.Photon.BW.hasTargets());
 
-        if (DriverStation.isEnabled() && questTimestampSub.getLastChange() <= (Timer.getTimestamp() - 2) * 1_000_000 && questSendDisconnectMessage) {
+        if (DriverStation.isEnabled() && questTimestampSub.getLastChange() <= (Timer.getTimestamp() - 2) * Constants.ONE_MILLION && questSendDisconnectMessage) {
             DogLog.logFault(Constants.Logger.QuestFault.QUEST_DISCONNECTED);
             Elastic.sendNotification(new Elastic.Notification(Elastic.Notification.NotificationLevel.ERROR, "Quest Nav", "Quest has been disconnected! Press B to switch to PoseEstimator.", 7000));
             questSendDisconnectMessage = false;

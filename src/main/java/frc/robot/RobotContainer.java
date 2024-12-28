@@ -92,8 +92,10 @@ public class RobotContainer {
         configureBindings();
 
         DogLog.setOptions(new DogLogOptions().withCaptureDs(true));
-        DogLog.setOptions(new DogLogOptions().withLogExtras(true));
-        DogLog.setPdh(new PowerDistribution());
+        // DogLog.setOptions(new DogLogOptions().withLogExtras(true));
+        DogLog.setOptions(new DogLogOptions().withCaptureConsole(false));
+        DogLog.setOptions(new DogLogOptions().withLogEntryQueueCapacity(5000));
+        // DogLog.setPdh(new PowerDistribution());
 
         Map<String, Supplier<AutoRoutine>> routines = new AutoManager(new AutoFactory(
                 swerve.localizer::getStrategyPose, // A function that returns the current robot pose
@@ -107,7 +109,7 @@ public class RobotContainer {
         for (String name : routines.keySet()) {
             autoChooser.addRoutine(name, routines.get(name));
         }
-        
+
         SmartDashboard.putData("Auto Chooser", autoChooser);
     }
 
