@@ -68,7 +68,7 @@ public class DriveCommand extends Command {
         this.rot = rot;
         this.tagTurret = tagTurret;
         this.objectTurret = objectTurret;
-        addRequirements(swerve);
+        addRequirements(this.swerve);
     }
 
     @Override
@@ -96,9 +96,9 @@ public class DriveCommand extends Command {
                             .withVelocityX(-straight.getAsDouble() * Constants.MAX_VEL)
                             .withVelocityY(-strafe.getAsDouble() * Constants.MAX_VEL)
                             .withRotationalRate(VisionUtil.Photon.Color.hasTargets()
-                                            ? objectDetectionController.calculate(
-                                            0,
-                                            -VisionUtil.Photon.Color.getBestObjectYaw()
+                                    ? objectDetectionController.calculate(
+                                            VisionUtil.Photon.Color.getBestObjectYaw(),
+                                            0
                                     ) * Constants.SwerveConstants.MAX_CONTROLLED_ANGULAR_VEL
                                             : 0.0
                             )

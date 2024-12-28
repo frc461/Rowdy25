@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.Constants;
 import frc.robot.commands.DriveCommand;
+import frc.robot.commands.DriveToNoteCommand;
 import frc.robot.telemetry.SwerveTelemetry;
 import frc.robot.util.VisionUtil;
 import frc.robot.util.Simulator;
@@ -34,12 +35,12 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
 
     /* Swerve Command Requests */
     private final SwerveRequest.FieldCentric fieldCentric = new SwerveRequest.FieldCentric();
+    private final SwerveRequest.RobotCentric robotCentric = new SwerveRequest.RobotCentric();
     private final SwerveRequest.SwerveDriveBrake xMode = new SwerveRequest.SwerveDriveBrake();
 
     /* PID Controllers */
     private final PIDController pathTranslationController;
     private final PIDController pathSteeringController;
-    private final PIDController objectDetectionController;
 
     /* Keep track if we've ever applied the operator perspective before or not */
     private boolean hasAppliedDefaultRotation = false;
@@ -61,14 +62,6 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
                 Constants.SwerveConstants.BackLeft.BACK_LEFT,
                 Constants.SwerveConstants.BackRight.BACK_RIGHT
         );
-
-
-        objectDetectionController = new PIDController(
-                Constants.SwerveConstants.ANGULAR_OBJECT_DETECTION_P,
-                0,
-                Constants.SwerveConstants.ANGULAR_OBJECT_DETECTION_D
-        );
-        objectDetectionController.enableContinuousInput(Constants.SwerveConstants.ANGULAR_MINIMUM_ANGLE, Constants.SwerveConstants.ANGULAR_MAXIMUM_ANGLE);
 
         pathTranslationController = new PIDController(
                 Constants.SwerveConstants.PATH_TRANSLATION_CONTROLLER_P,
@@ -119,27 +112,7 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
     }
 
     public Command moveToNote() { // TODO IMPLEMENT THIS AFTER CALIBRATING AUTO
-        return applyRequest(() -> fieldCentric
-                .withDeadband(Constants.MAX_VEL * 0.1)
-                .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
-                .withVelocityX(VisionUtil.Photon.Color.hasTargets()
-                    ? pathTranslationController.calculate(
-                        0,
-                        -VisionUtil.Photon.Color.getBestObjectPitch()
-                    ) * Constants.MAX_VEL
-                    : 0.0
-
-                )
-                .withVelocityY(0.0)
-                .withRotationalRate(VisionUtil.Photon.Color.hasTargets()
-                        ? objectDetectionController.calculate(
-                                0,
-                                -VisionUtil.Photon.Color.getBestObjectYaw()
-                        ) * Constants.MAX_ANGULAR_VEL
-                        : 0.0
-                )
-        );
-
+        return new DriveToNoteCommand(this, robotCentric);
     }
 
     public Command xMode() {

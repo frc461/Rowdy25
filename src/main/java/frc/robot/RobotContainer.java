@@ -141,6 +141,8 @@ public class RobotContainer {
         // reset the field-centric heading on y press
         driverXbox.y().onTrue(swerve.resetGyro());
 
+        driverXbox.povUp().whileTrue(swerve.moveToNote());
+
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
         sysID.configureBindings(driverXbox);
