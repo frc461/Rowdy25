@@ -80,8 +80,8 @@ public class RobotContainer {
         setDefaultCommands();
         configureBindings();
        
-        DogLog.setOptions(new DogLogOptions(false, false, true, false, false, 5000));
-        // DogLog.setPdh(new PowerDistribution());
+        DogLog.setOptions(new DogLogOptions(false, false, true, true, false, 5000));
+        DogLog.setPdh(new PowerDistribution());
     }
 
     /* Each subsystem will execute their corresponding command periodically */
