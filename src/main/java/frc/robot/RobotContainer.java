@@ -9,6 +9,12 @@ import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.trajectory.TrajectoryConfig;
+import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import dev.doglog.DogLog;
@@ -19,6 +25,8 @@ import frc.robot.autos.AutoManager;
 import frc.robot.subsystems.drivetrain.Swerve;
 import frc.robot.util.SysID;
 
+import java.sql.Array;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.function.Supplier;
 
@@ -151,6 +159,15 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
+        TrajectoryConfig config = new TrajectoryConfig(3, 3);
+        config.setReversed(Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red);
+
+        Trajectory test = TrajectoryGenerator.generateTrajectory(
+                new Pose2d(2.5, 5.5, Rotation2d.fromDegrees(180.0)),
+                new ArrayList<>(),
+                new Pose2d(7.5, 7.5, Rotation2d.fromDegrees(180.0)),
+                config
+        );
         return autoChooser.selectedCommandScheduler();
     }
 }
