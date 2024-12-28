@@ -44,8 +44,8 @@ public final class Constants {
 
     // kSpeedAt12Volts desired top speed
     public static double MAX_VEL = SwerveConstants.SPEED_AT_12_VOLTS.in(MetersPerSecond);
-    // 3/4 of a rotation per second max angular velocity
-    public static double MAX_ANGULAR_VEL = RotationsPerSecond.of(0.75).in(RadiansPerSecond);
+    // 1.96664381049 rotations per second tuned max angular velocity
+    public static double MAX_ANGULAR_VEL = RotationsPerSecond.of(1.96664381049).in(RadiansPerSecond);
 
     public static final NetworkTableInstance NT_INSTANCE = NetworkTableInstance.getDefault();
 
@@ -122,19 +122,21 @@ public final class Constants {
         public static final double PATH_TRANSLATION_CONTROLLER_P = 10.0;
         public static final double PATH_ROTATION_CONTROLLER_P = 7.5;
 
+        public static double MAX_CONTROLLED_ANGULAR_VEL = RotationsPerSecond.of(0.75).in(RadiansPerSecond);
+
         // TODO TUNE FOR 2025 ROBOT
 
         // The steer motor uses any SwerveModule.SteerRequestType control request with the
         // output type specified by SwerveModuleConstants.SteerMotorClosedLoopOutput
         private static final Slot0Configs STEER_GAINS = new Slot0Configs()
-            .withKP(75.0).withKI(0).withKD(0)
-            .withKS(0.1).withKV(2.00).withKA(0)
+            .withKP(75.0).withKI(0).withKD(0.5)
+            .withKS(0.1).withKV(2.66).withKA(0)
             .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign);
         // When using closed-loop control, the drive motor uses the control
         // output type specified by SwerveModuleConstants.DriveMotorClosedLoopOutput
         private static final Slot0Configs DRIVE_GAINS = new Slot0Configs()
-            .withKP(0.01).withKI(0).withKD(0)
-            .withKS(0.15).withKV(0.25).withKA(0);
+            .withKP(0).withKI(0).withKD(0)
+            .withKS(0.149).withKV(0.1155).withKA(0);
 
         // The closed-loop output type to use for the steer motors;
         // This affects the PID/FF gains for the steer motors

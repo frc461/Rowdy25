@@ -84,7 +84,7 @@ public class DriveCommand extends Command {
                                     yawController.calculate(
                                             swerve.localizer.getStrategyPose().getRotation().getDegrees(),
                                             swerve.localizer.getAngleToSpeaker()
-                                    ) * Constants.MAX_ANGULAR_VEL
+                                    ) * Constants.SwerveConstants.MAX_CONTROLLED_ANGULAR_VEL
                             )
             );
         } else if (objectTurret.getAsBoolean()) {
@@ -99,7 +99,7 @@ public class DriveCommand extends Command {
                                             ? objectDetectionController.calculate(
                                             0,
                                             -VisionUtil.Photon.Color.getBestObjectYaw()
-                                    ) * Constants.MAX_ANGULAR_VEL
+                                    ) * Constants.SwerveConstants.MAX_CONTROLLED_ANGULAR_VEL
                                             : 0.0
                             )
             );
@@ -108,7 +108,7 @@ public class DriveCommand extends Command {
             swerve.setControl(
                     fieldCentric.withDeadband(Constants.MAX_VEL * 0.1)
                             .withRotationalDeadband(Constants.MAX_ANGULAR_VEL * 0.1) // Add a 10% deadband
-                            .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage) // Use open-loop control for drive motors
+                            .withDriveRequestType(SwerveModule.DriveRequestType.Velocity) // Use open-loop control for drive motors
                             .withVelocityX(-straight.getAsDouble() * Constants.MAX_VEL) // Drive forward with negative Y (forward)
                             .withVelocityY(-strafe.getAsDouble() * Constants.MAX_VEL) // Drive left with negative X (left)
                             .withRotationalRate(-rot.getAsDouble() * Constants.MAX_ANGULAR_VEL) // Drive counterclockwise with negative X (left)
@@ -116,13 +116,13 @@ public class DriveCommand extends Command {
         } else {
             swerve.setControl(
                     fieldCentric.withDeadband(Constants.MAX_VEL * 0.1)
-                            .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
+                            .withDriveRequestType(SwerveModule.DriveRequestType.Velocity)
                             .withVelocityX(-straight.getAsDouble() * Constants.MAX_VEL)
                             .withVelocityY(-strafe.getAsDouble() * Constants.MAX_VEL)
                             .withRotationalRate(headingController.calculate(
                                     swerve.localizer.getStrategyPose().getRotation().getDegrees(),
                                     consistentHeading.getAsDouble()
-                            ) * Constants.MAX_ANGULAR_VEL)
+                            ) * Constants.SwerveConstants.MAX_CONTROLLED_ANGULAR_VEL)
             );
         }
     }
