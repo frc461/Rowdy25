@@ -12,8 +12,8 @@ public class DriveToNoteCommand extends Command {
     private final Swerve swerve;
     private final SwerveRequest.RobotCentric robotCentric;
     private final PIDController objectDetectionController;
-    private boolean rotationComplete;
-    private boolean translationComplete;
+    private boolean rotationComplete = false;
+    private boolean translationComplete = false;
 
     public DriveToNoteCommand(Swerve swerve, SwerveRequest.RobotCentric robotCentric) {
         this.swerve = swerve;
@@ -26,9 +26,6 @@ public class DriveToNoteCommand extends Command {
         );
         objectDetectionController.enableContinuousInput(Constants.SwerveConstants.ANGULAR_MINIMUM_ANGLE, Constants.SwerveConstants.ANGULAR_MAXIMUM_ANGLE);
 
-        rotationComplete = false;
-        translationComplete = false;
-
         addRequirements(this.swerve);
     }
 
@@ -37,11 +34,15 @@ public class DriveToNoteCommand extends Command {
         boolean targetValid = VisionUtil.Photon.Color.hasTargets();
         double currentYaw = VisionUtil.Photon.Color.getBestObjectYaw();
         double currentPitch = VisionUtil.Photon.Color.getBestObjectPitch();
+        System.out.println("Rotation complete: " + rotationComplete);
+        System.out.println("Translation complete: " + translationComplete);
         if (targetValid && !rotationComplete) {
             double degreeError = Math.abs(currentYaw);
 
             swerve.setControl(
                     robotCentric.withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
+                            .withVelocityX(0.0)
+                            .withVelocityY(0.0)
                             .withRotationalRate(objectDetectionController.calculate(
                                     currentYaw,
                                     0
@@ -63,6 +64,7 @@ public class DriveToNoteCommand extends Command {
                                     -currentYaw,
                                     0
                             ))
+                            .withRotationalRate(0.0)
             );
             if (degreeError < Constants.VisionConstants.PhotonConstants.OBJECT_DEGREE_TOLERANCE_TO_ACCEPT) {
                 translationComplete = true;
