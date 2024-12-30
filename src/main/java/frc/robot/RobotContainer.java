@@ -167,9 +167,12 @@ public class RobotContainer {
                 .setReversed(Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red)
                 .setKinematics(swerve.getKinematics());
 
+        ArrayList<Translation2d> waypoints = new ArrayList<Translation2d>();
+        waypoints.add(new Translation2d(5, 6.5));
+
         Trajectory test = TrajectoryGenerator.generateTrajectory(
                 new Pose2d(2.5, 5.5, Rotation2d.fromDegrees(180.0)),
-                new ArrayList<>(),
+                waypoints,
                 new Pose2d(7.5, 7.5, Rotation2d.fromDegrees(180.0)),
                 config
         );
