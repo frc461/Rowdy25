@@ -133,7 +133,8 @@ public class RobotContainer {
                 swerve.driveFieldCentric(
                         driverXbox::getLeftY,
                         driverXbox::getLeftX,
-                        driverXbox::getRightX,
+                        driverXbox::getLeftTriggerAxis,
+                        driverXbox::getRightTriggerAxis,
                         () -> driverXbox.leftBumper().getAsBoolean(),
                         () -> driverXbox.rightBumper().getAsBoolean()
                 )
@@ -197,6 +198,7 @@ public class RobotContainer {
                 Commands.runOnce(() -> swerve.localizer.setPoses(test.getInitialPose())),
                 followTestTraj,
                 Commands.runOnce(() -> swerve.driveFieldCentric(
+                        () -> 0.0,
                         () -> 0.0,
                         () -> 0.0,
                         () -> 0.0,

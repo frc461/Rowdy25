@@ -93,7 +93,8 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
     public Command driveFieldCentric(
             DoubleSupplier straight,
             DoubleSupplier strafe,
-            DoubleSupplier rot,
+            DoubleSupplier rotLeft,
+            DoubleSupplier rotRight,
             BooleanSupplier tagTurret,
             BooleanSupplier objectTurret
     ) {
@@ -104,7 +105,8 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
                 () -> consistentHeading,
                 straight,
                 strafe,
-                rot,
+                rotLeft,
+                rotRight,
                 tagTurret,
                 objectTurret
         );
