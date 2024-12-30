@@ -90,7 +90,6 @@ public final class Constants {
             public static final double BW_YAW = 0.0;
 
             public static final double BW_MAX_TAG_CLEAR_DIST = 3.0;
-            public static final double BW_MIN_TAG_DIST_TO_BE_FAR = 5.0;
 
             public static final double OBJECT_GOAL_PITCH = -15;
             public static final double OBJECT_DEGREE_TOLERANCE_TO_ACCEPT = 0.5;
@@ -110,6 +109,8 @@ public final class Constants {
             // The thresholds through which the QuestNav's correctional offset will be recorrected by the error amount.
             public static final double TRANSLATION_ERROR_TOLERANCE = 0.1;
             public static final double ROTATION_ERROR_TOLERANCE = 3.0;
+
+            public static final double MIN_TAG_DIST_TO_BE_FAR = 5.0;
         }
     }
 

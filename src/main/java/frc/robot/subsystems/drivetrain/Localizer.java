@@ -158,7 +158,7 @@ public class Localizer {
     // changes offset based on error between pose estimate and corrected QuestNav pose
     public void updateQuestNavPose() {
         VisionUtil.QuestNav.completeQuestPose();
-        if (VisionUtil.Photon.BW.getBestTagDist() > Constants.VisionConstants.PhotonConstants.BW_MIN_TAG_DIST_TO_BE_FAR) {
+        if (VisionUtil.Limelight.getNearestTagDist() > Constants.VisionConstants.QuestNavConstants.MIN_TAG_DIST_TO_BE_FAR) {
             hasCalibratedOnceWhenNear = false;
         }
         if (!hasCalibratedOnceWhenNear) {

@@ -98,7 +98,7 @@ public class VisionUtil {
         }
 
         public static boolean isTagClear() {
-            return tagExists() && getNearestTagDist() < Constants.VisionConstants.LimelightConstants.LL_MAX_TAG_CLEAR_DIST;
+            return getNumTags() >= 2 && getNearestTagDist() < Constants.VisionConstants.LimelightConstants.LL_MAX_TAG_CLEAR_DIST;
         }
 
         public static void configureRobotToCameraOffset() {
