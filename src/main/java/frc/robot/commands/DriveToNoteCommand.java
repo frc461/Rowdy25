@@ -34,8 +34,6 @@ public class DriveToNoteCommand extends Command {
         boolean targetValid = VisionUtil.Photon.Color.hasTargets();
         double currentYaw = VisionUtil.Photon.Color.getBestObjectYaw();
         double currentPitch = VisionUtil.Photon.Color.getBestObjectPitch();
-        System.out.println("Rotation complete: " + rotationComplete);
-        System.out.println("Translation complete: " + translationComplete);
         if (targetValid && !rotationComplete) {
             double degreeError = Math.abs(currentYaw);
 
