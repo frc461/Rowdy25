@@ -150,8 +150,6 @@ public class RobotContainer {
         // toggle between robot choosing quest nav pose and pose estimation with cameras
         driverXbox.b().onTrue(swerve.runOnce(swerve.localizer::toggleLocalizationStrategy));
 
-        driverXbox.x().onTrue(swerve.runOnce(swerve.localizer::recalibrateMegaTag));
-
         // reset the field-centric heading on y press
         driverXbox.y().onTrue(swerve.resetGyro());
 

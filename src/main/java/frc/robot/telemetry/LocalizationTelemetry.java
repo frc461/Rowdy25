@@ -11,7 +11,6 @@ import frc.robot.subsystems.drivetrain.Localizer;
 import frc.robot.util.Elastic;
 import frc.robot.util.VisionUtil;
 
-import java.util.Arrays;
 import java.util.EnumSet;
 
 public class LocalizationTelemetry {
@@ -34,7 +33,6 @@ public class LocalizationTelemetry {
     private final StringPublisher megaTagTwoPrettyPosePub = limelightTelemetryTable.getStringTopic("MegaTagTwo Pose").publish();
     private final DoublePublisher nearestTagDistPub = limelightTelemetryTable.getDoubleTopic("Nearest Tag Distance").publish();
     private final BooleanPublisher canAddLLMeasurementsPub = limelightTelemetryTable.getBooleanTopic("Adding Limelight Measurements").publish();
-    private final BooleanPublisher megaTagTwoCalibratedPub = limelightTelemetryTable.getBooleanTopic("MegaTagTwo Calibrated").publish();
 
     private final StringPublisher photonPrettyPosePub = photonTelemetryTable.getStringTopic("Photon Pose").publish();
     private final BooleanPublisher canAddPhotonMeasurementsPub = photonTelemetryTable.getBooleanTopic("Adding Photon Measurements").publish();
@@ -79,7 +77,6 @@ public class LocalizationTelemetry {
         megaTagTwoPrettyPosePub.set("X: " + megaTag2Pose.getX() + ", Y: " + megaTag2Pose.getY() + ", Yaw: " + megaTag2Pose.getRotation().getDegrees());
         nearestTagDistPub.set(VisionUtil.Limelight.getNearestTagDist());
         canAddLLMeasurementsPub.set(VisionUtil.Limelight.isTagClear());
-        megaTagTwoCalibratedPub.set(localizer.isMegaTagTwoConfigured());
 
         Pose2d photonPose = VisionUtil.Photon.BW.getPose();
         photonPrettyPosePub.set("X: " + photonPose.getX() + ", Y: " + photonPose.getY() + ", Yaw: " + photonPose.getRotation().getDegrees());
@@ -116,7 +113,6 @@ public class LocalizationTelemetry {
         DogLog.log("LimelightMegaTagPose", VisionUtil.Limelight.getMegaTagOnePose());
         DogLog.log("LimelightMegaTagTwoPose", VisionUtil.Limelight.getMegaTagTwoPose());
         DogLog.log("LimelightHasTarget", VisionUtil.Limelight.tagExists());
-        DogLog.log("MegaTagTwoCalibrated", localizer.isMegaTagTwoConfigured());
         DogLog.log("PhotonPose", VisionUtil.Photon.BW.getPose());
         DogLog.log("PhotonColorHasTarget", VisionUtil.Photon.Color.hasTargets());
         DogLog.log("PhotonBWHasTarget", VisionUtil.Photon.BW.hasTargets());
