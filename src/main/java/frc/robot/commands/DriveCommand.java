@@ -33,7 +33,8 @@ public class DriveCommand extends Command {
             DoubleSupplier consistentHeading,
             DoubleSupplier straight,
             DoubleSupplier strafe,
-            DoubleSupplier rot,
+            DoubleSupplier rotLeft,
+            DoubleSupplier rotRight,
             BooleanSupplier tagTurret,
             BooleanSupplier objectTurret
     ) {
@@ -65,7 +66,7 @@ public class DriveCommand extends Command {
         this.consistentHeading = consistentHeading;
         this.straight = straight;
         this.strafe = strafe;
-        this.rot = rot;
+        this.rot = () -> rotRight.getAsDouble() - rotLeft.getAsDouble();
         this.tagTurret = tagTurret;
         this.objectTurret = objectTurret;
         addRequirements(this.swerve);
