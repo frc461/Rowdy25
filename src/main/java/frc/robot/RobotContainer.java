@@ -9,13 +9,18 @@ import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import dev.doglog.DogLog;
 import dev.doglog.DogLogOptions;
@@ -155,8 +160,9 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        TrajectoryConfig config = new TrajectoryConfig(3, 3);
-        config.setReversed(Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red);
+        TrajectoryConfig config = new TrajectoryConfig(3, 3)
+                .setReversed(Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red)
+                .setKinematics(swerve.getKinematics());
 
         Trajectory test = TrajectoryGenerator.generateTrajectory(
                 new Pose2d(2.5, 5.5, Rotation2d.fromDegrees(180.0)),
@@ -164,6 +170,39 @@ public class RobotContainer {
                 new Pose2d(7.5, 7.5, Rotation2d.fromDegrees(180.0)),
                 config
         );
-        return autoChooser.selectedCommandScheduler();
+
+        SwerveControllerCommand followTestTraj = new SwerveControllerCommand(
+                test,
+                swerve.localizer::getStrategyPose,
+                swerve.getKinematics(),
+                new PIDController(Constants.SwerveConstants.PATH_TRANSLATION_CONTROLLER_P, 0, 0),
+                new PIDController(Constants.SwerveConstants.PATH_TRANSLATION_CONTROLLER_P, 0, 0),
+                new ProfiledPIDController(
+                        Constants.SwerveConstants.PATH_ROTATION_CONTROLLER_P,
+                        0,
+                        0,
+                        new TrapezoidProfile.Constraints(
+                                Constants.MAX_ANGULAR_VEL,
+                                Constants.MAX_ANGULAR_VEL
+                        )
+                ),
+                states -> swerve.setControl(
+                        new SwerveRequest.ApplyFieldSpeeds().withSpeeds(swerve.getKinematics().toChassisSpeeds(states))
+                ),
+                swerve
+        );
+
+//        return autoChooser.selectedCommandScheduler();
+        return Commands.sequence(
+                Commands.runOnce(() -> swerve.localizer.setPoses(test.getInitialPose())),
+                followTestTraj,
+                Commands.runOnce(() -> swerve.driveFieldCentric(
+                        () -> 0.0,
+                        () -> 0.0,
+                        () -> 0.0,
+                        () -> false,
+                        () -> false
+                ))
+        );
     }
 }

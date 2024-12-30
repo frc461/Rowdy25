@@ -20,7 +20,6 @@ import frc.robot.Constants;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.DriveToNoteCommand;
 import frc.robot.telemetry.SwerveTelemetry;
-import frc.robot.util.VisionUtil;
 import frc.robot.util.Simulator;
 
 /**
