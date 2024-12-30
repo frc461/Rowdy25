@@ -8,7 +8,6 @@ import choreo.auto.AutoFactory.AutoBindings;
 import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
-import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
@@ -128,7 +127,7 @@ public class RobotContainer {
                 swerve.driveFieldCentric(
                         driverXbox::getLeftY,
                         driverXbox::getLeftX,
-                        driverXbox::getRightX,
+                        driverXbox::getLeftTriggerAxis,
                         () -> driverXbox.leftBumper().getAsBoolean(),
                         () -> driverXbox.rightBumper().getAsBoolean()
                 )
