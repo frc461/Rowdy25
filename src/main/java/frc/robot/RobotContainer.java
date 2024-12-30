@@ -13,6 +13,8 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
@@ -161,7 +163,7 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        TrajectoryConfig config = new TrajectoryConfig(3, 3)
+        TrajectoryConfig config = new TrajectoryConfig(3.5, 3.5)
                 .setReversed(Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red)
                 .setKinematics(swerve.getKinematics());
 
@@ -172,31 +174,10 @@ public class RobotContainer {
                 config
         );
 
-        SwerveControllerCommand followTestTraj = new SwerveControllerCommand(
-                test,
-                swerve.localizer::getStrategyPose,
-                swerve.getKinematics(),
-                new PIDController(Constants.SwerveConstants.PATH_TRANSLATION_CONTROLLER_P, 0, 0),
-                new PIDController(Constants.SwerveConstants.PATH_TRANSLATION_CONTROLLER_P, 0, 0),
-                new ProfiledPIDController(
-                        Constants.SwerveConstants.PATH_ROTATION_CONTROLLER_P,
-                        0,
-                        0,
-                        new TrapezoidProfile.Constraints(
-                                Constants.MAX_ANGULAR_VEL,
-                                Constants.MAX_ANGULAR_VEL
-                        )
-                ),
-                states -> swerve.setControl(
-                        new SwerveRequest.ApplyFieldSpeeds().withSpeeds(swerve.getKinematics().toChassisSpeeds(states))
-                ),
-                swerve
-        );
-
 //        return autoChooser.selectedCommandScheduler();
         return Commands.sequence(
                 Commands.runOnce(() -> swerve.localizer.setPoses(test.getInitialPose())),
-                followTestTraj,
+                generateTrajectoryCommand(test),
                 Commands.runOnce(() -> swerve.driveFieldCentric(
                         () -> 0.0,
                         () -> 0.0,
@@ -205,6 +186,33 @@ public class RobotContainer {
                         () -> false,
                         () -> false
                 ))
+        );
+    }
+
+    private SwerveControllerCommand generateTrajectoryCommand(Trajectory test) {
+        ProfiledPIDController rotationalController = new ProfiledPIDController(
+                Constants.SwerveConstants.TRAJECTORY_ROTATION_P,
+                0,
+                0,
+                new TrapezoidProfile.Constraints(
+                        Constants.MAX_ANGULAR_VEL,
+                        Constants.MAX_ANGULAR_VEL
+                )
+        );
+        rotationalController.enableContinuousInput(-Math.PI, Math.PI);
+
+        return new SwerveControllerCommand(
+                test,
+                swerve.localizer::getStrategyPose,
+                swerve.getKinematics(),
+                new PIDController(Constants.SwerveConstants.TRAJECTORY_TRANSLATION_P, 0, 0),
+                new PIDController(Constants.SwerveConstants.TRAJECTORY_TRANSLATION_P, 0, 0),
+                rotationalController,
+                states -> {
+                    SwerveDriveKinematics.desaturateWheelSpeeds(states, Constants.MAX_VEL);
+                    swerve.setControl(new SwerveRequest.ApplyRobotSpeeds().withSpeeds(swerve.getKinematics().toChassisSpeeds(states)));
+                },
+                swerve
         );
     }
 }

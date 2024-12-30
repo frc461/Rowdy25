@@ -125,9 +125,7 @@ public class Localizer {
             return;
         }
 
-        if (VisionUtil.Limelight.isTagClear()
-                && Math.abs(swerve.getPigeon2().getAngularVelocityZWorld().getValue().in(edu.wpi.first.units.Units.DegreesPerSecond)) < Constants.VisionConstants.CONFIGURED_MAX_ANG_VEL
-        ) {
+        if (VisionUtil.Limelight.isTagClear()) {
             Pose2d megaTagTwoPose = VisionUtil.Limelight.getMegaTagTwoPose();
             poseEstimator.addVisionMeasurement(
                     megaTagTwoPose,

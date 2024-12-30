@@ -65,7 +65,6 @@ public final class Constants {
         // TODO FINALIZE MEGATAG2 CALIBRATION
         public static final double CONFIGURED_TRANSLATION_THRESHOLD = 0.02;
         public static final double CONFIGURED_ROTATION_THRESHOLD = 2.0;
-        public static final double CONFIGURED_MAX_ANG_VEL = 720.0;
 
         public static final class LimelightConstants {
             public static final String LIMELIGHT_NT_NAME = "limelight";
@@ -126,6 +125,9 @@ public final class Constants {
 
         public static final double PATH_TRANSLATION_CONTROLLER_P = 10.0;
         public static final double PATH_ROTATION_CONTROLLER_P = 7.5;
+
+        public static final double TRAJECTORY_TRANSLATION_P = 1.0;
+        public static final double TRAJECTORY_ROTATION_P = 1.0;
 
         public static double MAX_CONTROLLED_ANGULAR_VEL = RotationsPerSecond.of(0.75).in(RadiansPerSecond);
 
