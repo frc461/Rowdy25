@@ -163,7 +163,7 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        TrajectoryConfig config = new TrajectoryConfig(3.5, 3.5)
+        TrajectoryConfig config = new TrajectoryConfig(4.5, 4.5)
                 .setReversed(Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red)
                 .setKinematics(swerve.getKinematics());
 
@@ -177,10 +177,19 @@ public class RobotContainer {
                 config
         );
 
+        Trajectory returnTest = TrajectoryGenerator.generateTrajectory(
+                new Pose2d(7.5, 7.5, Rotation2d.fromDegrees(180.0)),
+                waypoints,
+                new Pose2d(2.5, 5.5, Rotation2d.fromDegrees(180.0)),
+                config
+        );
+
+        Trajectory combined = test.concatenate(returnTest);
+
 //        return autoChooser.selectedCommandScheduler();
         return Commands.sequence(
                 Commands.runOnce(() -> swerve.localizer.setPoses(test.getInitialPose())),
-                generateTrajectoryCommand(test),
+                generateTrajectoryCommand(combined),
                 Commands.runOnce(() -> swerve.driveFieldCentric(
                         () -> 0.0,
                         () -> 0.0,
