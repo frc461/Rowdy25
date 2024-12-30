@@ -68,7 +68,7 @@ public class DriveCommand extends Command {
         this.rot = rot;
         this.tagTurret = tagTurret;
         this.objectTurret = objectTurret;
-        addRequirements(swerve);
+        addRequirements(this.swerve);
     }
 
     @Override
@@ -84,7 +84,7 @@ public class DriveCommand extends Command {
                                     yawController.calculate(
                                             swerve.localizer.getStrategyPose().getRotation().getDegrees(),
                                             swerve.localizer.getAngleToSpeaker()
-                                    ) * Constants.MAX_ANGULAR_VEL
+                                    ) * Constants.SwerveConstants.MAX_CONTROLLED_ANGULAR_VEL
                             )
             );
         } else if (objectTurret.getAsBoolean()) {
@@ -96,10 +96,10 @@ public class DriveCommand extends Command {
                             .withVelocityX(-straight.getAsDouble() * Constants.MAX_VEL)
                             .withVelocityY(-strafe.getAsDouble() * Constants.MAX_VEL)
                             .withRotationalRate(VisionUtil.Photon.Color.hasTargets()
-                                            ? objectDetectionController.calculate(
-                                            0,
-                                            -VisionUtil.Photon.Color.getBestObjectYaw()
-                                    ) * Constants.MAX_ANGULAR_VEL
+                                    ? objectDetectionController.calculate(
+                                            VisionUtil.Photon.Color.getBestObjectYaw(),
+                                            0
+                                    ) * Constants.SwerveConstants.MAX_CONTROLLED_ANGULAR_VEL
                                             : 0.0
                             )
             );
@@ -122,7 +122,7 @@ public class DriveCommand extends Command {
                             .withRotationalRate(headingController.calculate(
                                     swerve.localizer.getStrategyPose().getRotation().getDegrees(),
                                     consistentHeading.getAsDouble()
-                            ) * Constants.MAX_ANGULAR_VEL)
+                            ) * Constants.SwerveConstants.MAX_CONTROLLED_ANGULAR_VEL)
             );
         }
     }

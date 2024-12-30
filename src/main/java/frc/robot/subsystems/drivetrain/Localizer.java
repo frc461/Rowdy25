@@ -31,6 +31,8 @@ public class Localizer {
 
     private boolean isMegaTagTwoConfigured = false;
 
+    private boolean hasCalibratedOnceWhenNear = false;
+
     public Localizer(Swerve swerve) {
         this.swerve = swerve;
 
@@ -59,6 +61,10 @@ public class Localizer {
 
     public boolean isMegaTagTwoConfigured() {
         return isMegaTagTwoConfigured;
+    }
+
+    public boolean hasCalibratedOnceWhenNear() {
+        return hasCalibratedOnceWhenNear;
     }
 
     public Pose2d getEstimatedPose() {
@@ -146,14 +152,25 @@ public class Localizer {
         updatePhotonPoseEstimation();
     }
 
+    public void forceUpdateQuestNavPose() {
+        hasCalibratedOnceWhenNear = false;
+        updateQuestNavPose();
+    }
+
     // changes offset based on error between pose estimate and corrected QuestNav pose
     public void updateQuestNavPose() {
         VisionUtil.QuestNav.completeQuestPose();
-        if (VisionUtil.highConfidenceEstimation()
-                && this.swerve.getState().Speeds.vxMetersPerSecond == 0
-                && this.swerve.getState().Speeds.vyMetersPerSecond == 0
-                && Math.abs(this.swerve.getState().Speeds.omegaRadiansPerSecond) < 0.2) {
-            configureQuestOffset();
+        if (VisionUtil.Photon.BW.getBestTagDist() > Constants.VisionConstants.PhotonConstants.BW_MIN_TAG_DIST_TO_BE_FAR) {
+            hasCalibratedOnceWhenNear = false;
+        }
+        if (!hasCalibratedOnceWhenNear) {
+            if (VisionUtil.highConfidenceEstimation()
+                    && this.swerve.getState().Speeds.vxMetersPerSecond == 0
+                    && this.swerve.getState().Speeds.vyMetersPerSecond == 0
+                    && Math.abs(this.swerve.getState().Speeds.omegaRadiansPerSecond) == 0) {
+                configureQuestOffset();
+                hasCalibratedOnceWhenNear = true;
+            }
         }
     }
 

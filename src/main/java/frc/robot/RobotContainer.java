@@ -8,6 +8,13 @@ import choreo.auto.AutoFactory.AutoBindings;
 import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
+import com.ctre.phoenix6.swerve.SwerveRequest;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.trajectory.TrajectoryConfig;
+import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import dev.doglog.DogLog;
@@ -18,6 +25,7 @@ import frc.robot.autos.AutoManager;
 import frc.robot.subsystems.drivetrain.Swerve;
 import frc.robot.util.SysID;
 
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.function.Supplier;
 
@@ -89,9 +97,8 @@ public class RobotContainer {
     public RobotContainer() {
         setDefaultCommands();
         configureBindings();
-
-        DogLog.setOptions(new DogLogOptions().withCaptureDs(true));
-        DogLog.setOptions(new DogLogOptions().withLogExtras(true));
+       
+        DogLog.setOptions(new DogLogOptions(false, false, true, true, false, 5000));
         DogLog.setPdh(new PowerDistribution());
 
         Map<String, Supplier<AutoRoutine>> routines = new AutoManager(new AutoFactory(
@@ -106,7 +113,7 @@ public class RobotContainer {
         for (String name : routines.keySet()) {
             autoChooser.addRoutine(name, routines.get(name));
         }
-        
+
         SmartDashboard.putData("Auto Chooser", autoChooser);
     }
 
@@ -130,7 +137,7 @@ public class RobotContainer {
 
     private void configureBindings() {
 
-        driverXbox.a().whileTrue(swerve.runOnce(swerve.localizer::updateQuestNavPose));
+        driverXbox.a().whileTrue(swerve.runOnce(swerve.localizer::forceUpdateQuestNavPose));
 
         // toggle between robot choosing quest nav pose and pose estimation with cameras
         driverXbox.b().onTrue(swerve.runOnce(swerve.localizer::toggleLocalizationStrategy));
@@ -140,12 +147,23 @@ public class RobotContainer {
         // reset the field-centric heading on y press
         driverXbox.y().onTrue(swerve.resetGyro());
 
+        driverXbox.povUp().whileTrue(swerve.moveToNote());
+
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
         sysID.configureBindings(driverXbox);
     }
 
     public Command getAutonomousCommand() {
+        TrajectoryConfig config = new TrajectoryConfig(3, 3);
+        config.setReversed(Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red);
+
+        Trajectory test = TrajectoryGenerator.generateTrajectory(
+                new Pose2d(2.5, 5.5, Rotation2d.fromDegrees(180.0)),
+                new ArrayList<>(),
+                new Pose2d(7.5, 7.5, Rotation2d.fromDegrees(180.0)),
+                config
+        );
         return autoChooser.selectedCommandScheduler();
     }
 }

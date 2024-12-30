@@ -42,6 +42,7 @@ public class LocalizationTelemetry {
     private final StringPublisher questRawPosePub = questNavTelemetryTable.getStringTopic("Quest Position").publish();
     private final StringPublisher questRotationPub = questNavTelemetryTable.getStringTopic("Quest Rotation").publish();
     private final StringPublisher questOffsetPub = questNavTelemetryTable.getStringTopic("Quest Offset").publish();
+    private final BooleanPublisher questHasCalibratedOnceWhenNear = questNavTelemetryTable.getBooleanTopic("Quest Has Calibrated When Near").publish();
     private final DoubleSubscriber questBatterySub = questNavTelemetryTable.getDoubleTopic("batteryPerent").subscribe(0.0f);
     private final DoubleSubscriber questTimestampSub = questNavTelemetryTable.getDoubleTopic("timestamp").subscribe(0.0f);
 
@@ -88,6 +89,7 @@ public class LocalizationTelemetry {
         questRotationPub.set("Pitch: " + VisionUtil.QuestNav.getRawPitch() + ", Yaw: " + VisionUtil.QuestNav.getRawYaw() + ", Roll: " + VisionUtil.QuestNav.getRawRoll());
         Transform2d questOffset = VisionUtil.QuestNav.questToFieldOffset;
         questOffsetPub.set("X: " + questOffset.getX() + ", Y: " + questOffset.getY() + ", Yaw: " + questOffset.getRotation().getDegrees());
+        questHasCalibratedOnceWhenNear.set(localizer.hasCalibratedOnceWhenNear());
 
         fieldTypePub.set("Field2d");
         questPose2dPub.set(questPose);
@@ -119,9 +121,9 @@ public class LocalizationTelemetry {
         DogLog.log("PhotonColorHasTarget", VisionUtil.Photon.Color.hasTargets());
         DogLog.log("PhotonBWHasTarget", VisionUtil.Photon.BW.hasTargets());
 
-        if (DriverStation.isEnabled() && questTimestampSub.getLastChange() <= (Timer.getTimestamp() - 2) * 1_000_000 && questSendDisconnectMessage) {
+        if (DriverStation.isEnabled() && questTimestampSub.getLastChange() <= (Timer.getTimestamp() - 2) * Constants.ONE_MILLION && questSendDisconnectMessage) {
             DogLog.logFault(Constants.Logger.QuestFault.QUEST_DISCONNECTED);
-            Elastic.sendNotification(new Elastic.Notification(Elastic.Notification.NotificationLevel.ERROR, "Quest Nav", "Quest has been disconnected! Press B to switch to PoseEstimator.", 5000));
+            Elastic.sendNotification(new Elastic.Notification(Elastic.Notification.NotificationLevel.ERROR, "Quest Nav", "Quest has been disconnected! Press B to switch to PoseEstimator.", 7000));
             questSendDisconnectMessage = false;
         }
     }
@@ -130,12 +132,12 @@ public class LocalizationTelemetry {
         Constants.NT_INSTANCE.addListener(questBatterySub, EnumSet.of(NetworkTableEvent.Kind.kValueAll), (event) -> {
                 if (questBatterySub.get() <= 0.5 && questSendDiedMessage) {
                         DogLog.logFault(Constants.Logger.QuestFault.QUEST_DIED);
-                        Elastic.sendNotification(new Elastic.Notification(Elastic.Notification.NotificationLevel.ERROR, "Quest Nav", "Quest ran out of battery! Press B to switch to PoseEstimator.", 5000));
+                        Elastic.sendNotification(new Elastic.Notification(Elastic.Notification.NotificationLevel.ERROR, "Quest Nav", "Quest ran out of battery! Press B to switch to PoseEstimator.", 7000));
                         questSendDiedMessage = false;
                 }
                 if (questBatterySub.get() <= 10 && questSendBatteryLowMessage) {
                         DogLog.logFault(Constants.Logger.QuestFault.QUEST_LOW_BATTERY);
-                        Elastic.sendNotification(new Elastic.Notification(Elastic.Notification.NotificationLevel.WARNING, "Quest Nav", "Quest has less than 10% battery left! Current Percent: " + questBatterySub.get(), 5000));
+                        Elastic.sendNotification(new Elastic.Notification(Elastic.Notification.NotificationLevel.WARNING, "Quest Nav", "Quest has less than 10% battery left! Current Percent: " + questBatterySub.get(), 7000));
                         questSendBatteryLowMessage = false;
                 }
         });
