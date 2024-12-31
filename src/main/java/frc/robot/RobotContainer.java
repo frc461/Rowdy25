@@ -9,6 +9,8 @@ import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -31,7 +33,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.autos.AutoManager;
 import frc.robot.subsystems.drivetrain.Swerve;
 import frc.robot.util.SysID;
+import org.json.simple.parser.ParseException;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Map;
@@ -162,71 +166,12 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        TrajectoryConfig config = new TrajectoryConfig(4.5, 7.5)
-                .setKinematics(swerve.getKinematics());
-
-        ArrayList<Translation2d> waypoints = new ArrayList<>();
-        waypoints.add(new Translation2d(2.75, 5.5));
-        waypoints.add(new Translation2d(5, 5.5));
-        waypoints.add(new Translation2d(6.5, 7.5));
-
-        Trajectory test = TrajectoryGenerator.generateTrajectory(
-                new Pose2d(2.5, 5.5, Rotation2d.fromDegrees(180.0)),
-                waypoints,
-                new Pose2d(7.5, 7.5, Rotation2d.fromDegrees(180.0)),
-                config
-        );
-
-        Collections.reverse(waypoints);
-
-        Trajectory returnTest = TrajectoryGenerator.generateTrajectory(
-                new Pose2d(7.5, 7.5, Rotation2d.fromDegrees(180.0)),
-                waypoints,
-                new Pose2d(2.5, 5.5, Rotation2d.fromDegrees(180.0)),
-                config
-        );
-
-        Trajectory combined = test.concatenate(returnTest);
-
-//        return autoChooser.selectedCommandScheduler();
-        return Commands.sequence(
-                Commands.runOnce(() -> swerve.localizer.setPoses(test.getInitialPose())),
-                generateTrajectoryCommand(combined),
-                Commands.runOnce(() -> swerve.driveFieldCentric(
-                        () -> 0.0,
-                        () -> 0.0,
-                        () -> 0.0,
-                        () -> 0.0,
-                        () -> false,
-                        () -> false
-                ))
-        );
-    }
-
-    private SwerveControllerCommand generateTrajectoryCommand(Trajectory test) {
-        ProfiledPIDController rotationalController = new ProfiledPIDController(
-                Constants.SwerveConstants.TRAJECTORY_ROTATION_P,
-                0,
-                0,
-                new TrapezoidProfile.Constraints(
-                        Constants.MAX_ANGULAR_VEL,
-                        Constants.MAX_ANGULAR_VEL
-                )
-        );
-        rotationalController.enableContinuousInput(-Math.PI, Math.PI);
-
-        return new SwerveControllerCommand(
-                test,
-                swerve.localizer::getStrategyPose,
-                swerve.getKinematics(),
-                new PIDController(Constants.SwerveConstants.TRAJECTORY_TRANSLATION_P, 0, 0),
-                new PIDController(Constants.SwerveConstants.TRAJECTORY_TRANSLATION_P, 0, 0),
-                rotationalController,
-                states -> {
-                    SwerveDriveKinematics.desaturateWheelSpeeds(states, Constants.MAX_VEL);
-                    swerve.setControl(new SwerveRequest.ApplyRobotSpeeds().withSpeeds(swerve.getKinematics().toChassisSpeeds(states)));
-                },
-                swerve
-        );
+        try {
+            PathPlannerPath testPath = PathPlannerPath.fromPathFile("Test");
+            return AutoBuilder.followPath(testPath);
+        } catch (IOException | ParseException e) {
+            DriverStation.reportError("Failed to load path: " + e.getMessage(), e.getStackTrace());
+            return Commands.none();
+        }
     }
 }

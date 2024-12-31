@@ -8,6 +8,9 @@ import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.*;
 
 import choreo.trajectory.SwerveSample;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -78,6 +81,32 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
         if (Utils.isSimulation()) {
             new Simulator(this).startSimThread();
         }
+
+        AutoBuilder.configure(
+                localizer::getStrategyPose,
+                localizer::setPoses,
+                () -> getKinematics().toChassisSpeeds(getState().ModuleStates),
+                (speeds, feedforwards) -> setControl(new SwerveRequest.ApplyRobotSpeeds()
+                        .withSpeeds(speeds)
+                        .withWheelForceFeedforwardsX(feedforwards.robotRelativeForcesX())
+                        .withWheelForceFeedforwardsY(feedforwards.robotRelativeForcesY())
+                ),
+                new PPHolonomicDriveController(
+                        new PIDConstants(
+                                Constants.SwerveConstants.PATH_TRANSLATION_CONTROLLER_P,
+                                0,
+                                0
+                        ),
+                        new PIDConstants(
+                                Constants.SwerveConstants.PATH_ROTATION_CONTROLLER_P,
+                                0,
+                                0
+                        )
+                ),
+                Constants.AutoConstants.ROBOT_CONFIG,
+                () -> Constants.ALLIANCE_SUPPLIER.get() == Alliance.Red,
+                this
+        );
     }
 
     /**
