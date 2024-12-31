@@ -72,6 +72,8 @@ public final class Constants {
                 throw new RuntimeException(e);
             }
         }
+
+        public static final String NOTE_CHECK_MARKER = "checkNote";
     }
 
     public static final class VisionConstants {

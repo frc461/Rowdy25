@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.28958307631854,
-        "y": 6.004250010460352
+        "x": 1.5,
+        "y": 5.5
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.9546550644868343,
-        "y": 6.486298223057547
+        "x": 4.28393863087242,
+        "y": 7.079675187766969
       },
       "isLocked": false,
       "linkedName": null
@@ -66,7 +66,14 @@
     }
   ],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "checkNote",
+      "waypointRelativePos": 0.7504266377699325,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 5.0,
     "maxAcceleration": 10.8,

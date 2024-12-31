@@ -10,34 +10,25 @@ import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.FollowPathCommand;
+import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.PathPlannerPath;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
-import edu.wpi.first.math.trajectory.TrajectoryGenerator;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import dev.doglog.DogLog;
 import dev.doglog.DogLogOptions;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.autos.AutoManager;
+import frc.robot.commands.FollowPathDynamicCommand;
 import frc.robot.subsystems.drivetrain.Swerve;
 import frc.robot.util.SysID;
 import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Map;
 import java.util.function.Supplier;
 
@@ -168,7 +159,31 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
         try {
             PathPlannerPath testPath = PathPlannerPath.fromPathFile("Test");
-            return AutoBuilder.followPath(testPath);
+            return new FollowPathDynamicCommand(
+                    testPath,
+                    swerve.localizer::getStrategyPose,
+                    () -> swerve.getKinematics().toChassisSpeeds(swerve.getState().ModuleStates),
+                    (speeds, feedforwards) -> swerve.setControl(new SwerveRequest.ApplyRobotSpeeds()
+                            .withSpeeds(speeds)
+                            .withWheelForceFeedforwardsX(feedforwards.robotRelativeForcesX())
+                            .withWheelForceFeedforwardsY(feedforwards.robotRelativeForcesY())
+                    ),
+                    new PPHolonomicDriveController(
+                            new PIDConstants(
+                                    Constants.SwerveConstants.PATH_TRANSLATION_CONTROLLER_P,
+                                    0,
+                                    0
+                            ),
+                            new PIDConstants(
+                                    Constants.SwerveConstants.PATH_ROTATION_CONTROLLER_P,
+                                    0,
+                                    0
+                            )
+                    ),
+                    Constants.AutoConstants.ROBOT_CONFIG,
+                    () -> Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red,
+                    swerve
+            );
         } catch (IOException | ParseException e) {
             DriverStation.reportError("Failed to load path: " + e.getMessage(), e.getStackTrace());
             return Commands.none();
