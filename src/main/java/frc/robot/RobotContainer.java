@@ -10,7 +10,12 @@ import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.PathfindingCommand;
+import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.pathfinding.LocalADStar;
+import com.pathplanner.lib.pathfinding.Pathfinding;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -21,6 +26,7 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -126,6 +132,9 @@ public class RobotContainer {
             autoChooser.addRoutine(name, routines.get(name));
         }
 
+        Pathfinding.setPathfinder(new LocalADStar());
+        PathfindingCommand.warmupCommand().schedule();
+
         SmartDashboard.putData("Auto Chooser", autoChooser);
     }
 
@@ -150,7 +159,7 @@ public class RobotContainer {
 
     private void configureBindings() {
 
-        driverXbox.a().whileTrue(swerve.runOnce(swerve.localizer::forceUpdateQuestNavPose));
+        driverXbox.a().whileTrue(swerve.runOnce(swerve.localizer::updatePoseEstimation));
 
         // toggle between robot choosing quest nav pose and pose estimation with cameras
         driverXbox.b().onTrue(swerve.runOnce(swerve.localizer::toggleLocalizationStrategy));
@@ -166,12 +175,23 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        try {
-            PathPlannerPath testPath = PathPlannerPath.fromPathFile("Test");
-            return AutoBuilder.followPath(testPath);
-        } catch (IOException | ParseException e) {
-            DriverStation.reportError("Failed to load path: " + e.getMessage(), e.getStackTrace());
-            return Commands.none();
-        }
+        Pose2d targetPose = new Pose2d(8.25, 7.45, Rotation2d.fromDegrees(180));
+
+        // Create the constraints to use while pathfinding
+        PathConstraints constraints = new PathConstraints(
+                Constants.MAX_VEL,
+                10.8,
+                Constants.MAX_ANGULAR_VEL, 
+                Units.degreesToRadians(485)
+        );
+         
+        // Since AutoBuilder is configured, we can use it to build pathfinding commands
+        Command pathfindingCommand = AutoBuilder.pathfindToPose(
+                targetPose,
+                constraints,
+                0.0 // Goal end velocity in meters/sec
+        );
+
+        return pathfindingCommand;
     }
 }
