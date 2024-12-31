@@ -9,6 +9,8 @@ import frc.robot.subsystems.drivetrain.Swerve;
 import frc.robot.util.FieldUtil;
 import frc.robot.util.VisionUtil;
 
+import java.util.Optional;
+
 public class Localizer {
     private enum LocalizationStrategy {
         POSE_ESTIMATOR,
@@ -22,7 +24,7 @@ public class Localizer {
     private final SwerveDrivePoseEstimator poseEstimator;
 
     // The pose extrapolation method that the robot will use. It will be set to QuestNav by default.
-    private LocalizationStrategy strategy = LocalizationStrategy.QUEST_NAV;
+    private LocalizationStrategy strategy = LocalizationStrategy.POSE_ESTIMATOR;
 
     private boolean hasCalibratedOnceWhenNear = false;
 
@@ -110,9 +112,11 @@ public class Localizer {
                 ));
                 return;
             }
-            Pose2d photonPose = VisionUtil.Photon.BW.getSingleTagPose(poseEstimator.getEstimatedPosition());
+
+            Optional<Pose2d> photonPose = VisionUtil.Photon.BW.getSingleTagPose(poseEstimator.getEstimatedPosition());
+            if (photonPose.isEmpty()) { return; }
             poseEstimator.addVisionMeasurement(
-                    photonPose,
+                    photonPose.get(),
                     VisionUtil.Photon.BW.getLatestResultTimestamp(),
                     Constants.VisionConstants.VISION_STD_DEV_FUNCTION.apply(VisionUtil.Photon.BW.getBestTagDist())
             );

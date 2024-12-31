@@ -216,7 +216,7 @@ public class VisionUtil {
             }
 
             // TODO TEST THIS
-            public static Pose2d getSingleTagPose(Pose2d currentPose) {
+            public static Optional<Pose2d> getSingleTagPose(Pose2d currentPose) {
                 if (hasTargets()) {
 
                     Pose3d tagPose = FieldUtil.TagLocation.getTagLocation3d(getBestTagID());
@@ -241,10 +241,10 @@ public class VisionUtil {
                     // Check if the pose is inside the field
                     if (poseToReturn.getX() > 0 && poseToReturn.getY() > 0
                             && poseToReturn.getX() < FieldUtil.FIELD_LENGTH && poseToReturn.getY() < FieldUtil.FIELD_WIDTH) {
-                        return poseToReturn;
+                        return Optional.of(poseToReturn);
                     }
                 }
-                return new Pose2d();
+                return Optional.empty();
             }
 
             public static void updateResults() {
