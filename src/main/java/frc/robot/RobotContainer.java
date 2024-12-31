@@ -182,6 +182,7 @@ public class RobotContainer {
                     ),
                     Constants.AutoConstants.ROBOT_CONFIG,
                     () -> Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red,
+                    false,
                     swerve
             );
         } catch (IOException | ParseException e) {
