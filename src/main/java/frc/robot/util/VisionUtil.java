@@ -226,6 +226,7 @@ public class VisionUtil {
         private static final FloatArraySubscriber questPositionTopic = QUESTNAV_NT.getFloatArrayTopic("position").subscribe(new float[] {0.0f, 0.0f, 0.0f});
         private static final FloatArraySubscriber questEulerAnglesTopic = QUESTNAV_NT.getFloatArrayTopic("eulerAngles").subscribe(new float[] {0.0f, 0.0f, 0.0f});
 
+        // Transformation applied to QuestNav pose to adjust origin to the pose estimator's origin
         public static final Transform2d robotToCameraOffset = new Transform2d(
                 new Translation2d(
                         Constants.VisionConstants.QuestNavConstants.QUEST_FORWARD,

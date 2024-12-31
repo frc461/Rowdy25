@@ -1,4 +1,4 @@
-package frc.robot.telemetry;
+package frc.robot.subsystems.vision;
 
 import dev.doglog.DogLog;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -7,7 +7,6 @@ import edu.wpi.first.networktables.*;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants;
-import frc.robot.subsystems.drivetrain.Localizer;
 import frc.robot.util.Elastic;
 import frc.robot.util.VisionUtil;
 

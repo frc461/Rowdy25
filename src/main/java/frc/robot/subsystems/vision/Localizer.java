@@ -1,11 +1,11 @@
-package frc.robot.subsystems.drivetrain;
+package frc.robot.subsystems.vision;
 
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants;
-import frc.robot.telemetry.LocalizationTelemetry;
+import frc.robot.subsystems.drivetrain.Swerve;
 import frc.robot.util.TagLocation;
 import frc.robot.util.VisionUtil;
 
@@ -20,8 +20,6 @@ public class Localizer {
     private final LocalizationTelemetry localizationTelemetry = new LocalizationTelemetry(this);
 
     private final SwerveDrivePoseEstimator poseEstimator;
-
-    // Transformation applied to QuestNav pose to adjust origin to the pose estimator's origin
 
     // The pose extrapolation method that the robot will use. It will be set to QuestNav by default.
     private LocalizationStrategy strategy = LocalizationStrategy.QUEST_NAV;
