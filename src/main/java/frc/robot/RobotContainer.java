@@ -15,6 +15,10 @@ import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.wpilibj.DriverStation;
+import com.pathplanner.lib.commands.PathfindingCommand;
+import com.pathplanner.lib.pathfinding.LocalADStar;
+import com.pathplanner.lib.pathfinding.Pathfinding;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -117,6 +121,9 @@ public class RobotContainer {
             autoChooser.addRoutine(name, routines.get(name));
         }
 
+        Pathfinding.setPathfinder(new LocalADStar());
+        PathfindingCommand.warmupCommand().schedule();
+
         SmartDashboard.putData("Auto Chooser", autoChooser);
     }
 
@@ -141,7 +148,7 @@ public class RobotContainer {
 
     private void configureBindings() {
 
-        driverXbox.a().whileTrue(swerve.runOnce(swerve.localizer::forceUpdateQuestNavPose));
+        driverXbox.a().whileTrue(swerve.runOnce(swerve.localizer::updatePoseEstimation));
 
         // toggle between robot choosing quest nav pose and pose estimation with cameras
         driverXbox.b().onTrue(swerve.runOnce(swerve.localizer::toggleLocalizationStrategy));
