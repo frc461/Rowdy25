@@ -8,15 +8,10 @@ import choreo.auto.AutoFactory.AutoBindings;
 import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
-import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathfindingCommand;
-import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.pathfinding.LocalADStar;
 import com.pathplanner.lib.pathfinding.Pathfinding;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import dev.doglog.DogLog;
@@ -158,23 +153,6 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        Pose2d targetPose = new Pose2d(8.25, 7.45, Rotation2d.fromDegrees(180));
-
-        // Create the constraints to use while pathfinding
-        PathConstraints constraints = new PathConstraints(
-                Constants.MAX_VEL,
-                10.8,
-                Constants.MAX_ANGULAR_VEL, 
-                Units.degreesToRadians(485)
-        );
-         
-        // Since AutoBuilder is configured, we can use it to build pathfinding commands
-        Command pathfindingCommand = AutoBuilder.pathfindToPose(
-                targetPose,
-                constraints,
-                0.0 // Goal end velocity in meters/sec
-        );
-
-        return pathfindingCommand;
+        return autoChooser.selectedCommandScheduler();
     }
 }

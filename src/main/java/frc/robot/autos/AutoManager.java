@@ -3,12 +3,19 @@ package frc.robot.autos;
 import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.Constants;
 import frc.robot.util.VisionUtil;
 
+import com.pathplanner.lib.auto.AutoBuilder;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
+import com.pathplanner.lib.path.PathConstraints;
+
+import edu.wpi.first.math.geometry.Pose2d;
+
 
 public final class AutoManager {
   
@@ -24,6 +31,22 @@ public final class AutoManager {
         rightThreePiece();
         branchingTest();
     }
+
+    public Command pathFindToPose(Pose2d targetPose) {
+         PathConstraints constraints = new PathConstraints(
+                Constants.MAX_VEL,
+                Constants.MAX_ACCEL,
+                Constants.MAX_ANGULAR_VEL, 
+                Constants.MAX_ANGULAR_ACCEL
+        );
+         
+        return AutoBuilder.pathfindToPose(
+                targetPose,
+                constraints,
+                0.0
+        );
+    }
+
 
     public void rightThreePiece() {
         String name = "2,5Ce,4Ce";
