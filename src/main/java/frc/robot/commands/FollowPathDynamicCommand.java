@@ -1,30 +1,29 @@
 package frc.robot.commands;
 
+import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.commands.FollowPathCommand;
+import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
-import com.pathplanner.lib.controllers.PathFollowingController;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.events.Event;
 import com.pathplanner.lib.events.OneShotTriggerEvent;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.trajectory.PathPlannerTrajectory;
-import com.pathplanner.lib.util.DriveFeedforwards;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants;
 import frc.robot.subsystems.drivetrain.Swerve;
 import frc.robot.util.VisionUtil;
 
 import java.util.*;
-import java.util.function.BiConsumer;
 import java.util.function.BooleanSupplier;
-import java.util.function.Supplier;
 
 public class FollowPathDynamicCommand extends FollowPathCommand {
     private final Timer timer = new Timer();
+    private final Swerve swerve;
     private final PathPlannerPath originalPath;
-    private final Supplier<Pose2d> poseSupplier;
-    private final Supplier<ChassisSpeeds> speedsSupplier;
     private final RobotConfig robotConfig;
     private final BooleanSupplier shouldFlipPath;
     private final BooleanSupplier noteIsThere = VisionUtil.Photon.Color::hasTargets;
@@ -33,16 +32,40 @@ public class FollowPathDynamicCommand extends FollowPathCommand {
     private PathPlannerTrajectory trajectory;
     private boolean end;
 
-    public FollowPathDynamicCommand(PathPlannerPath path, Supplier<Pose2d> poseSupplier, Supplier<ChassisSpeeds> speedsSupplier, BiConsumer<ChassisSpeeds, DriveFeedforwards> output, PathFollowingController controller, RobotConfig robotConfig, BooleanSupplier shouldFlipPath, boolean setAssumedPosition, Swerve swerve) {
-        super(path, poseSupplier, speedsSupplier, output, controller, robotConfig, shouldFlipPath, swerve);
+    public FollowPathDynamicCommand(PathPlannerPath path, boolean setAssumedPosition, Swerve swerve) {
+        super(
+                path,
+                swerve.localizer::getStrategyPose,
+                () -> swerve.getKinematics().toChassisSpeeds(swerve.getState().ModuleStates),
+                (speeds, feedforwards) -> swerve.setControl(new SwerveRequest.ApplyRobotSpeeds()
+                        .withSpeeds(speeds)
+                        .withWheelForceFeedforwardsX(feedforwards.robotRelativeForcesX())
+                        .withWheelForceFeedforwardsY(feedforwards.robotRelativeForcesY())
+                ),
+                new PPHolonomicDriveController(
+                        new PIDConstants(
+                                Constants.SwerveConstants.PATH_TRANSLATION_CONTROLLER_P,
+                                0,
+                                0
+                        ),
+                        new PIDConstants(
+                                Constants.SwerveConstants.PATH_ROTATION_CONTROLLER_P,
+                                0,
+                                0
+                        )
+                ),
+                Constants.AutoConstants.ROBOT_CONFIG,
+                () -> Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red,
+                swerve
+        );
+
+        this.swerve = swerve;
         if (setAssumedPosition) {
-            path.getStartingHolonomicPose().ifPresent(swerve.localizer::setPoses);
+            path.getStartingHolonomicPose().ifPresent(this.swerve.localizer::setPoses);
         }
         this.originalPath = path;
-        this.poseSupplier = poseSupplier;
-        this.speedsSupplier = speedsSupplier;
-        this.robotConfig = robotConfig;
-        this.shouldFlipPath = shouldFlipPath;
+        this.robotConfig = Constants.AutoConstants.ROBOT_CONFIG;
+        this.shouldFlipPath = () -> Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red;
         end = false;
 
         this.path = this.originalPath;
@@ -60,8 +83,8 @@ public class FollowPathDynamicCommand extends FollowPathCommand {
             this.path = this.originalPath;
         }
 
-        Pose2d currentPose = this.poseSupplier.get();
-        ChassisSpeeds currentSpeeds = this.speedsSupplier.get();
+        Pose2d currentPose = swerve.localizer.getStrategyPose();
+        ChassisSpeeds currentSpeeds = swerve.getKinematics().toChassisSpeeds(swerve.getState().ModuleStates);
         double linearVel = Math.hypot(currentSpeeds.vxMetersPerSecond, currentSpeeds.vyMetersPerSecond);
         if (this.path.getIdealStartingState() != null) {
             boolean idealVelocity = Math.abs(linearVel - this.path.getIdealStartingState().velocityMPS()) <= (double)0.25F;

@@ -4,34 +4,24 @@
 
 package frc.robot;
 
-import com.ctre.phoenix6.swerve.SwerveRequest;
-import com.pathplanner.lib.config.PIDConstants;
-import com.pathplanner.lib.controllers.PPHolonomicDriveController;
-import com.pathplanner.lib.path.PathPlannerPath;
-import edu.wpi.first.wpilibj.DriverStation;
 import com.pathplanner.lib.commands.PathfindingCommand;
 import com.pathplanner.lib.pathfinding.LocalADStar;
 import com.pathplanner.lib.pathfinding.Pathfinding;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import dev.doglog.DogLog;
 import dev.doglog.DogLogOptions;
 import edu.wpi.first.wpilibj.PowerDistribution;
-import frc.robot.autos.AutoManager;
-import frc.robot.commands.FollowPathDynamicCommand;
+import frc.robot.autos.AutoChooser;
 import frc.robot.subsystems.drivetrain.Swerve;
 import frc.robot.util.SysID;
-import org.json.simple.parser.ParseException;
-
-import java.io.IOException;
 
 public class RobotContainer {
     /* Subsystems */
     public final Swerve swerve = new Swerve();
 
-    private final AutoManager autoManager = new AutoManager(swerve);
+    private final AutoChooser autoChooser = new AutoChooser(swerve);
 
     /* Sys ID */
     public final SysID sysID = new SysID(swerve);
@@ -140,6 +130,6 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        return autoManager.get();
+        return autoChooser.get();
     }
 }

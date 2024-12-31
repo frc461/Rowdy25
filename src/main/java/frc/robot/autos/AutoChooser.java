@@ -9,13 +9,14 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathConstraints;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import frc.robot.autos.routines.DynamicRoutineTest;
 import frc.robot.subsystems.drivetrain.Swerve;
 
-public final class AutoManager {
+public final class AutoChooser {
     private final SendableChooser<Command> autoChooser = new SendableChooser<>();
 
-    public AutoManager(Swerve swerve) {
-        autoChooser.addOption("DynamicAutoTest", new DynamicAutoTest(swerve));
+    public AutoChooser(Swerve swerve) {
+        autoChooser.addOption("DynamicAutoTest", new DynamicRoutineTest(swerve));
 
         SmartDashboard.putData("Auto Chooser", autoChooser);
     }
