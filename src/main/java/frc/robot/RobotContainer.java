@@ -33,6 +33,7 @@ import frc.robot.subsystems.drivetrain.Swerve;
 import frc.robot.util.SysID;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Map;
 import java.util.function.Supplier;
 
@@ -161,12 +162,13 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        TrajectoryConfig config = new TrajectoryConfig(4.5, 4.5)
-                .setReversed(Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red)
+        TrajectoryConfig config = new TrajectoryConfig(4.5, 7.5)
                 .setKinematics(swerve.getKinematics());
 
-        ArrayList<Translation2d> waypoints = new ArrayList<Translation2d>();
-        waypoints.add(new Translation2d(5, 6.5));
+        ArrayList<Translation2d> waypoints = new ArrayList<>();
+        waypoints.add(new Translation2d(2.75, 5.5));
+        waypoints.add(new Translation2d(5, 5.5));
+        waypoints.add(new Translation2d(6.5, 7.5));
 
         Trajectory test = TrajectoryGenerator.generateTrajectory(
                 new Pose2d(2.5, 5.5, Rotation2d.fromDegrees(180.0)),
@@ -174,6 +176,8 @@ public class RobotContainer {
                 new Pose2d(7.5, 7.5, Rotation2d.fromDegrees(180.0)),
                 config
         );
+
+        Collections.reverse(waypoints);
 
         Trajectory returnTest = TrajectoryGenerator.generateTrajectory(
                 new Pose2d(7.5, 7.5, Rotation2d.fromDegrees(180.0)),

@@ -102,7 +102,7 @@ public class VisionUtil {
         }
 
         public static boolean isTagClear() {
-            return getNearestTagDist() < Constants.VisionConstants.LimelightConstants.LL_MAX_TAG_CLEAR_DIST;
+            return tagExists() && getNearestTagDist() < Constants.VisionConstants.LimelightConstants.LL_MAX_TAG_CLEAR_DIST;
         }
 
         public static void configureRobotToCameraOffset() {
@@ -203,7 +203,7 @@ public class VisionUtil {
             }
 
             public static boolean isTagClear() {
-                return getBestTagDist() < Constants.VisionConstants.PhotonConstants.BW_MAX_TAG_CLEAR_DIST;
+                return hasTargets() && getBestTagDist() < Constants.VisionConstants.PhotonConstants.BW_MAX_TAG_CLEAR_DIST;
             }
 
             public static Optional<EstimatedRobotPose> getOptionalPoseData() {
