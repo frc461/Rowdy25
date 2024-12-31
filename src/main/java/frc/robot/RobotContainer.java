@@ -4,13 +4,7 @@
 
 package frc.robot;
 
-import choreo.auto.AutoFactory.AutoBindings;
-import choreo.auto.AutoChooser;
-import choreo.auto.AutoFactory;
-import choreo.auto.AutoRoutine;
 import com.ctre.phoenix6.swerve.SwerveRequest;
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.commands.FollowPathCommand;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.PathPlannerPath;
@@ -25,7 +19,6 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import dev.doglog.DogLog;
 import dev.doglog.DogLogOptions;
 import edu.wpi.first.wpilibj.PowerDistribution;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.autos.AutoManager;
 import frc.robot.commands.FollowPathDynamicCommand;
 import frc.robot.subsystems.drivetrain.Swerve;
@@ -33,14 +26,12 @@ import frc.robot.util.SysID;
 import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
-import java.util.Map;
-import java.util.function.Supplier;
 
 public class RobotContainer {
     /* Subsystems */
     public final Swerve swerve = new Swerve();
 
-    private final AutoChooser autoChooser = new AutoChooser();
+    private final AutoManager autoManager = new AutoManager(swerve);
 
     /* Sys ID */
     public final SysID sysID = new SysID(swerve);
@@ -108,23 +99,8 @@ public class RobotContainer {
         DogLog.setOptions(new DogLogOptions(false, false, true, true, false, 5000));
         DogLog.setPdh(new PowerDistribution());
 
-        Map<String, Supplier<AutoRoutine>> routines = new AutoManager(new AutoFactory(
-                swerve.localizer::getStrategyPose, // A function that returns the current robot pose
-                swerve.localizer::setPoses, // A function that resets the current robot pose to the provided Pose2d
-                swerve::followTrajectory, // The drive subsystem trajectory follower
-                true, // If alliance flipping should be enabled
-                swerve, // The drive subsystem
-                new AutoBindings() // An empty AutoBindings object
-        )).allRoutines;
-
-        for (String name : routines.keySet()) {
-            autoChooser.addRoutine(name, routines.get(name));
-        }
-
         Pathfinding.setPathfinder(new LocalADStar());
         PathfindingCommand.warmupCommand().schedule();
-
-        SmartDashboard.putData("Auto Chooser", autoChooser);
     }
 
     /* Each subsystem will execute their corresponding command periodically */
@@ -164,37 +140,6 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        try {
-            PathPlannerPath testPath = PathPlannerPath.fromPathFile("Test");
-            return new FollowPathDynamicCommand(
-                    testPath,
-                    swerve.localizer::getStrategyPose,
-                    () -> swerve.getKinematics().toChassisSpeeds(swerve.getState().ModuleStates),
-                    (speeds, feedforwards) -> swerve.setControl(new SwerveRequest.ApplyRobotSpeeds()
-                            .withSpeeds(speeds)
-                            .withWheelForceFeedforwardsX(feedforwards.robotRelativeForcesX())
-                            .withWheelForceFeedforwardsY(feedforwards.robotRelativeForcesY())
-                    ),
-                    new PPHolonomicDriveController(
-                            new PIDConstants(
-                                    Constants.SwerveConstants.PATH_TRANSLATION_CONTROLLER_P,
-                                    0,
-                                    0
-                            ),
-                            new PIDConstants(
-                                    Constants.SwerveConstants.PATH_ROTATION_CONTROLLER_P,
-                                    0,
-                                    0
-                            )
-                    ),
-                    Constants.AutoConstants.ROBOT_CONFIG,
-                    () -> Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red,
-                    false,
-                    swerve
-            );
-        } catch (IOException | ParseException e) {
-            DriverStation.reportError("Failed to load path: " + e.getMessage(), e.getStackTrace());
-            return Commands.none();
-        }
+        return autoManager.get();
     }
 }
