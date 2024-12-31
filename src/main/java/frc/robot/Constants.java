@@ -78,8 +78,12 @@ public final class Constants {
 
     public static final class VisionConstants {
         public static final Matrix<N3, N1> ODOM_STD_DEV = VecBuilder.fill(0.01, 0.01, Units.degreesToRadians(0.01));
-        public static final Function<Double, Matrix<N3, N1>> VISION_STD_DEV_MULTITAG_FUNCTION = dist -> VecBuilder.fill(0.25 * dist, 0.25 * dist, Units.degreesToRadians(180.0) * dist);
-        public static final Function<Double, Matrix<N3, N1>> VISION_STD_DEV_FUNCTION = dist -> VecBuilder.fill(0.5 * dist, 0.5 * dist, Units.degreesToRadians(180.0) * dist);
+        public static final Function<Double, Matrix<N3, N1>> VISION_STD_DEV_MULTITAG_FUNCTION =
+                dist -> dist < 2.0
+                        ? VecBuilder.fill(0.1, 0.1, Units.degreesToRadians(1.0))
+                        : VecBuilder.fill(0.15 * dist, 0.15 * dist, Units.degreesToRadians(180.0) * dist);
+        public static final Function<Double, Matrix<N3, N1>> VISION_STD_DEV_FUNCTION =
+                dist -> VecBuilder.fill(0.5 * dist, 0.5 * dist, Units.degreesToRadians(180.0) * dist);
 
         public static final class LimelightConstants {
             public static final String LIMELIGHT_NT_NAME = "limelight";

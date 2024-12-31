@@ -35,7 +35,6 @@ public class FollowPathDynamicCommand extends FollowPathCommand {
 
     public FollowPathDynamicCommand(PathPlannerPath path, Supplier<Pose2d> poseSupplier, Supplier<ChassisSpeeds> speedsSupplier, BiConsumer<ChassisSpeeds, DriveFeedforwards> output, PathFollowingController controller, RobotConfig robotConfig, BooleanSupplier shouldFlipPath, Swerve swerve) {
         super(path, poseSupplier, speedsSupplier, output, controller, robotConfig, shouldFlipPath, swerve);
-        path.getStartingHolonomicPose().ifPresent(swerve.localizer::setPoses);
         this.originalPath = path;
         this.poseSupplier = poseSupplier;
         this.speedsSupplier = speedsSupplier;
