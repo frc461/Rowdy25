@@ -8,14 +8,15 @@ import frc.robot.Constants;
 import frc.robot.subsystems.drivetrain.Swerve;
 import frc.robot.util.VisionUtil;
 
-public class DriveToNoteCommand extends Command {
+public class DriveToObjectCommand extends Command {
     private final Swerve swerve;
     private final SwerveRequest.RobotCentric robotCentric;
     private final PIDController objectDetectionController;
     private boolean rotationComplete = false;
     private boolean translationComplete = false;
+    private boolean end = false;
 
-    public DriveToNoteCommand(Swerve swerve, SwerveRequest.RobotCentric robotCentric) {
+    public DriveToObjectCommand(Swerve swerve, SwerveRequest.RobotCentric robotCentric) {
         this.swerve = swerve;
         this.robotCentric = robotCentric;
 
@@ -67,6 +68,7 @@ public class DriveToNoteCommand extends Command {
             if (degreeError < Constants.VisionConstants.PhotonConstants.OBJECT_DEGREE_TOLERANCE_TO_ACCEPT) {
                 translationComplete = true;
             }
+            end = true;
         } else {
             swerve.setControl(
                     robotCentric.withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
@@ -74,6 +76,7 @@ public class DriveToNoteCommand extends Command {
                             .withVelocityY(0.0)
                             .withRotationalRate(0.0)
             );
+            end = true;
         }
     }
 
@@ -81,5 +84,11 @@ public class DriveToNoteCommand extends Command {
     public void end(boolean interrupted) {
         rotationComplete = false;
         translationComplete = false;
+        end = false;
+    }
+
+    @Override
+    public boolean isFinished() {
+        return end;
     }
 }

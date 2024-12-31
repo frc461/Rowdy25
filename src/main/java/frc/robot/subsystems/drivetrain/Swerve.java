@@ -21,7 +21,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.Constants;
 import frc.robot.commands.DriveCommand;
-import frc.robot.commands.DriveToNoteCommand;
+import frc.robot.commands.DriveToObjectCommand;
 import frc.robot.subsystems.vision.Localizer;
 import frc.robot.util.Simulator;
 
@@ -142,7 +142,7 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
     }
 
     public Command moveToNote() { // TODO IMPLEMENT THIS AFTER CALIBRATING AUTO
-        return new DriveToNoteCommand(this, robotCentric);
+        return new DriveToObjectCommand(this, robotCentric);
     }
 
     public Command xMode() {
