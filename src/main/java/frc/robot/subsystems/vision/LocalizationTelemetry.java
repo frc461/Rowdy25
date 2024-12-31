@@ -77,7 +77,7 @@ public class LocalizationTelemetry {
         nearestTagDistPub.set(VisionUtil.Limelight.getNearestTagDist());
         canAddLLMeasurementsPub.set(VisionUtil.Limelight.isTagClear());
 
-        Pose2d photonPose = VisionUtil.Photon.BW.getPose();
+        Pose2d photonPose = VisionUtil.Photon.BW.getMultiTagPose();
         photonPrettyPosePub.set("X: " + photonPose.getX() + ", Y: " + photonPose.getY() + ", Yaw: " + photonPose.getRotation().getDegrees());
         canAddPhotonMeasurementsPub.set(VisionUtil.Photon.BW.isTagClear());
 
@@ -112,7 +112,7 @@ public class LocalizationTelemetry {
         DogLog.log("LimelightMegaTagPose", VisionUtil.Limelight.getMegaTagOnePose());
         DogLog.log("LimelightMegaTagTwoPose", VisionUtil.Limelight.getMegaTagTwoPose());
         DogLog.log("LimelightHasTarget", VisionUtil.Limelight.tagExists());
-        DogLog.log("PhotonPose", VisionUtil.Photon.BW.getPose());
+        DogLog.log("PhotonPose", VisionUtil.Photon.BW.getMultiTagPose());
         DogLog.log("PhotonColorHasTarget", VisionUtil.Photon.Color.hasTargets());
         DogLog.log("PhotonBWHasTarget", VisionUtil.Photon.BW.hasTargets());
 

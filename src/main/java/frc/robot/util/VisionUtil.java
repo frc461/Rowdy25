@@ -97,8 +97,12 @@ public class VisionUtil {
             return getTargetPoseRobotSpace().getTranslation().getNorm();
         }
 
+        public static boolean isMultiTag() {
+            return getNumTags() >= 2;
+        }
+
         public static boolean isTagClear() {
-            return getNumTags() >= 2 && getNearestTagDist() < Constants.VisionConstants.LimelightConstants.LL_MAX_TAG_CLEAR_DIST;
+            return getNearestTagDist() < Constants.VisionConstants.LimelightConstants.LL_MAX_TAG_CLEAR_DIST;
         }
 
         public static void configureRobotToCameraOffset() {
@@ -180,7 +184,7 @@ public class VisionUtil {
                 return latestResult.hasTargets();
             }
 
-            public static double getTimestamp() {
+            public static double getLatestResultTimestamp() {
                 return latestResult.getTimestampSeconds();
             }
 
@@ -194,24 +198,60 @@ public class VisionUtil {
                         : 0.0;
             }
 
+            public static boolean isMultiTag() {
+                return latestResult.targets.size() >= 2;
+            }
+
             public static boolean isTagClear() {
-                return latestResult.targets.size() >= 2 && getBestTagDist() < Constants.VisionConstants.PhotonConstants.BW_MAX_TAG_CLEAR_DIST;
+                return getBestTagDist() < Constants.VisionConstants.PhotonConstants.BW_MAX_TAG_CLEAR_DIST;
             }
 
             public static Optional<EstimatedRobotPose> getOptionalPoseData() {
                 return poseEstimateOpt;
             }
 
-            public static Pose2d getPose() {
+            public static Pose2d getMultiTagPose() {
                 Optional<EstimatedRobotPose> pose = getOptionalPoseData();
                 return pose.isPresent() ? pose.get().estimatedPose.toPose2d() : new Pose2d();
+            }
+
+            // TODO TEST THIS
+            public static Pose2d getSingleTagPose(Pose2d currentPose) {
+                if (hasTargets()) {
+
+                    Pose3d tagPose = FieldUtil.TagLocation.getTagLocation3d(getBestTagID());
+                    Transform3d cameraToTargetBest = latestResult.getBestTarget().getBestCameraToTarget();
+                    Transform3d cameraToTargetAlt = latestResult.getBestTarget().getAlternateCameraToTarget();
+
+                    Pose2d poseBest = tagPose.plus(cameraToTargetBest.inverse()).plus(robotToCameraOffset.inverse()).toPose2d();
+                    Pose2d poseAlt = tagPose.plus(cameraToTargetAlt.inverse()).plus(robotToCameraOffset.inverse()).toPose2d();
+
+                    Pose2d poseToReturn;
+
+                    // Disambiguate using the current pose i.e., choose the pose most consistent with the robot's current rotation
+                    if (latestResult.getBestTarget().getPoseAmbiguity() < 0.15) {
+                        poseToReturn = poseBest;
+                    } else if (Math.abs(poseBest.getRotation().minus(currentPose.getRotation()).getDegrees()) <
+                            Math.abs(poseAlt.getRotation().minus(currentPose.getRotation()).getDegrees())) {
+                        poseToReturn = poseBest;
+                    } else {
+                        poseToReturn = poseAlt;
+                    }
+
+                    // Check if the pose is inside the field
+                    if (poseToReturn.getX() > 0 && poseToReturn.getY() > 0
+                            && poseToReturn.getX() < FieldUtil.FIELD_LENGTH && poseToReturn.getY() < FieldUtil.FIELD_WIDTH) {
+                        return poseToReturn;
+                    }
+                }
+                return new Pose2d();
             }
 
             public static void updateResults() {
                 List<PhotonPipelineResult> results = BW.getAllUnreadResults();
                 if (!results.isEmpty()) {
                     latestResult = results.get(results.size() - 1);
-                    poseEstimateOpt = isTagClear() ? photonPoseEstimator.update(Photon.BW.latestResult) : Optional.empty();
+                    poseEstimateOpt = photonPoseEstimator.update(Photon.BW.latestResult);
                 }
             }
         }

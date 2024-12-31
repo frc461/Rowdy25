@@ -6,7 +6,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants;
 import frc.robot.subsystems.drivetrain.Swerve;
-import frc.robot.util.TagLocation;
+import frc.robot.util.FieldUtil;
 import frc.robot.util.VisionUtil;
 
 public class Localizer {
@@ -37,7 +37,7 @@ public class Localizer {
                 this.swerve.getState().ModulePositions,
                 this.swerve.getState().Pose,
                 Constants.VisionConstants.ODOM_STD_DEV,
-                Constants.VisionConstants.VISION_STD_DEV_CONFIGURED
+                Constants.VisionConstants.VISION_STD_DEV_MULTITAG_FUNCTION.apply(1.0)
         );
 
         configureQuestOffset();
@@ -66,7 +66,7 @@ public class Localizer {
 
     public Translation2d getTranslationToSpeaker() {
         Translation2d robotTranslation = getStrategyPose().getTranslation();
-        Translation2d tagTranslation = TagLocation.getSpeakerTagPose().getTranslation();
+        Translation2d tagTranslation = FieldUtil.TagLocation.getSpeakerTagPose().getTranslation();
         return tagTranslation.minus(robotTranslation);
     }
 
@@ -89,11 +89,12 @@ public class Localizer {
     }
 
     public void updateLimelightPoseEstimation() {
-        if (VisionUtil.Limelight.isTagClear()) {
+        if (VisionUtil.Limelight.isMultiTag() && VisionUtil.Limelight.isTagClear()) {
             Pose2d megaTagPose = VisionUtil.Limelight.getMegaTagOnePose();
             poseEstimator.addVisionMeasurement(
                     megaTagPose,
-                    Timer.getFPGATimestamp() - VisionUtil.Limelight.getLatency()
+                    Timer.getFPGATimestamp() - VisionUtil.Limelight.getLatency(),
+                    Constants.VisionConstants.VISION_STD_DEV_MULTITAG_FUNCTION.apply(VisionUtil.Limelight.getNearestTagDist())
             );
         }
     }
@@ -101,10 +102,20 @@ public class Localizer {
     public void updatePhotonPoseEstimation() {
         VisionUtil.Photon.updateResults();
         if (VisionUtil.Photon.BW.isTagClear()) {
-            VisionUtil.Photon.BW.getOptionalPoseData().ifPresent(photonPose -> poseEstimator.addVisionMeasurement(
-                    photonPose.estimatedPose.toPose2d(),
-                    photonPose.timestampSeconds
-            ));
+            if (VisionUtil.Photon.BW.isMultiTag()) {
+                VisionUtil.Photon.BW.getOptionalPoseData().ifPresent(photonPose -> poseEstimator.addVisionMeasurement(
+                        photonPose.estimatedPose.toPose2d(),
+                        photonPose.timestampSeconds,
+                        Constants.VisionConstants.VISION_STD_DEV_MULTITAG_FUNCTION.apply(VisionUtil.Photon.BW.getBestTagDist())
+                ));
+                return;
+            }
+            Pose2d photonPose = VisionUtil.Photon.BW.getSingleTagPose(poseEstimator.getEstimatedPosition());
+            poseEstimator.addVisionMeasurement(
+                    photonPose,
+                    VisionUtil.Photon.BW.getLatestResultTimestamp(),
+                    Constants.VisionConstants.VISION_STD_DEV_FUNCTION.apply(VisionUtil.Photon.BW.getBestTagDist())
+            );
         }
     }
 
