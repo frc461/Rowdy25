@@ -15,6 +15,7 @@ import com.ctre.phoenix6.swerve.SwerveModuleConstants.ClosedLoopOutputType;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants.SteerFeedbackType;
 import com.ctre.phoenix6.swerve.SwerveModuleConstantsFactory;
 
+import com.pathplanner.lib.config.RobotConfig;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -24,7 +25,9 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.units.measure.*;
 import edu.wpi.first.wpilibj.DriverStation;
+import org.json.simple.parser.ParseException;
 
+import java.io.IOException;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -56,6 +59,18 @@ public final class Constants {
             QUEST_LOW_BATTERY,
             QUEST_DIED,
             QUEST_DISCONNECTED
+        }
+    }
+
+    public static final class AutoConstants {
+        public static final RobotConfig ROBOT_CONFIG;
+
+        static {
+            try {
+                ROBOT_CONFIG = RobotConfig.fromGUISettings();
+            } catch (IOException | ParseException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
@@ -233,8 +248,8 @@ public final class Constants {
             private static final boolean STEER_MOTOR_INVERTED = true;
             private static final boolean CANCODER_INVERTED = false;
 
-            private static final Distance X_POS = Inches.of(11.75);
-            private static final Distance Y_POS = Inches.of(11.75);
+            private static final Distance X_POS = Inches.of(8.25);
+            private static final Distance Y_POS = Inches.of(8.25);
 
             public static final SwerveModuleConstants FRONT_LEFT = CONSTANT_CREATOR.createModuleConstants(
                     STEER_MOTOR_ID, DRIVE_MOTOR_ID, ENCODER_ID, ENCODER_OFFSET,
@@ -251,8 +266,8 @@ public final class Constants {
             private static final boolean STEER_MOTOR_INVERTED = true;
             private static final boolean CANCODER_INVERTED = false;
 
-            private static final Distance X_POS = Inches.of(11.75);
-            private static final Distance Y_POS = Inches.of(-11.75);
+            private static final Distance X_POS = Inches.of(8.25);
+            private static final Distance Y_POS = Inches.of(-8.25);
 
             public static final SwerveModuleConstants FRONT_RIGHT = CONSTANT_CREATOR.createModuleConstants(
                     STEER_MOTOR_ID, DRIVE_MOTOR_ID, ENCODER_ID, ENCODER_OFFSET,
@@ -269,8 +284,8 @@ public final class Constants {
             private static final boolean STEER_MOTOR_INVERTED = true;
             private static final boolean CANCODER_INVERTED = false;
 
-            private static final Distance X_POS = Inches.of(-11.75);
-            private static final Distance Y_POS = Inches.of(11.75);
+            private static final Distance X_POS = Inches.of(-8.25);
+            private static final Distance Y_POS = Inches.of(8.25);
 
             public static final SwerveModuleConstants BACK_LEFT = CONSTANT_CREATOR.createModuleConstants(
                     STEER_MOTOR_ID, DRIVE_MOTOR_ID, ENCODER_ID, ENCODER_OFFSET,
@@ -287,8 +302,8 @@ public final class Constants {
             private static final boolean STEER_MOTOR_INVERTED = true;
             private static final boolean CANCODER_INVERTED = false;
 
-            private static final Distance X_POS = Inches.of(-11.75);
-            private static final Distance Y_POS = Inches.of(-11.75);
+            private static final Distance X_POS = Inches.of(-8.25);
+            private static final Distance Y_POS = Inches.of(-8.25);
 
             public static final SwerveModuleConstants BACK_RIGHT = CONSTANT_CREATOR.createModuleConstants(
                     STEER_MOTOR_ID, DRIVE_MOTOR_ID, ENCODER_ID, ENCODER_OFFSET,
