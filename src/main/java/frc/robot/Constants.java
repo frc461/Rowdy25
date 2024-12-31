@@ -49,7 +49,8 @@ public final class Constants {
     // kSpeedAt12Volts desired top speed
     public static double MAX_VEL = SwerveConstants.SPEED_AT_12_VOLTS.in(MetersPerSecond);
     // 1.96664381049 rotations per second tuned max angular velocity
-    public static double MAX_ANGULAR_VEL = RotationsPerSecond.of(0.75).in(RadiansPerSecond);
+    public static double MAX_REAL_ANGULAR_VEL = RotationsPerSecond.of(1.96664381049).in(RadiansPerSecond);
+    public static double MAX_DESIRED_ANGULAR_VEL = RotationsPerSecond.of(0.75).in(RadiansPerSecond);
 
     public static final NetworkTableInstance NT_INSTANCE = NetworkTableInstance.getDefault();
     public static final int ONE_MILLION = 1_000_000;

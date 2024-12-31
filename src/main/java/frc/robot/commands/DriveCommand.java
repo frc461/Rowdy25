@@ -81,8 +81,9 @@ public class DriveCommand extends Command {
                             .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
                             .withVelocityX(-straight.getAsDouble() * Constants.MAX_VEL)
                             .withVelocityY(-strafe.getAsDouble() * Constants.MAX_VEL)
-                            .withRotationalRate(
-                                    yawController.calculate(
+                            .withRotationalRate(rot.getAsDouble() < -0.5
+                                    ? -rot.getAsDouble() * Constants.MAX_REAL_ANGULAR_VEL
+                                    : yawController.calculate(
                                             swerve.localizer.getStrategyPose().getRotation().getDegrees(),
                                             swerve.localizer.getAngleToSpeaker()
                                     ) * Constants.SwerveConstants.MAX_CONTROLLED_ANGULAR_VEL
@@ -96,23 +97,25 @@ public class DriveCommand extends Command {
                             .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
                             .withVelocityX(-straight.getAsDouble() * Constants.MAX_VEL)
                             .withVelocityY(-strafe.getAsDouble() * Constants.MAX_VEL)
-                            .withRotationalRate(VisionUtil.Photon.Color.hasTargets()
-                                    ? objectDetectionController.calculate(
-                                            VisionUtil.Photon.Color.getBestObjectYaw(),
-                                            0
-                                    ) * Constants.SwerveConstants.MAX_CONTROLLED_ANGULAR_VEL
-                                            : 0.0
+                            .withRotationalRate(rot.getAsDouble() > 0.5
+                                    ? -rot.getAsDouble() * Constants.MAX_REAL_ANGULAR_VEL
+                                    : VisionUtil.Photon.Color.hasTargets()
+                                            ? objectDetectionController.calculate(
+                                                    VisionUtil.Photon.Color.getBestObjectYaw(),
+                                                    0
+                                            ) * Constants.SwerveConstants.MAX_CONTROLLED_ANGULAR_VEL
+                                                    : 0.0
                             )
             );
         } else if (Math.abs(rot.getAsDouble()) >= 0.1 || (Math.abs(straight.getAsDouble()) < 0.1 && Math.abs(strafe.getAsDouble()) < 0.1)) {
             setConsistentHeading.accept(swerve.localizer.getStrategyPose().getRotation().getDegrees());
             swerve.setControl(
                     fieldCentric.withDeadband(Constants.MAX_VEL * 0.1)
-                            .withRotationalDeadband(Constants.MAX_ANGULAR_VEL * 0.1) // Add a 10% deadband
+                            .withRotationalDeadband(Constants.MAX_DESIRED_ANGULAR_VEL * 0.1) // Add a 10% deadband
                             .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage) // Use open-loop control for drive motors
                             .withVelocityX(-straight.getAsDouble() * Constants.MAX_VEL) // Drive forward with negative Y (forward)
                             .withVelocityY(-strafe.getAsDouble() * Constants.MAX_VEL) // Drive left with negative X (left)
-                            .withRotationalRate(-rot.getAsDouble() * Constants.MAX_ANGULAR_VEL) // Drive counterclockwise with negative X (left)
+                            .withRotationalRate(-rot.getAsDouble() * Constants.MAX_DESIRED_ANGULAR_VEL) // Drive counterclockwise with negative X (left)
             );
         } else {
             swerve.setControl(
