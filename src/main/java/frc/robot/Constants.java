@@ -82,10 +82,10 @@ public final class Constants {
         public static final String NOTE_CHECK_MARKER = "checkNote";
 
         public static final PathConstraints PATH_CONSTRAINTS = new PathConstraints(
-                Constants.MAX_VEL,
-                Constants.MAX_ACCEL,
-                Constants.MAX_DESIRED_ANGULAR_VEL,
-                Constants.MAX_ANGULAR_ACCEL
+                MAX_VEL,
+                MAX_ACCEL,
+                MAX_DESIRED_ANGULAR_VEL,
+                MAX_ANGULAR_ACCEL
         );
     }
 
