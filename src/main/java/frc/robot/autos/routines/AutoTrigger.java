@@ -6,9 +6,10 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 import java.util.function.BooleanSupplier;
 
-public class AutoPathTrigger {
+public class AutoTrigger {
+    private final String name;
 
-    private final Command triggeredPath;
+    private final Command triggeredCommand;
 
     private final AutoEventLooper auto;
 
@@ -16,13 +17,14 @@ public class AutoPathTrigger {
 
     private boolean isFinished = false;
 
-    public AutoPathTrigger(Command path, AutoEventLooper auto) {
-        this.triggeredPath = path;
+    public AutoTrigger(String name, Command path, AutoEventLooper auto) {
+        this.name = name;
+        this.triggeredCommand = path;
         this.auto = auto;
     }
 
     public Command cmd() {
-        return new WrapperCommand(this.triggeredPath) {
+        return new WrapperCommand(this.triggeredCommand) {
             @Override
             public void initialize() {
                 super.initialize();
@@ -41,7 +43,7 @@ public class AutoPathTrigger {
             public boolean isFinished() {
                 return super.isFinished() || !auto.isActive;
             }
-        };
+        }.withName(name);
     }
 
     /**
@@ -68,16 +70,16 @@ public class AutoPathTrigger {
             @Override
             public boolean getAsBoolean() {
                 // TODO DETERMINE IF THIS REQUIRES THE PATH TO BE ACTUALLY COMPLETED OR MAY BE STOPPED
-                if (!AutoPathTrigger.this.isFinished) {
+                if (!AutoTrigger.this.isFinished) {
                     initialInactive = false;
                     return false;
                 } else {
                     if (!initialInactive) {
                         initialInactive = true;
-                        targetPollCount = AutoPathTrigger.this.auto.pollCount() + cyclesToDelay;
+                        targetPollCount = AutoTrigger.this.auto.pollCount() + cyclesToDelay;
                     }
 
-                    return AutoPathTrigger.this.auto.pollCount() == targetPollCount;
+                    return AutoTrigger.this.auto.pollCount() == targetPollCount;
                 }
             }
         };

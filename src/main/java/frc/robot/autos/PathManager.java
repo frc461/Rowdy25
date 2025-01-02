@@ -13,10 +13,14 @@ import java.io.IOException;
 
 public final class PathManager {
     public static PathPlannerPath TEST_PATH;
+    public static PathPlannerPath TEST_PATH_2;
+    public static PathPlannerPath TEST_PATH_3;
 
     static {
         try {
             TEST_PATH = PathPlannerPath.fromPathFile("Test");
+            TEST_PATH_2 = PathPlannerPath.fromPathFile("Test2");
+            TEST_PATH_3 = PathPlannerPath.fromPathFile("Test3");
         } catch (IOException | ParseException e) {
             DriverStation.reportError("Failed to load paths: " + e.getMessage(), e.getStackTrace());
         }

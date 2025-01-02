@@ -2,7 +2,6 @@ package frc.robot.autos.routines;
 
 import static edu.wpi.first.wpilibj.Alert.AlertType.kWarning;
 
-import choreo.auto.AutoFactory;
 import choreo.util.ChoreoAlert;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.event.EventLoop;
@@ -98,9 +97,8 @@ public class AutoEventLooper {
         return observe(() -> isActive && DriverStation.isAutonomousEnabled());
     }
 
-    public AutoPathTrigger addPath(Command path) {
-        return new AutoPathTrigger(path, this);
-
+    public AutoTrigger addTrigger(String name, Command path) {
+        return new AutoTrigger(name, path, this);
     }
 
     /**
@@ -109,10 +107,10 @@ public class AutoEventLooper {
      * @param trajectory The first trajectory to watch.
      * @param trajectories The other trajectories to watch
      * @return a trigger that determines if any of the trajectories are finished
-     * @see #anyDone(int, AutoPathTrigger, AutoPathTrigger...) A version of this method that takes a
+     * @see #anyDone(int, AutoTrigger, AutoTrigger...) A version of this method that takes a
      *     delay in cycles before the trigger is true.
      */
-    public Trigger anyDone(AutoPathTrigger trajectory, AutoPathTrigger... trajectories) {
+    public Trigger anyDone(AutoTrigger trajectory, AutoTrigger... trajectories) {
         return anyDone(0, trajectory, trajectories);
     }
 
@@ -125,9 +123,9 @@ public class AutoEventLooper {
      * @return a trigger that determines if any of the paths are finished
      */
     public Trigger anyDone(
-            int cyclesToDelay, AutoPathTrigger firstPath, AutoPathTrigger... paths) {
+            int cyclesToDelay, AutoTrigger firstPath, AutoTrigger... paths) {
         var trigger = firstPath.done(cyclesToDelay);
-        for (AutoPathTrigger path : paths) {
+        for (AutoTrigger path : paths) {
             trigger = trigger.or(path.done(cyclesToDelay));
         }
         return trigger.and(this.active());
