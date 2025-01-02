@@ -102,10 +102,6 @@ public class AutoEventLooper {
         return new AutoTrigger(name, command, this);
     }
 
-    public AutoDynamicPathTrigger addDynamicPath(String name, FollowPathDynamicCommand path) {
-        return new AutoDynamicPathTrigger(name, path, this);
-    }
-
     /**
      * Creates a trigger that produces a rising edge when any of the trajectories are finished.
      *

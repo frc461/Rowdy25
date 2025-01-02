@@ -139,7 +139,6 @@ public class FollowPathDynamicCommand extends FollowPathCommand {
             @Override
             public void end(boolean interrupted) {
                 super.end(interrupted);
-                System.out.println("This worked 3");
                 end.accept(FollowPathDynamicCommand.this.interrupt);
             }
         };

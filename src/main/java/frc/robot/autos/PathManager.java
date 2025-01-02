@@ -32,6 +32,7 @@ public final class PathManager {
         STAGE,
         OPPONENT_SOURCE;
 
+        // TODO IMPLEMENT RED SIDE POSES
         public static Pose2d getScoringPose(ScoringLocations location) {
             return switch (location) {
                 case AMP -> new Pose2d(3.3, 6.35, Rotation2d.fromDegrees(-170));

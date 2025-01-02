@@ -89,8 +89,8 @@ public final class Constants {
         );
 
         public static final double NOTE_SEARCH_DEGREE_SLANT = 30.0;
-        public static final double DEGREE_TOLERANCE_TO_ACCEPT = 0.5;
-        public static final double TRANSLATION_TOLERANCE_TO_ACCEPT = 0.2;
+        public static final double DEGREE_TOLERANCE_TO_ACCEPT = 2.5;
+        public static final double TRANSLATION_TOLERANCE_TO_ACCEPT = 0.5;
     }
 
     public static final class VisionConstants {
@@ -128,7 +128,7 @@ public final class Constants {
             public static final double BW_MAX_TAG_CLEAR_DIST = 6.0;
 
             public static final double OBJECT_GOAL_PITCH = -15;
-            public static final double OBJECT_DEGREE_TOLERANCE_TO_ACCEPT = 0.5;
+            public static final double OBJECT_DEGREE_TOLERANCE_TO_ACCEPT = 2.5;
         }
 
         public static final class QuestNavConstants {

@@ -15,8 +15,8 @@ public class SearchForObjectCommand extends Command {
     private final Swerve swerve;
     private final SwerveRequest.FieldCentric fieldCentric;
     private final PIDController errorController;
-    private final Translation2d targetTranslation;
-    private final double searchAngle;
+    private Translation2d targetTranslation;
+    private double searchAngle;
     private boolean rotationComplete = false;
     private boolean translationComplete = false;
     private boolean end = false;
@@ -32,6 +32,11 @@ public class SearchForObjectCommand extends Command {
         );
         errorController.enableContinuousInput(Constants.SwerveConstants.ANGULAR_MINIMUM_ANGLE, Constants.SwerveConstants.ANGULAR_MAXIMUM_ANGLE);
 
+        addRequirements(this.swerve);
+    }
+
+    @Override
+    public void initialize() {
         targetTranslation = new Translation2d(
                 8.275 + 0.5 * (Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red ? 1 : (-1)),
                 upperHalf() ? 0.5 : FieldUtil.FIELD_WIDTH - 0.5
@@ -43,8 +48,6 @@ public class SearchForObjectCommand extends Command {
                 : upperHalf()
                         ? 180.0 - Constants.AutoConstants.NOTE_SEARCH_DEGREE_SLANT
                         : -180.0 + Constants.AutoConstants.NOTE_SEARCH_DEGREE_SLANT;
-
-        addRequirements(this.swerve);
     }
 
     @Override
@@ -94,6 +97,13 @@ public class SearchForObjectCommand extends Command {
             end = true;
         }
 
+        System.out.println("X: " + targetTranslation.getX() + ", Y: " + targetTranslation.getY());
+        System.out.println("Search angle: " + searchAngle + ", Current angle: " + this.swerve.localizer.getStrategyPose().getRotation().getDegrees());
+        System.out.println("Is upper half: " + upperHalf() + ", Y: " + this.swerve.localizer.getStrategyPose().getY());
+
+        System.out.println("Rotation complete: " + rotationComplete + ", Translation complete: " + translationComplete);
+        System.out.println("Ending: " + end);
+
         if (VisionUtil.Photon.Color.hasTargets()) {
             end = true;
         }
@@ -101,7 +111,7 @@ public class SearchForObjectCommand extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        System.out.println("This is running");
+        System.out.println("This command is ending");
         rotationComplete = false;
         translationComplete = false;
         end = false;

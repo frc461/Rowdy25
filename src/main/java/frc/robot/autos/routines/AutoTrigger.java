@@ -25,17 +25,17 @@ public class AutoTrigger {
     }
 
     public Command cmd() {
-        return triggeredCommand.beforeStarting(
-                () -> {
-                    isActive = true;
-                    isFinished = false;
-                    interrupted = false;
-                }
-        ).finallyDo(
+        return triggeredCommand.finallyDo(
                 interrupted -> {
                     isActive = false;
                     isFinished = !interrupted;
                     AutoTrigger.this.interrupted = interrupted;
+                }
+        ).beforeStarting(
+                () -> {
+                    isActive = true;
+                    isFinished = false;
+                    interrupted = false;
                 }
         ).withName(name);
     }

@@ -10,8 +10,8 @@ public class DynamicRoutineTest {
     private final AutoEventLooper starter = new AutoEventLooper("DynamicRoutineTest");
 
     public DynamicRoutineTest(Swerve swerve) {
-        AutoDynamicPathTrigger testPath = starter.addDynamicPath("TestPath", new FollowPathDynamicCommand(PathManager.TEST_PATH, false, swerve));
-        AutoDynamicPathTrigger testPath2 = starter.addDynamicPath("TestPath2", new FollowPathDynamicCommand(PathManager.TEST_PATH_2, false, swerve));
+        AutoTrigger testPath = starter.addTrigger("TestPath", new FollowPathDynamicCommand(PathManager.TEST_PATH, false, swerve));
+        AutoTrigger testPath2 = starter.addTrigger("TestPath2", new FollowPathDynamicCommand(PathManager.TEST_PATH_2, false, swerve));
         AutoTrigger findNote2 = starter.addTrigger("FindNote2", swerve.pathFindFindScoreObject());
         Command stop = Commands.runOnce(swerve::forceStop);
 
