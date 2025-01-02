@@ -30,6 +30,7 @@ public class FollowPathDynamicCommand extends FollowPathCommand {
     private final List<OneShotTriggerEvent> allInstantEvents = new ArrayList<>();
     private PathPlannerPath path;
     private PathPlannerTrajectory trajectory;
+    private boolean end;
 
     public FollowPathDynamicCommand(PathPlannerPath path, boolean setAssumedPosition, Swerve swerve) {
         super(
@@ -69,6 +70,8 @@ public class FollowPathDynamicCommand extends FollowPathCommand {
         this.path = this.originalPath;
         Optional<PathPlannerTrajectory> idealTrajectory = this.path.getIdealTrajectory(this.robotConfig);
         idealTrajectory.ifPresent((traj) -> this.trajectory = traj);
+
+        end = false;
     }
 
     @Override
@@ -116,9 +119,20 @@ public class FollowPathDynamicCommand extends FollowPathCommand {
             if (allInstantEvents.get(0).getTimestampSeconds() <= currentTime) {
                 allInstantEvents.remove(0);
                 if (!noteIsThere.getAsBoolean()) {
-                    cancel();
+                    end = true;
                 }
             }
         }
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        super.end(interrupted);
+        end = false;
+    }
+
+    @Override
+    public boolean isFinished() {
+        return super.isFinished() || end;
     }
 }
