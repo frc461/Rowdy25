@@ -27,7 +27,7 @@ public class AutoTrigger {
     /** The underlying {@link EventLoop} that triggers are bound to and polled */
     private final EventLoop loop;
 
-    /** The name of the auto routine this loop is associated with */
+    /** The name of the path this loop is associated with, or the name of the auto if this trigger starts an auto */
     private final String name;
 
     /** A boolean utilized in {@link #active()} to resolve trueness */
@@ -68,36 +68,21 @@ public class AutoTrigger {
     }
 
     /**
-     * Returns a {@link Trigger} that is true while this autonomous routine is being polled.
-     *
-     * <p>Using a {@link Trigger#onFalse(Command)} will do nothing as when this is false the routine
-     * is not being polled anymore.
-     *
-     * @return A {@link Trigger} that is true while this autonomous routine is being polled.
-     */
-    public Trigger active() {
-        return new Trigger(loop, () -> isActive && DriverStation.isAutonomousEnabled());
-    }
-
-    /** Polls the routine. Should be called in the autonomous periodic method. */
-    public void poll() {
-        if (!DriverStation.isAutonomousEnabled()
-                || isKilled) {
-            isActive = false;
-            return;
-        }
-        pollCount++;
-        loop.poll();
-        isActive = true;
-    }
-
-    /**
      * Gets the event loop that this routine is using.
      *
      * @return The event loop that this routine is using.
      */
     public EventLoop loop() {
         return loop;
+    }
+
+    /**
+     * Gets the poll count of the routine.
+     *
+     * @return The poll count of the routine.
+     */
+    public int pollCount() {
+        return pollCount;
     }
 
     /**
@@ -111,12 +96,27 @@ public class AutoTrigger {
     }
 
     /**
-     * Gets the poll count of the routine.
+     * Returns a {@link Trigger} that is true while this autonomous routine is being polled.
      *
-     * @return The poll count of the routine.
+     * <p>Using a {@link Trigger#onFalse(Command)} will do nothing as when this is false the routine
+     * is not being polled anymore.
+     *
+     * @return A {@link Trigger} that is true while this autonomous routine is being polled.
      */
-    int pollCount() {
-        return pollCount;
+    public Trigger active() {
+        return observe(() -> isActive && DriverStation.isAutonomousEnabled());
+    }
+
+    /** Polls the routine. Should be called in the autonomous periodic method. */
+    public void poll() {
+        if (!DriverStation.isAutonomousEnabled()
+                || isKilled || triggeredPath.isFinished()) {
+            isActive = false;
+            return;
+        }
+        pollCount++;
+        loop.poll();
+        isActive = true;
     }
 
     /**
@@ -140,51 +140,6 @@ public class AutoTrigger {
         isKilled = true;
     }
 
-    /**
-     * Creates a trigger that produces a rising edge when any of the trajectories are finished.
-     *
-     * @param trajectory The first trajectory to watch.
-     * @param trajectories The other trajectories to watch
-     * @return a trigger that determines if any of the trajectories are finished
-     * @see #anyDone(int, AutoTrajectory, AutoTrajectory...) A version of this method that takes a
-     *     delay in cycles before the trigger is true.
-     */
-    public Trigger anyDone(AutoTrajectory trajectory, AutoTrajectory... trajectories) {
-        return anyDone(0, trajectory, trajectories);
-    }
-
-    /**
-     * Creates a trigger that produces a rising edge when any of the trajectories are finished.
-     *
-     * @param cyclesToDelay The number of cycles to delay.
-     * @param trajectory The first trajectory to watch.
-     * @param trajectories The other trajectories to watch
-     * @return a trigger that determines if any of the trajectories are finished
-     */
-    public Trigger anyDone(
-            int cyclesToDelay, AutoTrajectory trajectory, AutoTrajectory... trajectories) {
-        var trigger = trajectory.done(cyclesToDelay);
-        for (int i = 0; i < trajectories.length; i++) {
-            trigger = trigger.or(trajectories[i].done(cyclesToDelay));
-        }
-        return trigger.and(this.active());
-    }
-
-    /**
-     * Creates a trigger that returns true when any of the trajectories given are active.
-     *
-     * @param trajectory The first trajectory to watch.
-     * @param trajectories The other trajectories to watch
-     * @return a trigger that determines if any of the trajectories are active
-     */
-    public Trigger anyActive(AutoTrajectory trajectory, AutoTrajectory... trajectories) {
-        var trigger = trajectory.active();
-        for (AutoTrajectory autoTrajectory : trajectories) {
-            trigger = trigger.or(autoTrajectory.active());
-        }
-        return trigger.and(this.active());
-    }
-
 
     public Command path() {
         return triggeredPath;
@@ -200,7 +155,7 @@ public class AutoTrigger {
      * @see #cmd(BooleanSupplier) A version of this method that takes a condition to finish the loop.
      */
     public Command cmd() {
-        return cmd(triggeredPath::isFinished);
+        return cmd(() -> false);
     }
 
     /**
