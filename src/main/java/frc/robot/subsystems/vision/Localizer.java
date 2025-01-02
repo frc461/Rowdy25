@@ -63,7 +63,7 @@ public class Localizer {
     }
 
     public Pose2d getQuestPose() {
-        return VisionUtil.QuestNav.getFinalRobotPose();
+        return VisionUtil.QuestNav.getPose();
     }
 
     public Translation2d getTranslationToSpeaker() {

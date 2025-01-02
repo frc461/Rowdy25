@@ -176,7 +176,7 @@ public class VisionUtil {
                     robotToCameraOffset
             );
 
-            private static Optional<EstimatedRobotPose> poseEstimateOpt = Optional.empty();
+            private static EstimatedRobotPose poseEstimate = null;
 
             private static PhotonPipelineResult latestResult = new PhotonPipelineResult();
 
@@ -207,7 +207,7 @@ public class VisionUtil {
             }
 
             public static Optional<EstimatedRobotPose> getOptionalPoseData() {
-                return poseEstimateOpt;
+                return Optional.ofNullable(poseEstimate);
             }
 
             public static Pose2d getMultiTagPose() {
@@ -251,7 +251,7 @@ public class VisionUtil {
                 List<PhotonPipelineResult> results = BW.getAllUnreadResults();
                 if (!results.isEmpty()) {
                     latestResult = results.get(results.size() - 1);
-                    poseEstimateOpt = photonPoseEstimator.update(Photon.BW.latestResult);
+                    poseEstimate = photonPoseEstimator.update(Photon.BW.latestResult).orElse(null);
                 }
             }
         }
@@ -262,20 +262,10 @@ public class VisionUtil {
 
         private static final IntegerSubscriber questMiso = QUESTNAV_NT.getIntegerTopic("miso").subscribe(0);
         private static final IntegerPublisher questMosi = QUESTNAV_NT.getIntegerTopic("mosi").publish();
+        private static final DoubleArrayPublisher questResetPose = QUESTNAV_NT.getDoubleArrayTopic("resetpose").publish();
 
         private static final FloatArraySubscriber questPositionTopic = QUESTNAV_NT.getFloatArrayTopic("position").subscribe(new float[] {0.0f, 0.0f, 0.0f});
         private static final FloatArraySubscriber questEulerAnglesTopic = QUESTNAV_NT.getFloatArrayTopic("eulerAngles").subscribe(new float[] {0.0f, 0.0f, 0.0f});
-
-        // Transformation applied to QuestNav pose to adjust origin to the pose estimator's origin
-        public static final Transform2d robotToCameraOffset = new Transform2d(
-                new Translation2d(
-                        Constants.VisionConstants.QuestNavConstants.QUEST_FORWARD,
-                        Constants.VisionConstants.QuestNavConstants.QUEST_LEFT
-                ),
-                new Rotation2d(Units.degreesToRadians(Constants.VisionConstants.QuestNavConstants.QUEST_YAW))
-        );
-
-        public static Transform2d questToFieldOffset = new Transform2d();
 
         public static double getRawX() {
             return questPositionTopic.get()[2];
@@ -309,30 +299,11 @@ public class VisionUtil {
             return stabilize(questEulerAnglesTopic.get()[2]);
         }
 
-        public static Pose2d getRawPose() {
+        public static Pose2d getPose() {
             return new Pose2d(
                     new Translation2d(getRawX(), getRawY()),
                     new Rotation2d(Units.degreesToRadians(getRawYaw()))
             );
-        }
-
-        public static Pose2d getFinalCameraPose() {
-            Pose2d rawPose = getRawPose();
-            Translation2d correctedTranslation = rawPose.getTranslation().rotateBy(questToFieldOffset.getRotation());
-            return new Pose2d(
-                    questToFieldOffset.getTranslation().plus(correctedTranslation),
-                    questToFieldOffset.getRotation().rotateBy(rawPose.getRotation())
-            );
-        }
-
-        public static Pose2d getFinalRobotPose() {
-            return getFinalCameraPose().plus(robotToCameraOffset.inverse());
-        }
-
-        public static void zeroQuestPose() {
-            if (questMiso.get() != 99) {
-                questMosi.set(1);
-            }
         }
 
         public static void completeQuestPose() {
@@ -342,15 +313,14 @@ public class VisionUtil {
         }
 
         public static void setQuestPose(Pose2d pose) {
-            zeroQuestPose();
-            Transform2d correctedRobotToCameraOffset = new Transform2d(
-                    robotToCameraOffset.getTranslation().rotateBy(pose.getRotation()),
-                    robotToCameraOffset.getRotation()
-            );
-            questToFieldOffset = new Transform2d(
-                    pose.getTranslation().plus(correctedRobotToCameraOffset.getTranslation()),
-                    pose.getRotation().rotateBy(correctedRobotToCameraOffset.getRotation())
-            );
+            if (questMiso.get() != 99) {
+                questMosi.set(2);
+                questResetPose.set(new double[] {
+                        pose.getX(),
+                        pose.getY(),
+                        pose.getRotation().getDegrees()
+                });
+            }
         }
     }
 }
