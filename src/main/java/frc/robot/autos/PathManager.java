@@ -16,6 +16,8 @@ public final class PathManager {
     public static PathPlannerPath TEST_PATH_2;
     public static PathPlannerPath TEST_PATH_3;
 
+    // TODO ENUM FOR DIFFERENT SHOOTING PLACES
+
     static {
         try {
             TEST_PATH = PathPlannerPath.fromPathFile("Test");

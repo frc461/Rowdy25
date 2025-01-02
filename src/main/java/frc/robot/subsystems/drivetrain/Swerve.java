@@ -162,9 +162,9 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
     public void forceStop() {
         setControl(fieldCentric
                 .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
-                .withVelocityX(0)
-                .withVelocityY(0)
-                .withRotationalRate(0));
+                .withVelocityX(0.0)
+                .withVelocityY(0.0)
+                .withRotationalRate(0.0));
     }
 
     @Override
