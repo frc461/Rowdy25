@@ -69,7 +69,7 @@ public class SearchForObjectCommand extends Command {
                 rotationComplete = true;
             }
         } else if (!translationComplete) {
-            double translationError = targetTranslation.minus(currentTranslation).getNorm();
+            double translationError = targetTranslation.getDistance(currentTranslation);
 
             swerve.setControl(
                     fieldCentric.withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)

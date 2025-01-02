@@ -32,16 +32,16 @@
     },
     {
       "anchor": {
-        "x": 4.604,
+        "x": 4.6,
         "y": 4.85
       },
       "prevControl": {
-        "x": 5.516586791453733,
+        "x": 5.5125867914537325,
         "y": 3.6333797511482575
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "ShootStage"
     }
   ],
   "rotationTargets": [

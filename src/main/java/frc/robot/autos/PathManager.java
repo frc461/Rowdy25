@@ -10,13 +10,12 @@ import frc.robot.Constants;
 import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
+import java.util.function.Supplier;
 
 public final class PathManager {
     public static PathPlannerPath TEST_PATH;
     public static PathPlannerPath TEST_PATH_2;
     public static PathPlannerPath TEST_PATH_3;
-
-    // TODO ENUM FOR DIFFERENT SHOOTING PLACES
 
     static {
         try {
@@ -25,6 +24,20 @@ public final class PathManager {
             TEST_PATH_3 = PathPlannerPath.fromPathFile("Test3");
         } catch (IOException | ParseException e) {
             DriverStation.reportError("Failed to load paths: " + e.getMessage(), e.getStackTrace());
+        }
+    }
+
+    public enum ScoringLocations {
+        AMP,
+        STAGE,
+        OPPONENT_SOURCE;
+
+        public static Pose2d getScoringPose(ScoringLocations location) {
+            return switch (location) {
+                case AMP -> new Pose2d(3.3, 6.35, Rotation2d.fromDegrees(-170));
+                case STAGE -> new Pose2d(4.6, 4.85, Rotation2d.fromDegrees(166));
+                case OPPONENT_SOURCE -> new Pose2d(2.7, 3.0, Rotation2d.fromDegrees(145));
+            };
         }
     }
 
@@ -37,7 +50,19 @@ public final class PathManager {
     }
 
     // TODO UPDATE THESE PRESET TARGET POSES (MEANT TO BE USED FOR SCORING, NOT PICKING UP, WHICH IS SUPPOSED TO BE COMPLETELY DYNAMIC)
-    public static Command pathFindToAmpSide() {
-        return pathFindToPose(new Pose2d(3.5, 7.0, new Rotation2d()));
+    public static Command pathFindToNearestShootingLocation(Supplier<Pose2d> poseSupplier) {
+        Pose2d current = poseSupplier.get();
+        ScoringLocations nearestLocation = ScoringLocations.STAGE;
+        double nearestDistance = current.getTranslation().getDistance(ScoringLocations.getScoringPose(nearestLocation).getTranslation());
+
+        for (ScoringLocations location : ScoringLocations.values()) {
+            double distance = current.getTranslation().getDistance(ScoringLocations.getScoringPose(location).getTranslation());
+            if (distance < nearestDistance) {
+                nearestLocation = location;
+                nearestDistance = distance;
+            }
+        }
+
+        return pathFindToPose(ScoringLocations.getScoringPose(nearestLocation));
     }
 }

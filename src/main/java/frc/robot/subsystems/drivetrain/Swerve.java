@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.Constants;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.DriveToObjectCommand;
+import frc.robot.commands.auto.DynamicObjectCommandSequence;
 import frc.robot.subsystems.vision.Localizer;
 import frc.robot.util.Simulator;
 
@@ -139,6 +140,10 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
                 tagTurret,
                 objectTurret
         );
+    }
+
+    public Command pathFindFindScoreObject() {
+        return new DynamicObjectCommandSequence(this, fieldCentric, robotCentric);
     }
 
     public Command moveToNote() { // TODO IMPLEMENT THIS AFTER CALIBRATING AUTO
