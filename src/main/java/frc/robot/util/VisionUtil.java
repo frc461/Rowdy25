@@ -215,7 +215,6 @@ public class VisionUtil {
                 return pose.isPresent() ? pose.get().estimatedPose.toPose2d() : new Pose2d();
             }
 
-            // TODO TEST THIS
             public static Optional<Pose2d> getSingleTagPose(Pose2d currentPose) {
                 if (hasTargets()) {
 

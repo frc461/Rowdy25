@@ -146,7 +146,7 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
         return new DynamicObjectCommandSequence(this, fieldCentric, robotCentric);
     }
 
-    public Command moveToNote() { // TODO IMPLEMENT THIS AFTER CALIBRATING AUTO
+    public Command moveToNote() {
         return new DriveToObjectCommand(this, robotCentric);
     }
 

@@ -34,6 +34,7 @@ public final class PathManager {
         OPPONENT_SOURCE;
 
         // TODO IMPLEMENT RED SIDE POSES
+        // TODO UPDATE THESE PRESET TARGET POSES (MEANT TO BE USED FOR SCORING, NOT PICKING UP, WHICH IS SUPPOSED TO BE COMPLETELY DYNAMIC)
         public static Pose2d getScoringPose(ScoringLocations location) {
             return switch (location) {
                 case AMP -> new Pose2d(3.3, 6.35, Rotation2d.fromDegrees(-170));
@@ -50,14 +51,13 @@ public final class PathManager {
                 0.0
         );
     }
-
-    // TODO UPDATE THESE PRESET TARGET POSES (MEANT TO BE USED FOR SCORING, NOT PICKING UP, WHICH IS SUPPOSED TO BE COMPLETELY DYNAMIC)
     public static Command pathFindToNearestShootingLocation(Supplier<Pose2d> poseSupplier) {
         Translation2d currentTranslation = poseSupplier.get().getTranslation();
         ScoringLocations nearestLocation = ScoringLocations.STAGE;
         double nearestDistance = currentTranslation.getDistance(ScoringLocations.getScoringPose(nearestLocation).getTranslation());
 
         for (ScoringLocations location : ScoringLocations.values()) {
+            // TODO WHY IS IT GOING TO THE FARTHEST LOCATION??????
             double distance = currentTranslation.getDistance(ScoringLocations.getScoringPose(location).getTranslation());
             if (distance < nearestDistance) {
                 nearestLocation = location;
