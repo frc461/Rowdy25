@@ -159,19 +159,11 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
         });
     }
 
-    public void followTrajectory(SwerveSample sample) {
-        Pose2d pose = localizer.getStrategyPose();
-
-        ChassisSpeeds speeds = new ChassisSpeeds(
-                sample.vx + pathTranslationController.calculate(pose.getX(), sample.x),
-                sample.vy + pathTranslationController.calculate(pose.getY(), sample.y),
-                sample.omega + pathSteeringController.calculate(pose.getRotation().getRadians(), sample.heading)
-        );
-
+    public void forceStop() {
         setControl(new SwerveRequest.ApplyFieldSpeeds()
-                .withSpeeds(speeds)
-                .withWheelForceFeedforwardsX(sample.moduleForcesX())
-                .withWheelForceFeedforwardsY(sample.moduleForcesY())
+                .withSpeeds(new ChassisSpeeds(0, 0, 0))
+                .withWheelForceFeedforwardsX(new double[0])
+                .withWheelForceFeedforwardsY(new double[0])
         );
     }
 
