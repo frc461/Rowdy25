@@ -44,7 +44,7 @@ public class DriveToObjectCommand extends Command {
                             .withVelocityY(0.0)
                             .withRotationalRate(objectDetectionController.calculate(
                                     currentYaw,
-                                    0
+                                    0.0
                             ) * Constants.SwerveConstants.MAX_CONTROLLED_ANGULAR_VEL)
             );
             if (degreeError < Constants.VisionConstants.PhotonConstants.OBJECT_DEGREE_TOLERANCE_TO_ACCEPT) {
@@ -61,14 +61,14 @@ public class DriveToObjectCommand extends Command {
                             ) * Constants.MAX_VEL)
                             .withVelocityY(objectDetectionController.calculate(
                                     -currentYaw,
-                                    0
+                                    0.0
                             ))
                             .withRotationalRate(0.0)
             );
             if (degreeError < Constants.VisionConstants.PhotonConstants.OBJECT_DEGREE_TOLERANCE_TO_ACCEPT) {
                 translationComplete = true;
+                end = true;
             }
-            end = true;
         } else {
             swerve.forceStop();
             end = true;
