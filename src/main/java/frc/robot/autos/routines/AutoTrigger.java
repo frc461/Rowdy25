@@ -17,6 +17,8 @@ public class AutoTrigger {
 
     private boolean isFinished = false;
 
+    private boolean interrupted = false;
+
     public AutoTrigger(String name, Command path, AutoEventLooper auto) {
         this.name = name;
         this.triggeredCommand = path;
@@ -24,26 +26,19 @@ public class AutoTrigger {
     }
 
     public Command cmd() {
-        return new WrapperCommand(this.triggeredCommand) {
-            @Override
-            public void initialize() {
-                super.initialize();
-                isActive = true;
-                isFinished = false;
-            }
-
-            @Override
-            public void end(boolean interrupted) {
-                super.end(interrupted);
-                isActive = false;
-                isFinished = !interrupted;
-            }
-
-            @Override
-            public boolean isFinished() {
-                return super.isFinished() || !auto.isActive;
-            }
-        }.withName(name);
+        return triggeredCommand.beforeStarting(
+                () -> {
+                    isActive = true;
+                    isFinished = false;
+                    interrupted = false;
+                }
+        ).finallyDo(
+                interrupted -> {
+                    isActive = false;
+                    isFinished = !interrupted;
+                    AutoTrigger.this.interrupted = interrupted;
+                }
+        ).withName(name);
     }
 
     /**
@@ -63,7 +58,7 @@ public class AutoTrigger {
     }
 
     public Trigger interrupt() {
-        return auto.observe(() -> (!isActive && !isFinished) || !auto.isActive);
+        return inactive().and(auto.observe(() -> interrupted));
     }
 
     public Trigger done(int cyclesToDelay) {
@@ -73,7 +68,6 @@ public class AutoTrigger {
 
             @Override
             public boolean getAsBoolean() {
-                // TODO DETERMINE IF THIS REQUIRES THE PATH TO BE ACTUALLY COMPLETED OR MAY BE STOPPED
                 if (!AutoTrigger.this.isFinished) {
                     initialInactive = false;
                     return false;

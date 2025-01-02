@@ -34,7 +34,7 @@ public class SearchForObjectCommand extends Command {
 
         targetTranslation = new Translation2d(
                 8.275 + 0.5 * (Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red ? 1 : (-1)),
-                upperHalf() ? FieldUtil.FIELD_WIDTH - 0.5 : 0.5
+                upperHalf() ? 0.5 : FieldUtil.FIELD_WIDTH - 0.5
         );
         searchAngle = Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red
                 ? upperHalf()
@@ -43,6 +43,8 @@ public class SearchForObjectCommand extends Command {
                 : upperHalf()
                         ? 180.0 - Constants.AutoConstants.NOTE_SEARCH_DEGREE_SLANT
                         : -180.0 + Constants.AutoConstants.NOTE_SEARCH_DEGREE_SLANT;
+
+        System.out.println("This worked 2");
 
         addRequirements(this.swerve);
     }
@@ -101,6 +103,7 @@ public class SearchForObjectCommand extends Command {
 
     @Override
     public void end(boolean interrupted) {
+        System.out.println("This is running");
         rotationComplete = false;
         translationComplete = false;
         end = false;
