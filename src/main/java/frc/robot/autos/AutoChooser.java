@@ -24,19 +24,4 @@ public final class AutoChooser {
     public Command get() {
         return autoChooser.getSelected();
     }
-
-    public Command pathFindToPose(Pose2d targetPose) {
-         PathConstraints constraints = new PathConstraints(
-                Constants.MAX_VEL,
-                Constants.MAX_ACCEL,
-                Constants.MAX_DESIRED_ANGULAR_VEL,
-                Constants.MAX_ANGULAR_ACCEL
-        );
-         
-        return AutoBuilder.pathfindToPose(
-                targetPose,
-                constraints,
-                0.0
-        );
-    }
 }
