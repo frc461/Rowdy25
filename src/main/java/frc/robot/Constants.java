@@ -16,6 +16,8 @@ import com.ctre.phoenix6.swerve.SwerveModuleConstants.SteerFeedbackType;
 import com.ctre.phoenix6.swerve.SwerveModuleConstantsFactory;
 
 import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.path.PathConstraints;
+
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -78,6 +80,13 @@ public final class Constants {
         }
 
         public static final String NOTE_CHECK_MARKER = "checkNote";
+
+        public static final PathConstraints PATH_CONSTRAINTS = new PathConstraints(
+                Constants.MAX_VEL,
+                Constants.MAX_ACCEL,
+                Constants.MAX_DESIRED_ANGULAR_VEL,
+                Constants.MAX_ANGULAR_ACCEL
+        );
     }
 
     public static final class VisionConstants {

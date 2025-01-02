@@ -1,7 +1,6 @@
 package frc.robot.autos;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -24,16 +23,9 @@ public final class PathManager {
     }
 
     private static Command pathFindToPose(Pose2d targetPose) {
-        PathConstraints constraints = new PathConstraints(
-                Constants.MAX_VEL,
-                Constants.MAX_ACCEL,
-                Constants.MAX_DESIRED_ANGULAR_VEL,
-                Constants.MAX_ANGULAR_ACCEL
-        );
-
         return AutoBuilder.pathfindToPose(
                 targetPose,
-                constraints,
+                Constants.AutoConstants.PATH_CONSTRAINTS,
                 0.0
         );
     }
