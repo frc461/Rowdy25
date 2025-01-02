@@ -2,15 +2,16 @@ package frc.robot.autos.routines;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.auto.FollowPathDynamicCommand;
 
 import java.util.function.BooleanSupplier;
 
-public class AutoTrigger {
+public class AutoDynamicPathTrigger {
     private final String name;
 
     private final AutoEventLooper auto;
 
-    private final Command triggeredCommand;
+    private final FollowPathDynamicCommand triggeredPath;
 
     private boolean isActive = false;
 
@@ -18,24 +19,24 @@ public class AutoTrigger {
 
     private boolean interrupted = false;
 
-    public AutoTrigger(String name, Command command, AutoEventLooper auto) {
+    public AutoDynamicPathTrigger(String name, FollowPathDynamicCommand path, AutoEventLooper auto) {
         this.name = name;
         this.auto = auto;
-        this.triggeredCommand = command;
+        this.triggeredPath = path;
     }
 
     public Command cmd() {
-        return triggeredCommand.beforeStarting(
+        return triggeredPath.finallyDo(
+                interrupted -> {
+                    isActive = false;
+                    isFinished = !interrupted;
+                    AutoDynamicPathTrigger.this.interrupted = interrupted;
+                }
+        ).beforeStarting(
                 () -> {
                     isActive = true;
                     isFinished = false;
                     interrupted = false;
-                }
-        ).finallyDo(
-                interrupted -> {
-                    isActive = false;
-                    isFinished = !interrupted;
-                    AutoTrigger.this.interrupted = interrupted;
                 }
         ).withName(name);
     }
@@ -67,16 +68,16 @@ public class AutoTrigger {
 
             @Override
             public boolean getAsBoolean() {
-                if (!AutoTrigger.this.isFinished) {
+                if (!AutoDynamicPathTrigger.this.isFinished) {
                     initialInactive = false;
                     return false;
                 } else {
                     if (!initialInactive) {
                         initialInactive = true;
-                        targetPollCount = AutoTrigger.this.auto.pollCount() + cyclesToDelay;
+                        targetPollCount = AutoDynamicPathTrigger.this.auto.pollCount() + cyclesToDelay;
                     }
 
-                    return AutoTrigger.this.auto.pollCount() == targetPollCount;
+                    return AutoDynamicPathTrigger.this.auto.pollCount() == targetPollCount;
                 }
             }
         };

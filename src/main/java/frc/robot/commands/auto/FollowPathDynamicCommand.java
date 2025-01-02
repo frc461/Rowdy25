@@ -11,8 +11,10 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.trajectory.PathPlannerTrajectory;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.util.function.BooleanConsumer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj2.command.WrapperCommand;
 import frc.robot.Constants;
 import frc.robot.subsystems.drivetrain.Swerve;
 import frc.robot.util.VisionUtil;
@@ -120,9 +122,26 @@ public class FollowPathDynamicCommand extends FollowPathCommand {
             if (allInstantEvents.get(0).getTimestampSeconds() <= currentTime) {
                 allInstantEvents.remove(0);
                 if (!noteIsThere.getAsBoolean()) {
-                    end(true);
+                    interrupt = true;
                 }
             }
         }
+    }
+
+    @Override
+    public boolean isFinished() {
+        return super.isFinished() || interrupt;
+    }
+
+    @Override
+    public WrapperCommand finallyDo(BooleanConsumer end) {
+        return new WrapperCommand(this) {
+            @Override
+            public void end(boolean interrupted) {
+                super.end(interrupted);
+                System.out.println("This worked 3");
+                end.accept(FollowPathDynamicCommand.this.interrupt);
+            }
+        };
     }
 }

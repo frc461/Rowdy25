@@ -44,8 +44,6 @@ public class SearchForObjectCommand extends Command {
                         ? 180.0 - Constants.AutoConstants.NOTE_SEARCH_DEGREE_SLANT
                         : -180.0 + Constants.AutoConstants.NOTE_SEARCH_DEGREE_SLANT;
 
-        System.out.println("This worked 2");
-
         addRequirements(this.swerve);
     }
 

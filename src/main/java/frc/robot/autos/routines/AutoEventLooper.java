@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.auto.FollowPathDynamicCommand;
 
 import java.util.function.BooleanSupplier;
 
@@ -97,8 +98,12 @@ public class AutoEventLooper {
         return observe(() -> isActive && DriverStation.isAutonomousEnabled());
     }
 
-    public AutoTrigger addTrigger(String name, Command path) {
-        return new AutoTrigger(name, path, this);
+    public AutoTrigger addTrigger(String name, Command command) {
+        return new AutoTrigger(name, command, this);
+    }
+
+    public AutoDynamicPathTrigger addDynamicPath(String name, FollowPathDynamicCommand path) {
+        return new AutoDynamicPathTrigger(name, path, this);
     }
 
     /**
