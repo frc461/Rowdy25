@@ -16,7 +16,7 @@ public final class AutoChooser {
     private final SendableChooser<Command> autoChooser = new SendableChooser<>();
 
     public AutoChooser(Swerve swerve) {
-        autoChooser.addOption("DynamicAutoTest", new DynamicRoutineTest(swerve));
+        autoChooser.addOption("DynamicAutoTest", new DynamicRoutineTest(swerve).cmd());
 
         SmartDashboard.putData("Auto Chooser", autoChooser);
     }

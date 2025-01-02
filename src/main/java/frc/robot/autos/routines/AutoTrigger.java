@@ -11,32 +11,39 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+
 import java.util.function.BooleanSupplier;
 
 /**
- * An object that represents an autonomous routine.
+ * An object that represents an autonomous start or dynamic path.
  *
  * <p>This loop is used to handle autonomous trigger logic and schedule commands. This loop should
  * **not** be shared across multiple autonomous routines.
  *
- * @see AutoFactory#newRoutine Creating a routine from a AutoFactory
+ * @see frc.robot.Robot Your Mom
  */
-public class AutoRoutine {
+public class AutoTrigger {
 
     /** The underlying {@link EventLoop} that triggers are bound to and polled */
-    protected final EventLoop loop;
+    private final EventLoop loop;
 
     /** The name of the auto routine this loop is associated with */
-    protected final String name;
+    private final String name;
 
     /** A boolean utilized in {@link #active()} to resolve trueness */
-    protected boolean isActive = false;
+    private boolean isActive = false;
 
     /** A boolean that is true when the loop is killed */
-    protected boolean isKilled = false;
+    private boolean isKilled = false;
 
     /** The amount of times the routine has been polled */
-    protected int pollCount = 0;
+    private int pollCount = 0;
+
+    private final Command triggeredPath;
+
+    public AutoTrigger(String name, Command triggeredPath) {
+        this(name, new EventLoop(), triggeredPath);
+    }
 
     /**
      * A constructor to be used when inheriting this class to instantiate a custom inner loop
@@ -44,9 +51,10 @@ public class AutoRoutine {
      * @param name The name of the loop
      * @param loop The inner {@link EventLoop}
      */
-    public AutoRoutine(String name, EventLoop loop) {
+    public AutoTrigger(String name, EventLoop loop, Command triggeredPath) {
         this.loop = loop;
         this.name = name;
+        this.triggeredPath = triggeredPath;
     }
 
     /**
@@ -55,8 +63,8 @@ public class AutoRoutine {
      * @param name The name of the loop
      * @see AutoFactory#newRoutine Creating a loop from a AutoFactory
      */
-    public AutoRoutine(String name) {
-        this(name, new EventLoop());
+    public AutoTrigger(String name) {
+        this(name, new EventLoop(), Commands.idle());
     }
 
     /**
@@ -177,6 +185,11 @@ public class AutoRoutine {
         return trigger.and(this.active());
     }
 
+
+    public Command path() {
+        return triggeredPath;
+    }
+
     /**
      * Creates a command that will poll this event loop and reset it when it is cancelled.
      *
@@ -187,7 +200,7 @@ public class AutoRoutine {
      * @see #cmd(BooleanSupplier) A version of this method that takes a condition to finish the loop.
      */
     public Command cmd() {
-        return cmd(() -> false);
+        return cmd(triggeredPath::isFinished);
     }
 
     /**
@@ -203,6 +216,7 @@ public class AutoRoutine {
      */
     public Command cmd(BooleanSupplier finishCondition) {
         return Commands.run(this::poll)
+                .alongWith(triggeredPath)
                 .finallyDo(this::reset)
                 .until(() -> !DriverStation.isAutonomousEnabled() || finishCondition.getAsBoolean())
                 .withName(name);
