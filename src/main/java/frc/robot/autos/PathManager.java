@@ -4,6 +4,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
@@ -52,12 +53,12 @@ public final class PathManager {
 
     // TODO UPDATE THESE PRESET TARGET POSES (MEANT TO BE USED FOR SCORING, NOT PICKING UP, WHICH IS SUPPOSED TO BE COMPLETELY DYNAMIC)
     public static Command pathFindToNearestShootingLocation(Supplier<Pose2d> poseSupplier) {
-        Pose2d current = poseSupplier.get();
+        Translation2d currentTranslation = poseSupplier.get().getTranslation();
         ScoringLocations nearestLocation = ScoringLocations.STAGE;
-        double nearestDistance = current.getTranslation().getDistance(ScoringLocations.getScoringPose(nearestLocation).getTranslation());
+        double nearestDistance = currentTranslation.getDistance(ScoringLocations.getScoringPose(nearestLocation).getTranslation());
 
         for (ScoringLocations location : ScoringLocations.values()) {
-            double distance = current.getTranslation().getDistance(ScoringLocations.getScoringPose(location).getTranslation());
+            double distance = currentTranslation.getDistance(ScoringLocations.getScoringPose(location).getTranslation());
             if (distance < nearestDistance) {
                 nearestLocation = location;
                 nearestDistance = distance;

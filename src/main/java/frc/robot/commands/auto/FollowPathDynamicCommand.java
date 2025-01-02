@@ -32,7 +32,7 @@ public class FollowPathDynamicCommand extends FollowPathCommand {
     private final List<OneShotTriggerEvent> allInstantEvents = new ArrayList<>();
     private PathPlannerPath path;
     private PathPlannerTrajectory trajectory;
-    protected boolean interrupt;
+    protected boolean interrupted;
 
     public FollowPathDynamicCommand(PathPlannerPath path, boolean setAssumedPosition, Swerve swerve) {
         super(
@@ -73,7 +73,7 @@ public class FollowPathDynamicCommand extends FollowPathCommand {
         Optional<PathPlannerTrajectory> idealTrajectory = this.path.getIdealTrajectory(this.robotConfig);
         idealTrajectory.ifPresent((traj) -> this.trajectory = traj);
 
-        interrupt = false;
+        interrupted = false;
     }
 
     @Override
@@ -110,7 +110,7 @@ public class FollowPathDynamicCommand extends FollowPathCommand {
 
         this.timer.reset();
         this.timer.start();
-        interrupt = false;
+        interrupted = false;
     }
 
     @Override
@@ -122,15 +122,21 @@ public class FollowPathDynamicCommand extends FollowPathCommand {
             if (allInstantEvents.get(0).getTimestampSeconds() <= currentTime) {
                 allInstantEvents.remove(0);
                 if (!noteIsThere.getAsBoolean()) {
-                    interrupt = true;
+                    interrupted = true;
                 }
             }
         }
     }
 
     @Override
+    public void end(boolean interrupted) {
+        super.end(interrupted);
+        this.interrupted = false;
+    }
+
+    @Override
     public boolean isFinished() {
-        return super.isFinished() || interrupt;
+        return super.isFinished() || interrupted;
     }
 
     @Override
@@ -138,8 +144,8 @@ public class FollowPathDynamicCommand extends FollowPathCommand {
         return new WrapperCommand(this) {
             @Override
             public void end(boolean interrupted) {
+                end.accept(FollowPathDynamicCommand.this.interrupted);
                 super.end(interrupted);
-                end.accept(FollowPathDynamicCommand.this.interrupt);
             }
         };
     }

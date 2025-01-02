@@ -97,13 +97,6 @@ public class SearchForObjectCommand extends Command {
             end = true;
         }
 
-        System.out.println("X: " + targetTranslation.getX() + ", Y: " + targetTranslation.getY());
-        System.out.println("Search angle: " + searchAngle + ", Current angle: " + this.swerve.localizer.getStrategyPose().getRotation().getDegrees());
-        System.out.println("Is upper half: " + upperHalf() + ", Y: " + this.swerve.localizer.getStrategyPose().getY());
-
-        System.out.println("Rotation complete: " + rotationComplete + ", Translation complete: " + translationComplete);
-        System.out.println("Ending: " + end);
-
         if (VisionUtil.Photon.Color.hasTargets()) {
             end = true;
         }
@@ -111,7 +104,6 @@ public class SearchForObjectCommand extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        System.out.println("This command is ending");
         rotationComplete = false;
         translationComplete = false;
         end = false;

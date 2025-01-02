@@ -12,7 +12,6 @@ public class DynamicObjectCommandSequence extends SequentialCommandGroup {
     public DynamicObjectCommandSequence(Swerve swerve, SwerveRequest.FieldCentric fieldCentric, SwerveRequest.RobotCentric robotCentric) {
         addCommands(
                 new SearchForObjectCommand(swerve, fieldCentric),
-                Commands.runOnce(() -> System.out.println("Moving on to DriveToObjectCommand")),
                 new DriveToObjectCommand(swerve, robotCentric),
                 PathManager.pathFindToNearestShootingLocation(swerve.localizer::getStrategyPose)
         );
