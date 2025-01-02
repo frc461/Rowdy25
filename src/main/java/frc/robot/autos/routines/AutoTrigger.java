@@ -62,6 +62,10 @@ public class AutoTrigger {
         return active().negate();
     }
 
+    public Trigger interrupt() {
+        return auto.observe(() -> (!isActive && !isFinished) || !auto.isActive);
+    }
+
     public Trigger done(int cyclesToDelay) {
         BooleanSupplier delayFinished = new BooleanSupplier() {
             boolean initialInactive = false;

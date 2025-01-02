@@ -70,12 +70,7 @@ public class DriveToObjectCommand extends Command {
             }
             end = true;
         } else {
-            swerve.setControl(
-                    robotCentric.withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
-                            .withVelocityX(0.0)
-                            .withVelocityY(0.0)
-                            .withRotationalRate(0.0)
-            );
+            swerve.forceStop();
             end = true;
         }
     }

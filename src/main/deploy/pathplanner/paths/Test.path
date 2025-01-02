@@ -53,11 +53,11 @@
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.7416675859115446,
-      "maxWaypointRelativePos": 1.4775390625,
+      "minWaypointRelativePos": 0.5876253958160299,
+      "maxWaypointRelativePos": 1.6198771023671095,
       "constraints": {
         "maxVelocity": 5.0,
-        "maxAcceleration": 5.0,
+        "maxAcceleration": 3.5,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 485.0,
         "nominalVoltage": 12.0,
@@ -69,7 +69,7 @@
   "eventMarkers": [
     {
       "name": "checkNote",
-      "waypointRelativePos": 0.7504266377699325,
+      "waypointRelativePos": 0.5825649527616278,
       "endWaypointRelativePos": null,
       "command": null
     }
@@ -84,7 +84,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": -173.0
   },
   "reversed": false,
   "folder": null,

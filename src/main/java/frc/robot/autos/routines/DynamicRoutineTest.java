@@ -11,14 +11,15 @@ public class DynamicRoutineTest {
 
     public DynamicRoutineTest(Swerve swerve) {
         AutoTrigger testPath = starter.addTrigger("TestPath", new FollowPathDynamicCommand(PathManager.TEST_PATH, false, swerve));
-        AutoTrigger testPath2 = starter.addTrigger("TestPath2", new FollowPathDynamicCommand(PathManager.TEST_PATH, false, swerve));
+        AutoTrigger testPath2 = starter.addTrigger("TestPath2", new FollowPathDynamicCommand(PathManager.TEST_PATH_2, false, swerve));
         Command stop = Commands.runOnce(swerve::forceStop);
 
         starter.active().onTrue(testPath.cmd());
-        testPath.inactive().and(testPath.done().negate()).onTrue(stop); // Command was interrupted i.e., it couldn't find a note, TODO IMPLEMENT LOOK FOR NOTE
+        testPath.interrupt().onTrue(stop); // Command was interrupted i.e., it couldn't find a note, TODO IMPLEMENT LOOK FOR NOTE
+
         testPath.done().onTrue(testPath2.cmd());
 
-        testPath2.inactive().and(testPath2.done().negate()).onTrue(stop);
+        testPath2.interrupt().onTrue(stop);
     }
 
     public Command cmd() {

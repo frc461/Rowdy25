@@ -87,6 +87,8 @@ public final class Constants {
                 MAX_DESIRED_ANGULAR_VEL,
                 MAX_ANGULAR_ACCEL
         );
+        public static final double DEGREE_TOLERANCE_TO_ACCEPT = 0.5;
+        public static final double TRANSLATION_TOLERANCE_TO_ACCEPT = 0.2;
     }
 
     public static final class VisionConstants {
