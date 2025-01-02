@@ -3,7 +3,6 @@ package frc.robot.autos.routines;
 import static edu.wpi.first.wpilibj.Alert.AlertType.kWarning;
 
 import choreo.auto.AutoFactory;
-import choreo.auto.AutoTrajectory;
 import choreo.util.ChoreoAlert;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.event.EventLoop;
@@ -22,16 +21,16 @@ import java.util.function.BooleanSupplier;
  *
  * @see frc.robot.Robot Your Mom
  */
-public class AutoTrigger {
+public class AutoEventLooper {
 
     /** The underlying {@link EventLoop} that triggers are bound to and polled */
     private final EventLoop loop;
 
-    /** The name of the path this loop is associated with, or the name of the auto if this trigger starts an auto */
+    /** The name of the auto this loop is associated with */
     private final String name;
 
     /** A boolean utilized in {@link #active()} to resolve trueness */
-    private boolean isActive = false;
+    protected boolean isActive = false;
 
     /** A boolean that is true when the loop is killed */
     private boolean isKilled = false;
@@ -39,32 +38,24 @@ public class AutoTrigger {
     /** The amount of times the routine has been polled */
     private int pollCount = 0;
 
-    private final Command triggeredPath;
-
-    public AutoTrigger(String name, Command triggeredPath) {
-        this(name, new EventLoop(), triggeredPath);
-    }
-
     /**
      * A constructor to be used when inheriting this class to instantiate a custom inner loop
      *
      * @param name The name of the loop
      * @param loop The inner {@link EventLoop}
      */
-    public AutoTrigger(String name, EventLoop loop, Command triggeredPath) {
+    public AutoEventLooper(String name, EventLoop loop) {
         this.loop = loop;
         this.name = name;
-        this.triggeredPath = triggeredPath;
     }
 
     /**
      * Creates a new loop with a specific name
      *
      * @param name The name of the loop
-     * @see AutoFactory#newRoutine Creating a loop from a AutoFactory
      */
-    public AutoTrigger(String name) {
-        this(name, new EventLoop(), Commands.idle());
+    public AutoEventLooper(String name) {
+        this(name, new EventLoop());
     }
 
     /**
@@ -107,10 +98,60 @@ public class AutoTrigger {
         return observe(() -> isActive && DriverStation.isAutonomousEnabled());
     }
 
+    public AutoPathTrigger addPath(Command path) {
+        return new AutoPathTrigger(path, this);
+
+    }
+
+    /**
+     * Creates a trigger that produces a rising edge when any of the trajectories are finished.
+     *
+     * @param trajectory The first trajectory to watch.
+     * @param trajectories The other trajectories to watch
+     * @return a trigger that determines if any of the trajectories are finished
+     * @see #anyDone(int, AutoPathTrigger, AutoPathTrigger...) A version of this method that takes a
+     *     delay in cycles before the trigger is true.
+     */
+    public Trigger anyDone(AutoPathTrigger trajectory, AutoPathTrigger... trajectories) {
+        return anyDone(0, trajectory, trajectories);
+    }
+
+    /**
+     * Creates a trigger that produces a rising edge when any of the paths are finished.
+     *
+     * @param cyclesToDelay The number of cycles to delay.
+     * @param firstPath The first path to watch.
+     * @param paths The other paths to watch
+     * @return a trigger that determines if any of the paths are finished
+     */
+    public Trigger anyDone(
+            int cyclesToDelay, AutoPathTrigger firstPath, AutoPathTrigger... paths) {
+        var trigger = firstPath.done(cyclesToDelay);
+        for (AutoPathTrigger path : paths) {
+            trigger = trigger.or(path.done(cyclesToDelay));
+        }
+        return trigger.and(this.active());
+    }
+
+    /**
+     * Creates a trigger that returns true when any of the paths given are active.
+     *
+     * @param firstPath The first path to watch.
+     * @param paths The other paths to watch
+     * @return a trigger that determines if any of the paths are active
+     */
+    public Trigger anyActive(AutoEventLooper firstPath, AutoEventLooper... paths) {
+        var trigger = firstPath.active();
+        for (AutoEventLooper path : paths) {
+            trigger = trigger.or(path.active());
+        }
+        return trigger.and(this.active());
+    }
+
     /** Polls the routine. Should be called in the autonomous periodic method. */
     public void poll() {
         if (!DriverStation.isAutonomousEnabled()
-                || isKilled || triggeredPath.isFinished()) {
+                || isKilled) {
             isActive = false;
             return;
         }
@@ -140,11 +181,6 @@ public class AutoTrigger {
         isKilled = true;
     }
 
-
-    public Command path() {
-        return triggeredPath;
-    }
-
     /**
      * Creates a command that will poll this event loop and reset it when it is cancelled.
      *
@@ -171,7 +207,6 @@ public class AutoTrigger {
      */
     public Command cmd(BooleanSupplier finishCondition) {
         return Commands.run(this::poll)
-                .alongWith(triggeredPath)
                 .finallyDo(this::reset)
                 .until(() -> !DriverStation.isAutonomousEnabled() || finishCondition.getAsBoolean())
                 .withName(name);
