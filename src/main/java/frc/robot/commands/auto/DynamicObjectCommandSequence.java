@@ -12,7 +12,7 @@ public class DynamicObjectCommandSequence extends SequentialCommandGroup {
         addCommands(
                 new SearchForObjectCommand(swerve, fieldCentric),
                 new DriveToObjectCommand(swerve, robotCentric),
-                PathManager.pathFindToNearestShootingLocation(swerve.localizer::getStrategyPose)
+                PathManager.pathFindToNearestShootingLocation(swerve.localizer::getStrategyPose) // TODO: STAY AT MIDFIELD IF NO OBJECT IN INTAKE
         );
     }
 }

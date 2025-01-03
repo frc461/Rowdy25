@@ -79,7 +79,7 @@ public class SearchForObjectCommand extends Command {
                             .withVelocityX(errorController.calculate(
                                     currentX,
                                     targetTranslation.getX()
-                            ) * Constants.MAX_VEL)
+                            ) * Constants.MAX_VEL) // TODO: UPDATE TRANSLATION PID TO NOT USE A ROTATION PID CONTROLLER
                             .withVelocityY(errorController.calculate(
                                     currentY, targetTranslation.getY()
                             ) * Constants.MAX_VEL)
