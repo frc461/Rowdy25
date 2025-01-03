@@ -7,15 +7,11 @@ import java.util.function.BooleanSupplier;
 
 public class AutoTrigger {
     private final String name;
-
     private final AutoEventLooper auto;
-
     private final Command triggeredCommand;
 
     private boolean isActive = false;
-
     private boolean isFinished = false;
-
     private boolean interrupted = false;
 
     public AutoTrigger(String name, Command command, AutoEventLooper auto) {

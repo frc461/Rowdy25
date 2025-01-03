@@ -21,12 +21,12 @@ public class Simulator {
         /* Run simulation at a faster rate so PID gains behave more reasonably */
         /* use the measured time delta, get battery voltage from WPILib */
         new Notifier(() -> {
-            final double currentTime = Utils.getCurrentTimeSeconds();
-            double deltaTime = currentTime - lastSimTime;
-            lastSimTime = currentTime;
+                final double currentTime = Utils.getCurrentTimeSeconds();
+                double deltaTime = currentTime - lastSimTime;
+                lastSimTime = currentTime;
 
-            /* use the measured time delta, get battery voltage from WPILib */
-            swerve.updateSimState(deltaTime, RobotController.getBatteryVoltage());
+                /* use the measured time delta, get battery voltage from WPILib */
+                swerve.updateSimState(deltaTime, RobotController.getBatteryVoltage());
         }).startPeriodic(SIM_LOOP_PERIOD);
     }
 }
