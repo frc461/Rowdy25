@@ -4,6 +4,8 @@ import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.subsystems.drivetrain.Swerve;
 import frc.robot.util.FieldUtil;
@@ -20,6 +22,7 @@ public class Localizer {
     // localizer is a dependent of swerve
     private final Swerve swerve;
     private final LocalizationTelemetry localizationTelemetry = new LocalizationTelemetry(this);
+    private final SendableChooser<LocalizationStrategy> localizationChooser = new SendableChooser<>();
 
     private final SwerveDrivePoseEstimator poseEstimator;
 
@@ -32,6 +35,9 @@ public class Localizer {
         this.swerve = swerve;
 
         localizationTelemetry.registerListeners();
+        localizationChooser.setDefaultOption("Pose Estimator", LocalizationStrategy.POSE_ESTIMATOR);
+        localizationChooser.addOption("Quest Nav", LocalizationStrategy.QUEST_NAV);
+        SmartDashboard.putData("Localization Strategy Chooser", localizationChooser);
 
         poseEstimator = new SwerveDrivePoseEstimator(
                 this.swerve.getKinematics(),
@@ -74,6 +80,10 @@ public class Localizer {
 
     public double getAngleToSpeaker() {
         return getTranslationToSpeaker().getAngle().getDegrees();
+    }
+
+    public void setLocalizationStrategyFromChooser() {
+        strategy = localizationChooser.getSelected();
     }
 
     public void toggleLocalizationStrategy() {
