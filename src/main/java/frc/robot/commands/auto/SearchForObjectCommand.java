@@ -15,6 +15,7 @@ public class SearchForObjectCommand extends Command {
     private final Swerve swerve;
     private final SwerveRequest.FieldCentric fieldCentric;
     private final PIDController errorController;
+    private final PIDController drivePID;
     private Translation2d targetTranslation;
     private double searchAngle;
     private boolean rotationComplete = false;
@@ -30,6 +31,13 @@ public class SearchForObjectCommand extends Command {
                 0,
                 Constants.SwerveConstants.ANGULAR_POSITION_D
         );
+
+        drivePID = new PIDController(
+                Constants.SwerveConstants.PATH_TRANSLATION_CONTROLLER_P,
+                0,
+                0
+        );
+
         errorController.enableContinuousInput(Constants.SwerveConstants.ANGULAR_MINIMUM_ANGLE, Constants.SwerveConstants.ANGULAR_MAXIMUM_ANGLE);
 
         addRequirements(this.swerve);
@@ -76,11 +84,11 @@ public class SearchForObjectCommand extends Command {
 
             swerve.setControl(
                     fieldCentric.withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
-                            .withVelocityX(errorController.calculate(
+                            .withVelocityX(drivePID.calculate(
                                     currentX,
                                     targetTranslation.getX()
                             ) * Constants.MAX_VEL)
-                            .withVelocityY(errorController.calculate(
+                            .withVelocityY(drivePID.calculate(
                                     currentY, targetTranslation.getY()
                             ) * Constants.MAX_VEL)
                             .withRotationalRate(errorController.calculate(
