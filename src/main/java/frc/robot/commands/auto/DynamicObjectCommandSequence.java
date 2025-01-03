@@ -1,7 +1,6 @@
 package frc.robot.commands.auto;
 
 import com.ctre.phoenix6.swerve.SwerveRequest;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.autos.PathManager;
 import frc.robot.commands.DriveToObjectCommand;
@@ -16,5 +15,4 @@ public class DynamicObjectCommandSequence extends SequentialCommandGroup {
                 PathManager.pathFindToNearestShootingLocation(swerve.localizer::getStrategyPose)
         );
     }
-
 }

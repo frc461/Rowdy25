@@ -21,7 +21,6 @@ public class DynamicRoutineTest {
 
         findNote2.interrupt().onTrue(stop);
         testPath2.interrupt().onTrue(stop);
-
     }
 
     public Command cmd() {

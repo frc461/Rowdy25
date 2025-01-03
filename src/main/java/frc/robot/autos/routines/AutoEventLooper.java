@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commands.auto.FollowPathDynamicCommand;
 
 import java.util.function.BooleanSupplier;
 
@@ -211,4 +210,3 @@ public class AutoEventLooper {
                 .withName(name);
     }
 }
-
