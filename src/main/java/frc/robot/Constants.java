@@ -52,7 +52,7 @@ public final class Constants {
     public static final double MAX_VEL = SwerveConstants.SPEED_AT_12_VOLTS.in(MetersPerSecond);
     // 1.96664381049 rotations per second tuned max angular velocity
     public static final double MAX_REAL_ANGULAR_VEL = RotationsPerSecond.of(1.96664381049).in(RadiansPerSecond);
-    public static double MAX_DESIRED_ANGULAR_VEL = RotationsPerSecond.of(0.75).in(RadiansPerSecond);
+    public static final double MAX_DESIRED_ANGULAR_VEL = RotationsPerSecond.of(0.75).in(RadiansPerSecond);
 
     public static final double MAX_ACCEL = MetersPerSecondPerSecond.of(10.8).in(MetersPerSecondPerSecond);
     public static final double MAX_ANGULAR_ACCEL = DegreesPerSecondPerSecond.of(485.0).in(RadiansPerSecondPerSecond);
@@ -166,7 +166,7 @@ public final class Constants {
         public static final double TRAJECTORY_TRANSLATION_P = 1.0;
         public static final double TRAJECTORY_ROTATION_P = 1.0;
 
-        public static double MAX_CONTROLLED_ANGULAR_VEL = RotationsPerSecond.of(0.75).in(RadiansPerSecond);
+        public static final double MAX_CONTROLLED_ANGULAR_VEL = RotationsPerSecond.of(0.75).in(RadiansPerSecond);
 
         // TODO TUNE FOR 2025 ROBOT
 
