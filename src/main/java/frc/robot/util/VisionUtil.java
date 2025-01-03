@@ -313,12 +313,12 @@ public class VisionUtil {
 
         public static void setQuestPose(Pose2d pose) {
             if (questMiso.get() != 99) {
-                questMosi.set(2);
                 questResetPose.set(new double[] {
                         pose.getX(),
                         pose.getY(),
                         pose.getRotation().getDegrees()
                 });
+                questMosi.set(2);
             }
         }
     }
