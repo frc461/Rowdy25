@@ -1,8 +1,5 @@
 package frc.robot.autos.routines;
 
-import static edu.wpi.first.wpilibj.Alert.AlertType.kWarning;
-
-import choreo.util.ChoreoAlert;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -175,7 +172,6 @@ public class AutoEventLooper {
             return;
         }
         reset();
-        ChoreoAlert.alert("Killed an auto loop", kWarning).set(true);
         isKilled = true;
     }
 

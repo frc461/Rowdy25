@@ -79,6 +79,8 @@ public final class Constants {
             }
         }
 
+        // TODO: REMOVE ALL MENTIONS OF "NOTE"
+
         public static final String NOTE_CHECK_MARKER = "checkNote";
 
         public static final PathConstraints PATH_CONSTRAINTS = new PathConstraints(
