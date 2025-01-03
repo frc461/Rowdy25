@@ -6,7 +6,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants;
+import frc.robot.constants.Constants;
 import frc.robot.subsystems.drivetrain.Swerve;
 import frc.robot.util.FieldUtil;
 import frc.robot.util.VisionUtil;
@@ -31,14 +31,13 @@ public class SearchForObjectCommand extends Command {
                 0,
                 Constants.SwerveConstants.ANGULAR_POSITION_D
         );
+        errorController.enableContinuousInput(Constants.SwerveConstants.ANGULAR_MINIMUM_ANGLE, Constants.SwerveConstants.ANGULAR_MAXIMUM_ANGLE);
 
         drivePID = new PIDController(
                 Constants.SwerveConstants.PATH_TRANSLATION_CONTROLLER_P,
                 0,
                 0
         );
-
-        errorController.enableContinuousInput(Constants.SwerveConstants.ANGULAR_MINIMUM_ANGLE, Constants.SwerveConstants.ANGULAR_MAXIMUM_ANGLE);
 
         addRequirements(this.swerve);
     }
@@ -74,7 +73,7 @@ public class SearchForObjectCommand extends Command {
                             .withRotationalRate(errorController.calculate(
                                     currentYaw,
                                     searchAngle
-                            ) * Constants.SwerveConstants.MAX_CONTROLLED_ANGULAR_VEL)
+                            ) * Constants.MAX_CONTROLLED_ANGULAR_VEL)
             );
             if (degreeError < Constants.AutoConstants.DEGREE_TOLERANCE_TO_ACCEPT) {
                 rotationComplete = true;

@@ -10,6 +10,7 @@ import dev.doglog.DogLog;
 import dev.doglog.DogLogOptions;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import frc.robot.autos.AutoChooser;
+import frc.robot.constants.RobotIdentity;
 import frc.robot.subsystems.drivetrain.Swerve;
 import frc.robot.util.SysID;
 
@@ -79,6 +80,7 @@ public class RobotContainer {
      */
 
     public RobotContainer() {
+        RobotIdentity.initializeConstants();
         setDefaultCommands();
         configureBindings();
        

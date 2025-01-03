@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
-import frc.robot.Constants;
+import frc.robot.constants.Constants;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.DriveToObjectCommand;
 import frc.robot.commands.auto.DynamicObjectCommandSequence;
@@ -58,10 +58,10 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
     public Swerve() {
         super(
                 Constants.SwerveConstants.SWERVE_DRIVETRAIN_CONSTANTS,
-                Constants.SwerveConstants.FrontLeft.FRONT_LEFT,
-                Constants.SwerveConstants.FrontRight.FRONT_RIGHT,
-                Constants.SwerveConstants.BackLeft.BACK_LEFT,
-                Constants.SwerveConstants.BackRight.BACK_RIGHT
+                Constants.SwerveConstants.FRONT_LEFT,
+                Constants.SwerveConstants.FRONT_RIGHT,
+                Constants.SwerveConstants.BACK_LEFT,
+                Constants.SwerveConstants.BACK_RIGHT
         );
 
         pathTranslationController = new PIDController(

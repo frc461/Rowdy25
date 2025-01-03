@@ -4,7 +4,7 @@ import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants;
+import frc.robot.constants.Constants;
 import frc.robot.subsystems.drivetrain.Swerve;
 import frc.robot.util.VisionUtil;
 
@@ -45,7 +45,7 @@ public class DriveToObjectCommand extends Command {
                             .withRotationalRate(objectDetectionController.calculate(
                                     currentYaw,
                                     0.0
-                            ) * Constants.SwerveConstants.MAX_CONTROLLED_ANGULAR_VEL)
+                            ) * Constants.MAX_CONTROLLED_ANGULAR_VEL)
             );
             if (degreeError < Constants.VisionConstants.PhotonConstants.OBJECT_DEGREE_TOLERANCE_TO_ACCEPT) {
                 rotationComplete = true;

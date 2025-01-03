@@ -4,7 +4,7 @@ import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants;
+import frc.robot.constants.Constants;
 import frc.robot.subsystems.drivetrain.Swerve;
 import frc.robot.util.VisionUtil;
 
@@ -86,7 +86,7 @@ public class DriveCommand extends Command {
                                     : yawController.calculate(
                                             swerve.localizer.getStrategyPose().getRotation().getDegrees(),
                                             swerve.localizer.getAngleToSpeaker()
-                                    ) * Constants.SwerveConstants.MAX_CONTROLLED_ANGULAR_VEL
+                                    ) * Constants.MAX_CONTROLLED_ANGULAR_VEL
                             )
             );
         } else if (objectTurret.getAsBoolean()) {
@@ -103,7 +103,7 @@ public class DriveCommand extends Command {
                                             ? objectDetectionController.calculate(
                                                     VisionUtil.Photon.Color.getBestObjectYaw(),
                                                     0
-                                            ) * Constants.SwerveConstants.MAX_CONTROLLED_ANGULAR_VEL
+                                            ) * Constants.MAX_CONTROLLED_ANGULAR_VEL
                                                     : 0.0
                             )
             );
@@ -111,11 +111,11 @@ public class DriveCommand extends Command {
             setConsistentHeading.accept(swerve.localizer.getStrategyPose().getRotation().getDegrees());
             swerve.setControl(
                     fieldCentric.withDeadband(Constants.MAX_VEL * 0.1)
-                            .withRotationalDeadband(Constants.MAX_DESIRED_ANGULAR_VEL * 0.1) // Add a 10% deadband
+                            .withRotationalDeadband(Constants.MAX_CONTROLLED_ANGULAR_VEL * 0.1) // Add a 10% deadband
                             .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage) // Use open-loop control for drive motors
                             .withVelocityX(-straight.getAsDouble() * Constants.MAX_VEL) // Drive forward with negative Y (forward)
                             .withVelocityY(-strafe.getAsDouble() * Constants.MAX_VEL) // Drive left with negative X (left)
-                            .withRotationalRate(-rot.getAsDouble() * Constants.MAX_DESIRED_ANGULAR_VEL) // Drive counterclockwise with negative X (left)
+                            .withRotationalRate(-rot.getAsDouble() * Constants.MAX_CONTROLLED_ANGULAR_VEL) // Drive counterclockwise with negative X (left)
             );
         } else {
             swerve.setControl(
@@ -126,7 +126,7 @@ public class DriveCommand extends Command {
                             .withRotationalRate(headingController.calculate(
                                     swerve.localizer.getStrategyPose().getRotation().getDegrees(),
                                     consistentHeading.getAsDouble()
-                            ) * Constants.SwerveConstants.MAX_CONTROLLED_ANGULAR_VEL)
+                            ) * Constants.MAX_CONTROLLED_ANGULAR_VEL)
             );
         }
     }
