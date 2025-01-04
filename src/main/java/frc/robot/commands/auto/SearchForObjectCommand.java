@@ -81,7 +81,7 @@ public class SearchForObjectCommand extends Command {
                                     targetTranslation.getX()
                             ) * Constants.MAX_VEL)
                             .withVelocityY(Constants.SwerveConstants.PATH_MANUAL_TRANSLATION_CONTROLLER.apply(yError)
-                                    * (searchAngle > 0 ? -3.5 : 3.5))
+                                    * (searchAngle > 0 ? -1 : 1))
                             .withRotationalRate(errorController.calculate(
                                     currentYaw,
                                     searchAngle
