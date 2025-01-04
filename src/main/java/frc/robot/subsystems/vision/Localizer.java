@@ -35,6 +35,7 @@ public class Localizer {
         this.swerve = swerve;
 
         localizationTelemetry.registerListeners();
+
         localizationChooser.setDefaultOption("Pose Estimator", LocalizationStrategy.POSE_ESTIMATOR);
         localizationChooser.addOption("Quest Nav", LocalizationStrategy.QUEST_NAV);
         SmartDashboard.putData("Localization Strategy Chooser", localizationChooser);
@@ -83,7 +84,10 @@ public class Localizer {
     }
 
     public void setLocalizationStrategyFromChooser() {
-        strategy = localizationChooser.getSelected();
+        LocalizationStrategy strategy = localizationChooser.getSelected();
+        if (strategy != this.strategy) {
+            this.strategy = strategy;
+        }
     }
 
     public void toggleLocalizationStrategy() {
@@ -168,6 +172,7 @@ public class Localizer {
 
     public void periodic() {
         updatePoses();
+        setLocalizationStrategyFromChooser();
         localizationTelemetry.publishValues();
     }
 }

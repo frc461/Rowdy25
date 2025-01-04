@@ -10,18 +10,17 @@ import dev.doglog.DogLog;
 import dev.doglog.DogLogOptions;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import frc.robot.autos.AutoChooser;
-import frc.robot.constants.RobotIdentity;
 import frc.robot.subsystems.drivetrain.Swerve;
 import frc.robot.util.SysID;
 
 public class RobotContainer {
     /* Subsystems */
-    public final Swerve swerve = new Swerve();
+    private final Swerve swerve = new Swerve();
 
     private final AutoChooser autoChooser = new AutoChooser(swerve);
 
     /* Sys ID */
-    public final SysID sysID = new SysID(swerve);
+    private final SysID sysID = new SysID(swerve);
 
     private final CommandXboxController driverXbox = new CommandXboxController(0);
     /* Currently Allocated For Driver:
@@ -52,7 +51,7 @@ public class RobotContainer {
      * Y: Re-zero gyro
      */
 
-    public final static CommandXboxController opXbox = new CommandXboxController(1);
+    private final static CommandXboxController opXbox = new CommandXboxController(1);
     /* Currently Allocated For Operator:
      * POV buttons / D-pad:
      * Up:

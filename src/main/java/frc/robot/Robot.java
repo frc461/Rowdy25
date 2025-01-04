@@ -27,9 +27,7 @@ public class Robot extends TimedRobot {
     public void disabledPeriodic() {}
 
     @Override
-    public void disabledExit() {
-        robotContainer.swerve.localizer.setLocalizationStrategyFromChooser();
-    }
+    public void disabledExit() {}
 
     @Override
     public void autonomousInit() {

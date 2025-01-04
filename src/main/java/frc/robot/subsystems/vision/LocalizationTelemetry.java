@@ -25,7 +25,7 @@ public class LocalizationTelemetry {
         this.localizer = localizer;
     }
 
-    private final NetworkTable localizationTelemetryTable = Constants.NT_INSTANCE.getTable("VisionTelemetry");
+    private final NetworkTable localizationTelemetryTable = Constants.NT_INSTANCE.getTable("LocalizationTelemetry");
     private final NetworkTable limelightTelemetryTable = Constants.NT_INSTANCE.getTable("LimelightTelemetry");
     private final NetworkTable photonTelemetryTable = Constants.NT_INSTANCE.getTable("PhotonTelemetry");
     private final NetworkTable questNavTelemetryTable = Constants.NT_INSTANCE.getTable(Constants.VisionConstants.QuestNavConstants.QUESTNAV_NT_NAME);
