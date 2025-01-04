@@ -266,6 +266,15 @@ public class VisionUtil {
         private static final FloatArraySubscriber questPositionTopic = QUESTNAV_NT.getFloatArrayTopic("position").subscribe(new float[] {0.0f, 0.0f, 0.0f});
         private static final FloatArraySubscriber questEulerAnglesTopic = QUESTNAV_NT.getFloatArrayTopic("eulerAngles").subscribe(new float[] {0.0f, 0.0f, 0.0f});
 
+        // Transformation applied to QuestNav pose to adjust origin to the pose estimator's origin
+        public static final Transform2d robotToCameraOffset = new Transform2d(
+                new Translation2d(
+                        Constants.VisionConstants.QuestNavConstants.QUEST_FORWARD,
+                        Constants.VisionConstants.QuestNavConstants.QUEST_LEFT
+                ),
+                new Rotation2d(Units.degreesToRadians(Constants.VisionConstants.QuestNavConstants.QUEST_YAW))
+        );
+
         public static double getRawX() {
             return questPositionTopic.get()[2];
         }
@@ -298,11 +307,15 @@ public class VisionUtil {
             return stabilize(questEulerAnglesTopic.get()[2]);
         }
 
-        public static Pose2d getPose() {
+        public static Pose2d getCameraPose() {
             return new Pose2d(
                     new Translation2d(getRawX(), getRawY()),
                     new Rotation2d(Units.degreesToRadians(getRawYaw()))
             );
+        }
+
+        public static Pose2d getRobotPose() {
+            return getCameraPose().plus(robotToCameraOffset.inverse());
         }
 
         public static void completeQuestPose() {
@@ -311,12 +324,13 @@ public class VisionUtil {
             }
         }
 
-        public static void setQuestPose(Pose2d pose) {
+        public static void setQuestPose(Pose2d robotPose) {
+            Pose2d cameraPose = robotPose.plus(robotToCameraOffset);
             if (questMiso.get() != 99) {
                 questResetPose.set(new double[] {
-                        pose.getX(),
-                        pose.getY(),
-                        pose.getRotation().getDegrees()
+                        cameraPose.getX(),
+                        cameraPose.getY(),
+                        cameraPose.getRotation().getDegrees()
                 });
                 questMosi.set(2);
             }

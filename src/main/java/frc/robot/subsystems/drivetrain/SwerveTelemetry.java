@@ -35,6 +35,7 @@ public class SwerveTelemetry {
     /* What to publish over networktables for telemetry */
 
     /* Robot swerve drive state */
+    // TODO REWORK THIS WITH LOCALIZATION TELEMETRY
     private final NetworkTable driveStateTable = Constants.NT_INSTANCE.getTable("DriveState");
     private final StructPublisher<Pose2d> drivePose = driveStateTable.getStructTopic("Pose", Pose2d.struct).publish();
     private final StructPublisher<ChassisSpeeds> driveSpeeds = driveStateTable.getStructTopic("Speeds", ChassisSpeeds.struct).publish();
