@@ -11,7 +11,6 @@ import frc.robot.constants.Constants;
 import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
-import java.util.function.Supplier;
 
 public final class PathManager {
     public static PathPlannerPath TEST_PATH;
@@ -52,8 +51,8 @@ public final class PathManager {
     }
 
     // TODO UPDATE THESE PRESET TARGET POSES (MEANT TO BE USED FOR SCORING, NOT PICKING UP, WHICH IS SUPPOSED TO BE COMPLETELY DYNAMIC)
-    public static Command pathFindToNearestScoringLocation(Supplier<Pose2d> poseSupplier) {
-        Translation2d currentTranslation = poseSupplier.get().getTranslation();
+    public static Command pathFindToNearestScoringLocation(Pose2d currentPose) {
+        Translation2d currentTranslation = currentPose.getTranslation();
         ScoringLocations nearestLocation = ScoringLocations.STAGE;
         double nearestDistance = currentTranslation.getDistance(ScoringLocations.getScoringPose(nearestLocation).getTranslation());
 

@@ -126,12 +126,11 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
 
     public Command pathFindFindScoreObject() {
         return new SearchForObjectCommand(this, fieldCentric)
-                .andThen(new DriveToObjectCommand(this, robotCentric))
-                .andThen(PathManager.pathFindToNearestScoringLocation(localizer::getStrategyPose));
+                .andThen(new DriveToObjectCommand(this, robotCentric, true));
     }
 
     public Command moveToNote() { // TODO IMPLEMENT THIS AFTER CALIBRATING AUTO
-        return new DriveToObjectCommand(this, robotCentric);
+        return new DriveToObjectCommand(this, robotCentric, false);
     }
 
     public Command xMode() {

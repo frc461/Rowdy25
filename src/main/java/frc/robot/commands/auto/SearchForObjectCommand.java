@@ -17,9 +17,9 @@ public class SearchForObjectCommand extends Command {
     private final PIDController errorController;
     private Translation2d targetTranslation;
     private double searchAngle;
-    private boolean rotationComplete = false;
-    private boolean translationComplete = false;
-    private boolean end = false;
+    private boolean rotationComplete;
+    private boolean translationComplete;
+    private boolean end;
 
     public SearchForObjectCommand(Swerve swerve, SwerveRequest.FieldCentric fieldCentric) {
         this.swerve = swerve;
@@ -39,7 +39,7 @@ public class SearchForObjectCommand extends Command {
     public void initialize() {
         targetTranslation = new Translation2d(
                 8.275 + 0.5 * (Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red ? 1 : (-1)),
-                upperHalf() ? 3.5 : FieldUtil.FIELD_WIDTH - 0.5
+                upperHalf() ? 0.5 : FieldUtil.FIELD_WIDTH - 0.5
         );
         searchAngle = Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red
                 ? upperHalf()
@@ -48,6 +48,10 @@ public class SearchForObjectCommand extends Command {
                 : upperHalf()
                         ? 180.0 - Constants.AutoConstants.NOTE_SEARCH_DEGREE_SLANT
                         : -180.0 + Constants.AutoConstants.NOTE_SEARCH_DEGREE_SLANT;
+
+        rotationComplete = false;
+        translationComplete = false;
+        end = false;
     }
 
     @Override
@@ -99,13 +103,6 @@ public class SearchForObjectCommand extends Command {
         if (VisionUtil.Photon.Color.hasTargets()) {
             end = true;
         }
-    }
-
-    @Override
-    public void end(boolean interrupted) {
-        rotationComplete = false;
-        translationComplete = false;
-        end = false;
     }
 
     @Override
