@@ -10,7 +10,6 @@ import com.ctre.phoenix6.swerve.*;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -39,10 +38,6 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
     private final SwerveRequest.RobotCentric robotCentric = new SwerveRequest.RobotCentric();
     private final SwerveRequest.SwerveDriveBrake xMode = new SwerveRequest.SwerveDriveBrake();
 
-    /* PID Controllers */
-    private final PIDController pathTranslationController;
-    private final PIDController pathSteeringController;
-
     /* Keep track if we've ever applied the operator perspective before or not */
     private boolean hasAppliedDefaultRotation = false;
 
@@ -63,19 +58,6 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
                 Constants.SwerveConstants.BACK_LEFT,
                 Constants.SwerveConstants.BACK_RIGHT
         );
-
-        pathTranslationController = new PIDController(
-                Constants.SwerveConstants.PATH_TRANSLATION_CONTROLLER_P,
-                0,
-                0
-        );
-
-        pathSteeringController = new PIDController(
-                Constants.SwerveConstants.PATH_ROTATION_CONTROLLER_P,
-                0,
-                0
-        );
-        pathSteeringController.enableContinuousInput(-Math.PI, Math.PI);
 
         if (Utils.isSimulation()) {
             new Simulator(this).startSimThread();

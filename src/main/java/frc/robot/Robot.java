@@ -3,6 +3,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj.TimedRobot;
+import frc.robot.constants.RobotIdentity;
 
 public class Robot extends TimedRobot {
     private Command autonomousCommand;
@@ -10,6 +11,7 @@ public class Robot extends TimedRobot {
     private final RobotContainer robotContainer;
 
     public Robot() {
+        RobotIdentity.initializeConstants();
         robotContainer = new RobotContainer();
     }
 

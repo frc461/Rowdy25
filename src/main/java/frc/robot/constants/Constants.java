@@ -105,6 +105,9 @@ public final class Constants {
     }
 
     public static final class SwerveConstants {
+        public static double PATH_TRANSLATION_CONTROLLER_P;
+        public static double PATH_ROTATION_CONTROLLER_P;
+
         public static double ANGULAR_POSITION_P;
         public static double ANGULAR_POSITION_D;
 
@@ -113,9 +116,6 @@ public final class Constants {
 
         public static double ANGULAR_MINIMUM_ANGLE;
         public static double ANGULAR_MAXIMUM_ANGLE;
-
-        public static double PATH_TRANSLATION_CONTROLLER_P;
-        public static double PATH_ROTATION_CONTROLLER_P;
 
         public static SwerveDrivetrainConstants SWERVE_DRIVETRAIN_CONSTANTS;
 

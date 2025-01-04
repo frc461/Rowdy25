@@ -80,7 +80,6 @@ public class RobotContainer {
      */
 
     public RobotContainer() {
-        RobotIdentity.initializeConstants();
         setDefaultCommands();
         configureBindings();
        
