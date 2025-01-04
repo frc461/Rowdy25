@@ -54,6 +54,7 @@ public final class DefaultConstants {
     public static final double MAX_CONTROLLED_ANGULAR_VEL = RotationsPerSecond.of(0.75).in(RadiansPerSecond);
 
     public static final double MAX_ACCEL = MetersPerSecondPerSecond.of(10.8).in(MetersPerSecondPerSecond);
+    public static final double MAX_CONTROLLED_ACCEL = MetersPerSecondPerSecond.of(5.0).in(MetersPerSecondPerSecond);
     public static final double MAX_ANGULAR_ACCEL = DegreesPerSecondPerSecond.of(485.0).in(RadiansPerSecondPerSecond);
 
     public static final NetworkTableInstance NT_INSTANCE = NetworkTableInstance.getDefault();
@@ -76,7 +77,7 @@ public final class DefaultConstants {
 
         public static final PathConstraints PATH_CONSTRAINTS = new PathConstraints(
                 MAX_VEL,
-                MAX_ACCEL,
+                MAX_CONTROLLED_ACCEL,
                 MAX_CONTROLLED_ANGULAR_VEL,
                 MAX_ANGULAR_ACCEL
         );

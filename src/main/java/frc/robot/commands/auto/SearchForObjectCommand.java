@@ -3,6 +3,7 @@ package frc.robot.commands.auto;
 import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -55,8 +56,11 @@ public class SearchForObjectCommand extends Command {
                         : -180.0 + Constants.AutoConstants.NOTE_SEARCH_DEGREE_SLANT;
 
         ChassisSpeeds initial = swerve.getState().Speeds;
-        xVel = initial.vxMetersPerSecond;
-        yVel = initial.vyMetersPerSecond;
+        Rotation2d rotationalOffset = swerve.localizer.getStrategyPose().getRotation();
+        Translation2d translationVel = new Translation2d(initial.vxMetersPerSecond, initial.vyMetersPerSecond).rotateBy(rotationalOffset.unaryMinus());
+
+        xVel = translationVel.getX();
+        yVel = translationVel.getY();
         rotVel = initial.omegaRadiansPerSecond;
         transitionPoll = 0;
         transitionMultiplier = 0;
@@ -76,6 +80,7 @@ public class SearchForObjectCommand extends Command {
         xVel *= 0.9;
         yVel *= 0.9;
         rotVel *= 0.9;
+        System.out.println("xVel: " + xVel + ", yVel: " + yVel + ", rotVel: " + rotVel);
         transitionPoll++;
         transitionMultiplier = 1 - Math.pow(0.9, transitionPoll);
 

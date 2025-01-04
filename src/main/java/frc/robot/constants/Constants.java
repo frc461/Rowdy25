@@ -37,6 +37,7 @@ public final class Constants {
     public static double MAX_CONTROLLED_ANGULAR_VEL;
 
     public static double MAX_ACCEL;
+    public static double MAX_CONTROLLED_ACCEL;
     public static double MAX_ANGULAR_ACCEL;
 
     public static NetworkTableInstance NT_INSTANCE;

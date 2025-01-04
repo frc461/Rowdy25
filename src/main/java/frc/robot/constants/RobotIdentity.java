@@ -33,6 +33,7 @@ public enum RobotIdentity {
         Constants.MAX_REAL_ANGULAR_VEL = DefaultConstants.MAX_REAL_ANGULAR_VEL;
         Constants.MAX_CONTROLLED_ANGULAR_VEL = DefaultConstants.MAX_CONTROLLED_ANGULAR_VEL;
         Constants.MAX_ACCEL = DefaultConstants.MAX_ACCEL;
+        Constants.MAX_CONTROLLED_ACCEL = DefaultConstants.MAX_CONTROLLED_ACCEL;
         Constants.MAX_ANGULAR_ACCEL = DefaultConstants.MAX_ANGULAR_ACCEL;
         Constants.NT_INSTANCE = DefaultConstants.NT_INSTANCE;
         Constants.ONE_MILLION = DefaultConstants.ONE_MILLION;
