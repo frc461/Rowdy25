@@ -14,6 +14,7 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -107,6 +108,8 @@ public final class Constants {
     public static final class SwerveConstants {
         public static double PATH_TRANSLATION_CONTROLLER_P;
         public static double PATH_ROTATION_CONTROLLER_P;
+
+        public static Function<Double, Double> PATH_MANUAL_TRANSLATION_CONTROLLER;
 
         public static double ANGULAR_POSITION_P;
         public static double ANGULAR_POSITION_D;

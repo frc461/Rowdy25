@@ -15,11 +15,13 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import frc.robot.autos.PathManager;
+import frc.robot.commands.auto.SearchForObjectCommand;
 import frc.robot.constants.Constants;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.DriveToObjectCommand;
-import frc.robot.commands.auto.DynamicObjectCommandSequence;
 import frc.robot.subsystems.vision.Localizer;
 import frc.robot.util.Simulator;
 
@@ -123,7 +125,9 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
     }
 
     public Command pathFindFindScoreObject() {
-        return new DynamicObjectCommandSequence(this, fieldCentric, robotCentric);
+        return new SearchForObjectCommand(this, fieldCentric)
+                .andThen(new DriveToObjectCommand(this, robotCentric))
+                .andThen(PathManager.pathFindToNearestScoringLocation(localizer::getStrategyPose));
     }
 
     public Command moveToNote() { // TODO IMPLEMENT THIS AFTER CALIBRATING AUTO
@@ -161,11 +165,12 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
          * Otherwise, only check and apply the operator perspective if the DS is disabled.
          * This ensures driving behavior doesn't change until an explicit disable event occurs during testing.
          */
+        // TODO THIS IS A PROBLEM (CAUSES APPLYING STATES ON RED TEAM TO BE BACKWARD)
         if ((!hasAppliedDefaultRotation || DriverStation.isDisabled()) && Constants.ALLIANCE_SUPPLIER.get() != null) {
-            setOperatorPerspectiveForward(
-                    Constants.ALLIANCE_SUPPLIER.get() == Alliance.Blue
-                            ? Constants.BLUE_DEFAULT_ROTATION
-                            : Constants.RED_DEFAULT_ROTATION
+            setOperatorPerspectiveForward(Constants.BLUE_DEFAULT_ROTATION
+//                    Constants.ALLIANCE_SUPPLIER.get() == Alliance.Blue
+//                            ? Constants.BLUE_DEFAULT_ROTATION
+//                            : Constants.RED_DEFAULT_ROTATION
             );
             hasAppliedDefaultRotation = true;
         }

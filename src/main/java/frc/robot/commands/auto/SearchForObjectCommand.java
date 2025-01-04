@@ -15,7 +15,6 @@ public class SearchForObjectCommand extends Command {
     private final Swerve swerve;
     private final SwerveRequest.FieldCentric fieldCentric;
     private final PIDController errorController;
-    private final PIDController drivePID;
     private Translation2d targetTranslation;
     private double searchAngle;
     private boolean rotationComplete = false;
@@ -33,12 +32,6 @@ public class SearchForObjectCommand extends Command {
         );
         errorController.enableContinuousInput(Constants.SwerveConstants.ANGULAR_MINIMUM_ANGLE, Constants.SwerveConstants.ANGULAR_MAXIMUM_ANGLE);
 
-        drivePID = new PIDController(
-                Constants.SwerveConstants.PATH_TRANSLATION_CONTROLLER_P,
-                0,
-                0
-        );
-
         addRequirements(this.swerve);
     }
 
@@ -46,7 +39,7 @@ public class SearchForObjectCommand extends Command {
     public void initialize() {
         targetTranslation = new Translation2d(
                 8.275 + 0.5 * (Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red ? 1 : (-1)),
-                upperHalf() ? 0.5 : FieldUtil.FIELD_WIDTH - 0.5
+                upperHalf() ? 3.5 : FieldUtil.FIELD_WIDTH - 0.5
         );
         searchAngle = Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red
                 ? upperHalf()
@@ -79,23 +72,22 @@ public class SearchForObjectCommand extends Command {
                 rotationComplete = true;
             }
         } else if (!translationComplete) {
-            double translationError = targetTranslation.getDistance(currentTranslation);
+            double yError = Math.abs(targetTranslation.getY() - currentY);
 
             swerve.setControl(
                     fieldCentric.withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
-                            .withVelocityX(drivePID.calculate(
+                            .withVelocityX(errorController.calculate(
                                     currentX,
                                     targetTranslation.getX()
                             ) * Constants.MAX_VEL)
-                            .withVelocityY(drivePID.calculate(
-                                    currentY, targetTranslation.getY()
-                            ) * Constants.MAX_VEL)
+                            .withVelocityY(Constants.SwerveConstants.PATH_MANUAL_TRANSLATION_CONTROLLER.apply(yError)
+                                    * (searchAngle > 0 ? -3.5 : 3.5))
                             .withRotationalRate(errorController.calculate(
                                     currentYaw,
                                     searchAngle
                             ))
             );
-            if (translationError < Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_ACCEPT) {
+            if (yError < Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_ACCEPT) {
                 translationComplete = true;
                 end = true;
             }

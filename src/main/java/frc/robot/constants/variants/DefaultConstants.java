@@ -27,6 +27,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.units.measure.*;
 import edu.wpi.first.wpilibj.DriverStation;
+import frc.robot.util.ExpUtil;
 import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
@@ -143,6 +144,11 @@ public final class DefaultConstants {
     }
 
     public static final class SwerveConstants {
+        public static final double PATH_TRANSLATION_CONTROLLER_P = 10.0;
+        public static final double PATH_ROTATION_CONTROLLER_P = 7.5;
+
+        public static Function<Double, Double> PATH_MANUAL_TRANSLATION_CONTROLLER = x -> ExpUtil.output(x, 0.8, 6);
+
         public static final double ANGULAR_POSITION_P = 0.035;
         public static final double ANGULAR_POSITION_D = 0.0012;
 
@@ -151,9 +157,6 @@ public final class DefaultConstants {
 
         public static final double ANGULAR_MINIMUM_ANGLE = -180.0;
         public static final double ANGULAR_MAXIMUM_ANGLE = 180.0;
-
-        public static final double PATH_TRANSLATION_CONTROLLER_P = 10.0;
-        public static final double PATH_ROTATION_CONTROLLER_P = 7.5;
 
         // TODO TUNE FOR 2025 ROBOT
 

@@ -52,7 +52,7 @@ public final class PathManager {
     }
 
     // TODO UPDATE THESE PRESET TARGET POSES (MEANT TO BE USED FOR SCORING, NOT PICKING UP, WHICH IS SUPPOSED TO BE COMPLETELY DYNAMIC)
-    public static Command pathFindToNearestShootingLocation(Supplier<Pose2d> poseSupplier) {
+    public static Command pathFindToNearestScoringLocation(Supplier<Pose2d> poseSupplier) {
         Translation2d currentTranslation = poseSupplier.get().getTranslation();
         ScoringLocations nearestLocation = ScoringLocations.STAGE;
         double nearestDistance = currentTranslation.getDistance(ScoringLocations.getScoringPose(nearestLocation).getTranslation());
