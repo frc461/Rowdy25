@@ -4,6 +4,7 @@ import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.Constants;
@@ -17,7 +18,11 @@ public class SearchForObjectCommand extends Command {
     private final PIDController errorController;
     private Translation2d targetTranslation;
     private double searchAngle;
-    private boolean rotationComplete;
+    private double xVel; // for smooth transition after path interruption
+    private double yVel;
+    private double rotVel;
+    private int transitionPoll;
+    private double transitionMultiplier;
     private boolean translationComplete;
     private boolean end;
 
@@ -49,7 +54,13 @@ public class SearchForObjectCommand extends Command {
                         ? 180.0 - Constants.AutoConstants.NOTE_SEARCH_DEGREE_SLANT
                         : -180.0 + Constants.AutoConstants.NOTE_SEARCH_DEGREE_SLANT;
 
-        rotationComplete = false;
+        ChassisSpeeds initial = swerve.getState().Speeds;
+        xVel = initial.vxMetersPerSecond;
+        yVel = initial.vyMetersPerSecond;
+        rotVel = initial.omegaRadiansPerSecond;
+        transitionPoll = 0;
+        transitionMultiplier = 0;
+
         translationComplete = false;
         end = false;
     }
@@ -60,22 +71,15 @@ public class SearchForObjectCommand extends Command {
         Translation2d currentTranslation = swerve.localizer.getStrategyPose().getTranslation();
         double currentX = currentTranslation.getX();
         double currentY = currentTranslation.getY();
-        if (!rotationComplete) {
-            double degreeError = Math.abs(currentYaw - searchAngle);
 
-            swerve.setControl(
-                    fieldCentric.withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
-                            .withVelocityX(0.0)
-                            .withVelocityY(0.0)
-                            .withRotationalRate(errorController.calculate(
-                                    currentYaw,
-                                    searchAngle
-                            ) * Constants.MAX_CONTROLLED_ANGULAR_VEL)
-            );
-            if (degreeError < Constants.AutoConstants.DEGREE_TOLERANCE_TO_ACCEPT) {
-                rotationComplete = true;
-            }
-        } else if (!translationComplete) {
+        // TODO TEST SMOOTHNESS
+        xVel *= 0.9;
+        yVel *= 0.9;
+        rotVel *= 0.9;
+        transitionPoll++;
+        transitionMultiplier = 1 - Math.pow(0.9, transitionPoll);
+
+        if (!translationComplete) {
             double yError = Math.abs(targetTranslation.getY() - currentY);
 
             swerve.setControl(
@@ -83,13 +87,13 @@ public class SearchForObjectCommand extends Command {
                             .withVelocityX(errorController.calculate(
                                     currentX,
                                     targetTranslation.getX()
-                            ) * Constants.MAX_VEL)
+                            ) * Constants.MAX_VEL * transitionMultiplier + xVel)
                             .withVelocityY(Constants.SwerveConstants.PATH_MANUAL_TRANSLATION_CONTROLLER.apply(yError)
-                                    * (searchAngle > 0 ? -1 : 1))
+                                    * (searchAngle > 0 ? -1 : 1) * transitionMultiplier + yVel)
                             .withRotationalRate(errorController.calculate(
                                     currentYaw,
                                     searchAngle
-                            ))
+                            ) * transitionMultiplier + rotVel)
             );
             if (yError < Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_ACCEPT) {
                 translationComplete = true;

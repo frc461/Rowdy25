@@ -130,7 +130,7 @@ public class FollowPathDynamicCommand extends FollowPathCommand {
 
     @Override
     public void end(boolean interrupted) {
-        super.end(interrupted);
+        super.end(this.interrupted);
         this.interrupted = false;
     }
 
