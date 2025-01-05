@@ -15,7 +15,7 @@ import edu.wpi.first.util.function.BooleanConsumer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.WrapperCommand;
-import frc.robot.Constants;
+import frc.robot.constants.Constants;
 import frc.robot.subsystems.drivetrain.Swerve;
 import frc.robot.util.VisionUtil;
 
@@ -130,7 +130,7 @@ public class FollowPathDynamicCommand extends FollowPathCommand {
 
     @Override
     public void end(boolean interrupted) {
-        super.end(interrupted);
+        super.end(this.interrupted);
         this.interrupted = false;
     }
 

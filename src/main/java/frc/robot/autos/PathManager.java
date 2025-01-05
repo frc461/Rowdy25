@@ -7,11 +7,10 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants;
+import frc.robot.constants.Constants;
 import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
-import java.util.function.Supplier;
 
 public final class PathManager {
     public static PathPlannerPath TEST_PATH;
@@ -51,13 +50,12 @@ public final class PathManager {
                 0.0
         );
     }
-    public static Command pathFindToNearestShootingLocation(Supplier<Pose2d> poseSupplier) {
-        Translation2d currentTranslation = poseSupplier.get().getTranslation();
+    public static Command pathFindToNearestScoringLocation(Pose2d currentPose) {
+        Translation2d currentTranslation = currentPose.getTranslation();
         ScoringLocations nearestLocation = ScoringLocations.STAGE;
         double nearestDistance = currentTranslation.getDistance(ScoringLocations.getScoringPose(nearestLocation).getTranslation());
 
         for (ScoringLocations location : ScoringLocations.values()) {
-            // TODO WHY IS IT GOING TO THE FARTHEST LOCATION??????
             double distance = currentTranslation.getDistance(ScoringLocations.getScoringPose(location).getTranslation());
             if (distance < nearestDistance) {
                 nearestLocation = location;

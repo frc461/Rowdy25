@@ -1,7 +1,3 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot;
 
 import com.pathplanner.lib.commands.PathfindingCommand;
@@ -19,12 +15,12 @@ import frc.robot.util.SysID;
 
 public class RobotContainer {
     /* Subsystems */
-    public final Swerve swerve = new Swerve();
+    private final Swerve swerve = new Swerve();
 
     private final AutoChooser autoChooser = new AutoChooser(swerve);
 
     /* Sys ID */
-    public final SysID sysID = new SysID(swerve);
+    private final SysID sysID = new SysID(swerve);
 
     private final CommandXboxController driverXbox = new CommandXboxController(0);
     /* Currently Allocated For Driver:
@@ -55,7 +51,7 @@ public class RobotContainer {
      * Y: Re-zero gyro
      */
 
-    public final static CommandXboxController opXbox = new CommandXboxController(1);
+    private final static CommandXboxController opXbox = new CommandXboxController(1);
     /* Currently Allocated For Operator:
      * POV buttons / D-pad:
      * Up:

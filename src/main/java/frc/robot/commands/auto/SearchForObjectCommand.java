@@ -3,10 +3,12 @@ package frc.robot.commands.auto;
 import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants;
+import frc.robot.constants.Constants;
 import frc.robot.subsystems.drivetrain.Swerve;
 import frc.robot.util.FieldUtil;
 import frc.robot.util.VisionUtil;
@@ -17,9 +19,13 @@ public class SearchForObjectCommand extends Command {
     private final PIDController errorController;
     private Translation2d targetTranslation;
     private double searchAngle;
-    private boolean rotationComplete = false;
-    private boolean translationComplete = false;
-    private boolean end = false;
+    private double xVel; // for smooth transition after path interruption
+    private double yVel;
+    private double rotVel;
+    private int transitionPoll;
+    private double transitionMultiplier;
+    private boolean translationComplete;
+    private boolean end;
 
     public SearchForObjectCommand(Swerve swerve, SwerveRequest.FieldCentric fieldCentric) {
         this.swerve = swerve;
@@ -48,6 +54,19 @@ public class SearchForObjectCommand extends Command {
                 : upperHalf()
                         ? 180.0 - Constants.AutoConstants.NOTE_SEARCH_DEGREE_SLANT
                         : -180.0 + Constants.AutoConstants.NOTE_SEARCH_DEGREE_SLANT;
+
+        ChassisSpeeds initial = swerve.getState().Speeds;
+        Rotation2d rotationalOffset = swerve.localizer.getStrategyPose().getRotation();
+        Translation2d translationVel = new Translation2d(initial.vxMetersPerSecond, initial.vyMetersPerSecond).rotateBy(rotationalOffset.unaryMinus());
+
+        xVel = translationVel.getX();
+        yVel = translationVel.getY();
+        rotVel = initial.omegaRadiansPerSecond;
+        transitionPoll = 0;
+        transitionMultiplier = 0;
+
+        translationComplete = false;
+        end = false;
     }
 
     @Override
@@ -56,39 +75,32 @@ public class SearchForObjectCommand extends Command {
         Translation2d currentTranslation = swerve.localizer.getStrategyPose().getTranslation();
         double currentX = currentTranslation.getX();
         double currentY = currentTranslation.getY();
-        if (!rotationComplete) {
-            double degreeError = Math.abs(currentYaw - searchAngle);
 
-            swerve.setControl(
-                    fieldCentric.withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
-                            .withVelocityX(0.0)
-                            .withVelocityY(0.0)
-                            .withRotationalRate(errorController.calculate(
-                                    currentYaw,
-                                    searchAngle
-                            ) * Constants.SwerveConstants.MAX_CONTROLLED_ANGULAR_VEL)
-            );
-            if (degreeError < Constants.AutoConstants.DEGREE_TOLERANCE_TO_ACCEPT) {
-                rotationComplete = true;
-            }
-        } else if (!translationComplete) {
-            double translationError = targetTranslation.getDistance(currentTranslation);
+        // TODO TEST SMOOTHNESS
+        xVel *= 0.9;
+        yVel *= 0.9;
+        rotVel *= 0.9;
+        System.out.println("xVel: " + xVel + ", yVel: " + yVel + ", rotVel: " + rotVel);
+        transitionPoll++;
+        transitionMultiplier = 1 - Math.pow(0.9, transitionPoll);
+
+        if (!translationComplete) {
+            double yError = Math.abs(targetTranslation.getY() - currentY);
 
             swerve.setControl(
                     fieldCentric.withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
                             .withVelocityX(errorController.calculate(
                                     currentX,
                                     targetTranslation.getX()
-                            ) * Constants.MAX_VEL)
-                            .withVelocityY(errorController.calculate(
-                                    currentY, targetTranslation.getY()
-                            ) * Constants.MAX_VEL)
+                            ) * Constants.MAX_VEL * transitionMultiplier + xVel)
+                            .withVelocityY(Constants.SwerveConstants.PATH_MANUAL_TRANSLATION_CONTROLLER.apply(yError)
+                                    * (searchAngle > 0 ? -1 : 1) * transitionMultiplier + yVel)
                             .withRotationalRate(errorController.calculate(
                                     currentYaw,
                                     searchAngle
-                            ))
+                            ) * transitionMultiplier + rotVel)
             );
-            if (translationError < Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_ACCEPT) {
+            if (yError < Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_ACCEPT) {
                 translationComplete = true;
                 end = true;
             }
@@ -100,13 +112,6 @@ public class SearchForObjectCommand extends Command {
         if (VisionUtil.Photon.Color.hasTargets()) {
             end = true;
         }
-    }
-
-    @Override
-    public void end(boolean interrupted) {
-        rotationComplete = false;
-        translationComplete = false;
-        end = false;
     }
 
     @Override

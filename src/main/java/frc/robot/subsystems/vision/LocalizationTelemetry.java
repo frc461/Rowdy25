@@ -5,13 +5,19 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.networktables.*;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
-import frc.robot.Constants;
+import frc.robot.constants.Constants;
 import frc.robot.util.Elastic;
 import frc.robot.util.VisionUtil;
 
 import java.util.EnumSet;
 
 public class LocalizationTelemetry {
+    public enum QuestFault {
+        QUEST_LOW_BATTERY,
+        QUEST_DIED,
+        QUEST_DISCONNECTED
+    }
+
     private final Localizer localizer;
 
     public LocalizationTelemetry(Localizer localizer) {
@@ -19,7 +25,7 @@ public class LocalizationTelemetry {
     }
 
     // TODO CONSISTENCY, CONSTANTIZE ALL TABLE STRING NAMES
-    private final NetworkTable localizationTelemetryTable = Constants.NT_INSTANCE.getTable("VisionTelemetry");
+    private final NetworkTable localizationTelemetryTable = Constants.NT_INSTANCE.getTable("LocalizationTelemetry");
     private final NetworkTable limelightTelemetryTable = Constants.NT_INSTANCE.getTable("LimelightTelemetry");
     private final NetworkTable photonTelemetryTable = Constants.NT_INSTANCE.getTable("PhotonTelemetry");
     private final NetworkTable questNavTelemetryTable = Constants.NT_INSTANCE.getTable(Constants.VisionConstants.QuestNavConstants.QUESTNAV_NT_NAME);
@@ -113,7 +119,7 @@ public class LocalizationTelemetry {
         DogLog.log("PhotonBWHasTarget", VisionUtil.Photon.BW.hasTargets());
 
         if (DriverStation.isEnabled() && questTimestampSub.getLastChange() <= (Timer.getTimestamp() - 2) * Constants.ONE_MILLION && questSendDisconnectMessage) {
-            DogLog.logFault(Constants.Logger.QuestFault.QUEST_DISCONNECTED);
+            DogLog.logFault(QuestFault.QUEST_DISCONNECTED);
             Elastic.sendNotification(new Elastic.Notification(Elastic.Notification.NotificationLevel.ERROR, "Quest Nav", "Quest has been disconnected! Press B to switch to PoseEstimator.", 7000));
             questSendDisconnectMessage = false;
         }
@@ -122,12 +128,12 @@ public class LocalizationTelemetry {
     public void registerListeners() {
         Constants.NT_INSTANCE.addListener(questBatterySub, EnumSet.of(NetworkTableEvent.Kind.kValueAll), (event) -> {
                 if (questBatterySub.get() <= 0.5 && questSendDiedMessage) {
-                        DogLog.logFault(Constants.Logger.QuestFault.QUEST_DIED);
+                        DogLog.logFault(QuestFault.QUEST_DIED);
                         Elastic.sendNotification(new Elastic.Notification(Elastic.Notification.NotificationLevel.ERROR, "Quest Nav", "Quest ran out of battery! Press B to switch to PoseEstimator.", 7000));
                         questSendDiedMessage = false;
                 }
                 if (questBatterySub.get() <= 10 && questSendBatteryLowMessage) {
-                        DogLog.logFault(Constants.Logger.QuestFault.QUEST_LOW_BATTERY);
+                        DogLog.logFault(QuestFault.QUEST_LOW_BATTERY);
                         Elastic.sendNotification(new Elastic.Notification(Elastic.Notification.NotificationLevel.WARNING, "Quest Nav", "Quest has less than 10% battery left! Current Percent: " + questBatterySub.get(), 7000));
                         questSendBatteryLowMessage = false;
                 }

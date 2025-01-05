@@ -4,7 +4,8 @@ import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants;
+import frc.robot.autos.PathManager;
+import frc.robot.constants.Constants;
 import frc.robot.subsystems.drivetrain.Swerve;
 import frc.robot.util.VisionUtil;
 
@@ -12,11 +13,13 @@ public class DriveToObjectCommand extends Command {
     private final Swerve swerve;
     private final SwerveRequest.RobotCentric robotCentric;
     private final PIDController objectDetectionController;
-    private boolean rotationComplete = false;
-    private boolean translationComplete = false;
-    private boolean end = false;
+    private final boolean auto;
+    private boolean rotationComplete;
+    private boolean translationComplete;
+    private boolean end;
+    private boolean successful;
 
-    public DriveToObjectCommand(Swerve swerve, SwerveRequest.RobotCentric robotCentric) {
+    public DriveToObjectCommand(Swerve swerve, SwerveRequest.RobotCentric robotCentric, boolean auto) {
         this.swerve = swerve;
         this.robotCentric = robotCentric;
 
@@ -27,7 +30,16 @@ public class DriveToObjectCommand extends Command {
         );
         objectDetectionController.enableContinuousInput(Constants.SwerveConstants.ANGULAR_MINIMUM_ANGLE, Constants.SwerveConstants.ANGULAR_MAXIMUM_ANGLE);
 
+        this.auto = auto;
         addRequirements(this.swerve);
+    }
+
+    @Override
+    public void initialize() {
+        rotationComplete = false;
+        translationComplete = false;
+        end = false;
+        successful = false;
     }
 
     @Override
@@ -45,7 +57,7 @@ public class DriveToObjectCommand extends Command {
                             .withRotationalRate(objectDetectionController.calculate(
                                     currentYaw,
                                     0.0
-                            ) * Constants.SwerveConstants.MAX_CONTROLLED_ANGULAR_VEL)
+                            ) * Constants.MAX_CONTROLLED_ANGULAR_VEL)
             );
             if (degreeError < Constants.VisionConstants.PhotonConstants.OBJECT_DEGREE_TOLERANCE_TO_ACCEPT) {
                 rotationComplete = true;
@@ -68,18 +80,21 @@ public class DriveToObjectCommand extends Command {
             if (degreeError < Constants.VisionConstants.PhotonConstants.OBJECT_DEGREE_TOLERANCE_TO_ACCEPT) {
                 translationComplete = true;
                 end = true;
+                successful = true;
             }
         } else {
+            // TODO MORE ROBUST CHECKING I.E., IF OBJECT IN INTAKE, OTHERWISE METHOD TO RETRIEVE NOTE OR GIVE UP, DEPENDING ON AUTO OR TELEOP
             swerve.forceStop();
             end = true;
+            successful = false;
         }
     }
 
     @Override
     public void end(boolean interrupted) {
-        rotationComplete = false;
-        translationComplete = false;
-        end = false;
+        if (auto && successful) {
+            PathManager.pathFindToNearestScoringLocation(swerve.localizer.getStrategyPose()).schedule();
+        }
     }
 
     @Override

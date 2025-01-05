@@ -7,22 +7,21 @@ import java.util.function.Supplier;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.*;
 
-import choreo.trajectory.SwerveSample;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
-import frc.robot.Constants;
+import frc.robot.autos.PathManager;
+import frc.robot.commands.auto.SearchForObjectCommand;
+import frc.robot.constants.Constants;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.DriveToObjectCommand;
-import frc.robot.commands.auto.DynamicObjectCommandSequence;
 import frc.robot.subsystems.vision.Localizer;
 import frc.robot.util.Simulator;
 
@@ -41,10 +40,6 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
     private final SwerveRequest.RobotCentric robotCentric = new SwerveRequest.RobotCentric();
     private final SwerveRequest.SwerveDriveBrake xMode = new SwerveRequest.SwerveDriveBrake();
 
-    /* PID Controllers */
-    private final PIDController pathTranslationController;
-    private final PIDController pathSteeringController;
-
     /* Keep track if we've ever applied the operator perspective before or not */
     private boolean hasAppliedDefaultRotation = false;
 
@@ -60,24 +55,11 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
     public Swerve() {
         super(
                 Constants.SwerveConstants.SWERVE_DRIVETRAIN_CONSTANTS,
-                Constants.SwerveConstants.FrontLeft.FRONT_LEFT,
-                Constants.SwerveConstants.FrontRight.FRONT_RIGHT,
-                Constants.SwerveConstants.BackLeft.BACK_LEFT,
-                Constants.SwerveConstants.BackRight.BACK_RIGHT
+                Constants.SwerveConstants.FRONT_LEFT,
+                Constants.SwerveConstants.FRONT_RIGHT,
+                Constants.SwerveConstants.BACK_LEFT,
+                Constants.SwerveConstants.BACK_RIGHT
         );
-
-        pathTranslationController = new PIDController(
-                Constants.SwerveConstants.PATH_TRANSLATION_CONTROLLER_P,
-                0,
-                0
-        );
-
-        pathSteeringController = new PIDController(
-                Constants.SwerveConstants.PATH_ROTATION_CONTROLLER_P,
-                0,
-                0
-        );
-        pathSteeringController.enableContinuousInput(-Math.PI, Math.PI);
 
         if (Utils.isSimulation()) {
             new Simulator(this).startSimThread();
@@ -143,11 +125,12 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
     }
 
     public Command pathFindFindScoreObject() {
-        return new DynamicObjectCommandSequence(this, fieldCentric, robotCentric);
+        return new SearchForObjectCommand(this, fieldCentric)
+                .andThen(new DriveToObjectCommand(this, robotCentric, true));
     }
 
     public Command moveToNote() {
-        return new DriveToObjectCommand(this, robotCentric);
+        return new DriveToObjectCommand(this, robotCentric, false);
     }
 
     public Command xMode() {
@@ -181,11 +164,12 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
          * Otherwise, only check and apply the operator perspective if the DS is disabled.
          * This ensures driving behavior doesn't change until an explicit disable event occurs during testing.
          */
+        // TODO THIS IS A PROBLEM (CAUSES APPLYING STATES ON RED TEAM TO BE BACKWARD)
         if ((!hasAppliedDefaultRotation || DriverStation.isDisabled()) && Constants.ALLIANCE_SUPPLIER.get() != null) {
-            setOperatorPerspectiveForward(
-                    Constants.ALLIANCE_SUPPLIER.get() == Alliance.Blue
-                            ? Constants.BLUE_DEFAULT_ROTATION
-                            : Constants.RED_DEFAULT_ROTATION
+            setOperatorPerspectiveForward(Constants.BLUE_DEFAULT_ROTATION
+//                    Constants.ALLIANCE_SUPPLIER.get() == Alliance.Blue
+//                            ? Constants.BLUE_DEFAULT_ROTATION
+//                            : Constants.RED_DEFAULT_ROTATION
             );
             hasAppliedDefaultRotation = true;
         }
