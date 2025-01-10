@@ -29,7 +29,7 @@ import frc.robot.util.Simulator;
  * Class that extends the Phoenix 6 SwerveDrivetrain class and implements
  * Subsystem so it can easily be used in command-based projects.
  */
-public class Swerve extends SwerveDrivetrain implements Subsystem {
+public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> implements Subsystem {
     /* An extension to the Swerve subsystem */
     public final Localizer localizer = new Localizer(this);
 
