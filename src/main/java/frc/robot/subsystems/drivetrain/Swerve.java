@@ -5,6 +5,8 @@ import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.Utils;
+import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.swerve.*;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -15,9 +17,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
-import frc.robot.autos.PathManager;
 import frc.robot.commands.auto.SearchForObjectCommand;
 import frc.robot.constants.Constants;
 import frc.robot.commands.DriveCommand;
@@ -54,6 +54,9 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
      */
     public Swerve() {
         super(
+                TalonFX::new,
+                TalonFX::new,
+                CANcoder::new,
                 Constants.SwerveConstants.SWERVE_DRIVETRAIN_CONSTANTS,
                 Constants.SwerveConstants.FRONT_LEFT,
                 Constants.SwerveConstants.FRONT_RIGHT,
