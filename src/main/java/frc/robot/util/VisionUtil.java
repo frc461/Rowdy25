@@ -157,7 +157,7 @@ public class VisionUtil {
 
         public static final class BW {
             private static final PhotonCamera BW = new PhotonCamera(Constants.NT_INSTANCE, "ArducamBW");
-            public static final AprilTagFieldLayout tagLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField(); // TODO UPDATE FOR 2025
+            public static final AprilTagFieldLayout tagLayout = AprilTagFields.k2025Reefscape.loadAprilTagLayoutField();
             public static final Transform3d robotToCameraOffset = new Transform3d(
                     Constants.VisionConstants.PhotonConstants.BW_FORWARD,
                     Constants.VisionConstants.PhotonConstants.BW_LEFT,
