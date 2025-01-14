@@ -5,15 +5,15 @@ import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.constants.Constants;
 
 public class FieldUtil {
     public static final AprilTagFieldLayout layout2025 = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
-    public static final double FIELD_LENGTH = Units.inchesToMeters(651.25);
-    public static final double FIELD_WIDTH = Units.inchesToMeters(323.25);
+    public static final double FIELD_LENGTH = layout2025.getFieldLength();
+    public static final double FIELD_WIDTH = layout2025.getFieldWidth();
+    public static final Pose3d ORIGIN = layout2025.getOrigin();
 
     public enum TagLocation {
         ID_1,
@@ -31,162 +31,80 @@ public class FieldUtil {
         ID_13,
         ID_14,
         ID_15,
-        ID_16;
-
-        // TODO UPDATE VALUES FOR 2025
-        public static Pose2d getTagLocation(TagLocation tag) {
-            return switch (tag) {
-                case ID_1 ->
-                        new Pose2d(Units.inchesToMeters(593.68), Units.inchesToMeters(9.68), Rotation2d.fromDegrees(120));
-                case ID_2 ->
-                        new Pose2d(Units.inchesToMeters(637.21), Units.inchesToMeters(34.79), Rotation2d.fromDegrees(120));
-                case ID_3 ->
-                        new Pose2d(Units.inchesToMeters(652.73), Units.inchesToMeters(196.17), Rotation2d.fromDegrees(180));
-                case ID_4 ->
-                        new Pose2d(Units.inchesToMeters(652.73), Units.inchesToMeters(218.42), Rotation2d.fromDegrees(180));
-                case ID_5 ->
-                        new Pose2d(Units.inchesToMeters(578.77), Units.inchesToMeters(323.00), Rotation2d.fromDegrees(-90));
-                case ID_6 ->
-                        new Pose2d(Units.inchesToMeters(72.5), Units.inchesToMeters(323.00), Rotation2d.fromDegrees(-90));
-                case ID_7 ->
-                        new Pose2d(Units.inchesToMeters(-1.50), Units.inchesToMeters(218.42), Rotation2d.fromDegrees(0));
-                case ID_8 ->
-                        new Pose2d(Units.inchesToMeters(-1.50), Units.inchesToMeters(196.17), Rotation2d.fromDegrees(0));
-                case ID_9 ->
-                        new Pose2d(Units.inchesToMeters(14.02), Units.inchesToMeters(34.79), Rotation2d.fromDegrees(60));
-                case ID_10 ->
-                        new Pose2d(Units.inchesToMeters(57.54), Units.inchesToMeters(9.68), Rotation2d.fromDegrees(60));
-                case ID_11 ->
-                        new Pose2d(Units.inchesToMeters(468.69), Units.inchesToMeters(146.19), Rotation2d.fromDegrees(-60));
-                case ID_12 ->
-                        new Pose2d(Units.inchesToMeters(468.69), Units.inchesToMeters(177.10), Rotation2d.fromDegrees(60));
-                case ID_13 ->
-                        new Pose2d(Units.inchesToMeters(441.74), Units.inchesToMeters(161.62), Rotation2d.fromDegrees(180));
-                case ID_14 ->
-                        new Pose2d(Units.inchesToMeters(209.48), Units.inchesToMeters(161.62), Rotation2d.fromDegrees(0));
-                case ID_15 ->
-                        new Pose2d(Units.inchesToMeters(182.73), Units.inchesToMeters(177.10), Rotation2d.fromDegrees(120));
-                case ID_16 ->
-                        new Pose2d(Units.inchesToMeters(182.73), Units.inchesToMeters(146.19), Rotation2d.fromDegrees(-120));
-            };
-        }
-
-        public static Pose2d getTagLocation(double tagID) {
-            return switch ((int) tagID) {
-                case 1 ->
-                        new Pose2d(Units.inchesToMeters(593.68), Units.inchesToMeters(9.68), Rotation2d.fromDegrees(120));
-                case 2 ->
-                        new Pose2d(Units.inchesToMeters(637.21), Units.inchesToMeters(34.79), Rotation2d.fromDegrees(120));
-                case 3 ->
-                        new Pose2d(Units.inchesToMeters(652.73), Units.inchesToMeters(196.17), Rotation2d.fromDegrees(180));
-                case 4 ->
-                        new Pose2d(Units.inchesToMeters(652.73), Units.inchesToMeters(218.42), Rotation2d.fromDegrees(180)); //+0.0127
-                case 5 ->
-                        new Pose2d(Units.inchesToMeters(578.77), Units.inchesToMeters(323.00), Rotation2d.fromDegrees(-90));
-                case 6 ->
-                        new Pose2d(Units.inchesToMeters(72.5), Units.inchesToMeters(323.00), Rotation2d.fromDegrees(-90));
-                case 7 ->
-                        new Pose2d(Units.inchesToMeters(-1.50), Units.inchesToMeters(218.42), Rotation2d.fromDegrees(0)); //+0.0127
-                case 8 ->
-                        new Pose2d(Units.inchesToMeters(-1.50), Units.inchesToMeters(196.17), Rotation2d.fromDegrees(0));
-                case 9 ->
-                        new Pose2d(Units.inchesToMeters(14.02), Units.inchesToMeters(34.79), Rotation2d.fromDegrees(60));
-                case 10 ->
-                        new Pose2d(Units.inchesToMeters(57.54), Units.inchesToMeters(9.68), Rotation2d.fromDegrees(60));
-                case 11 ->
-                        new Pose2d(Units.inchesToMeters(468.69), Units.inchesToMeters(146.19), Rotation2d.fromDegrees(-60));
-                case 12 ->
-                        new Pose2d(Units.inchesToMeters(468.69), Units.inchesToMeters(177.10), Rotation2d.fromDegrees(60));
-                case 13 ->
-                        new Pose2d(Units.inchesToMeters(441.74), Units.inchesToMeters(161.62), Rotation2d.fromDegrees(180));
-                case 14 ->
-                        new Pose2d(Units.inchesToMeters(209.48), Units.inchesToMeters(161.62), Rotation2d.fromDegrees(0));
-                case 15 ->
-                        new Pose2d(Units.inchesToMeters(182.73), Units.inchesToMeters(177.10), Rotation2d.fromDegrees(120));
-                case 16 ->
-                        new Pose2d(Units.inchesToMeters(182.73), Units.inchesToMeters(146.19), Rotation2d.fromDegrees(-120));
-                default -> new Pose2d(0, 0, new Rotation2d());
-            };
-        }
+        ID_16,
+        ID_17,
+        ID_18,
+        ID_19,
+        ID_20,
+        ID_21,
+        ID_22;
 
         public static Pose3d getTagLocation3d(TagLocation tag) {
             return switch (tag) {
-                case ID_1 ->
-                        new Pose3d(Units.inchesToMeters(593.68), Units.inchesToMeters(9.68), Units.inchesToMeters(53.38), new Rotation3d(0, 0, Units.degreesToRadians(120)));
-                case ID_2 ->
-                        new Pose3d(Units.inchesToMeters(637.21), Units.inchesToMeters(34.79), Units.inchesToMeters(53.38), new Rotation3d(0, 0, Units.degreesToRadians(120)));
-                case ID_3 ->
-                        new Pose3d(Units.inchesToMeters(652.73), Units.inchesToMeters(196.17), Units.inchesToMeters(57.13), new Rotation3d(0, 0, Units.degreesToRadians(180)));
-                case ID_4 ->
-                        new Pose3d(Units.inchesToMeters(652.73), Units.inchesToMeters(218.42), Units.inchesToMeters(57.13), new Rotation3d(0, 0, Units.degreesToRadians(180)));
-                case ID_5 ->
-                        new Pose3d(Units.inchesToMeters(578.77), Units.inchesToMeters(323.00), Units.inchesToMeters(53.38), new Rotation3d(0, 0, Units.degreesToRadians(-90)));
-                case ID_6 ->
-                        new Pose3d(Units.inchesToMeters(72.5), Units.inchesToMeters(323.00), Units.inchesToMeters(53.38), new Rotation3d(0, 0, Units.degreesToRadians(-90)));
-                case ID_7 ->
-                        new Pose3d(Units.inchesToMeters(-1.50), Units.inchesToMeters(218.42), Units.inchesToMeters(57.13), new Rotation3d(0, 0, Units.degreesToRadians(0)));
-                case ID_8 ->
-                        new Pose3d(Units.inchesToMeters(-1.50), Units.inchesToMeters(196.17), Units.inchesToMeters(57.13), new Rotation3d(0, 0, Units.degreesToRadians(0)));
-                case ID_9 ->
-                        new Pose3d(Units.inchesToMeters(14.02), Units.inchesToMeters(34.79), Units.inchesToMeters(53.38), new Rotation3d(0, 0, Units.degreesToRadians(60)));
-                case ID_10 ->
-                        new Pose3d(Units.inchesToMeters(57.54), Units.inchesToMeters(9.68), Units.inchesToMeters(53.38), new Rotation3d(0, 0, Units.degreesToRadians(60)));
-                case ID_11 ->
-                        new Pose3d(Units.inchesToMeters(468.69), Units.inchesToMeters(146.19), Units.inchesToMeters(52.00), new Rotation3d(0, 0, Units.degreesToRadians(-60)));
-                case ID_12 ->
-                        new Pose3d(Units.inchesToMeters(468.69), Units.inchesToMeters(177.10), Units.inchesToMeters(52.00), new Rotation3d(0, 0, Units.degreesToRadians(60)));
-                case ID_13 ->
-                        new Pose3d(Units.inchesToMeters(441.74), Units.inchesToMeters(161.62), Units.inchesToMeters(52.00), new Rotation3d(0, 0, Units.degreesToRadians(180)));
-                case ID_14 ->
-                        new Pose3d(Units.inchesToMeters(209.48), Units.inchesToMeters(161.62), Units.inchesToMeters(52.00), new Rotation3d(0, 0, Units.degreesToRadians(0)));
-                case ID_15 ->
-                        new Pose3d(Units.inchesToMeters(182.73), Units.inchesToMeters(177.10), Units.inchesToMeters(52.00), new Rotation3d(0, 0, Units.degreesToRadians(120)));
-                case ID_16 ->
-                        new Pose3d(Units.inchesToMeters(182.73), Units.inchesToMeters(146.19), Units.inchesToMeters(52.00), new Rotation3d(0, 0, Units.degreesToRadians(-120)));
+                case ID_1 -> layout2025.getTagPose(1).orElse(new Pose3d());
+                case ID_2 -> layout2025.getTagPose(2).orElse(new Pose3d());
+                case ID_3 -> layout2025.getTagPose(3).orElse(new Pose3d());
+                case ID_4 -> layout2025.getTagPose(4).orElse(new Pose3d());
+                case ID_5 -> layout2025.getTagPose(5).orElse(new Pose3d());
+                case ID_6 -> layout2025.getTagPose(6).orElse(new Pose3d());
+                case ID_7 -> layout2025.getTagPose(7).orElse(new Pose3d());
+                case ID_8 -> layout2025.getTagPose(8).orElse(new Pose3d());
+                case ID_9 -> layout2025.getTagPose(9).orElse(new Pose3d());
+                case ID_10 -> layout2025.getTagPose(10).orElse(new Pose3d());
+                case ID_11 -> layout2025.getTagPose(11).orElse(new Pose3d());
+                case ID_12 -> layout2025.getTagPose(12).orElse(new Pose3d());
+                case ID_13 -> layout2025.getTagPose(13).orElse(new Pose3d());
+                case ID_14 -> layout2025.getTagPose(14).orElse(new Pose3d());
+                case ID_15 -> layout2025.getTagPose(15).orElse(new Pose3d());
+                case ID_16 -> layout2025.getTagPose(16).orElse(new Pose3d());
+                case ID_17 -> layout2025.getTagPose(17).orElse(new Pose3d());
+                case ID_18 -> layout2025.getTagPose(18).orElse(new Pose3d());
+                case ID_19 -> layout2025.getTagPose(19).orElse(new Pose3d());
+                case ID_20 -> layout2025.getTagPose(20).orElse(new Pose3d());
+                case ID_21 -> layout2025.getTagPose(21).orElse(new Pose3d());
+                case ID_22 -> layout2025.getTagPose(22).orElse(new Pose3d());
             };
         }
 
         public static Pose3d getTagLocation3d(double tagID) {
             return switch ((int) tagID) {
-                case 1 ->
-                        new Pose3d(Units.inchesToMeters(593.68), Units.inchesToMeters(9.68), Units.inchesToMeters(53.38), new Rotation3d(0, 0, Units.degreesToRadians(120)));
-                case 2 ->
-                        new Pose3d(Units.inchesToMeters(637.21), Units.inchesToMeters(34.79), Units.inchesToMeters(53.38), new Rotation3d(0, 0, Units.degreesToRadians(120)));
-                case 3 ->
-                        new Pose3d(Units.inchesToMeters(652.73), Units.inchesToMeters(196.17), Units.inchesToMeters(57.13), new Rotation3d(0, 0, Units.degreesToRadians(180)));
-                case 4 ->
-                        new Pose3d(Units.inchesToMeters(652.73), Units.inchesToMeters(218.42), Units.inchesToMeters(57.13), new Rotation3d(0, 0, Units.degreesToRadians(180)));
-                case 5 ->
-                        new Pose3d(Units.inchesToMeters(578.77), Units.inchesToMeters(323.00), Units.inchesToMeters(53.38), new Rotation3d(0, 0, Units.degreesToRadians(-90)));
-                case 6 ->
-                        new Pose3d(Units.inchesToMeters(72.5), Units.inchesToMeters(323.00), Units.inchesToMeters(53.38), new Rotation3d(0, 0, Units.degreesToRadians(-90)));
-                case 7 ->
-                        new Pose3d(Units.inchesToMeters(-1.50), Units.inchesToMeters(218.42), Units.inchesToMeters(57.13), new Rotation3d(0, 0, Units.degreesToRadians(0)));
-                case 8 ->
-                        new Pose3d(Units.inchesToMeters(-1.50), Units.inchesToMeters(196.17), Units.inchesToMeters(57.13), new Rotation3d(0, 0, Units.degreesToRadians(0)));
-                case 9 ->
-                        new Pose3d(Units.inchesToMeters(14.02), Units.inchesToMeters(34.79), Units.inchesToMeters(53.38), new Rotation3d(0, 0, Units.degreesToRadians(60)));
-                case 10 ->
-                        new Pose3d(Units.inchesToMeters(57.54), Units.inchesToMeters(9.68), Units.inchesToMeters(53.38), new Rotation3d(0, 0, Units.degreesToRadians(60)));
-                case 11 ->
-                        new Pose3d(Units.inchesToMeters(468.69), Units.inchesToMeters(146.19), Units.inchesToMeters(52.00), new Rotation3d(0, 0, Units.degreesToRadians(-60)));
-                case 12 ->
-                        new Pose3d(Units.inchesToMeters(468.69), Units.inchesToMeters(177.10), Units.inchesToMeters(52.00), new Rotation3d(0, 0, Units.degreesToRadians(60)));
-                case 13 ->
-                        new Pose3d(Units.inchesToMeters(441.74), Units.inchesToMeters(161.62), Units.inchesToMeters(52.00), new Rotation3d(0, 0, Units.degreesToRadians(180)));
-                case 14 ->
-                        new Pose3d(Units.inchesToMeters(209.48), Units.inchesToMeters(161.62), Units.inchesToMeters(52.00), new Rotation3d(0, 0, Units.degreesToRadians(0)));
-                case 15 ->
-                        new Pose3d(Units.inchesToMeters(182.73), Units.inchesToMeters(177.10), Units.inchesToMeters(52.00), new Rotation3d(0, 0, Units.degreesToRadians(120)));
-                case 16 ->
-                        new Pose3d(Units.inchesToMeters(182.73), Units.inchesToMeters(146.19), Units.inchesToMeters(52.00), new Rotation3d(0, 0, Units.degreesToRadians(-120)));
-                default -> new Pose3d(0, 0, 0, new Rotation3d());
+                case 1 -> layout2025.getTagPose(1).orElse(new Pose3d());
+                case 2 -> layout2025.getTagPose(2).orElse(new Pose3d());
+                case 3 -> layout2025.getTagPose(3).orElse(new Pose3d());
+                case 4 -> layout2025.getTagPose(4).orElse(new Pose3d());
+                case 5 -> layout2025.getTagPose(5).orElse(new Pose3d());
+                case 6 -> layout2025.getTagPose(6).orElse(new Pose3d());
+                case 7 -> layout2025.getTagPose(7).orElse(new Pose3d());
+                case 8 -> layout2025.getTagPose(8).orElse(new Pose3d());
+                case 9 -> layout2025.getTagPose(9).orElse(new Pose3d());
+                case 10 -> layout2025.getTagPose(10).orElse(new Pose3d());
+                case 11 -> layout2025.getTagPose(11).orElse(new Pose3d());
+                case 12 -> layout2025.getTagPose(12).orElse(new Pose3d());
+                case 13 -> layout2025.getTagPose(13).orElse(new Pose3d());
+                case 14 -> layout2025.getTagPose(14).orElse(new Pose3d());
+                case 15 -> layout2025.getTagPose(15).orElse(new Pose3d());
+                case 16 -> layout2025.getTagPose(16).orElse(new Pose3d());
+                case 17 -> layout2025.getTagPose(17).orElse(new Pose3d());
+                case 18 -> layout2025.getTagPose(18).orElse(new Pose3d());
+                case 19 -> layout2025.getTagPose(19).orElse(new Pose3d());
+                case 20 -> layout2025.getTagPose(20).orElse(new Pose3d());
+                case 21 -> layout2025.getTagPose(21).orElse(new Pose3d());
+                case 22 -> layout2025.getTagPose(22).orElse(new Pose3d());
+                default -> new Pose3d();
             };
+        }
+
+        public static Pose2d getTagLocation2d(TagLocation tag) {
+            return getTagLocation3d(tag).toPose2d();
+        }
+
+        public static Pose2d getTagLocation2d(double tagID) {
+            return getTagLocation3d(tagID).toPose2d();
         }
 
         public static Pose2d getSpeakerTagPose() {
             DriverStation.Alliance alliance = Constants.ALLIANCE_SUPPLIER.get();
-            return alliance == null ? new Pose2d() : getTagLocation(
+            return alliance == null ? new Pose2d() : getTagLocation2d(
                     alliance == DriverStation.Alliance.Blue
                             ? TagLocation.ID_7
                             : TagLocation.ID_4
