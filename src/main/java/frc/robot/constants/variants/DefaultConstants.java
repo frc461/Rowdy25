@@ -232,25 +232,26 @@ public final class DefaultConstants {
                 .withPigeon2Id(PIGEON_ID)
                 .withPigeon2Configs(PIGEON_CONFIGS);
 
-        private static final SwerveModuleConstantsFactory CONSTANT_CREATOR = new SwerveModuleConstantsFactory()
-                .withDriveMotorGearRatio(DRIVE_GEAR_RATIO)
-                .withSteerMotorGearRatio(STEER_GEAR_RATIO)
-                .withCouplingGearRatio(COUPLE_RATIO)
-                .withWheelRadius(WHEEL_RADIUS)
-                .withSteerMotorGains(STEER_GAINS)
-                .withDriveMotorGains(DRIVE_GAINS)
-                .withSteerMotorClosedLoopOutput(STEER_CLOSED_LOOP_OUTPUT_TYPE)
-                .withDriveMotorClosedLoopOutput(DRIVE_CLOSED_LOOP_OUTPUT_TYPE)
-                .withSlipCurrent(SLIP_CURRENT)
-                .withSpeedAt12Volts(SPEED_AT_12_VOLTS)
-                .withFeedbackSource(STEER_FEEDBACK_TYPE)
-                .withDriveMotorInitialConfigs(DRIVE_INITIAL_CONFIGS)
-                .withSteerMotorInitialConfigs(STEER_INITIAL_CONFIGS)
-                .withCANcoderInitialConfigs(CANCODER_INITIAL_CONFIGS)
-                .withSteerInertia(STEER_INERTIA)
-                .withDriveInertia(DRIVE_INERTIA)
-                .withSteerFrictionVoltage(STEER_FRICTION_VOLTAGE)
-                .withDriveFrictionVoltage(DRIVE_FRICTION_VOLTAGE);
+        private static final SwerveModuleConstantsFactory<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> CONSTANT_CREATOR
+                = new SwerveModuleConstantsFactory<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration>()
+                        .withDriveMotorGearRatio(DRIVE_GEAR_RATIO)
+                        .withSteerMotorGearRatio(STEER_GEAR_RATIO)
+                        .withCouplingGearRatio(COUPLE_RATIO)
+                        .withWheelRadius(WHEEL_RADIUS)
+                        .withSteerMotorGains(STEER_GAINS)
+                        .withDriveMotorGains(DRIVE_GAINS)
+                        .withSteerMotorClosedLoopOutput(STEER_CLOSED_LOOP_OUTPUT_TYPE)
+                        .withDriveMotorClosedLoopOutput(DRIVE_CLOSED_LOOP_OUTPUT_TYPE)
+                        .withSlipCurrent(SLIP_CURRENT)
+                        .withSpeedAt12Volts(SPEED_AT_12_VOLTS)
+                        .withFeedbackSource(STEER_FEEDBACK_TYPE)
+                        .withDriveMotorInitialConfigs(DRIVE_INITIAL_CONFIGS)
+                        .withSteerMotorInitialConfigs(STEER_INITIAL_CONFIGS)
+                        .withEncoderInitialConfigs(CANCODER_INITIAL_CONFIGS)
+                        .withSteerInertia(STEER_INERTIA)
+                        .withDriveInertia(DRIVE_INERTIA)
+                        .withSteerFrictionVoltage(STEER_FRICTION_VOLTAGE)
+                        .withDriveFrictionVoltage(DRIVE_FRICTION_VOLTAGE);
 
 
         // Front Left Module
@@ -265,7 +266,7 @@ public final class DefaultConstants {
             private static final Distance X_POS = Inches.of(8.25);
             private static final Distance Y_POS = Inches.of(8.25);
 
-            public static final SwerveModuleConstants FRONT_LEFT = CONSTANT_CREATOR.createModuleConstants(
+            public static final SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> FRONT_LEFT = CONSTANT_CREATOR.createModuleConstants(
                     STEER_MOTOR_ID, DRIVE_MOTOR_ID, ENCODER_ID, ENCODER_OFFSET,
                     X_POS, Y_POS, INVERT_LEFT_SIDE, STEER_MOTOR_INVERTED, CANCODER_INVERTED
             );
@@ -283,7 +284,7 @@ public final class DefaultConstants {
             private static final Distance X_POS = Inches.of(8.25);
             private static final Distance Y_POS = Inches.of(-8.25);
 
-            public static final SwerveModuleConstants FRONT_RIGHT = CONSTANT_CREATOR.createModuleConstants(
+            public static final SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> FRONT_RIGHT = CONSTANT_CREATOR.createModuleConstants(
                     STEER_MOTOR_ID, DRIVE_MOTOR_ID, ENCODER_ID, ENCODER_OFFSET,
                     X_POS, Y_POS, INVERT_RIGHT_SIDE, STEER_MOTOR_INVERTED, CANCODER_INVERTED
             );
@@ -301,7 +302,7 @@ public final class DefaultConstants {
             private static final Distance X_POS = Inches.of(-8.25);
             private static final Distance Y_POS = Inches.of(8.25);
 
-            public static final SwerveModuleConstants BACK_LEFT = CONSTANT_CREATOR.createModuleConstants(
+            public static final SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> BACK_LEFT = CONSTANT_CREATOR.createModuleConstants(
                     STEER_MOTOR_ID, DRIVE_MOTOR_ID, ENCODER_ID, ENCODER_OFFSET,
                     X_POS, Y_POS, INVERT_LEFT_SIDE, STEER_MOTOR_INVERTED, CANCODER_INVERTED
             );
@@ -319,7 +320,7 @@ public final class DefaultConstants {
             private static final Distance X_POS = Inches.of(-8.25);
             private static final Distance Y_POS = Inches.of(-8.25);
 
-            public static final SwerveModuleConstants BACK_RIGHT = CONSTANT_CREATOR.createModuleConstants(
+            public static final SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> BACK_RIGHT = CONSTANT_CREATOR.createModuleConstants(
                     STEER_MOTOR_ID, DRIVE_MOTOR_ID, ENCODER_ID, ENCODER_OFFSET,
                     X_POS, Y_POS, INVERT_RIGHT_SIDE, STEER_MOTOR_INVERTED, CANCODER_INVERTED);
         }

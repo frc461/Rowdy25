@@ -73,7 +73,7 @@ public class SysID {
                                 log.motor("module" + i)
                                         .voltage(
                                                 appliedVoltage.mut_replace(
-                                                        modules[i].getDriveMotor().get() * RobotController.getBatteryVoltage(), Volts
+                                                        modules[i].getDriveMotor().getMotorVoltage().getValueAsDouble() * RobotController.getBatteryVoltage(), Volts
                                                 )
                                         )
                                         .linearPosition(
@@ -107,7 +107,7 @@ public class SysID {
                                 log.motor("module" + i)
                                         .voltage(
                                                 appliedVoltage.mut_replace(
-                                                        modules[i].getSteerMotor().get() * RobotController.getBatteryVoltage(), Volts
+                                                        modules[i].getSteerMotor().getMotorVoltage().getValueAsDouble() * RobotController.getBatteryVoltage(), Volts
                                                 )
                                         )
                                         .angularPosition(
