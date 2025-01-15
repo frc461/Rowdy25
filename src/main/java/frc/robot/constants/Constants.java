@@ -135,8 +135,8 @@ public final class Constants {
 
     public final static class WristConstants {
         // basic configs
-        public static final int WRIST_ID = 62;
-        public static final int WRIST_CURRENT_LIMIT = 35;
+        public static final int MOTOR_ID = 62;
+        public static final int CURRENT_LIMIT = 35;
         public static final InvertedValue WRIST_INVERT = InvertedValue.Clockwise_Positive;
 
         // pid for angler
@@ -145,11 +145,11 @@ public final class Constants {
         public static final double WRIST_D = 0.0001;
 
         // limit switches
-        public static final int WRIST_LOWER_LIMIT_SWITCH = 6;
+        public static final int LOWER_LIMIT_SWITCH_ID = 6;
 
         // code limits on encoder values
-        public static final double WRIST_LOWER_LIMIT = 0;
-        public static final double WRIST_UPPER_LIMIT = 20;
+        public static final double LOWER_LIMIT = 0;
+        public static final double UPPER_LIMIT = 20;
     }
 
     public static final class SwerveConstants {

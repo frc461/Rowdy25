@@ -17,7 +17,7 @@ import frc.robot.util.ExpUtil;
 
 public class Elevator extends SubsystemBase {
     private final TalonFX elevator;
-    private final PIDController elevatorPIDController;
+    private final PIDController controller;
     private final DigitalInput lowerSwitch;
     private double target, accuracy;
 
@@ -36,7 +36,7 @@ public class Elevator extends SubsystemBase {
                         .withBeepOnBoot(false)
                         .withAllowMusicDurDisable(true)));
 
-        elevatorPIDController = new PIDController(
+        controller = new PIDController(
                 Constants.ElevatorConstants.ELEVATOR_P,
                 Constants.ElevatorConstants.ELEVATOR_I,
                 Constants.ElevatorConstants.ELEVATOR_D
@@ -78,10 +78,10 @@ public class Elevator extends SubsystemBase {
     public void holdTarget(double height) {
         checkLimitSwitch();
         target = Math.max(Constants.ElevatorConstants.LOWER_LIMIT, Math.min(Constants.ElevatorConstants.UPPER_LIMIT, height));
-        double output = elevatorPIDController.calculate(getPosition(), target);
+        double output = controller.calculate(getPosition(), target);
         if (lowerSwitchTriggered()) {
             elevator.set(Math.max(0, output));
-        } else if (getPosition() >= Constants.ElevatorConstants.UPPER_LIMIT) {
+        } else if (getPosition() >= Constants.ElevatorConstants.UPPER_LIMIT) { // TODO WE WANT UPPER SWITCHES!!
             elevator.set(Math.min(0, output));
         } else {
             elevator.set(output);

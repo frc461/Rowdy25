@@ -12,16 +12,17 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
+import frc.robot.util.ExpUtil;
 
 public class Wrist extends SubsystemBase {
     private final TalonFX wrist;
-    private final PIDController wristPIDController;
+    private final PIDController controller;
     private final DigitalInput lowerLimitSwitch;
     private double target, error, accuracy;
 
 
     public Wrist() {
-        wrist = new TalonFX(Constants.WristConstants.WRIST_ID);
+        wrist = new TalonFX(Constants.WristConstants.MOTOR_ID);
 
         wrist.getConfigurator().apply(new TalonFXConfiguration()
                 .withVoltage(new VoltageConfigs().withPeakForwardVoltage(6))
@@ -29,17 +30,18 @@ public class Wrist extends SubsystemBase {
                         .withInverted(Constants.WristConstants.WRIST_INVERT)
                         .withNeutralMode(NeutralModeValue.Coast))
                 .withCurrentLimits(new CurrentLimitsConfigs()
-                        .withSupplyCurrentLimit(Constants.WristConstants.WRIST_CURRENT_LIMIT))
+                        .withSupplyCurrentLimit(Constants.WristConstants.CURRENT_LIMIT))
                 .withAudio(new AudioConfigs().withBeepOnConfig(false)
                         .withBeepOnBoot(false)
                         .withAllowMusicDurDisable(true)));
 
-        wristPIDController = new PIDController(
+        controller = new PIDController(
             Constants.WristConstants.WRIST_P,
             Constants.WristConstants.WRIST_I,
             Constants.WristConstants.WRIST_D
         );
-        lowerLimitSwitch = new DigitalInput(Constants.WristConstants.WRIST_LOWER_LIMIT_SWITCH);
+
+        lowerLimitSwitch = new DigitalInput(Constants.WristConstants.LOWER_LIMIT_SWITCH_ID);
 
         target = 0.0;
         error = 0.0;
@@ -60,10 +62,6 @@ public class Wrist extends SubsystemBase {
         return target;
     }
 
-    public double wristVelocity() {
-        return wrist.getVelocity().getValueAsDouble();
-    }
-
     public double getError() {
         return error;
     }
@@ -72,41 +70,35 @@ public class Wrist extends SubsystemBase {
         return !lowerLimitSwitch.get();
     }
 
-    public void checkLimitSwitches() {
-       if (lowerSwitchTriggered()) {
-           wrist.setPosition(Constants.WristConstants.WRIST_LOWER_LIMIT);
+    public void checkLimitSwitch() {
+       if (lowerSwitchTriggered() || (!lowerSwitchTriggered() && getPosition() <= Constants.WristConstants.LOWER_LIMIT)) {
+           wrist.setPosition(Constants.WristConstants.LOWER_LIMIT);
        }
-
-
     }
 
-    public void holdTarget() {
-        checkLimitSwitches();
-        wrist.set(lowerSwitchTriggered() ? 0: wristPIDController.calculate(getPosition(), target));
-    }
-
-    public void moveAngle(double axisValue) {
-        checkLimitSwitches();
-
-        if (axisValue < 0 && lowerSwitchTriggered()) {
-            target = Constants.WristConstants.WRIST_LOWER_LIMIT;
-            holdTarget();
-        } else if (axisValue > 0 && getPosition() > Constants.WristConstants.WRIST_UPPER_LIMIT) {
-            target = Constants.WristConstants.WRIST_UPPER_LIMIT;
-            holdTarget();
+    public void holdTarget(double height) {
+        checkLimitSwitch();
+        target = Math.max(Constants.WristConstants.LOWER_LIMIT, Math.min(Constants.WristConstants.UPPER_LIMIT, height));
+        double output = controller.calculate(getPosition(), target);
+        if (lowerSwitchTriggered()) {
+            wrist.set(Math.max(0, output));
+        } else if (getPosition() >= Constants.WristConstants.UPPER_LIMIT) { // TODO WE WANT UPPER SWITCHES!!
+            wrist.set(Math.min(0, output));
         } else {
-            wrist.set(axisValue);
-            target = wrist.getPosition().getValueAsDouble();
+            wrist.set(output);
         }
     }
 
-    public void setEncoderVal(double encoderVal) {
-        checkLimitSwitches();
-        encoderVal = Math.max(
-                Constants.WristConstants.WRIST_LOWER_LIMIT,
-                Math.min(encoderVal, Constants.WristConstants.WRIST_UPPER_LIMIT)
-        );
-        target = encoderVal;
-        holdTarget();
+    public void holdTarget() {
+        holdTarget(target);
+    }
+
+    public void moveAngle(double axisValue) {
+        checkLimitSwitch();
+        // TODO TUNE CURBING VALUE
+        wrist.set(axisValue > 0
+                ? axisValue * ExpUtil.output(Constants.WristConstants.UPPER_LIMIT - getPosition(), 1, 5, 10)
+                : axisValue * ExpUtil.output(getPosition() - Constants.WristConstants.LOWER_LIMIT, 1, 5, 10));
+        target = getPosition();
     }
 }
