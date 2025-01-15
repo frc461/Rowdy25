@@ -8,7 +8,6 @@ import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
@@ -325,39 +324,5 @@ public final class DefaultConstants {
                     STEER_MOTOR_ID, DRIVE_MOTOR_ID, ENCODER_ID, ENCODER_OFFSET,
                     X_POS, Y_POS, INVERT_RIGHT_SIDE, STEER_MOTOR_INVERTED, CANCODER_INVERTED);
         }
-
-        
-        public final static class ElevatorConstants {
-            // basic configs
-            public static final int ELEVATOR_ID = 31;
-            public static final int ELEVATOR_FOLLOWER_ID = 32;
-            public static final int ELEVATOR_CURRENT_LIMIT = 80;
-            public static final int SERVO_LIMIT_SWITCH = 1;
-            public static final int ELEVATOR_LIMIT_SWITCH = 2;
-            public static final InvertedValue ELEVATOR_INVERT = InvertedValue.Clockwise_Positive;
-
-            // servo to hold elevator in endgame
-            public static final int ELEVATOR_SERVO_PORT = 1;
-            public static final double ELEVATOR_SERVO_CLAMPED_POS = .07; // new servo values
-            public static final double ELEVATOR_SERVO_UNCLAMPED_POS = .39;
-            
-            // pid
-            public static final double ELEVATOR_P = 0.05;
-            public static final double ELEVATOR_I = 0.0;
-            public static final double ELEVATOR_D = 0.0;
-
-            // required accuracy to consider angler accurate to shoot a note
-            public static final double ELEVATOR_ACCURACY_REQUIREMENT = 0.85;
-
-            // presets
-            public static final double ELEVATOR_LOWER_LIMIT = 0;
-            public static final double ELEVATOR_UPPER_LIMIT = 37;
-            public static final double ELEVATOR_STOW = ELEVATOR_LOWER_LIMIT;
-            public static final double ELEVATOR_OUTTAKE = 10;
-            public static final double ELEVATOR_AMP = 36;
-        }
-
-
-
     }
 }
