@@ -152,6 +152,20 @@ public final class Constants {
         public static final double UPPER_LIMIT = 20;
     }
 
+    public final static class IntakeConstants {
+        public static final int LEFT_MOTOR_ID = 11;
+        public static final int RIGHT_MOTOR_ID = 12;
+        public static final InvertedValue LEFT_INVERT = InvertedValue.Clockwise_Positive; //TODO: CHECK ON REAL ROBOT
+        public static final InvertedValue RIGHT_INVERT = InvertedValue.CounterClockwise_Positive;
+        public static final int CURRENT_LIMIT = 40;
+        public static final int CORAL_BEAM_ID = 3;
+        public static final int ALGAE_BEAM_ID = 4;
+    }
+
+    public final static class PivotConstants {
+    
+    }
+
     public static final class SwerveConstants {
         public static double PATH_TRANSLATION_CONTROLLER_P;
         public static double PATH_ROTATION_CONTROLLER_P;
