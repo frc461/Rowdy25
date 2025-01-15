@@ -11,20 +11,18 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
+import frc.robot.util.ExpUtil;
 
 public class Elevator extends SubsystemBase {
     private final TalonFX elevator;
     private final PIDController elevatorPIDController;
-    private final Servo elevatorClamp;
-    private final DigitalInput elevatorSwitch, servoSwitch;
+    private final DigitalInput lowerSwitch;
     private double target, accuracy;
-    private boolean clamped, movingAboveLimitSwitch;
 
     public Elevator() {
-        elevator = new TalonFX(Constants.ElevatorConstants.ELEVATOR_ID);
+        elevator = new TalonFX(Constants.ElevatorConstants.LEAD_ID);
 
 
         elevator.getConfigurator().apply(new TalonFXConfiguration()
@@ -33,7 +31,7 @@ public class Elevator extends SubsystemBase {
                         .withInverted(Constants.ElevatorConstants.ELEVATOR_INVERT)
                         .withNeutralMode(NeutralModeValue.Coast))
                 .withCurrentLimits(new CurrentLimitsConfigs()
-                        .withSupplyCurrentLimit(Constants.ElevatorConstants.ELEVATOR_CURRENT_LIMIT))
+                        .withSupplyCurrentLimit(Constants.ElevatorConstants.CURRENT_LIMIT))
                 .withAudio(new AudioConfigs().withBeepOnConfig(false)
                         .withBeepOnBoot(false)
                         .withAllowMusicDurDisable(true)));
@@ -44,29 +42,18 @@ public class Elevator extends SubsystemBase {
                 Constants.ElevatorConstants.ELEVATOR_D
         );
 
-        try (TalonFX elevator2 = new TalonFX(Constants.ElevatorConstants.ELEVATOR_FOLLOWER_ID)) {
-            elevator2.setControl(new Follower(Constants.ElevatorConstants.ELEVATOR_ID, true));
+        try (TalonFX elevator2 = new TalonFX(Constants.ElevatorConstants.FOLLOWER_ID)) {
+            elevator2.setControl(new Follower(Constants.ElevatorConstants.LEAD_ID, true));
         }
 
-        elevatorSwitch = new DigitalInput(Constants.ElevatorConstants.ELEVATOR_LIMIT_SWITCH);
-        servoSwitch = new DigitalInput(Constants.ElevatorConstants.SERVO_LIMIT_SWITCH);
-
-        elevatorClamp = new Servo(Constants.ElevatorConstants.ELEVATOR_SERVO_PORT);
-        elevatorClamp.set(Constants.ElevatorConstants.ELEVATOR_SERVO_UNCLAMPED_POS);
+        lowerSwitch = new DigitalInput(Constants.ElevatorConstants.LOWER_LIMIT_SWITCH_ID);
 
         target = 0.0;
         accuracy = 1.0;
-        clamped = false; // disables/enables clamp
-        movingAboveLimitSwitch = false; // whether the elevator is trying to move above the limit switch
     }
 
    @Override
    public void periodic() {
-        if (!clamped) {
-            elevatorClamp.set(Constants.ElevatorConstants.ELEVATOR_SERVO_UNCLAMPED_POS);
-        } else {
-            elevatorClamp.set(Constants.ElevatorConstants.ELEVATOR_SERVO_CLAMPED_POS);
-        }
         accuracy = target > getPosition() ? getPosition() / target : target / getPosition();
    }
 
@@ -78,87 +65,40 @@ public class Elevator extends SubsystemBase {
         return target;
     }
 
-    public double getClampPosition() {
-        return elevatorClamp.getPosition();
-    }
-
-    public double elevatorVelocity() {
-        return elevator.getVelocity().getValueAsDouble();
-    }
-
-    public boolean isClamped() {
-        return clamped;
-    }
-
-    public boolean elevatorSwitchTriggered() {
-        return !elevatorSwitch.get();
-    }
-
-    public boolean servoSwitchTriggered() {
-        return !servoSwitch.get();
-    }
-
-    public boolean nearTarget() {
-        return accuracy > Constants.ElevatorConstants.ELEVATOR_ACCURACY_REQUIREMENT;
+    public boolean lowerSwitchTriggered() {
+        return !lowerSwitch.get();
     }
 
     public void checkLimitSwitch() {
-        if (elevatorSwitchTriggered()) {
-            elevator.setPosition(Constants.ElevatorConstants.ELEVATOR_LOWER_LIMIT);
-            if (nearTarget()) {
-                movingAboveLimitSwitch = false;
-            }
+        if (lowerSwitchTriggered() || (!lowerSwitchTriggered() && getPosition() <= Constants.ElevatorConstants.LOWER_LIMIT)) {
+            elevator.setPosition(Constants.ElevatorConstants.LOWER_LIMIT);
+        }
+    }
+
+    public void holdTarget(double height) {
+        checkLimitSwitch();
+        target = Math.max(Constants.ElevatorConstants.LOWER_LIMIT, Math.min(Constants.ElevatorConstants.UPPER_LIMIT, height));
+        double output = elevatorPIDController.calculate(getPosition(), target);
+        if (lowerSwitchTriggered()) {
+            elevator.set(Math.max(0, output));
+        } else if (getPosition() >= Constants.ElevatorConstants.UPPER_LIMIT) {
+            elevator.set(Math.min(0, output));
+        } else {
+            elevator.set(output);
         }
     }
 
     public void holdTarget() {
-        checkLimitSwitch();
-        elevator.set(elevatorSwitchTriggered() && !movingAboveLimitSwitch ? 0 : elevatorPIDController.calculate(getPosition(), target));
-    }
-
-    public void climb(boolean stop) {
-        if (stop) {
-            setClamp(true);
-            target = 0;
-        } else {
-            elevator.set(-0.5);
-        }
-    }
-
-    // boolean toggles for specific subsystems are meant to be in the subsystem class, not robot container
-    public void toggleClamp() {
-        setClamp(!clamped);
-    }
-
-    public void setClamp(boolean toggle) {
-        clamped = toggle;
-        elevatorClamp.set(clamped ?
-                Constants.ElevatorConstants.ELEVATOR_SERVO_CLAMPED_POS :
-                Constants.ElevatorConstants.ELEVATOR_SERVO_UNCLAMPED_POS
-        );
+        holdTarget(target);
     }
 
     public void moveElevator(double axisValue) {
         checkLimitSwitch();
-        if (axisValue < 0 && elevatorSwitchTriggered()) {
-            target = Constants.ElevatorConstants.ELEVATOR_LOWER_LIMIT;
-            elevator.set(0);
-        } else if (axisValue > 0 && getPosition() >= Constants.ElevatorConstants.ELEVATOR_UPPER_LIMIT) {
-            target = Constants.ElevatorConstants.ELEVATOR_UPPER_LIMIT;
-            holdTarget();
-        } else {
-            elevator.set(axisValue);
-            target = getPosition();
-        }
-    }
-
-    public void setHeight(double height) {
-        checkLimitSwitch();
-        height = Math.max(Constants.ElevatorConstants.ELEVATOR_LOWER_LIMIT, height);
-        height = Math.min(Constants.ElevatorConstants.ELEVATOR_UPPER_LIMIT, height);
-        target = height;
-        movingAboveLimitSwitch = true;
-        holdTarget();
+        // TODO TUNE CURBING VALUE
+        elevator.set(axisValue > 0
+                ? axisValue * ExpUtil.output(Constants.ElevatorConstants.UPPER_LIMIT - getPosition(), 1, 5, 10)
+                : axisValue * ExpUtil.output(getPosition() - Constants.ElevatorConstants.LOWER_LIMIT, 1, 5, 10));
+        target = getPosition();
     }
 
     public void stopElevator() {

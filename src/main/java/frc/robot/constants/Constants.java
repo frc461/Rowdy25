@@ -15,7 +15,6 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 
-import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -109,6 +108,50 @@ public final class Constants {
         }
     }
 
+    // TODO: MOVE TO DEFAULT CONSTANTS VARIANT + UPDATE VALUES FOR 2025 + TUNE
+    public final static class ElevatorConstants {
+        // basic configs
+        public static final int LEAD_ID = 31;
+        public static final int FOLLOWER_ID = 32;
+        public static final int CURRENT_LIMIT = 80;
+        public static final int SERVO_LIMIT_SWITCH = 1;
+        public static final int LOWER_LIMIT_SWITCH_ID = 2;
+        public static final InvertedValue ELEVATOR_INVERT = InvertedValue.Clockwise_Positive;
+
+        // servo to hold elevator in endgame
+        public static final int ELEVATOR_SERVO_PORT = 1;
+        public static final double ELEVATOR_SERVO_CLAMPED_POS = .07; // new servo values
+        public static final double ELEVATOR_SERVO_UNCLAMPED_POS = .39;
+
+        // pid
+        public static final double ELEVATOR_P = 0.05;
+        public static final double ELEVATOR_I = 0.0;
+        public static final double ELEVATOR_D = 0.0;
+
+        // presets
+        public static final double LOWER_LIMIT = 0;
+        public static final double UPPER_LIMIT = 37;
+    }
+
+    public final static class WristConstants {
+        // basic configs
+        public static final int WRIST_ID = 62;
+        public static final int WRIST_CURRENT_LIMIT = 35;
+        public static final InvertedValue WRIST_INVERT = InvertedValue.Clockwise_Positive;
+
+        // pid for angler
+        public static final double WRIST_P = 0.2;
+        public static final double WRIST_I = 0.00001;
+        public static final double WRIST_D = 0.0001;
+
+        // limit switches
+        public static final int WRIST_LOWER_LIMIT_SWITCH = 6;
+
+        // code limits on encoder values
+        public static final double WRIST_LOWER_LIMIT = 0;
+        public static final double WRIST_UPPER_LIMIT = 20;
+    }
+
     public static final class SwerveConstants {
         public static double PATH_TRANSLATION_CONTROLLER_P;
         public static double PATH_ROTATION_CONTROLLER_P;
@@ -130,51 +173,5 @@ public final class Constants {
         public static SwerveModuleConstants FRONT_RIGHT;
         public static SwerveModuleConstants BACK_LEFT;
         public static SwerveModuleConstants BACK_RIGHT;
-    }
-
-    public final static class ElevatorConstants {
-         // basic configs
-        public static final int ELEVATOR_ID = 31;
-        public static final int ELEVATOR_FOLLOWER_ID = 32;
-        public static final int ELEVATOR_CURRENT_LIMIT = 80;
-        public static final int SERVO_LIMIT_SWITCH = 1;
-        public static final int ELEVATOR_LIMIT_SWITCH = 2;
-        public static final InvertedValue ELEVATOR_INVERT = InvertedValue.Clockwise_Positive;
-
-        // servo to hold elevator in endgame
-        public static final int ELEVATOR_SERVO_PORT = 1;
-        public static final double ELEVATOR_SERVO_CLAMPED_POS = .07; // new servo values
-        public static final double ELEVATOR_SERVO_UNCLAMPED_POS = .39;
-        
-        // pid
-        public static final double ELEVATOR_P = 0.05;
-        public static final double ELEVATOR_I = 0.0;
-        public static final double ELEVATOR_D = 0.0;
-
-        // required accuracy to consider angler accurate to shoot a note
-        public static final double ELEVATOR_ACCURACY_REQUIREMENT = 0.85;
-
-        // presets
-        public static final double ELEVATOR_LOWER_LIMIT = 0;
-        public static final double ELEVATOR_UPPER_LIMIT = 37;
-    }
-
-    public final static class WristConstants {
-         // basic configs
-         public static final int WRIST_ID = 62;
-         public static final int WRIST_CURRENT_LIMIT = 35;
-         public static final InvertedValue WRIST_INVERT = InvertedValue.Clockwise_Positive;
- 
-         // pid for angler
-         public static final double WRIST_P = 0.2;
-         public static final double WRIST_I = 0.00001;
-         public static final double WRIST_D = 0.0001;
- 
-         // limit switches
-         public static final int WRIST_LOWER_LIMIT_SWITCH = 6;
- 
-         // code limits on encoder values
-         public static final double WRIST_LOWER_LIMIT = 0;
-         public static final double WRIST_UPPER_LIMIT = 20;
     }
 }
