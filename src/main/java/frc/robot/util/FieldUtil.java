@@ -4,8 +4,6 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.constants.Constants;
 
@@ -102,13 +100,51 @@ public class FieldUtil {
             return getTagLocation3d(tagID).toPose2d();
         }
 
-        public static Pose2d getSpeakerTagPose() {
+        public static TagLocation getNearestTagFromGroup(Pose2d reference, TagLocation... tags) {
+            TagLocation nearest = null;
+            double nearestDistance = Double.MAX_VALUE;
+            for (TagLocation tag : tags) {
+                double distance = reference.getTranslation().getDistance(getTagLocation2d(tag).getTranslation());
+                if (distance < nearestDistance) {
+                    nearest = tag;
+                    nearestDistance = distance;
+                }
+            }
+            return nearest;
+        }
+
+        public static Pose2d getNearestReefTagPose(Pose2d currentPose) {
             DriverStation.Alliance alliance = Constants.ALLIANCE_SUPPLIER.get();
-            return alliance == null ? new Pose2d() : getTagLocation2d(
-                    alliance == DriverStation.Alliance.Blue
-                            ? TagLocation.ID_7
-                            : TagLocation.ID_4
-            );
+            return getTagLocation2d(alliance == DriverStation.Alliance.Red ? getNearestTagFromGroup(
+                    currentPose,
+                    TagLocation.ID_6,
+                    TagLocation.ID_7,
+                    TagLocation.ID_8,
+                    TagLocation.ID_9,
+                    TagLocation.ID_10,
+                    TagLocation.ID_11
+            ) : getNearestTagFromGroup(
+                    currentPose,
+                    TagLocation.ID_17,
+                    TagLocation.ID_18,
+                    TagLocation.ID_19,
+                    TagLocation.ID_20,
+                    TagLocation.ID_21,
+                    TagLocation.ID_22
+            ));
+        }
+
+        public static Pose2d getNearestCoralStationTagPose(Pose2d currentPose) {
+            DriverStation.Alliance alliance = Constants.ALLIANCE_SUPPLIER.get();
+            return getTagLocation2d(alliance == DriverStation.Alliance.Red ? getNearestTagFromGroup(
+                    currentPose,
+                    TagLocation.ID_1,
+                    TagLocation.ID_2
+            ) : getNearestTagFromGroup(
+                    currentPose,
+                    TagLocation.ID_12,
+                    TagLocation.ID_13
+            ));
         }
     }
 }

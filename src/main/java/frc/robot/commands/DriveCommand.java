@@ -85,7 +85,7 @@ public class DriveCommand extends Command {
                                     ? -rot.getAsDouble() * Constants.MAX_REAL_ANGULAR_VEL
                                     : yawController.calculate(
                                             swerve.localizer.getStrategyPose().getRotation().getDegrees(),
-                                            swerve.localizer.getAngleToSpeaker()
+                                            swerve.localizer.getAngleToNearestReefSide(swerve.localizer.getStrategyPose())
                                     ) * Constants.MAX_CONTROLLED_ANGULAR_VEL
                             )
             );

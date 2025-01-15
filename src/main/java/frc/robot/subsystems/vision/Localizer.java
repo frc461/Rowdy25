@@ -73,14 +73,14 @@ public class Localizer {
         return VisionUtil.QuestNav.getFinalRobotPose();
     }
 
-    public Translation2d getTranslationToSpeaker() {
+    public Translation2d getTranslationToNearestReefSide(Pose2d currentPose) {
         Translation2d robotTranslation = getStrategyPose().getTranslation();
-        Translation2d tagTranslation = FieldUtil.TagLocation.getSpeakerTagPose().getTranslation();
+        Translation2d tagTranslation = FieldUtil.TagLocation.getNearestReefTagPose(currentPose).getTranslation();
         return tagTranslation.minus(robotTranslation);
     }
 
-    public double getAngleToSpeaker() {
-        return getTranslationToSpeaker().getAngle().getDegrees();
+    public double getAngleToNearestReefSide(Pose2d currentPose) {
+        return getTranslationToNearestReefSide(currentPose).getAngle().getDegrees();
     }
 
     public void setLocalizationStrategyFromChooser() {
