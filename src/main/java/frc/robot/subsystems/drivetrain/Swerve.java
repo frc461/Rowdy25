@@ -23,7 +23,6 @@ import frc.robot.constants.Constants;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.DriveToObjectCommand;
 import frc.robot.subsystems.vision.Localizer;
-import frc.robot.util.Simulator;
 
 /**
  * Class that extends the Phoenix 6 SwerveDrivetrain class and implements
@@ -65,7 +64,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
         );
 
         if (Utils.isSimulation()) {
-            new Simulator(this).startSimThread();
+            new SwerveSim(this).startSimThread();
         }
 
         AutoBuilder.configure(
