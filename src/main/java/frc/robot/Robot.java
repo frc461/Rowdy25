@@ -1,5 +1,6 @@
 package frc.robot;
 
+import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -12,6 +13,8 @@ public class Robot extends TimedRobot {
 
     public Robot() {
         RobotIdentity.initializeConstants();
+        PortForwarder.add(5800, "photonvision.local", 5800);
+        PortForwarder.add(5801, "limelight.local", 5801);
         robotContainer = new RobotContainer();
     }
 
