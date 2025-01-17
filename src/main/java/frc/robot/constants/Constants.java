@@ -13,6 +13,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.wpilibj.DriverStation;
 
 import java.util.function.Function;
@@ -163,6 +165,20 @@ public final class Constants {
     }
 
     public final static class PivotConstants {
+
+        public static final int MOTOR_ID = 0;
+        public static final InvertedValue PIVOT_INVERT = InvertedValue.Clockwise_Positive;
+        public static final int CURRENT_LIMIT = 0;
+        public static final int LOWER_LIMIT_SWITCH_ID = 0;
+        
+        
+        public static final double PIVOT_P = 0;
+        public static final double PIVOT_I = 0;
+        public static final double PIVOT_D = 0;
+  
+
+        public static final double LOWER_LIMIT = 0;
+        public static final double UPPER_LIMIT = 0;
     
     }
 
