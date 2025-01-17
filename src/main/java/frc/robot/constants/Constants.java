@@ -152,6 +152,7 @@ public final class Constants {
         // code limits on encoder values
         public static final double LOWER_LIMIT = 0;
         public static final double UPPER_LIMIT = 20;
+        public static final int UPPER_LIMIT_SWITCH_ID = 0;
     }
 
     public final static class IntakeConstants {
@@ -179,6 +180,7 @@ public final class Constants {
 
         public static final double LOWER_LIMIT = 0;
         public static final double UPPER_LIMIT = 0;
+        public static final int UPPER_LIMIT_SWITCH_ID = 0;
     
     }
 

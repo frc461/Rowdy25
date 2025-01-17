@@ -18,6 +18,7 @@ public class Pivot extends SubsystemBase {
     private final TalonFX pivot;
     private final PIDController controller;
     private final DigitalInput lowerLimitSwitch;
+    private final DigitalInput upperLimitSwitch;
     private double target, error, accuracy;
 
 
@@ -42,6 +43,7 @@ public class Pivot extends SubsystemBase {
         );
 
         lowerLimitSwitch = new DigitalInput(Constants.PivotConstants.LOWER_LIMIT_SWITCH_ID);
+        upperLimitSwitch = new DigitalInput(Constants.PivotConstants.UPPER_LIMIT_SWITCH_ID);
 
         target = 0.0;
         error = 0.0;
@@ -70,10 +72,17 @@ public class Pivot extends SubsystemBase {
         return !lowerLimitSwitch.get();
     }
 
+    public boolean upperSwitchTriggered() {
+        return !upperLimitSwitch.get();
+    }
+
     public void checkLimitSwitch() {
        if (lowerSwitchTriggered() || (!lowerSwitchTriggered() && getPosition() <= Constants.PivotConstants.LOWER_LIMIT)) {
            pivot.setPosition(Constants.PivotConstants.LOWER_LIMIT);
        }
+       else if (upperSwitchTriggered() || (!upperSwitchTriggered() && getPosition() >= Constants.WristConstants.UPPER_LIMIT)) {
+        pivot.setPosition(Constants.WristConstants.UPPER_LIMIT);
+        }
     }
 
     public void holdTarget(double height) {

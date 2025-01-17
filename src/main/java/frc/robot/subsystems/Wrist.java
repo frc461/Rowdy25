@@ -18,6 +18,7 @@ public class Wrist extends SubsystemBase {
     private final TalonFX wrist;
     private final PIDController controller;
     private final DigitalInput lowerLimitSwitch;
+    private final DigitalInput upperLimitSwitch;
     private double target, error, accuracy;
 
 
@@ -42,6 +43,7 @@ public class Wrist extends SubsystemBase {
         );
 
         lowerLimitSwitch = new DigitalInput(Constants.WristConstants.LOWER_LIMIT_SWITCH_ID);
+        upperLimitSwitch = new DigitalInput(Constants.WristConstants.UPPER_LIMIT_SWITCH_ID);
 
         target = 0.0;
         error = 0.0;
@@ -70,9 +72,16 @@ public class Wrist extends SubsystemBase {
         return !lowerLimitSwitch.get();
     }
 
+    public boolean upperSwitchTriggered() {
+        return !upperLimitSwitch.get();
+    }
+
     public void checkLimitSwitch() {
        if (lowerSwitchTriggered() || (!lowerSwitchTriggered() && getPosition() <= Constants.WristConstants.LOWER_LIMIT)) {
            wrist.setPosition(Constants.WristConstants.LOWER_LIMIT);
+       }
+       else if (upperSwitchTriggered() || (!upperSwitchTriggered() && getPosition() >= Constants.WristConstants.UPPER_LIMIT)) {
+            wrist.setPosition(Constants.WristConstants.UPPER_LIMIT);
        }
     }
 
