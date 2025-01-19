@@ -13,8 +13,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.wpilibj.DriverStation;
 
 import java.util.function.Function;
@@ -46,6 +44,7 @@ public final class Constants {
 
     public static NetworkTableInstance NT_INSTANCE;
     public static int ONE_MILLION;
+    public static double STICK_DEADBAND;
 
     public static final class AutoConstants {
         public static RobotConfig ROBOT_CONFIG;

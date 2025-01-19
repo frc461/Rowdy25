@@ -37,6 +37,7 @@ public enum RobotIdentity {
         Constants.MAX_ANGULAR_ACCEL = DefaultConstants.MAX_ANGULAR_ACCEL;
         Constants.NT_INSTANCE = DefaultConstants.NT_INSTANCE;
         Constants.ONE_MILLION = DefaultConstants.ONE_MILLION;
+        Constants.STICK_DEADBAND = DefaultConstants.STICK_DEADBAND;
 
         Constants.AutoConstants.ROBOT_CONFIG = DefaultConstants.AutoConstants.ROBOT_CONFIG;
         Constants.AutoConstants.NOTE_CHECK_MARKER = DefaultConstants.AutoConstants.NOTE_CHECK_MARKER;
