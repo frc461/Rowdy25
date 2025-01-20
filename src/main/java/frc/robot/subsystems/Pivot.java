@@ -14,7 +14,7 @@ import frc.robot.util.ExpUtil;
 public class Pivot extends SubsystemBase {
     private final TalonFX pivot;
     private final MotionMagicExpoVoltage request;
-    private final DigitalInput lowerLimitSwitch;
+    private final DigitalInput lowerLimitSwitch; // TODO: ABSOLUTE ENCODERS, LIMIT SWITCHES NOT NEEDED
     private double target, error, accuracy;
 
     public Pivot() {

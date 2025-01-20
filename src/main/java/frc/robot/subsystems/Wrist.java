@@ -14,7 +14,7 @@ import frc.robot.util.ExpUtil;
 public class Wrist extends SubsystemBase {
     private final TalonFX wrist;
     private final MotionMagicExpoVoltage request;
-    private final DigitalInput lowerLimitSwitch;
+    private final DigitalInput lowerLimitSwitch; // TODO: ABSOLUTE ENCODERS, LIMIT SWITCHES NOT NEEDED
     private double target, error, accuracy;
 
     public Wrist() {
