@@ -60,7 +60,7 @@ public final class DefaultConstants {
 
     public static final NetworkTableInstance NT_INSTANCE = NetworkTableInstance.getDefault();
     public static final int ONE_MILLION = 1_000_000;
-    public static final double STICK_DEADBAND = 0.1;
+    public static final double DEADBAND = 0.1;
 
     public static final class AutoConstants {
         public static final RobotConfig ROBOT_CONFIG;

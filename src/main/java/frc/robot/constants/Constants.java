@@ -46,7 +46,7 @@ public final class Constants {
 
     public static NetworkTableInstance NT_INSTANCE;
     public static int ONE_MILLION;
-    public static double STICK_DEADBAND;
+    public static double DEADBAND;
 
     public static final class AutoConstants {
         public static RobotConfig ROBOT_CONFIG;

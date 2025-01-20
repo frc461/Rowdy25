@@ -20,7 +20,7 @@ public class TeleopElevatorCommand extends Command {
     @Override
     public void execute() {
         /* Apply Deadband */
-        double axisValue = MathUtil.applyDeadband(motionSup.getAsDouble(), Constants.STICK_DEADBAND);
+        double axisValue = MathUtil.applyDeadband(motionSup.getAsDouble(), Constants.DEADBAND);
 
         /* Move Elevator */
         if (axisValue != 0) {
