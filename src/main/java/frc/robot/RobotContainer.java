@@ -41,30 +41,30 @@ public class RobotContainer {
     private final CommandXboxController driverXbox = new CommandXboxController(0);
     /* Currently Allocated For Driver:
      * POV buttons / D-pad:
-     * Up:
+     * Up: Rotate then translate to a game element (if applicable)
      * Down:
      * Left:
      * Right:
      *
      * Triggers:
-     * Left: "speaker tag" align
-     * Right: note align
+     * Left: Rotate CCW (with bumper - FAST)
+     * Right: Rotate CW (with bumper - FAST)
      *
      * Joysticks:
      * Left: Translation
-     * Right: Rotation
+     * Right:
      * Left Button:
      * Right Button:
      *
      * Bumpers:
-     * Left:
-     * Right:
+     * Left: Tag alignment
+     * Right: Game element alignment
      *
      * Buttons:
-     * A: X mode
-     * B: Point directions
-     * X: recalibrate
-     * Y: Re-zero gyro
+     * A: Manual-configure Quest (if applicable) // TODO THINK OF ONE DRIVER AUTOMATED TASKS WITH BUTTONS (MIGHT BE VERY COMPLICATED)
+     * B: Toggle localization strategy
+     * X:
+     * Y: Reset gyro
      */
 
     private final static CommandXboxController opXbox = new CommandXboxController(1);
@@ -76,12 +76,12 @@ public class RobotContainer {
      * Right:
      *
      * Triggers:
-     * Left:
-     * Right:
+     * Left: Rotate wrist down
+     * Right: Rotate wrist up
      *
      * Joysticks:
-     * Left:
-     * Right:
+     * Left: Rotate elevator
+     * Right: Rotate pivot
      *
      * Bumpers:
      * Left:
