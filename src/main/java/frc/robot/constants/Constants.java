@@ -121,7 +121,6 @@ public final class Constants {
         public static InvertedValue ELEVATOR_INVERT;
 
         // pid
-        public static double ELEVATOR_G;
         public static double ELEVATOR_S;
         public static double ELEVATOR_V;
         public static double ELEVATOR_A;
@@ -154,6 +153,9 @@ public final class Constants {
         public static InvertedValue PIVOT_INVERT;
 
         // pid
+        public static double PIVOT_S;
+        public static double PIVOT_V;
+        public static double PIVOT_A;
         public static double PIVOT_P;
         public static double PIVOT_I;
         public static double PIVOT_D;
@@ -172,6 +174,9 @@ public final class Constants {
         public static InvertedValue WRIST_INVERT;
 
         // pid
+        public static double WRIST_S;
+        public static double WRIST_V;
+        public static double WRIST_A;
         public static double WRIST_P;
         public static double WRIST_I;
         public static double WRIST_D;

@@ -1,10 +1,7 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix6.configs.AudioConfigs;
-import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
-import com.ctre.phoenix6.configs.MotorOutputConfigs;
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.configs.VoltageConfigs;
+import com.ctre.phoenix6.configs.*;
+import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
@@ -16,11 +13,9 @@ import frc.robot.util.ExpUtil;
 
 public class Wrist extends SubsystemBase {
     private final TalonFX wrist;
-    private final PIDController controller;
+    private final MotionMagicExpoVoltage request;
     private final DigitalInput lowerLimitSwitch;
-    private final DigitalInput upperLimitSwitch;
     private double target, error, accuracy;
-
 
     public Wrist() {
         wrist = new TalonFX(Constants.WristConstants.MOTOR_ID);
@@ -34,16 +29,22 @@ public class Wrist extends SubsystemBase {
                         .withSupplyCurrentLimit(Constants.WristConstants.CURRENT_LIMIT))
                 .withAudio(new AudioConfigs().withBeepOnConfig(false)
                         .withBeepOnBoot(false)
-                        .withAllowMusicDurDisable(true)));
+                        .withAllowMusicDurDisable(true))
+                .withSlot0(new Slot0Configs()
+                        .withKS(Constants.WristConstants.WRIST_S) // TODO: NEED G??????
+                        .withKV(Constants.WristConstants.WRIST_V)
+                        .withKA(Constants.WristConstants.WRIST_A)
+                        .withKP(Constants.WristConstants.WRIST_P)
+                        .withKI(Constants.WristConstants.WRIST_I)
+                        .withKD(Constants.WristConstants.WRIST_D))
+                .withMotionMagic(new MotionMagicConfigs()
+                        .withMotionMagicCruiseVelocity(0)
+                        .withMotionMagicExpo_kV(Constants.WristConstants.WRIST_V)
+                        .withMotionMagicExpo_kA(Constants.WristConstants.WRIST_A)));
 
-        controller = new PIDController(
-            Constants.WristConstants.WRIST_P,
-            Constants.WristConstants.WRIST_I,
-            Constants.WristConstants.WRIST_D
-        );
+        request = new MotionMagicExpoVoltage(0);
 
         lowerLimitSwitch = new DigitalInput(Constants.WristConstants.LOWER_LIMIT_SWITCH_ID);
-        upperLimitSwitch = new DigitalInput(Constants.WristConstants.UPPER_LIMIT_SWITCH_ID);
 
         target = 0.0;
         error = 0.0;
@@ -72,30 +73,16 @@ public class Wrist extends SubsystemBase {
         return !lowerLimitSwitch.get();
     }
 
-    public boolean upperSwitchTriggered() {
-        return !upperLimitSwitch.get();
-    }
-
     public void checkLimitSwitch() {
        if (lowerSwitchTriggered() || (!lowerSwitchTriggered() && getPosition() <= Constants.WristConstants.LOWER_LIMIT)) {
            wrist.setPosition(Constants.WristConstants.LOWER_LIMIT);
-       }
-       else if (upperSwitchTriggered() || (!upperSwitchTriggered() && getPosition() >= Constants.WristConstants.UPPER_LIMIT)) {
-            wrist.setPosition(Constants.WristConstants.UPPER_LIMIT);
        }
     }
 
     public void holdTarget(double height) {
         checkLimitSwitch();
         target = Math.max(Constants.WristConstants.LOWER_LIMIT, Math.min(Constants.WristConstants.UPPER_LIMIT, height));
-        double output = controller.calculate(getPosition(), target);
-        if (lowerSwitchTriggered()) {
-            wrist.set(Math.max(0, output));
-        } else if (getPosition() >= Constants.WristConstants.UPPER_LIMIT) { // TODO WE WANT UPPER SWITCHES!!
-            wrist.set(Math.min(0, output));
-        } else {
-            wrist.set(output);
-        }
+        wrist.setControl(request.withPosition(target));
     }
 
     public void holdTarget() {

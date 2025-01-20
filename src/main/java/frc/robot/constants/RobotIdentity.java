@@ -82,7 +82,6 @@ public enum RobotIdentity {
         Constants.ElevatorConstants.LOWER_LIMIT_SWITCH_ID = DefaultConstants.ElevatorConstants.LOWER_LIMIT_SWITCH_ID;
         Constants.ElevatorConstants.CURRENT_LIMIT = DefaultConstants.ElevatorConstants.CURRENT_LIMIT;
         Constants.ElevatorConstants.ELEVATOR_INVERT = DefaultConstants.ElevatorConstants.ELEVATOR_INVERT;
-        Constants.ElevatorConstants.ELEVATOR_G = DefaultConstants.ElevatorConstants.ELEVATOR_G;
         Constants.ElevatorConstants.ELEVATOR_S = DefaultConstants.ElevatorConstants.ELEVATOR_S;
         Constants.ElevatorConstants.ELEVATOR_V = DefaultConstants.ElevatorConstants.ELEVATOR_V;
         Constants.ElevatorConstants.ELEVATOR_A = DefaultConstants.ElevatorConstants.ELEVATOR_A;
@@ -105,6 +104,9 @@ public enum RobotIdentity {
         Constants.PivotConstants.UPPER_LIMIT_SWITCH_ID = DefaultConstants.PivotConstants.UPPER_LIMIT_SWITCH_ID;
         Constants.PivotConstants.CURRENT_LIMIT = DefaultConstants.PivotConstants.CURRENT_LIMIT;
         Constants.PivotConstants.PIVOT_INVERT = DefaultConstants.PivotConstants.PIVOT_INVERT;
+        Constants.PivotConstants.PIVOT_S = DefaultConstants.PivotConstants.PIVOT_S;
+        Constants.PivotConstants.PIVOT_V = DefaultConstants.PivotConstants.PIVOT_V;
+        Constants.PivotConstants.PIVOT_A = DefaultConstants.PivotConstants.PIVOT_A;
         Constants.PivotConstants.PIVOT_P = DefaultConstants.PivotConstants.PIVOT_P;
         Constants.PivotConstants.PIVOT_I = DefaultConstants.PivotConstants.PIVOT_I;
         Constants.PivotConstants.PIVOT_D = DefaultConstants.PivotConstants.PIVOT_D;
@@ -116,6 +118,9 @@ public enum RobotIdentity {
         Constants.WristConstants.UPPER_LIMIT_SWITCH_ID = DefaultConstants.WristConstants.UPPER_LIMIT_SWITCH_ID;
         Constants.WristConstants.CURRENT_LIMIT = DefaultConstants.WristConstants.CURRENT_LIMIT;
         Constants.WristConstants.WRIST_INVERT = DefaultConstants.WristConstants.WRIST_INVERT;
+        Constants.WristConstants.WRIST_S = DefaultConstants.WristConstants.WRIST_S;
+        Constants.WristConstants.WRIST_V = DefaultConstants.WristConstants.WRIST_V;
+        Constants.WristConstants.WRIST_A = DefaultConstants.WristConstants.WRIST_A;
         Constants.WristConstants.WRIST_P = DefaultConstants.WristConstants.WRIST_P;
         Constants.WristConstants.WRIST_I = DefaultConstants.WristConstants.WRIST_I;
         Constants.WristConstants.WRIST_D = DefaultConstants.WristConstants.WRIST_D;

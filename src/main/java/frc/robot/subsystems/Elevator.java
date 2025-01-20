@@ -33,8 +33,7 @@ public class Elevator extends SubsystemBase {
                         .withBeepOnBoot(false)
                         .withAllowMusicDurDisable(true))
                 .withSlot0(new Slot0Configs()
-                        .withKG(Constants.ElevatorConstants.ELEVATOR_G)
-                        .withKS(Constants.ElevatorConstants.ELEVATOR_S)
+                        .withKS(Constants.ElevatorConstants.ELEVATOR_S) // TODO: NEED G??????
                         .withKV(Constants.ElevatorConstants.ELEVATOR_V)
                         .withKA(Constants.ElevatorConstants.ELEVATOR_A)
                         .withKP(Constants.ElevatorConstants.ELEVATOR_P)
