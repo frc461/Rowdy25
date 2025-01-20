@@ -77,6 +77,47 @@ public enum RobotIdentity {
         Constants.VisionConstants.QuestNavConstants.ROTATION_ERROR_TOLERANCE = DefaultConstants.VisionConstants.QuestNavConstants.ROTATION_ERROR_TOLERANCE;
         Constants.VisionConstants.QuestNavConstants.MIN_TAG_DIST_TO_BE_FAR = DefaultConstants.VisionConstants.QuestNavConstants.MIN_TAG_DIST_TO_BE_FAR;
 
+        Constants.ElevatorConstants.LEAD_ID = DefaultConstants.ElevatorConstants.LEAD_ID;
+        Constants.ElevatorConstants.FOLLOWER_ID = DefaultConstants.ElevatorConstants.FOLLOWER_ID;
+        Constants.ElevatorConstants.LOWER_LIMIT_SWITCH_ID = DefaultConstants.ElevatorConstants.LOWER_LIMIT_SWITCH_ID;
+        Constants.ElevatorConstants.CURRENT_LIMIT = DefaultConstants.ElevatorConstants.CURRENT_LIMIT;
+        Constants.ElevatorConstants.ELEVATOR_INVERT = DefaultConstants.ElevatorConstants.ELEVATOR_INVERT;
+        Constants.ElevatorConstants.ELEVATOR_P = DefaultConstants.ElevatorConstants.ELEVATOR_P;
+        Constants.ElevatorConstants.ELEVATOR_I = DefaultConstants.ElevatorConstants.ELEVATOR_I;
+        Constants.ElevatorConstants.ELEVATOR_D = DefaultConstants.ElevatorConstants.ELEVATOR_D;
+        Constants.ElevatorConstants.LOWER_LIMIT = DefaultConstants.ElevatorConstants.LOWER_LIMIT;
+        Constants.ElevatorConstants.UPPER_LIMIT = DefaultConstants.ElevatorConstants.UPPER_LIMIT;
+
+        Constants.IntakeConstants.LEFT_MOTOR_ID = DefaultConstants.IntakeConstants.LEFT_MOTOR_ID;
+        Constants.IntakeConstants.RIGHT_MOTOR_ID = DefaultConstants.IntakeConstants.RIGHT_MOTOR_ID;
+        Constants.IntakeConstants.CORAL_BEAM_ID = DefaultConstants.IntakeConstants.CORAL_BEAM_ID;
+        Constants.IntakeConstants.ALGAE_BEAM_ID = DefaultConstants.IntakeConstants.ALGAE_BEAM_ID;
+        Constants.IntakeConstants.CURRENT_LIMIT = DefaultConstants.IntakeConstants.CURRENT_LIMIT;
+        Constants.IntakeConstants.LEFT_INVERT = DefaultConstants.IntakeConstants.LEFT_INVERT;
+        Constants.IntakeConstants.RIGHT_INVERT = DefaultConstants.IntakeConstants.RIGHT_INVERT;
+
+        Constants.PivotConstants.MOTOR_ID = DefaultConstants.PivotConstants.MOTOR_ID;
+        Constants.PivotConstants.LOWER_LIMIT_SWITCH_ID = DefaultConstants.PivotConstants.LOWER_LIMIT_SWITCH_ID;
+        Constants.PivotConstants.UPPER_LIMIT_SWITCH_ID = DefaultConstants.PivotConstants.UPPER_LIMIT_SWITCH_ID;
+        Constants.PivotConstants.CURRENT_LIMIT = DefaultConstants.PivotConstants.CURRENT_LIMIT;
+        Constants.PivotConstants.PIVOT_INVERT = DefaultConstants.PivotConstants.PIVOT_INVERT;
+        Constants.PivotConstants.PIVOT_P = DefaultConstants.PivotConstants.PIVOT_P;
+        Constants.PivotConstants.PIVOT_I = DefaultConstants.PivotConstants.PIVOT_I;
+        Constants.PivotConstants.PIVOT_D = DefaultConstants.PivotConstants.PIVOT_D;
+        Constants.PivotConstants.LOWER_LIMIT = DefaultConstants.PivotConstants.LOWER_LIMIT;
+        Constants.PivotConstants.UPPER_LIMIT = DefaultConstants.PivotConstants.UPPER_LIMIT;
+
+        Constants.WristConstants.MOTOR_ID = DefaultConstants.WristConstants.MOTOR_ID;
+        Constants.WristConstants.LOWER_LIMIT_SWITCH_ID = DefaultConstants.WristConstants.LOWER_LIMIT_SWITCH_ID;
+        Constants.WristConstants.UPPER_LIMIT_SWITCH_ID = DefaultConstants.WristConstants.UPPER_LIMIT_SWITCH_ID;
+        Constants.WristConstants.CURRENT_LIMIT = DefaultConstants.WristConstants.CURRENT_LIMIT;
+        Constants.WristConstants.WRIST_INVERT = DefaultConstants.WristConstants.WRIST_INVERT;
+        Constants.WristConstants.WRIST_P = DefaultConstants.WristConstants.WRIST_P;
+        Constants.WristConstants.WRIST_I = DefaultConstants.WristConstants.WRIST_I;
+        Constants.WristConstants.WRIST_D = DefaultConstants.WristConstants.WRIST_D;
+        Constants.WristConstants.LOWER_LIMIT = DefaultConstants.WristConstants.LOWER_LIMIT;
+        Constants.WristConstants.UPPER_LIMIT = DefaultConstants.WristConstants.UPPER_LIMIT;
+
         Constants.SwerveConstants.PATH_TRANSLATION_CONTROLLER_P = DefaultConstants.SwerveConstants.PATH_TRANSLATION_CONTROLLER_P;
         Constants.SwerveConstants.PATH_ROTATION_CONTROLLER_P = DefaultConstants.SwerveConstants.PATH_ROTATION_CONTROLLER_P;
         Constants.SwerveConstants.PATH_MANUAL_TRANSLATION_CONTROLLER = DefaultConstants.SwerveConstants.PATH_MANUAL_TRANSLATION_CONTROLLER;

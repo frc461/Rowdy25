@@ -1,6 +1,8 @@
 package frc.robot.constants;
 
 import com.ctre.phoenix6.CANBus;
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
@@ -112,75 +114,67 @@ public final class Constants {
     // TODO: MOVE TO DEFAULT CONSTANTS VARIANT + UPDATE VALUES FOR 2025 + TUNE
     public final static class ElevatorConstants {
         // basic configs
-        public static final int LEAD_ID = 31;
-        public static final int FOLLOWER_ID = 32;
-        public static final int CURRENT_LIMIT = 80;
-        public static final int SERVO_LIMIT_SWITCH = 1;
-        public static final int LOWER_LIMIT_SWITCH_ID = 2;
-        public static final InvertedValue ELEVATOR_INVERT = InvertedValue.Clockwise_Positive;
-
-        // servo to hold elevator in endgame
-        public static final int ELEVATOR_SERVO_PORT = 1;
-        public static final double ELEVATOR_SERVO_CLAMPED_POS = .07; // new servo values
-        public static final double ELEVATOR_SERVO_UNCLAMPED_POS = .39;
+        public static int LEAD_ID;
+        public static int FOLLOWER_ID;
+        public static int LOWER_LIMIT_SWITCH_ID;
+        public static int CURRENT_LIMIT;
+        public static InvertedValue ELEVATOR_INVERT;
 
         // pid
-        public static final double ELEVATOR_P = 0.05;
-        public static final double ELEVATOR_I = 0.0;
-        public static final double ELEVATOR_D = 0.0;
+        public static double ELEVATOR_P;
+        public static double ELEVATOR_I;
+        public static double ELEVATOR_D;
 
         // presets
-        public static final double LOWER_LIMIT = 0;
-        public static final double UPPER_LIMIT = 37;
+        public static double LOWER_LIMIT;
+        public static double UPPER_LIMIT;
+    }
+
+    public final static class IntakeConstants {
+        // basic configs
+        public static int LEFT_MOTOR_ID;
+        public static int RIGHT_MOTOR_ID;
+        public static int CORAL_BEAM_ID;
+        public static int ALGAE_BEAM_ID;
+        public static int CURRENT_LIMIT;
+        public static InvertedValue LEFT_INVERT; //TODO: CHECK ON REAL ROBOT
+        public static InvertedValue RIGHT_INVERT;
+    }
+
+    public final static class PivotConstants {
+        // basic configs
+        public static int MOTOR_ID = 0;
+        public static int LOWER_LIMIT_SWITCH_ID;
+        public static int UPPER_LIMIT_SWITCH_ID;
+        public static int CURRENT_LIMIT;
+        public static InvertedValue PIVOT_INVERT;
+
+        // pid
+        public static double PIVOT_P;
+        public static double PIVOT_I;
+        public static double PIVOT_D;
+
+
+        public static double LOWER_LIMIT;
+        public static double UPPER_LIMIT;
     }
 
     public final static class WristConstants {
         // basic configs
-        public static final int MOTOR_ID = 62;
-        public static final int CURRENT_LIMIT = 35;
-        public static final InvertedValue WRIST_INVERT = InvertedValue.Clockwise_Positive;
+        public static int MOTOR_ID;
+        public static int LOWER_LIMIT_SWITCH_ID;
+        public static int UPPER_LIMIT_SWITCH_ID;
+        public static int CURRENT_LIMIT;
+        public static InvertedValue WRIST_INVERT;
 
-        // pid for angler
-        public static final double WRIST_P = 0.2;
-        public static final double WRIST_I = 0.00001;
-        public static final double WRIST_D = 0.0001;
+        // pid
+        public static double WRIST_P;
+        public static double WRIST_I;
+        public static double WRIST_D;
 
-        // limit switches
-        public static final int LOWER_LIMIT_SWITCH_ID = 6;
-
-        // code limits on encoder values
-        public static final double LOWER_LIMIT = 0;
-        public static final double UPPER_LIMIT = 20;
-        public static final int UPPER_LIMIT_SWITCH_ID = 0;
-    }
-
-    public final static class IntakeConstants {
-        public static final int LEFT_MOTOR_ID = 11;
-        public static final int RIGHT_MOTOR_ID = 12;
-        public static final InvertedValue LEFT_INVERT = InvertedValue.Clockwise_Positive; //TODO: CHECK ON REAL ROBOT
-        public static final InvertedValue RIGHT_INVERT = InvertedValue.CounterClockwise_Positive;
-        public static final int CURRENT_LIMIT = 40;
-        public static final int CORAL_BEAM_ID = 3;
-        public static final int ALGAE_BEAM_ID = 4;
-    }
-
-    public final static class PivotConstants {
-
-        public static final int MOTOR_ID = 0;
-        public static final InvertedValue PIVOT_INVERT = InvertedValue.Clockwise_Positive;
-        public static final int CURRENT_LIMIT = 0;
-        public static final int LOWER_LIMIT_SWITCH_ID = 0;
-        
-        
-        public static final double PIVOT_P = 0;
-        public static final double PIVOT_I = 0;
-        public static final double PIVOT_D = 0;
-  
-
-        public static final double LOWER_LIMIT = 0;
-        public static final double UPPER_LIMIT = 0;
-        public static final int UPPER_LIMIT_SWITCH_ID = 0;
-    
+        // presets
+        public static double LOWER_LIMIT;
+        public static double UPPER_LIMIT;
     }
 
     public static final class SwerveConstants {
@@ -200,9 +194,9 @@ public final class Constants {
 
         public static SwerveDrivetrainConstants SWERVE_DRIVETRAIN_CONSTANTS;
 
-        public static SwerveModuleConstants FRONT_LEFT;
-        public static SwerveModuleConstants FRONT_RIGHT;
-        public static SwerveModuleConstants BACK_LEFT;
-        public static SwerveModuleConstants BACK_RIGHT;
+        public static SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> FRONT_LEFT;
+        public static SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> FRONT_RIGHT;
+        public static SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> BACK_LEFT;
+        public static SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> BACK_RIGHT;
     }
 }

@@ -146,6 +146,72 @@ public final class DefaultConstants {
         }
     }
 
+    // TODO: MOVE TO DEFAULT CONSTANTS VARIANT + UPDATE VALUES FOR 2025 + TUNE
+    public final static class ElevatorConstants {
+        // basic configs
+        public static final int LEAD_ID = 31;
+        public static final int FOLLOWER_ID = 32;
+        public static final int LOWER_LIMIT_SWITCH_ID = 2;
+        public static final int CURRENT_LIMIT = 80;
+        public static final InvertedValue ELEVATOR_INVERT = InvertedValue.Clockwise_Positive;
+
+        // pid
+        public static final double ELEVATOR_P = 0.05;
+        public static final double ELEVATOR_I = 0.0;
+        public static final double ELEVATOR_D = 0.0;
+
+        // presets
+        public static final double LOWER_LIMIT = 0;
+        public static final double UPPER_LIMIT = 37;
+    }
+
+    public final static class IntakeConstants {
+        // basic configs
+        public static final int LEFT_MOTOR_ID = 11;
+        public static final int RIGHT_MOTOR_ID = 12;
+        public static final int CORAL_BEAM_ID = 3;
+        public static final int ALGAE_BEAM_ID = 4;
+        public static final int CURRENT_LIMIT = 40;
+        public static final InvertedValue LEFT_INVERT = InvertedValue.Clockwise_Positive; //TODO: CHECK ON REAL ROBOT
+        public static final InvertedValue RIGHT_INVERT = InvertedValue.CounterClockwise_Positive;
+    }
+
+    public final static class PivotConstants {
+        // basic configs
+        public static final int MOTOR_ID = 0;
+        public static final int LOWER_LIMIT_SWITCH_ID = 0;
+        public static final int UPPER_LIMIT_SWITCH_ID = 0;
+        public static final int CURRENT_LIMIT = 0;
+        public static final InvertedValue PIVOT_INVERT = InvertedValue.Clockwise_Positive;
+
+        // pid
+        public static final double PIVOT_P = 0;
+        public static final double PIVOT_I = 0;
+        public static final double PIVOT_D = 0;
+
+        // presets
+        public static final double LOWER_LIMIT = 0;
+        public static final double UPPER_LIMIT = 0;
+    }
+
+    public final static class WristConstants {
+        // basic configs
+        public static final int MOTOR_ID = 62;
+        public static final int LOWER_LIMIT_SWITCH_ID = 6;
+        public static final int UPPER_LIMIT_SWITCH_ID = 0;
+        public static final int CURRENT_LIMIT = 35;
+        public static final InvertedValue WRIST_INVERT = InvertedValue.Clockwise_Positive;
+
+        // pid
+        public static final double WRIST_P = 0.2;
+        public static final double WRIST_I = 0.00001;
+        public static final double WRIST_D = 0.0001;
+
+        // presets
+        public static final double LOWER_LIMIT = 0;
+        public static final double UPPER_LIMIT = 20;
+    }
+
     public static final class SwerveConstants {
         public static final double PATH_TRANSLATION_CONTROLLER_P = 10.0;
         public static final double PATH_ROTATION_CONTROLLER_P = 7.5;
