@@ -1,11 +1,9 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix6.configs.AudioConfigs;
-import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
-import com.ctre.phoenix6.configs.MotorOutputConfigs;
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.configs.VoltageConfigs;
+import com.ctre.phoenix6.configs.*;
 import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
@@ -17,13 +15,12 @@ import frc.robot.util.ExpUtil;
 
 public class Elevator extends SubsystemBase {
     private final TalonFX elevator;
-    private final PIDController controller;
+    private final MotionMagicExpoVoltage request;
     private final DigitalInput lowerSwitch;
     private double target, accuracy;
 
     public Elevator() {
         elevator = new TalonFX(Constants.ElevatorConstants.LEAD_ID);
-
 
         elevator.getConfigurator().apply(new TalonFXConfiguration()
                 .withVoltage(new VoltageConfigs().withPeakForwardVoltage(6))
@@ -34,17 +31,25 @@ public class Elevator extends SubsystemBase {
                         .withSupplyCurrentLimit(Constants.ElevatorConstants.CURRENT_LIMIT))
                 .withAudio(new AudioConfigs().withBeepOnConfig(false)
                         .withBeepOnBoot(false)
-                        .withAllowMusicDurDisable(true)));
-
-        controller = new PIDController(
-                Constants.ElevatorConstants.ELEVATOR_P,
-                Constants.ElevatorConstants.ELEVATOR_I,
-                Constants.ElevatorConstants.ELEVATOR_D
-        );
+                        .withAllowMusicDurDisable(true))
+                .withSlot0(new Slot0Configs()
+                        .withKG(Constants.ElevatorConstants.ELEVATOR_G)
+                        .withKS(Constants.ElevatorConstants.ELEVATOR_S)
+                        .withKV(Constants.ElevatorConstants.ELEVATOR_V)
+                        .withKA(Constants.ElevatorConstants.ELEVATOR_A)
+                        .withKP(Constants.ElevatorConstants.ELEVATOR_P)
+                        .withKI(Constants.ElevatorConstants.ELEVATOR_I)
+                        .withKD(Constants.ElevatorConstants.ELEVATOR_D))
+                .withMotionMagic(new MotionMagicConfigs()
+                        .withMotionMagicCruiseVelocity(0)
+                        .withMotionMagicExpo_kV(Constants.ElevatorConstants.ELEVATOR_V)
+                        .withMotionMagicExpo_kA(Constants.ElevatorConstants.ELEVATOR_A)));
 
         try (TalonFX elevator2 = new TalonFX(Constants.ElevatorConstants.FOLLOWER_ID)) {
             elevator2.setControl(new Follower(Constants.ElevatorConstants.LEAD_ID, true));
         }
+
+        request = new MotionMagicExpoVoltage(0);
 
         lowerSwitch = new DigitalInput(Constants.ElevatorConstants.LOWER_LIMIT_SWITCH_ID);
 
@@ -78,14 +83,7 @@ public class Elevator extends SubsystemBase {
     public void holdTarget(double height) {
         checkLimitSwitch();
         target = Math.max(Constants.ElevatorConstants.LOWER_LIMIT, Math.min(Constants.ElevatorConstants.UPPER_LIMIT, height));
-        double output = controller.calculate(getPosition(), target);
-        if (lowerSwitchTriggered()) {
-            elevator.set(Math.max(0, output));
-        } else if (getPosition() >= Constants.ElevatorConstants.UPPER_LIMIT) { // TODO WE WANT UPPER SWITCHES!!
-            elevator.set(Math.min(0, output));
-        } else {
-            elevator.set(output);
-        }
+        elevator.setControl(request.withPosition(target));
     }
 
     public void holdTarget() {
@@ -99,9 +97,5 @@ public class Elevator extends SubsystemBase {
                 ? axisValue * ExpUtil.output(Constants.ElevatorConstants.UPPER_LIMIT - getPosition(), 1, 5, 10)
                 : axisValue * ExpUtil.output(getPosition() - Constants.ElevatorConstants.LOWER_LIMIT, 1, 5, 10));
         target = getPosition();
-    }
-
-    public void stopElevator() {
-        elevator.set(0);
     }
 }

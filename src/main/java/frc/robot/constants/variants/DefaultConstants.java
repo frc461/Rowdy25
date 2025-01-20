@@ -156,7 +156,11 @@ public final class DefaultConstants {
         public static final InvertedValue ELEVATOR_INVERT = InvertedValue.Clockwise_Positive;
 
         // pid
-        public static final double ELEVATOR_P = 0.05;
+        public static double ELEVATOR_G = 0.0;
+        public static double ELEVATOR_S = 0.0;
+        public static double ELEVATOR_V = 0.0;
+        public static double ELEVATOR_A = 0.0;
+        public static final double ELEVATOR_P = 0.0;
         public static final double ELEVATOR_I = 0.0;
         public static final double ELEVATOR_D = 0.0;
 
@@ -203,9 +207,9 @@ public final class DefaultConstants {
         public static final InvertedValue WRIST_INVERT = InvertedValue.Clockwise_Positive;
 
         // pid
-        public static final double WRIST_P = 0.2;
-        public static final double WRIST_I = 0.00001;
-        public static final double WRIST_D = 0.0001;
+        public static final double WRIST_P = 0.0;
+        public static final double WRIST_I = 0.0;
+        public static final double WRIST_D = 0.0;
 
         // presets
         public static final double LOWER_LIMIT = 0;
