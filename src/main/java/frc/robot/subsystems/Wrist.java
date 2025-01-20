@@ -102,12 +102,16 @@ public class Wrist extends SubsystemBase {
         holdTarget(target);
     }
 
-    public void moveAngle(double axisValue) {
+    public void moveWrist(double axisValue) {
         checkLimitSwitch();
         // TODO TUNE CURBING VALUE
-        wrist.set(axisValue > 0
-                ? axisValue * ExpUtil.output(Constants.WristConstants.UPPER_LIMIT - getPosition(), 1, 5, 10)
-                : axisValue * ExpUtil.output(getPosition() - Constants.WristConstants.LOWER_LIMIT, 1, 5, 10));
-        target = getPosition();
+        if (axisValue == 0) {
+            holdTarget();
+        } else {
+            wrist.set(axisValue > 0
+                    ? axisValue * ExpUtil.output(Constants.WristConstants.UPPER_LIMIT - getPosition(), 1, 5, 10)
+                    : axisValue * ExpUtil.output(getPosition() - Constants.WristConstants.LOWER_LIMIT, 1, 5, 10));
+            target = getPosition();
+        }
     }
 }

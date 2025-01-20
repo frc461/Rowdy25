@@ -4,18 +4,34 @@ import com.pathplanner.lib.commands.PathfindingCommand;
 import com.pathplanner.lib.pathfinding.LocalADStar;
 import com.pathplanner.lib.pathfinding.Pathfinding;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
+import edu.wpi.first.wpilibj2.command.RepeatCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import dev.doglog.DogLog;
 import dev.doglog.DogLogOptions;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import frc.robot.autos.AutoChooser;
+import frc.robot.constants.Constants;
+import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Pivot;
+import frc.robot.subsystems.Wrist;
 import frc.robot.subsystems.drivetrain.Swerve;
 import frc.robot.util.SysID;
+
+import java.util.function.DoubleSupplier;
+import java.util.function.Function;
 
 public class RobotContainer {
     /* Subsystems */
     private final Swerve swerve = new Swerve();
+    private final Elevator elevator = new Elevator();
+    private final Intake intake = new Intake();
+    private final Pivot pivot = new Pivot();
+    private final Wrist wrist = new Wrist();
 
     private final AutoChooser autoChooser = new AutoChooser(swerve);
 
@@ -105,6 +121,27 @@ public class RobotContainer {
                         driverXbox::getRightTriggerAxis,
                         () -> driverXbox.leftBumper().getAsBoolean(),
                         () -> driverXbox.rightBumper().getAsBoolean()
+                )
+        );
+
+        elevator.setDefaultCommand(
+                new RunCommand(
+                        () -> elevator.moveElevator(MathUtil.applyDeadband(-opXbox.getLeftY(), Constants.DEADBAND)),
+                        elevator
+                )
+        );
+
+        pivot.setDefaultCommand(
+                new RunCommand(
+                        () -> pivot.movePivot(MathUtil.applyDeadband(-opXbox.getRightY(), Constants.DEADBAND)),
+                        pivot
+                )
+        );
+
+        wrist.setDefaultCommand(
+                new RunCommand(
+                        () -> wrist.moveWrist(MathUtil.applyDeadband(opXbox.getRightTriggerAxis() - opXbox.getLeftTriggerAxis(), Constants.DEADBAND)),
+                        wrist
                 )
         );
     }
