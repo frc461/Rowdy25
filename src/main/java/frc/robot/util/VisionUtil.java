@@ -157,7 +157,6 @@ public class VisionUtil {
 
         public static final class BW {
             private static final PhotonCamera BW = new PhotonCamera(Constants.NT_INSTANCE, "ArducamBW");
-            public static final AprilTagFieldLayout tagLayout = AprilTagFields.k2025Reefscape.loadAprilTagLayoutField();
             public static final Transform3d robotToCameraOffset = new Transform3d(
                     Constants.VisionConstants.PhotonConstants.BW_FORWARD,
                     Constants.VisionConstants.PhotonConstants.BW_LEFT,
@@ -171,7 +170,7 @@ public class VisionUtil {
 
             // Photon Vision's integrated estimator, to be integrated into the localizer's pose estimator
             private static final PhotonPoseEstimator photonPoseEstimator = new PhotonPoseEstimator(
-                    tagLayout,
+                    FieldUtil.layout2025,
                     PhotonPoseEstimator.PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
                     robotToCameraOffset
             );

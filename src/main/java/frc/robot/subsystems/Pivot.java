@@ -43,13 +43,13 @@ public class Pivot extends SubsystemBase {
                         .withMotionMagicExpo_kV(Constants.PivotConstants.PIVOT_V)
                         .withMotionMagicExpo_kA(Constants.PivotConstants.PIVOT_A)));
 
-        request = new MotionMagicExpoVoltage(0);
-
-        lowerLimitSwitch = new DigitalInput(Constants.PivotConstants.LOWER_LIMIT_SWITCH_ID);
-
         try (TalonFX pivot2 = new TalonFX(Constants.PivotConstants.FOLLOWER_ID)) {
             pivot2.setControl(new Follower(Constants.PivotConstants.LEAD_ID, true)); //TODO: CHECK OPPOSE MASTER
         }
+
+        lowerLimitSwitch = new DigitalInput(Constants.PivotConstants.LOWER_LIMIT_SWITCH_ID);
+
+        request = new MotionMagicExpoVoltage(0);
 
         target = 0.0;
         error = 0.0;

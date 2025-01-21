@@ -48,9 +48,9 @@ public class Elevator extends SubsystemBase {
             elevator2.setControl(new Follower(Constants.ElevatorConstants.LEAD_ID, true)); //TODO: CHECK OPPOSER MASTER
         }
 
-        request = new MotionMagicExpoVoltage(0);
-
         lowerSwitch = new DigitalInput(Constants.ElevatorConstants.LOWER_LIMIT_SWITCH_ID);
+
+        request = new MotionMagicExpoVoltage(0);
 
         target = 0.0;
         accuracy = 1.0;

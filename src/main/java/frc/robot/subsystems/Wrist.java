@@ -42,9 +42,9 @@ public class Wrist extends SubsystemBase {
                         .withMotionMagicExpo_kV(Constants.WristConstants.WRIST_V)
                         .withMotionMagicExpo_kA(Constants.WristConstants.WRIST_A)));
 
-        request = new MotionMagicExpoVoltage(0);
-
         lowerLimitSwitch = new DigitalInput(Constants.WristConstants.LOWER_LIMIT_SWITCH_ID);
+
+        request = new MotionMagicExpoVoltage(0);
 
         target = 0.0;
         error = 0.0;

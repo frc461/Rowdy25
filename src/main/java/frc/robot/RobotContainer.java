@@ -41,8 +41,40 @@ public class RobotContainer {
     private final CommandXboxController driverXbox = new CommandXboxController(0);
     /* Currently Allocated For Driver:
      * POV buttons / D-pad:
-     * Up: 
-     *  Current: Rotate then translate to a game element (if applicable)
+     * Up: Rotate then translate to a game element (if applicable)
+     * Down:
+     * Left:
+     * Right:
+     *
+     * Triggers:
+     * Left: Rotate CCW (with bumper - FAST)
+     * Right: Rotate CW (with bumper - FAST)
+     *
+     * Joysticks:
+     * Left: Translation
+     * Right:
+     * Left Button:
+     * Right Button:
+     *
+     * Bumpers:
+     * Left: Tag alignment
+     * Right: Game element alignment
+     *
+     * Buttons:
+     *
+     * A: Manual-configure Quest (if applicable)
+     *
+     * B: Toggle localization strategy
+     *
+     * X:
+     *
+     * Y: Reset gyro
+     */
+
+
+    /* Aneesh's Driver Ideas:
+     * POV buttons / D-pad:
+     * Up:
      * Down: Climb?
      * Left:
      * Right:
@@ -58,24 +90,51 @@ public class RobotContainer {
      * Right Button: intake coral from station (maybe also auto-align to 2 different pickup locations based on proximity)
      *
      * Bumpers:
-     * Left: chase & intake algae from ground 
-     *  current: Tag alignment
-     * Right: chase & intake coral from ground    
-     *  current: Game element alignment
+     * Left: chase & intake algae from ground
+     * Right: chase & intake coral from ground
      *
      * Buttons:
      * Note: All buttons also align to closest target rotationally & translationally using tags/piece detection. They also outtake on release if necessary and all go back to stow position.
      *
      * A: L1 coral height/angle if coral in intake, processor otherwise  // TODO THINK OF ONE DRIVER AUTOMATED TASKS WITH BUTTONS (MIGHT BE VERY COMPLICATED)
-     *  current: Manual-configure Quest (if applicable)
      *
      * B: L2 coral height/angle if coral in intake, intake low algae from reef otherwise
-     *  current: Toggle localization strategy
      *
      * X: L3 coral height/angle if coral in intake, intake high algae from reef otherwise
      *
      * Y: L4 coral height/angle if coral in intake, net otherwise
-     *  current: Reset gyro
+     */
+
+    /* Eugene's Driver Ideas:
+     * POV buttons / D-pad:
+     * Up:
+     * Down:
+     * Left:
+     * Right:
+     *
+     * Triggers:
+     * Left: Rotate CCW (with bumper - FAST)
+     * Right: Rotate CW (with bumper - FAST)
+     *
+     * Joysticks:
+     * Left: Translation
+     * Right: Up = +L coral reef score toggle, Down = -L coral reef score toggle
+     * Left Button: Reset gyro
+     * Right Button: Toggle between lower and higher algae reef intake level
+     *
+     * Bumpers:
+     * Left: Hold - Align with then intake coral (ground)
+     * Right: Hold - Align with then intake algae (ground)
+     *
+     * Buttons:
+     *
+     * A: Click - Coral pickup stage, stow automatically, Click Again - Cancel
+     *
+     * B: Click - Coral score stage, Click again - Outtake, stow
+     *
+     * X: Click - Algae pickup stage, stow automatically, Click Again - Cancel, Click when in algae score stage - manually toggle between processor and net height
+     *
+     * Y: Click - Algae score stage (if heading is within 45 degrees of processor then processor height, otherwise net height), Click again - Outtake, stow
      */
 
     private final static CommandXboxController opXbox = new CommandXboxController(1);
