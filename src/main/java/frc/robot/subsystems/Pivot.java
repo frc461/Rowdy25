@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.*;
+import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -18,7 +19,7 @@ public class Pivot extends SubsystemBase {
     private double target, error, accuracy;
 
     public Pivot() {
-        pivot = new TalonFX(Constants.PivotConstants.MOTOR_ID);
+        pivot = new TalonFX(Constants.PivotConstants.LEAD_ID);
 
         pivot.getConfigurator().apply(new TalonFXConfiguration()
                 .withVoltage(new VoltageConfigs().withPeakForwardVoltage(6))
@@ -45,6 +46,10 @@ public class Pivot extends SubsystemBase {
         request = new MotionMagicExpoVoltage(0);
 
         lowerLimitSwitch = new DigitalInput(Constants.PivotConstants.LOWER_LIMIT_SWITCH_ID);
+
+        try (TalonFX pivot2 = new TalonFX(Constants.PivotConstants.FOLLOWER_ID)) {
+            pivot2.setControl(new Follower(Constants.PivotConstants.LEAD_ID, true)); //TODO: CHECK OPPOSE MASTER
+        }
 
         target = 0.0;
         error = 0.0;

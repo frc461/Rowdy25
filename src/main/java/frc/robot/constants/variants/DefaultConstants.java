@@ -181,7 +181,8 @@ public final class DefaultConstants {
 
     public final static class PivotConstants {
         // basic configs
-        public static final int MOTOR_ID = 0;
+        public static final int LEAD_ID = 51;
+        public static final int FOLLOWER_ID = 52;
         public static final int LOWER_LIMIT_SWITCH_ID = 0;
         public static final int UPPER_LIMIT_SWITCH_ID = 0;
         public static final int CURRENT_LIMIT = 0;

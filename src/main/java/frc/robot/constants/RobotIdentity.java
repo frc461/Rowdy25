@@ -99,7 +99,8 @@ public enum RobotIdentity {
         Constants.IntakeConstants.LEFT_INVERT = DefaultConstants.IntakeConstants.LEFT_INVERT;
         Constants.IntakeConstants.RIGHT_INVERT = DefaultConstants.IntakeConstants.RIGHT_INVERT;
 
-        Constants.PivotConstants.MOTOR_ID = DefaultConstants.PivotConstants.MOTOR_ID;
+        Constants.PivotConstants.LEAD_ID = DefaultConstants.PivotConstants.LEAD_ID;
+        Constants.PivotConstants.FOLLOWER_ID = DefaultConstants.PivotConstants.FOLLOWER_ID;
         Constants.PivotConstants.LOWER_LIMIT_SWITCH_ID = DefaultConstants.PivotConstants.LOWER_LIMIT_SWITCH_ID;
         Constants.PivotConstants.UPPER_LIMIT_SWITCH_ID = DefaultConstants.PivotConstants.UPPER_LIMIT_SWITCH_ID;
         Constants.PivotConstants.CURRENT_LIMIT = DefaultConstants.PivotConstants.CURRENT_LIMIT;
