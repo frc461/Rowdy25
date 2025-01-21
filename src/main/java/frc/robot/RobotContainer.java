@@ -41,8 +41,9 @@ public class RobotContainer {
     private final CommandXboxController driverXbox = new CommandXboxController(0);
     /* Currently Allocated For Driver:
      * POV buttons / D-pad:
-     * Up: Rotate then translate to a game element (if applicable)
-     * Down:
+     * Up: 
+     *  Current: Rotate then translate to a game element (if applicable)
+     * Down: Climb?
      * Left:
      * Right:
      *
@@ -54,17 +55,27 @@ public class RobotContainer {
      * Left: Translation
      * Right:
      * Left Button:
-     * Right Button:
+     * Right Button: intake coral from station (maybe also auto-align to 2 different pickup locations based on proximity)
      *
      * Bumpers:
-     * Left: Tag alignment
-     * Right: Game element alignment
+     * Left: chase & intake algae from ground 
+     *  current: Tag alignment
+     * Right: chase & intake coral from ground    
+     *  current: Game element alignment
      *
      * Buttons:
-     * A: Manual-configure Quest (if applicable) // TODO THINK OF ONE DRIVER AUTOMATED TASKS WITH BUTTONS (MIGHT BE VERY COMPLICATED)
-     * B: Toggle localization strategy
-     * X:
-     * Y: Reset gyro
+     * Note: All buttons also align to closest target rotationally & translationally using tags/piece detection. They also outtake on release if necessary and all go back to stow position.
+     *
+     * A: L1 coral height/angle if coral in intake, processor otherwise  // TODO THINK OF ONE DRIVER AUTOMATED TASKS WITH BUTTONS (MIGHT BE VERY COMPLICATED)
+     *  current: Manual-configure Quest (if applicable)
+     *
+     * B: L2 coral height/angle if coral in intake, intake low algae from reef otherwise
+     *  current: Toggle localization strategy
+     *
+     * X: L3 coral height/angle if coral in intake, intake high algae from reef otherwise
+     *
+     * Y: L4 coral height/angle if coral in intake, net otherwise
+     *  current: Reset gyro
      */
 
     private final static CommandXboxController opXbox = new CommandXboxController(1);
