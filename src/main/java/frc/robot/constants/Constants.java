@@ -80,6 +80,7 @@ public final class Constants {
         }
 
         public static final class PhotonConstants {
+            // TODO ADD TWO MORE BW CAMERA OFFSETS
             public static double BW_FORWARD;
             public static double BW_LEFT;
             public static double BW_UP;

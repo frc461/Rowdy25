@@ -117,29 +117,36 @@ public class Localizer {
 
     public void updatePhotonPoseEstimation() {
         VisionUtil.Photon.updateResults();
-        if (VisionUtil.Photon.BW.isTagClear()) {
-            if (VisionUtil.Photon.BW.isMultiTag()) {
-                VisionUtil.Photon.BW.getOptionalPoseData().ifPresent(photonPose -> poseEstimator.addVisionMeasurement(
-                        photonPose.estimatedPose.toPose2d(),
-                        photonPose.timestampSeconds,
-                        Constants.VisionConstants.VISION_STD_DEV_MULTITAG_FUNCTION.apply(VisionUtil.Photon.BW.getBestTagDist())
-                ));
-                return;
-            }
+//        if (VisionUtil.Photon.BW.isTagClear()) {
+//            if (VisionUtil.Photon.BW.isMultiTag()) {
+//                VisionUtil.Photon.BW.getOptionalPoseData().ifPresent(photonPose -> poseEstimator.addVisionMeasurement(
+//                        photonPose.estimatedPose.toPose2d(),
+//                        photonPose.timestampSeconds,
+//                        Constants.VisionConstants.VISION_STD_DEV_MULTITAG_FUNCTION.apply(VisionUtil.Photon.BW.getBestTagDist())
+//                ));
+//                return;
+//            }
+//
+//            Optional<Pose2d> photonPose = VisionUtil.Photon.BW.getSingleTagPose(poseEstimator.getEstimatedPosition());
+//            if (photonPose.isEmpty()) { return; }
+//            poseEstimator.addVisionMeasurement(
+//                    photonPose.get(),
+//                    VisionUtil.Photon.BW.getLatestResultTimestamp(),
+//                    Constants.VisionConstants.VISION_STD_DEV_FUNCTION.apply(VisionUtil.Photon.BW.getBestTagDist())
+//            );
+//        }
 
-            Optional<Pose2d> photonPose = VisionUtil.Photon.BW.getSingleTagPose(poseEstimator.getEstimatedPosition());
-            if (photonPose.isEmpty()) { return; }
-            poseEstimator.addVisionMeasurement(
-                    photonPose.get(),
-                    VisionUtil.Photon.BW.getLatestResultTimestamp(),
-                    Constants.VisionConstants.VISION_STD_DEV_FUNCTION.apply(VisionUtil.Photon.BW.getBestTagDist())
-            );
-        }
+
+        VisionUtil.Photon.BW.getOptionalPoseData().ifPresent(photonPose -> poseEstimator.addVisionMeasurement(
+                photonPose.estimatedPose.toPose2d(),
+                photonPose.timestampSeconds,
+                Constants.VisionConstants.VISION_STD_DEV_MULTITAG_FUNCTION.apply(VisionUtil.Photon.BW.getBestTagDist(VisionUtil.Photon.BW.BWCamera.BACK)) // TODO: JUSE USE THEIR OWN MULTITAG THING
+        ));
     }
 
     public void updatePoseEstimation() {
         poseEstimator.update(this.swerve.getState().RawHeading, this.swerve.getState().ModulePositions);
-        updateLimelightPoseEstimation();
+        // updateLimelightPoseEstimation();
         updatePhotonPoseEstimation();
     }
 

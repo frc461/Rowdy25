@@ -120,7 +120,9 @@ public class LocalizationTelemetry {
         DogLog.log("LimelightHasTarget", VisionUtil.Limelight.tagExists());
         DogLog.log("PhotonPose", VisionUtil.Photon.BW.getMultiTagPose());
         DogLog.log("PhotonColorHasTarget", VisionUtil.Photon.Color.hasTargets());
-        DogLog.log("PhotonBWHasTarget", VisionUtil.Photon.BW.hasTargets());
+        DogLog.log("PhotonBWTopRightHasTarget", VisionUtil.Photon.BW.hasTargets(VisionUtil.Photon.BW.BWCamera.TOP_RIGHT));
+        DogLog.log("PhotonBWTopLeftHasTarget", VisionUtil.Photon.BW.hasTargets(VisionUtil.Photon.BW.BWCamera.TOP_LEFT));
+        DogLog.log("PhotonBWBackHasTarget", VisionUtil.Photon.BW.hasTargets(VisionUtil.Photon.BW.BWCamera.BACK));
 
         if (DriverStation.isEnabled() && questTimestampSub.getLastChange() <= (Timer.getTimestamp() - 2) * Constants.ONE_MILLION && questSendDisconnectMessage) {
             DogLog.logFault(QuestFault.QUEST_DISCONNECTED);
