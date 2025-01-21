@@ -5,22 +5,28 @@ import frc.robot.constants.variants.SimConstants;
 
 public enum RobotIdentity {
     ROWDY,
+    TEST,
     SIM;
 
     private static RobotIdentity getIdentity() {
         String mac = MacAddress.getMACAddress();
-        if (!mac.isEmpty()) {
-            if (mac.equals(MacAddress.ROWDY)) {
-                return ROWDY;
-            }
+        if (mac.equals(MacAddress.ROWDY1) || mac.equals(MacAddress.ROWDY2)) {
+            return ROWDY;
+        } else if (mac.equals(MacAddress.TEST)) {
+            return TEST;
         }
         return SIM;
     }
 
     public static void initializeConstants() {
         setDefaultConstants();
-        if (getIdentity() == RobotIdentity.SIM) {
-            setSimConstants();
+        switch (getIdentity()) {
+            case TEST:
+                setTestConstants();
+                break;
+            case SIM:
+                setSimConstants();
+                break;
         }
     }
 
@@ -142,6 +148,10 @@ public enum RobotIdentity {
         Constants.SwerveConstants.FRONT_RIGHT = DefaultConstants.SwerveConstants.FrontRight.FRONT_RIGHT;
         Constants.SwerveConstants.BACK_LEFT = DefaultConstants.SwerveConstants.BackLeft.BACK_LEFT;
         Constants.SwerveConstants.BACK_RIGHT = DefaultConstants.SwerveConstants.BackRight.BACK_RIGHT;
+    }
+
+    private static void setTestConstants() {
+
     }
 
     private static void setSimConstants() {
