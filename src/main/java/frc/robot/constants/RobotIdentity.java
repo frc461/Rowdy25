@@ -47,9 +47,9 @@ public enum RobotIdentity {
         Constants.DEADBAND = DefaultConstants.DEADBAND;
 
         Constants.AutoConstants.ROBOT_CONFIG = DefaultConstants.AutoConstants.ROBOT_CONFIG;
-        Constants.AutoConstants.NOTE_CHECK_MARKER = DefaultConstants.AutoConstants.NOTE_CHECK_MARKER;
+        Constants.AutoConstants.ALGAE_CHECK_MARKER = DefaultConstants.AutoConstants.ALGAE_CHECK_MARKER;
         Constants.AutoConstants.PATH_CONSTRAINTS = DefaultConstants.AutoConstants.PATH_CONSTRAINTS;
-        Constants.AutoConstants.NOTE_SEARCH_DEGREE_SLANT = DefaultConstants.AutoConstants.NOTE_SEARCH_DEGREE_SLANT;
+        Constants.AutoConstants.OBJECT_SEARCH_DEGREE_SLANT = DefaultConstants.AutoConstants.OBJECT_SEARCH_DEGREE_SLANT;
         Constants.AutoConstants.DEGREE_TOLERANCE_TO_ACCEPT = DefaultConstants.AutoConstants.DEGREE_TOLERANCE_TO_ACCEPT;
         Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_ACCEPT = DefaultConstants.AutoConstants.TRANSLATION_TOLERANCE_TO_ACCEPT;
 

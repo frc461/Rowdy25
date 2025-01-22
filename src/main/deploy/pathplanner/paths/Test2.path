@@ -68,7 +68,7 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "checkNote",
+      "name": "checkAlgae",
       "waypointRelativePos": 0.7114217257578903,
       "endWaypointRelativePos": null,
       "command": null

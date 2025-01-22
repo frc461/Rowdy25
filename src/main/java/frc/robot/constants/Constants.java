@@ -50,12 +50,11 @@ public final class Constants {
     public static final class AutoConstants {
         public static RobotConfig ROBOT_CONFIG;
 
-        // TODO: REMOVE ALL MENTIONS OF "NOTE"
-        public static String NOTE_CHECK_MARKER;
+        public static String ALGAE_CHECK_MARKER;
 
         public static PathConstraints PATH_CONSTRAINTS;
 
-        public static double NOTE_SEARCH_DEGREE_SLANT;
+        public static double OBJECT_SEARCH_DEGREE_SLANT;
         public static double DEGREE_TOLERANCE_TO_ACCEPT;
         public static double TRANSLATION_TOLERANCE_TO_ACCEPT;
     }

@@ -49,11 +49,11 @@ public class SearchForObjectCommand extends Command {
         );
         searchAngle = Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red
                 ? upperHalf()
-                        ? Constants.AutoConstants.NOTE_SEARCH_DEGREE_SLANT
-                        : -Constants.AutoConstants.NOTE_SEARCH_DEGREE_SLANT
+                        ? Constants.AutoConstants.OBJECT_SEARCH_DEGREE_SLANT
+                        : -Constants.AutoConstants.OBJECT_SEARCH_DEGREE_SLANT
                 : upperHalf()
-                        ? 180.0 - Constants.AutoConstants.NOTE_SEARCH_DEGREE_SLANT
-                        : -180.0 + Constants.AutoConstants.NOTE_SEARCH_DEGREE_SLANT;
+                        ? 180.0 - Constants.AutoConstants.OBJECT_SEARCH_DEGREE_SLANT
+                        : -180.0 + Constants.AutoConstants.OBJECT_SEARCH_DEGREE_SLANT;
 
         ChassisSpeeds initial = swerve.getState().Speeds;
         Rotation2d rotationalOffset = swerve.localizer.getStrategyPose().getRotation();

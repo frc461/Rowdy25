@@ -22,19 +22,19 @@ import frc.robot.util.VisionUtil;
 import java.util.*;
 import java.util.function.BooleanSupplier;
 
-public class FollowPathDynamicCommand extends FollowPathCommand {
+public class FollowPathRequiringAlgaeCommand extends FollowPathCommand {
     private final Timer timer = new Timer();
     private final Swerve swerve;
     private final PathPlannerPath originalPath;
     private final RobotConfig robotConfig;
     private final BooleanSupplier shouldFlipPath;
-    private final BooleanSupplier noteIsThere = VisionUtil.Photon.Color::hasTargets;
+    private final BooleanSupplier hasAlgaeTargets = VisionUtil.Photon.Color::hasAlgaeTargets;
     private final List<OneShotTriggerEvent> allInstantEvents = new ArrayList<>();
     private PathPlannerPath path;
     private PathPlannerTrajectory trajectory;
     protected boolean interrupted;
 
-    public FollowPathDynamicCommand(PathPlannerPath path, boolean setAssumedPosition, Swerve swerve) {
+    public FollowPathRequiringAlgaeCommand(PathPlannerPath path, boolean setAssumedPosition, Swerve swerve) {
         super(
                 path,
                 swerve.localizer::getStrategyPose,
@@ -103,7 +103,7 @@ public class FollowPathDynamicCommand extends FollowPathCommand {
 
         List<Event> allEvents = trajectory.getEvents();
         for (Event event : allEvents) {
-            if (event instanceof OneShotTriggerEvent && ((OneShotTriggerEvent) event).getEventName().equals(Constants.AutoConstants.NOTE_CHECK_MARKER)) {
+            if (event instanceof OneShotTriggerEvent && ((OneShotTriggerEvent) event).getEventName().equals(Constants.AutoConstants.ALGAE_CHECK_MARKER)) {
                 allInstantEvents.add((OneShotTriggerEvent) event);
             }
         }
@@ -121,7 +121,7 @@ public class FollowPathDynamicCommand extends FollowPathCommand {
         if (!allInstantEvents.isEmpty()) {
             if (allInstantEvents.get(0).getTimestampSeconds() <= currentTime) {
                 allInstantEvents.remove(0);
-                if (!noteIsThere.getAsBoolean()) {
+                if (!hasAlgaeTargets.getAsBoolean()) {
                     interrupted = true;
                 }
             }
@@ -144,7 +144,7 @@ public class FollowPathDynamicCommand extends FollowPathCommand {
         return new WrapperCommand(this) {
             @Override
             public void end(boolean interrupted) {
-                end.accept(FollowPathDynamicCommand.this.interrupted);
+                end.accept(FollowPathRequiringAlgaeCommand.this.interrupted);
                 super.end(interrupted);
             }
         };

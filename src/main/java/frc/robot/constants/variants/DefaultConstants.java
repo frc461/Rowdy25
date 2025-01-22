@@ -73,9 +73,7 @@ public final class DefaultConstants {
             }
         }
 
-        // TODO: REMOVE ALL MENTIONS OF "NOTE"
-
-        public static final String NOTE_CHECK_MARKER = "checkNote";
+        public static final String ALGAE_CHECK_MARKER = "checkAlgae";
 
         public static final PathConstraints PATH_CONSTRAINTS = new PathConstraints(
                 MAX_VEL,
@@ -84,7 +82,7 @@ public final class DefaultConstants {
                 MAX_ANGULAR_ACCEL
         );
 
-        public static final double NOTE_SEARCH_DEGREE_SLANT = 30.0;
+        public static final double OBJECT_SEARCH_DEGREE_SLANT = 30.0;
         public static final double DEGREE_TOLERANCE_TO_ACCEPT = 2.5;
         public static final double TRANSLATION_TOLERANCE_TO_ACCEPT = 0.5;
     }
