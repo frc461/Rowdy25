@@ -75,8 +75,8 @@ public class RobotContainer {
      * POV buttons / D-pad:
      * Up:
      * Down:
-     * Left:
-     * Right: Click - manually toggle between processor and net height
+     * Left: Click - manually temp toggle between lower and higher algae reef intake level
+     * Right: Click - manually temp toggle between processor and net height
      *
      * Triggers:
      * Left: Rotate CCW (with bumper - FAST)
@@ -85,8 +85,8 @@ public class RobotContainer {
      * Joysticks:
      * Left: Translation
      * Right:
-     * Left Button: Reset gyro
-     * Right Button: Toggle between lower and higher algae reef intake level // TODO: IMPLEMENT AUTO CHECKING WITH COLOR CAMERA
+     * Left Button: Reset position to coral left side, Hold: Reset gyro
+     * Right Button: Reset position to coral right side
      *
      * Bumpers:
      * Left: Hold - Align with then intake coral (ground)
@@ -99,7 +99,7 @@ public class RobotContainer {
      *     Coral: Click - L4 score stage, Click Again - outtake, stow
      *
      * B:
-     *     No Coral: Click - Algae pickup stage, stow automatically, Click Again - Stow
+     *     No Coral: Click - Algae pickup stage (height determined by heading, then camera, then stow automatically), stow automatically, Click Again - Stow
      *     Coral: Click - L1 score stage, Click Again - outtake, stow
      *
      * X:
@@ -114,10 +114,10 @@ public class RobotContainer {
     private final static CommandXboxController opXbox = new CommandXboxController(1);
     /* Currently Allocated For Operator:
      * POV buttons / D-pad:
-     * Up:
-     * Down:
-     * Left:
-     * Right:
+     * Up: Click - L2 score stage, Click Again - outtake, stow
+     * Down: Click - L4 score stage, Click Again - outtake, stow
+     * Left: Click - L3 score stage, Click Again - outtake, stow
+     * Right: Click - L1 score stage, Click Again - outtake, stow
      *
      * Triggers:
      * Left: Rotate wrist down
@@ -128,14 +128,14 @@ public class RobotContainer {
      * Right: Rotate pivot
      *
      * Bumpers:
-     * Left:
-     * Right:
+     * Left: Click - manually temp toggle between lower and higher algae reef intake level
+     * Right: Click - manually temp toggle between processor and net height
      *
      * Buttons:
-     * A:
-     * B:
-     * X:
-     * Y:
+     * A: Click - Climb stage, Click Again - stow slowly
+     * B: Click - Algae pickup stage (height determined by heading, then camera, then stow automatically), stow automatically, Click Again - Stow
+     * X: Click - Coral pickup stage, stow automatically, Click Again - Cancel
+     * Y: Click - Algae score stage (processor height if within 45 degrees of processor, otherwise net height), Click again - Outtake, stow
      */
 
     public RobotContainer() {

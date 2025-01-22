@@ -131,7 +131,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                 .andThen(new DriveToObjectCommand(this, robotCentric, true));
     }
 
-    public Command moveToNote() { // TODO IMPLEMENT THIS AFTER CALIBRATING AUTO
+    public Command moveToNote() {
         return new DriveToObjectCommand(this, robotCentric, false);
     }
 
