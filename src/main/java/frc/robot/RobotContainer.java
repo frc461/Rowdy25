@@ -23,10 +23,10 @@ import frc.robot.util.SysID;
 public class RobotContainer {
     /* Subsystems */
     private final Swerve swerve = new Swerve();
-    private final Elevator elevator = new Elevator();
-    private final Intake intake = new Intake();
-    private final Pivot pivot = new Pivot();
-    private final Wrist wrist = new Wrist();
+//    private final Elevator elevator = new Elevator();
+//    private final Intake intake = new Intake();
+//    private final Pivot pivot = new Pivot();
+//    private final Wrist wrist = new Wrist();
 
     private final AutoChooser autoChooser = new AutoChooser(swerve);
 
@@ -163,26 +163,26 @@ public class RobotContainer {
                 )
         );
 
-        elevator.setDefaultCommand(
-                new RunCommand(
-                        () -> elevator.moveElevator(MathUtil.applyDeadband(-opXbox.getLeftY(), Constants.DEADBAND)),
-                        elevator
-                )
-        );
-
-        pivot.setDefaultCommand(
-                new RunCommand(
-                        () -> pivot.movePivot(MathUtil.applyDeadband(-opXbox.getRightY(), Constants.DEADBAND)),
-                        pivot
-                )
-        );
-
-        wrist.setDefaultCommand(
-                new RunCommand(
-                        () -> wrist.moveWrist(MathUtil.applyDeadband(opXbox.getRightTriggerAxis() - opXbox.getLeftTriggerAxis(), Constants.DEADBAND)),
-                        wrist
-                )
-        );
+//        elevator.setDefaultCommand(
+//                new RunCommand(
+//                        () -> elevator.moveElevator(MathUtil.applyDeadband(-opXbox.getLeftY(), Constants.DEADBAND)),
+//                        elevator
+//                )
+//        );
+//
+//        pivot.setDefaultCommand(
+//                new RunCommand(
+//                        () -> pivot.movePivot(MathUtil.applyDeadband(-opXbox.getRightY(), Constants.DEADBAND)),
+//                        pivot
+//                )
+//        );
+//
+//        wrist.setDefaultCommand(
+//                new RunCommand(
+//                        () -> wrist.moveWrist(MathUtil.applyDeadband(opXbox.getRightTriggerAxis() - opXbox.getLeftTriggerAxis(), Constants.DEADBAND)),
+//                        wrist
+//                )
+//        );
     }
 
     private void configureBindings() {

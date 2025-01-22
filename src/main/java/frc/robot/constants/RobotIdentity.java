@@ -1,5 +1,8 @@
 package frc.robot.constants;
 
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.StringPublisher;
+import edu.wpi.first.networktables.StructPublisher;
 import frc.robot.constants.variants.DefaultConstants;
 import frc.robot.constants.variants.SimConstants;
 import frc.robot.constants.variants.TestConstants;
@@ -21,12 +24,18 @@ public enum RobotIdentity {
 
     public static void initializeConstants() {
         setDefaultConstants();
+        NetworkTable identityEntry = Constants.NT_INSTANCE.getTable("Robot");
+        StringPublisher identityPublisher = identityEntry.getStringTopic("Robot Identity").publish();
         switch (getIdentity()) {
+            case ROWDY:
+                identityPublisher.set(ROWDY.name());
             case TEST:
                 setTestConstants();
+                identityPublisher.set(TEST.name());
                 break;
             case SIM:
                 setSimConstants();
+                identityPublisher.set(SIM.name());
                 break;
         }
     }
