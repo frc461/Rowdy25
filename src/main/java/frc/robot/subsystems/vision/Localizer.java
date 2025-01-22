@@ -8,10 +8,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.drivetrain.Swerve;
+import frc.robot.util.EstimatedRobotPose;
 import frc.robot.util.FieldUtil;
 import frc.robot.util.VisionUtil;
-
-import java.util.Optional;
 
 public class Localizer {
     private enum LocalizationStrategy {
@@ -117,31 +116,26 @@ public class Localizer {
 
     public void updatePhotonPoseEstimation() {
         VisionUtil.Photon.updateResults();
-//        if (VisionUtil.Photon.BW.isTagClear()) {
-//            if (VisionUtil.Photon.BW.isMultiTag()) {
-//                VisionUtil.Photon.BW.getOptionalPoseData().ifPresent(photonPose -> poseEstimator.addVisionMeasurement(
-//                        photonPose.estimatedPose.toPose2d(),
-//                        photonPose.timestampSeconds,
-//                        Constants.VisionConstants.VISION_STD_DEV_MULTITAG_FUNCTION.apply(VisionUtil.Photon.BW.getBestTagDist())
-//                ));
-//                return;
-//            }
-//
-//            Optional<Pose2d> photonPose = VisionUtil.Photon.BW.getSingleTagPose(poseEstimator.getEstimatedPosition());
-//            if (photonPose.isEmpty()) { return; }
-//            poseEstimator.addVisionMeasurement(
-//                    photonPose.get(),
-//                    VisionUtil.Photon.BW.getLatestResultTimestamp(),
-//                    Constants.VisionConstants.VISION_STD_DEV_FUNCTION.apply(VisionUtil.Photon.BW.getBestTagDist())
-//            );
-//        }
+        for (VisionUtil.Photon.BW.BWCamera camera : VisionUtil.Photon.BW.BWCamera.values()) {
+            if (VisionUtil.Photon.BW.isTagClear(camera)) {
+                if (VisionUtil.Photon.BW.isMultiTag(camera)) {
+                    EstimatedRobotPose poseEstimate = VisionUtil.Photon.BW.getMultiTagPose(camera);
+                    poseEstimator.addVisionMeasurement(
+                            poseEstimate.estimatedPose().toPose2d(),
+                            poseEstimate.timestampSeconds(),
+                            poseEstimate.stdDevs()
+                    );
+                    return;
+                }
 
-
-        VisionUtil.Photon.BW.getOptionalPoseData().ifPresent(photonPose -> poseEstimator.addVisionMeasurement(
-                photonPose.estimatedPose.toPose2d(),
-                photonPose.timestampSeconds,
-                Constants.VisionConstants.VISION_STD_DEV_MULTITAG_FUNCTION.apply(VisionUtil.Photon.BW.getBestTagDist(VisionUtil.Photon.BW.BWCamera.BACK)) // TODO: JUSE USE THEIR OWN MULTITAG THING
-        ));
+                EstimatedRobotPose poseEstimate = VisionUtil.Photon.BW.getSingleTagPose(camera, poseEstimator.getEstimatedPosition());
+                poseEstimator.addVisionMeasurement(
+                        poseEstimate.estimatedPose().toPose2d(),
+                        poseEstimate.timestampSeconds(),
+                        poseEstimate.stdDevs()
+                );
+            }
+        }
     }
 
     public void updatePoseEstimation() {

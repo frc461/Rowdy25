@@ -13,6 +13,16 @@ public class FieldUtil {
     public static final double FIELD_WIDTH = layout2025.getFieldWidth();
     public static final Pose3d ORIGIN = layout2025.getOrigin();
 
+    public static boolean isInField(Pose3d pose) {
+        return isInField(pose.toPose2d());
+    }
+
+    public static boolean isInField(Pose2d pose) {
+        Pose2d origin2d = ORIGIN.toPose2d();
+        return pose.getX() >= origin2d.getX() && pose.getX() <= origin2d.getX() + FIELD_LENGTH &&
+                pose.getY() >= origin2d.getY() && pose.getY() <= origin2d.getY() + FIELD_WIDTH;
+    }
+
     public enum TagLocation {
         ID_1,
         ID_2,

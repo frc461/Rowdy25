@@ -1,12 +1,12 @@
 package frc.robot.util;
 
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.*;
 import frc.robot.constants.Constants;
-import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
-import org.photonvision.PhotonPoseEstimator;
+import org.photonvision.targeting.MultiTargetPNPResult;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
@@ -269,16 +269,6 @@ public class VisionUtil {
                     )
             );
 
-            // Photon Vision's integrated estimator, to be integrated into the localizer's pose estimator
-            private static final PhotonPoseEstimator photonPoseEstimator = new PhotonPoseEstimator(
-                    FieldUtil.layout2025,
-                    PhotonPoseEstimator.PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
-                    robotToBWTopRightOffset
-            );
-
-            private static Optional<EstimatedRobotPose> poseEstimateOpt = Optional.empty();
-            private static Pose3d lastPose = new Pose3d();
-
             public static PhotonCamera getCamera(BWCamera camera) {
                 return switch (camera) {
                     case TOP_RIGHT -> BW_TOP_RIGHT;
@@ -341,51 +331,60 @@ public class VisionUtil {
                 return isTagClear(Photon.BW.BWCamera.TOP_RIGHT) || isTagClear(Photon.BW.BWCamera.TOP_LEFT) || isTagClear(Photon.BW.BWCamera.BACK);
             }
 
-            public static Optional<EstimatedRobotPose> getOptionalPoseData() {
-                return poseEstimateOpt;
-            }
-
-            public static Pose2d getMultiTagPose() {
-                Optional<EstimatedRobotPose> pose = getOptionalPoseData();
-                return pose.isPresent() ? pose.get().estimatedPose.toPose2d() : new Pose2d();
+            public static EstimatedRobotPose getMultiTagPose(BWCamera camera) {
+                MultiTargetPNPResult multiTagResult = getLatestResult(camera).getMultiTagResult().orElse(new MultiTargetPNPResult());
+                Pose3d bestPose = new Pose3d().plus(multiTagResult.estimatedPose.best).relativeTo(FieldUtil.ORIGIN).plus(getRobotToBWOffset(camera).inverse());
+                return new EstimatedRobotPose(
+                        bestPose,
+                        getLatestResultTimestamp(camera),
+                        getLatestResult(camera).getTargets(),
+                        Constants.VisionConstants.VISION_STD_DEV_MULTITAG_FUNCTION.apply(getBestTagDist(camera))
+                );
             }
 
             // TODO TEST THIS
-            public static Optional<Pose2d> getSingleTagPose(BWCamera camera, Pose2d currentPose) {
-                if (hasTargets(camera)) {
+            public static EstimatedRobotPose getSingleTagPose(BWCamera camera, Pose2d currentPose) {
+                Pose3d tagPose = FieldUtil.TagLocation.getTagLocation3d(getBestTagID(camera));
+                PhotonPipelineResult result = getLatestResult(camera);
+                Transform3d cameraToTargetBest = result.getBestTarget().getBestCameraToTarget();
+                Transform3d cameraToTargetAlt = result.getBestTarget().getAlternateCameraToTarget();
 
-                    Pose3d tagPose = FieldUtil.TagLocation.getTagLocation3d(getBestTagID(camera));
-                    Transform3d cameraToTargetBest = getLatestResult(camera).getBestTarget().getBestCameraToTarget();
-                    Transform3d cameraToTargetAlt = getLatestResult(camera).getBestTarget().getAlternateCameraToTarget();
+                double bestDist = cameraToTargetBest.getTranslation().toTranslation2d().getNorm();
+                double altDist = cameraToTargetAlt.getTranslation().toTranslation2d().getNorm();
 
-                    Pose2d poseBest = tagPose.plus(cameraToTargetBest.inverse()).plus(getRobotToBWOffset(camera).inverse()).toPose2d();
-                    Pose2d poseAlt = tagPose.plus(cameraToTargetAlt.inverse()).plus(getRobotToBWOffset(camera).inverse()).toPose2d();
+                Pose3d poseBest = tagPose.plus(cameraToTargetBest.inverse()).relativeTo(FieldUtil.ORIGIN).plus(getRobotToBWOffset(camera).inverse());
+                Pose3d poseAlt = tagPose.plus(cameraToTargetAlt.inverse()).relativeTo(FieldUtil.ORIGIN).plus(getRobotToBWOffset(camera).inverse());
 
-                    Pose2d poseToReturn;
+                Pose3d poseToReturn;
+                double distToApply;
 
-                    // Disambiguate using the current pose i.e., choose the pose most consistent with the robot's current rotation
-                    if (getLatestResult(camera).getBestTarget().getPoseAmbiguity() < 0.15) {
-                        poseToReturn = poseBest;
-                    } else if (Math.abs(poseBest.getRotation().minus(currentPose.getRotation()).getDegrees()) <
-                            Math.abs(poseAlt.getRotation().minus(currentPose.getRotation()).getDegrees())) {
-                        poseToReturn = poseBest;
-                    } else {
-                        poseToReturn = poseAlt;
-                    }
-
-                    // Check if the pose is inside the field
-                    if (poseToReturn.getX() > 0 && poseToReturn.getY() > 0
-                            && poseToReturn.getX() < FieldUtil.FIELD_LENGTH && poseToReturn.getY() < FieldUtil.FIELD_WIDTH) {
-                        return Optional.of(poseToReturn);
-                    }
+                // Disambiguate using the current pose i.e., choose the pose most consistent with the robot's current rotation
+                if (getLatestResult(camera).getBestTarget().getPoseAmbiguity() < 0.15) {
+                    poseToReturn = poseBest;
+                    distToApply = bestDist;
+                } else if (Math.abs(poseBest.toPose2d().getRotation().minus(currentPose.getRotation()).getDegrees()) <
+                        Math.abs(poseAlt.toPose2d().getRotation().minus(currentPose.getRotation()).getDegrees())) {
+                    poseToReturn = poseBest;
+                    distToApply = bestDist;
+                } else {
+                    poseToReturn = poseAlt;
+                    distToApply = altDist;
                 }
-                return Optional.empty();
+
+                // Check if the pose is inside the field
+                if (FieldUtil.isInField(poseToReturn)) {
+                    return new EstimatedRobotPose(
+                            poseToReturn,
+                            result.getTimestampSeconds(),
+                            result.getTargets(),
+                            Constants.VisionConstants.VISION_STD_DEV_MULTITAG_FUNCTION.apply(distToApply)
+                    );
+                }
+                return new EstimatedRobotPose(new Pose3d(), 0.0, List.of(), VecBuilder.fill(0.0, 0.0, 0.0));
             }
 
             public static void updateResults() {
-                poseEstimateOpt = Optional.empty();
                 for (BWCamera camera : BWCamera.values()) {
-                    Optional<EstimatedRobotPose> currentPoseOpt;
                     List<PhotonPipelineResult> results = getCamera(camera).getAllUnreadResults();
 
                     if (!results.isEmpty()) {
@@ -394,16 +393,8 @@ public class VisionUtil {
                             case TOP_LEFT -> latestResultTopLeft = results.get(results.size() - 1);
                             case BACK -> latestResultBack = results.get(results.size() - 1);
                         }
-                        currentPoseOpt = photonPoseEstimator.update(getLatestResult(camera));
-                        photonPoseEstimator.setRobotToCameraTransform(getRobotToBWOffset(camera));
-                        if (poseEstimateOpt.isEmpty()) {
-                            poseEstimateOpt = currentPoseOpt;
-                        } else if (currentPoseOpt.isPresent()) {
-                            poseEstimateOpt = currentPoseOpt;
-                        }
                     }
                 }
-                poseEstimateOpt.ifPresent(estimatedRobotPose -> lastPose = estimatedRobotPose.estimatedPose);
             }
         }
     }
