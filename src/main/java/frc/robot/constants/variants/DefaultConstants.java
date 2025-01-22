@@ -113,10 +113,10 @@ public final class DefaultConstants {
         public static final class PhotonConstants {
             // TODO SET CAMERAS TO CENTER OF ROBOT OFFSETS
             public static final double BW_TOP_RIGHT_FORWARD = 0.0;
-            public static final double BW_TOP_RIGHT_LEFT = Units.inchesToMeters(-4.0);
+            public static final double BW_TOP_RIGHT_LEFT = 0.0;
             public static final double BW_TOP_RIGHT_UP = 0.0;
-            public static final double BW_TOP_RIGHT_ROLL = 0.0;
-            public static final double BW_TOP_RIGHT_PITCH = 25.5;
+            public static final double BW_TOP_RIGHT_ROLL = 0.0; // TODO CONSIDER NEGATIVE ROLL & PITCH BECAUSE OF RIGHT HAND RULE & EULER ANGLES
+            public static final double BW_TOP_RIGHT_PITCH = 0.0;
             public static final double BW_TOP_RIGHT_YAW = 0.0;
 
             public static final double BW_TOP_LEFT_FORWARD = 0.0;

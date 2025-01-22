@@ -13,7 +13,7 @@ import frc.robot.subsystems.drivetrain.Swerve;
 import frc.robot.util.FieldUtil;
 import frc.robot.util.VisionUtil;
 
-public class SearchForObjectCommand extends Command {
+public class SearchForAlgaeCommand extends Command {
     private final Swerve swerve;
     private final SwerveRequest.FieldCentric fieldCentric;
     private final PIDController errorController;
@@ -27,8 +27,8 @@ public class SearchForObjectCommand extends Command {
     private boolean translationComplete;
     private boolean end;
 
-    // NOTE: THIS CLASS IS NOT USEFUL FOR 2025'S GAME
-    public SearchForObjectCommand(Swerve swerve, SwerveRequest.FieldCentric fieldCentric) {
+    // TODO: REVAMP TO FOLLOW A CIRCULAR PATH AROUND REEF, THEN STOP IF EITHER AN ALGAE IS FOUND OR PATH IS COMPLETED
+    public SearchForAlgaeCommand(Swerve swerve, SwerveRequest.FieldCentric fieldCentric) {
         this.swerve = swerve;
         this.fieldCentric = fieldCentric;
 
@@ -77,7 +77,7 @@ public class SearchForObjectCommand extends Command {
         double currentX = currentTranslation.getX();
         double currentY = currentTranslation.getY();
 
-        // TODO TEST SMOOTHNESS
+        // TODO: TEST SMOOTHNESS
         xVel *= 0.9;
         yVel *= 0.9;
         rotVel *= 0.9;

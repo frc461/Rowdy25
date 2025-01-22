@@ -191,7 +191,7 @@ public class VisionUtil {
             }
 
             public static double getBestCoralYaw() {
-                if (hasAlgaeTargets()) {
+                if (hasCoralTargets()) {
                     for (PhotonTrackedTarget target : latestResult.getTargets()) {
                         if (target.getDetectedObjectClassID() == 1) {
                             return target.getYaw();
@@ -202,7 +202,7 @@ public class VisionUtil {
             }
 
             public static double getBestCoralPitch() {
-                if (hasAlgaeTargets()) {
+                if (hasCoralTargets()) {
                     for (PhotonTrackedTarget target : latestResult.getTargets()) {
                         if (target.getDetectedObjectClassID() == 1) {
                             return target.getPitch();
@@ -235,7 +235,7 @@ public class VisionUtil {
             private static PhotonPipelineResult latestResultTopLeft = new PhotonPipelineResult();
             private static PhotonPipelineResult latestResultBack = new PhotonPipelineResult();
 
-            public static final Transform3d robotToBWTopRightOffset = new Transform3d(
+            private static final Transform3d ROBOT_TO_BW_TOP_RIGHT_OFFSET = new Transform3d(
                     Constants.VisionConstants.PhotonConstants.BW_TOP_RIGHT_FORWARD,
                     Constants.VisionConstants.PhotonConstants.BW_TOP_RIGHT_LEFT,
                     Constants.VisionConstants.PhotonConstants.BW_TOP_RIGHT_UP,
@@ -246,7 +246,7 @@ public class VisionUtil {
                     )
             );
 
-            public static final Transform3d robotToBWTopLeftOffset = new Transform3d(
+            private static final Transform3d ROBOT_TO_BW_TOP_LEFT_OFFSET = new Transform3d(
                     Constants.VisionConstants.PhotonConstants.BW_TOP_LEFT_FORWARD,
                     Constants.VisionConstants.PhotonConstants.BW_TOP_LEFT_LEFT,
                     Constants.VisionConstants.PhotonConstants.BW_TOP_LEFT_UP,
@@ -257,7 +257,7 @@ public class VisionUtil {
                     )
             );
 
-            public static final Transform3d robotToBWBackOffset = new Transform3d(
+            private static final Transform3d ROBOT_TO_BW_BACK_OFFSET = new Transform3d(
                     Constants.VisionConstants.PhotonConstants.BW_BACK_FORWARD,
                     Constants.VisionConstants.PhotonConstants.BW_BACK_LEFT,
                     Constants.VisionConstants.PhotonConstants.BW_BACK_UP,
@@ -286,9 +286,9 @@ public class VisionUtil {
 
             public static Transform3d getRobotToBWOffset(BWCamera camera) {
                 return switch (camera) {
-                    case TOP_RIGHT -> robotToBWTopRightOffset;
-                    case TOP_LEFT -> robotToBWTopLeftOffset;
-                    case BACK -> robotToBWBackOffset;
+                    case TOP_RIGHT -> ROBOT_TO_BW_TOP_RIGHT_OFFSET;
+                    case TOP_LEFT -> ROBOT_TO_BW_TOP_LEFT_OFFSET;
+                    case BACK -> ROBOT_TO_BW_BACK_OFFSET;
                 };
             }
 
