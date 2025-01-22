@@ -71,13 +71,12 @@ public class RobotContainer {
      * Y: Reset gyro
      */
 
-
-    /* Aneesh's Driver Ideas:
+    /* Driver Tentative:
      * POV buttons / D-pad:
      * Up:
-     * Down: Climb?
+     * Down:
      * Left:
-     * Right:
+     * Right: Click - manually toggle between processor and net height
      *
      * Triggers:
      * Left: Rotate CCW (with bumper - FAST)
@@ -86,42 +85,8 @@ public class RobotContainer {
      * Joysticks:
      * Left: Translation
      * Right:
-     * Left Button:
-     * Right Button: intake coral from station (maybe also auto-align to 2 different pickup locations based on proximity)
-     *
-     * Bumpers:
-     * Left: chase & intake algae from ground
-     * Right: chase & intake coral from ground
-     *
-     * Buttons:
-     * Note: All buttons also align to closest target rotationally & translationally using tags/piece detection. They also outtake on release if necessary and all go back to stow position.
-     *
-     * A: L1 coral height/angle if coral in intake, processor otherwise  // TODO THINK OF ONE DRIVER AUTOMATED TASKS WITH BUTTONS (MIGHT BE VERY COMPLICATED)
-     *
-     * B: L2 coral height/angle if coral in intake, intake low algae from reef otherwise
-     *
-     * X: L3 coral height/angle if coral in intake, intake high algae from reef otherwise
-     *
-     * Y: L4 coral height/angle if coral in intake, net otherwise
-     */
-
-    /* Eugene's Driver Ideas:
-     * POV buttons / D-pad:
-     * Up:
-     * Down: Climb?
-     * Left:
-     * Right:
-     *
-     * Triggers:
-     * Left: Rotate CCW (with bumper - FAST)
-     * Right: Rotate CW (with bumper - FAST)
-     *
-     * Joysticks:
-     * Left: Translation
-     * Right: Up = +L coral reef score toggle, Down = -L coral reef score toggle (CYCLE THROUGH)
-     *     Levels: Ground, L1, L2, L3, L4
      * Left Button: Reset gyro
-     * Right Button: Toggle between lower and higher algae reef intake level
+     * Right Button: Toggle between lower and higher algae reef intake level // TODO: IMPLEMENT AUTO CHECKING WITH COLOR CAMERA
      *
      * Bumpers:
      * Left: Hold - Align with then intake coral (ground)
@@ -129,13 +94,21 @@ public class RobotContainer {
      *
      * Buttons:
      *
-     * A: Click - Coral pickup stage, stow automatically, Click Again - Cancel
+     * A:
+     *     No Coral: Click - Climb stage, Click Again - stow slowly
+     *     Coral: Click - L4 score stage, Click Again - outtake, stow
      *
-     * B: Click - Coral score stage, Click again - Outtake, stow
+     * B:
+     *     No Coral: Click - Algae pickup stage, stow automatically, Click Again - Stow
+     *     Coral: Click - L1 score stage, Click Again - outtake, stow
      *
-     * X: Click - Algae pickup stage, stow automatically, Click Again - Cancel, Click when in algae score stage - manually toggle between processor and net height
+     * X:
+     *     No Coral: Click - Coral pickup stage, stow automatically, Click Again - Cancel
+     *     Coral: Click - L3 score stage, Click Again - outtake, stow
      *
-     * Y: Click - Algae score stage (if heading is within 45 degrees of processor then processor height, otherwise net height), Click again - Outtake, stow
+     * Y:
+     *     No Coral: Click - Algae score stage (processor height if within 45 degrees of processor, otherwise net height), Click again - Outtake, stow
+     *     Coral: Click - L2 score stage, Click Again - outtake, stow
      */
 
     private final static CommandXboxController opXbox = new CommandXboxController(1);
