@@ -108,7 +108,7 @@ public class RobotContainer {
     /* Eugene's Driver Ideas:
      * POV buttons / D-pad:
      * Up:
-     * Down:
+     * Down: Climb?
      * Left:
      * Right:
      *
@@ -118,7 +118,8 @@ public class RobotContainer {
      *
      * Joysticks:
      * Left: Translation
-     * Right: Up = +L coral reef score toggle, Down = -L coral reef score toggle
+     * Right: Up = +L coral reef score toggle, Down = -L coral reef score toggle (CYCLE THROUGH)
+     *     Levels: Ground, L1, L2, L3, L4
      * Left Button: Reset gyro
      * Right Button: Toggle between lower and higher algae reef intake level
      *
