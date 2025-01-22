@@ -27,6 +27,7 @@ public class SearchForObjectCommand extends Command {
     private boolean translationComplete;
     private boolean end;
 
+    // NOTE: THIS CLASS IS NOT USEFUL FOR 2025'S GAME
     public SearchForObjectCommand(Swerve swerve, SwerveRequest.FieldCentric fieldCentric) {
         this.swerve = swerve;
         this.fieldCentric = fieldCentric;
@@ -80,7 +81,6 @@ public class SearchForObjectCommand extends Command {
         xVel *= 0.9;
         yVel *= 0.9;
         rotVel *= 0.9;
-        System.out.println("xVel: " + xVel + ", yVel: " + yVel + ", rotVel: " + rotVel);
         transitionPoll++;
         transitionMultiplier = 1 - Math.pow(0.9, transitionPoll);
 

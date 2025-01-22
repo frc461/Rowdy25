@@ -78,7 +78,6 @@ public final class Constants {
         }
 
         public static final class PhotonConstants {
-            // TODO ADD TWO MORE BW CAMERA OFFSETS
             public static double BW_TOP_RIGHT_FORWARD;
             public static double BW_TOP_RIGHT_LEFT;
             public static double BW_TOP_RIGHT_UP;
@@ -124,7 +123,6 @@ public final class Constants {
         }
     }
 
-    // TODO: MOVE TO DEFAULT CONSTANTS VARIANT + UPDATE VALUES FOR 2025 + TUNE
     public final static class ElevatorConstants {
         // basic configs
         public static int LEAD_ID;
@@ -152,7 +150,7 @@ public final class Constants {
         public static int CORAL_BEAM_ID;
         public static int ALGAE_BEAM_ID;
         public static int CURRENT_LIMIT;
-        public static InvertedValue LEFT_INVERT; //TODO: CHECK ON REAL ROBOT
+        public static InvertedValue LEFT_INVERT;
     }
 
     public final static class PivotConstants {

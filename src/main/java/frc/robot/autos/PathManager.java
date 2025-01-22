@@ -27,6 +27,7 @@ public final class PathManager {
         }
     }
 
+    // TODO: TEST & UPDATE SCORING LOCATIONS
     public enum ScoringLocations {
         AMP,
         STAGE,

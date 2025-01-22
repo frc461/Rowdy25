@@ -111,7 +111,7 @@ public final class DefaultConstants {
         }
 
         public static final class PhotonConstants {
-            // TODO SET ARDUCAM BW CAMERA TO CENTER OF ROBOT OFFSETS
+            // TODO SET CAMERAS TO CENTER OF ROBOT OFFSETS
             public static final double BW_TOP_RIGHT_FORWARD = 0.0;
             public static final double BW_TOP_RIGHT_LEFT = Units.inchesToMeters(-4.0);
             public static final double BW_TOP_RIGHT_UP = 0.0;
@@ -158,14 +158,14 @@ public final class DefaultConstants {
         }
     }
 
-    // TODO: MOVE TO DEFAULT CONSTANTS VARIANT + UPDATE VALUES FOR 2025 + TUNE
+    // TODO: UPDATE VALUES FOR 2025 + TUNE
     public final static class ElevatorConstants {
         // basic configs
         public static final int LEAD_ID = 31;
         public static final int FOLLOWER_ID = 32;
         public static final int LOWER_LIMIT_SWITCH_ID = 2;
         public static final int CURRENT_LIMIT = 80;
-        public static final InvertedValue ELEVATOR_INVERT = InvertedValue.Clockwise_Positive;
+        public static final InvertedValue ELEVATOR_INVERT = InvertedValue.Clockwise_Positive; // TODO: CHECK ON REAL ROBOT
 
         // pid
         public static final double ELEVATOR_S = 0.0;
@@ -186,7 +186,7 @@ public final class DefaultConstants {
         public static final int CORAL_BEAM_ID = 3;
         public static final int ALGAE_BEAM_ID = 4;
         public static final int CURRENT_LIMIT = 40;
-        public static final InvertedValue LEFT_INVERT = InvertedValue.Clockwise_Positive; //TODO: CHECK ON REAL ROBOT
+        public static final InvertedValue LEFT_INVERT = InvertedValue.Clockwise_Positive; // TODO: CHECK ON REAL ROBOT
     }
 
     public final static class PivotConstants {
