@@ -2,6 +2,7 @@ package frc.robot.constants;
 
 import frc.robot.constants.variants.DefaultConstants;
 import frc.robot.constants.variants.SimConstants;
+import frc.robot.constants.variants.TestConstants;
 
 public enum RobotIdentity {
     ROWDY,
@@ -63,12 +64,24 @@ public enum RobotIdentity {
         Constants.VisionConstants.LimelightConstants.LL_PITCH = DefaultConstants.VisionConstants.LimelightConstants.LL_PITCH;
         Constants.VisionConstants.LimelightConstants.LL_YAW = DefaultConstants.VisionConstants.LimelightConstants.LL_YAW;
         Constants.VisionConstants.LimelightConstants.LL_MAX_TAG_CLEAR_DIST = DefaultConstants.VisionConstants.LimelightConstants.LL_MAX_TAG_CLEAR_DIST;
-        Constants.VisionConstants.PhotonConstants.BW_FORWARD = DefaultConstants.VisionConstants.PhotonConstants.BW_FORWARD;
-        Constants.VisionConstants.PhotonConstants.BW_LEFT = DefaultConstants.VisionConstants.PhotonConstants.BW_LEFT;
-        Constants.VisionConstants.PhotonConstants.BW_UP = DefaultConstants.VisionConstants.PhotonConstants.BW_UP;
-        Constants.VisionConstants.PhotonConstants.BW_ROLL = DefaultConstants.VisionConstants.PhotonConstants.BW_ROLL;
-        Constants.VisionConstants.PhotonConstants.BW_PITCH = DefaultConstants.VisionConstants.PhotonConstants.BW_PITCH;
-        Constants.VisionConstants.PhotonConstants.BW_YAW = DefaultConstants.VisionConstants.PhotonConstants.BW_YAW;
+        Constants.VisionConstants.PhotonConstants.BW_TOP_RIGHT_FORWARD = DefaultConstants.VisionConstants.PhotonConstants.BW_TOP_RIGHT_FORWARD;
+        Constants.VisionConstants.PhotonConstants.BW_TOP_RIGHT_LEFT = DefaultConstants.VisionConstants.PhotonConstants.BW_TOP_RIGHT_LEFT;
+        Constants.VisionConstants.PhotonConstants.BW_TOP_RIGHT_UP = DefaultConstants.VisionConstants.PhotonConstants.BW_TOP_RIGHT_UP;
+        Constants.VisionConstants.PhotonConstants.BW_TOP_RIGHT_ROLL = DefaultConstants.VisionConstants.PhotonConstants.BW_TOP_RIGHT_ROLL;
+        Constants.VisionConstants.PhotonConstants.BW_TOP_RIGHT_PITCH = DefaultConstants.VisionConstants.PhotonConstants.BW_TOP_RIGHT_PITCH;
+        Constants.VisionConstants.PhotonConstants.BW_TOP_RIGHT_YAW = DefaultConstants.VisionConstants.PhotonConstants.BW_TOP_RIGHT_YAW;
+        Constants.VisionConstants.PhotonConstants.BW_TOP_LEFT_FORWARD = DefaultConstants.VisionConstants.PhotonConstants.BW_TOP_LEFT_FORWARD;
+        Constants.VisionConstants.PhotonConstants.BW_TOP_LEFT_LEFT = DefaultConstants.VisionConstants.PhotonConstants.BW_TOP_LEFT_LEFT;
+        Constants.VisionConstants.PhotonConstants.BW_TOP_LEFT_UP = DefaultConstants.VisionConstants.PhotonConstants.BW_TOP_LEFT_UP;
+        Constants.VisionConstants.PhotonConstants.BW_TOP_LEFT_ROLL = DefaultConstants.VisionConstants.PhotonConstants.BW_TOP_LEFT_ROLL;
+        Constants.VisionConstants.PhotonConstants.BW_TOP_LEFT_PITCH = DefaultConstants.VisionConstants.PhotonConstants.BW_TOP_LEFT_PITCH;
+        Constants.VisionConstants.PhotonConstants.BW_TOP_LEFT_YAW = DefaultConstants.VisionConstants.PhotonConstants.BW_TOP_LEFT_YAW;
+        Constants.VisionConstants.PhotonConstants.BW_BACK_FORWARD = DefaultConstants.VisionConstants.PhotonConstants.BW_BACK_FORWARD;
+        Constants.VisionConstants.PhotonConstants.BW_BACK_LEFT = DefaultConstants.VisionConstants.PhotonConstants.BW_BACK_LEFT;
+        Constants.VisionConstants.PhotonConstants.BW_BACK_UP = DefaultConstants.VisionConstants.PhotonConstants.BW_BACK_UP;
+        Constants.VisionConstants.PhotonConstants.BW_BACK_ROLL = DefaultConstants.VisionConstants.PhotonConstants.BW_BACK_ROLL;
+        Constants.VisionConstants.PhotonConstants.BW_BACK_PITCH = DefaultConstants.VisionConstants.PhotonConstants.BW_BACK_PITCH;
+        Constants.VisionConstants.PhotonConstants.BW_BACK_YAW = DefaultConstants.VisionConstants.PhotonConstants.BW_BACK_YAW;
         Constants.VisionConstants.PhotonConstants.BW_MAX_TAG_CLEAR_DIST = DefaultConstants.VisionConstants.PhotonConstants.BW_MAX_TAG_CLEAR_DIST;
         Constants.VisionConstants.PhotonConstants.OBJECT_GOAL_PITCH = DefaultConstants.VisionConstants.PhotonConstants.OBJECT_GOAL_PITCH;
         Constants.VisionConstants.PhotonConstants.OBJECT_DEGREE_TOLERANCE_TO_ACCEPT = DefaultConstants.VisionConstants.PhotonConstants.OBJECT_DEGREE_TOLERANCE_TO_ACCEPT;
@@ -151,7 +164,18 @@ public enum RobotIdentity {
     }
 
     private static void setTestConstants() {
-
+        Constants.VisionConstants.PhotonConstants.BW_TOP_RIGHT_FORWARD = TestConstants.BW_TOP_RIGHT_FORWARD;
+        Constants.VisionConstants.PhotonConstants.BW_TOP_RIGHT_LEFT = TestConstants.BW_TOP_RIGHT_LEFT;
+        Constants.VisionConstants.PhotonConstants.BW_TOP_RIGHT_UP = TestConstants.BW_TOP_RIGHT_UP;
+        Constants.VisionConstants.PhotonConstants.BW_TOP_RIGHT_ROLL = TestConstants.BW_TOP_RIGHT_ROLL;
+        Constants.VisionConstants.PhotonConstants.BW_TOP_RIGHT_PITCH = TestConstants.BW_TOP_RIGHT_PITCH;
+        Constants.VisionConstants.PhotonConstants.BW_TOP_RIGHT_YAW = TestConstants.BW_TOP_RIGHT_YAW;
+        Constants.VisionConstants.PhotonConstants.BW_TOP_LEFT_FORWARD = TestConstants.BW_TOP_LEFT_FORWARD;
+        Constants.VisionConstants.PhotonConstants.BW_TOP_LEFT_LEFT = TestConstants.BW_TOP_LEFT_LEFT;
+        Constants.VisionConstants.PhotonConstants.BW_TOP_LEFT_UP = TestConstants.BW_TOP_LEFT_UP;
+        Constants.VisionConstants.PhotonConstants.BW_TOP_LEFT_ROLL = TestConstants.BW_TOP_LEFT_ROLL;
+        Constants.VisionConstants.PhotonConstants.BW_TOP_LEFT_PITCH = TestConstants.BW_TOP_LEFT_PITCH;
+        Constants.VisionConstants.PhotonConstants.BW_TOP_LEFT_YAW = TestConstants.BW_TOP_LEFT_YAW;
     }
 
     private static void setSimConstants() {

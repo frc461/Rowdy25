@@ -114,12 +114,26 @@ public final class DefaultConstants {
 
         public static final class PhotonConstants {
             // TODO SET ARDUCAM BW CAMERA TO CENTER OF ROBOT OFFSETS
-            public static final double BW_FORWARD = 0.0;
-            public static final double BW_LEFT = Units.inchesToMeters(-4.0);
-            public static final double BW_UP = 0.0;
-            public static final double BW_ROLL = 0.0;
-            public static final double BW_PITCH = 25.5;
-            public static final double BW_YAW = 0.0;
+            public static final double BW_TOP_RIGHT_FORWARD = 0.0;
+            public static final double BW_TOP_RIGHT_LEFT = Units.inchesToMeters(-4.0);
+            public static final double BW_TOP_RIGHT_UP = 0.0;
+            public static final double BW_TOP_RIGHT_ROLL = 0.0;
+            public static final double BW_TOP_RIGHT_PITCH = 25.5;
+            public static final double BW_TOP_RIGHT_YAW = 0.0;
+
+            public static final double BW_TOP_LEFT_FORWARD = 0.0;
+            public static final double BW_TOP_LEFT_LEFT = 0.0;
+            public static final double BW_TOP_LEFT_UP = 0.0;
+            public static final double BW_TOP_LEFT_ROLL = 0.0;
+            public static final double BW_TOP_LEFT_PITCH = 0.0;
+            public static final double BW_TOP_LEFT_YAW = 0.0;
+
+            public static final double BW_BACK_FORWARD = 0.0;
+            public static final double BW_BACK_LEFT = 0.0;
+            public static final double BW_BACK_UP = 0.0;
+            public static final double BW_BACK_ROLL = 0.0;
+            public static final double BW_BACK_PITCH = 0.0;
+            public static final double BW_BACK_YAW = 0.0;
 
             public static final double BW_MAX_TAG_CLEAR_DIST = 6.0;
 

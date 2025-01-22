@@ -11,7 +11,6 @@ import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 import java.util.List;
-import java.util.Optional;
 
 public class VisionUtil {
     public static boolean highConfidenceEstimation() {
@@ -237,35 +236,35 @@ public class VisionUtil {
             private static PhotonPipelineResult latestResultBack = new PhotonPipelineResult();
 
             public static final Transform3d robotToBWTopRightOffset = new Transform3d(
-                    Constants.VisionConstants.PhotonConstants.BW_FORWARD,
-                    Constants.VisionConstants.PhotonConstants.BW_LEFT,
-                    Constants.VisionConstants.PhotonConstants.BW_UP,
+                    Constants.VisionConstants.PhotonConstants.BW_TOP_RIGHT_FORWARD,
+                    Constants.VisionConstants.PhotonConstants.BW_TOP_RIGHT_LEFT,
+                    Constants.VisionConstants.PhotonConstants.BW_TOP_RIGHT_UP,
                     new Rotation3d(
-                            Units.degreesToRadians(Constants.VisionConstants.PhotonConstants.BW_ROLL),
-                            Units.degreesToRadians(Constants.VisionConstants.PhotonConstants.BW_PITCH),
-                            Units.degreesToRadians(Constants.VisionConstants.PhotonConstants.BW_YAW)
+                            Units.degreesToRadians(Constants.VisionConstants.PhotonConstants.BW_TOP_RIGHT_ROLL),
+                            Units.degreesToRadians(Constants.VisionConstants.PhotonConstants.BW_TOP_RIGHT_PITCH),
+                            Units.degreesToRadians(Constants.VisionConstants.PhotonConstants.BW_TOP_RIGHT_YAW)
                     )
             );
 
             public static final Transform3d robotToBWTopLeftOffset = new Transform3d(
-                    Constants.VisionConstants.PhotonConstants.BW_FORWARD,
-                    Constants.VisionConstants.PhotonConstants.BW_LEFT,
-                    Constants.VisionConstants.PhotonConstants.BW_UP,
+                    Constants.VisionConstants.PhotonConstants.BW_TOP_LEFT_FORWARD,
+                    Constants.VisionConstants.PhotonConstants.BW_TOP_LEFT_LEFT,
+                    Constants.VisionConstants.PhotonConstants.BW_TOP_LEFT_UP,
                     new Rotation3d(
-                            Units.degreesToRadians(Constants.VisionConstants.PhotonConstants.BW_ROLL),
-                            Units.degreesToRadians(Constants.VisionConstants.PhotonConstants.BW_PITCH),
-                            Units.degreesToRadians(Constants.VisionConstants.PhotonConstants.BW_YAW)
+                            Units.degreesToRadians(Constants.VisionConstants.PhotonConstants.BW_TOP_LEFT_ROLL),
+                            Units.degreesToRadians(Constants.VisionConstants.PhotonConstants.BW_TOP_LEFT_PITCH),
+                            Units.degreesToRadians(Constants.VisionConstants.PhotonConstants.BW_TOP_LEFT_YAW)
                     )
             );
 
             public static final Transform3d robotToBWBackOffset = new Transform3d(
-                    Constants.VisionConstants.PhotonConstants.BW_FORWARD,
-                    Constants.VisionConstants.PhotonConstants.BW_LEFT,
-                    Constants.VisionConstants.PhotonConstants.BW_UP,
+                    Constants.VisionConstants.PhotonConstants.BW_BACK_FORWARD,
+                    Constants.VisionConstants.PhotonConstants.BW_BACK_LEFT,
+                    Constants.VisionConstants.PhotonConstants.BW_BACK_UP,
                     new Rotation3d(
-                            Units.degreesToRadians(Constants.VisionConstants.PhotonConstants.BW_ROLL),
-                            Units.degreesToRadians(Constants.VisionConstants.PhotonConstants.BW_PITCH),
-                            Units.degreesToRadians(Constants.VisionConstants.PhotonConstants.BW_YAW)
+                            Units.degreesToRadians(Constants.VisionConstants.PhotonConstants.BW_BACK_ROLL),
+                            Units.degreesToRadians(Constants.VisionConstants.PhotonConstants.BW_BACK_PITCH),
+                            Units.degreesToRadians(Constants.VisionConstants.PhotonConstants.BW_BACK_YAW)
                     )
             );
 

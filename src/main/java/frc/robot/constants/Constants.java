@@ -81,12 +81,26 @@ public final class Constants {
 
         public static final class PhotonConstants {
             // TODO ADD TWO MORE BW CAMERA OFFSETS
-            public static double BW_FORWARD;
-            public static double BW_LEFT;
-            public static double BW_UP;
-            public static double BW_ROLL;
-            public static double BW_PITCH;
-            public static double BW_YAW;
+            public static double BW_TOP_RIGHT_FORWARD;
+            public static double BW_TOP_RIGHT_LEFT;
+            public static double BW_TOP_RIGHT_UP;
+            public static double BW_TOP_RIGHT_ROLL;
+            public static double BW_TOP_RIGHT_PITCH;
+            public static double BW_TOP_RIGHT_YAW;
+
+            public static double BW_TOP_LEFT_FORWARD;
+            public static double BW_TOP_LEFT_LEFT;
+            public static double BW_TOP_LEFT_UP;
+            public static double BW_TOP_LEFT_ROLL;
+            public static double BW_TOP_LEFT_PITCH;
+            public static double BW_TOP_LEFT_YAW;
+
+            public static double BW_BACK_FORWARD;
+            public static double BW_BACK_LEFT;
+            public static double BW_BACK_UP;
+            public static double BW_BACK_ROLL;
+            public static double BW_BACK_PITCH;
+            public static double BW_BACK_YAW;
 
             public static double BW_MAX_TAG_CLEAR_DIST;
 
