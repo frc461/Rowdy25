@@ -150,13 +150,11 @@ public final class Constants {
 
     public final static class IntakeConstants {
         // basic configs
-        public static int LEFT_MOTOR_ID;
-        public static int RIGHT_MOTOR_ID;
+        public static int MOTOR_ID;
         public static int CORAL_BEAM_ID;
         public static int ALGAE_BEAM_ID;
         public static int CURRENT_LIMIT;
         public static InvertedValue LEFT_INVERT; //TODO: CHECK ON REAL ROBOT
-        public static InvertedValue RIGHT_INVERT;
     }
 
     public final static class PivotConstants {
