@@ -13,6 +13,7 @@ import org.json.simple.parser.ParseException;
 import java.io.IOException;
 
 public final class PathManager {
+    // TODO: CREATE 2025 PATHS
     public static PathPlannerPath TEST_PATH;
     public static PathPlannerPath TEST_PATH_2;
     public static PathPlannerPath TEST_PATH_3;
@@ -51,7 +52,7 @@ public final class PathManager {
         );
     }
 
-    // TODO UPDATE THESE PRESET TARGET POSES (MEANT TO BE USED FOR SCORING, NOT PICKING UP, WHICH IS SUPPOSED TO BE COMPLETELY DYNAMIC)
+    // TODO UPDATE THESE PRESET TARGET POSES (MEANT TO BE USED FOR SCORING OBJECTS)
     public static Command pathFindToNearestScoringLocation(Pose2d currentPose) {
         Translation2d currentTranslation = currentPose.getTranslation();
         ScoringLocations nearestLocation = ScoringLocations.STAGE;

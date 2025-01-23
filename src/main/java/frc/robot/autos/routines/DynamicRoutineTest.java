@@ -12,7 +12,7 @@ public class DynamicRoutineTest {
     public DynamicRoutineTest(Swerve swerve) {
         AutoTrigger testPath = starter.addTrigger("TestPath", new FollowPathRequiringAlgaeCommand(PathManager.TEST_PATH, false, swerve));
         AutoTrigger testPath2 = starter.addTrigger("TestPath2", new FollowPathRequiringAlgaeCommand(PathManager.TEST_PATH_2, false, swerve));
-        AutoTrigger findObject2 = starter.addTrigger("FindObject2", swerve.pathFindFindScoreObject());
+        AutoTrigger findObject2 = starter.addTrigger("FindObject2", swerve.pathFindFindScoreAlgae());
         Command stop = Commands.runOnce(swerve::forceStop);
 
         starter.active().onTrue(testPath.cmd());

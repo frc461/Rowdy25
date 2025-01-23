@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
-import frc.robot.commands.auto.SearchForNoteCommand;
+import frc.robot.commands.auto.SearchForAlgaeCommand;
 import frc.robot.constants.Constants;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.DriveToObjectCommand;
@@ -126,8 +126,8 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
         );
     }
 
-    public Command pathFindFindScoreObject() {
-        return new SearchForNoteCommand(this, fieldCentric)
+    public Command pathFindFindScoreAlgae() {
+        return new SearchForAlgaeCommand(this, fieldCentric)
                 .andThen(new DriveToObjectCommand(this, robotCentric, true));
     }
 
