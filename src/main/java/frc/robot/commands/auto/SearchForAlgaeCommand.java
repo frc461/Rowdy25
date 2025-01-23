@@ -89,6 +89,7 @@ public class SearchForAlgaeCommand extends Command {
 
             swerve.setControl(
                     fieldCentric.withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
+                            .withForwardPerspective(SwerveRequest.ForwardPerspectiveValue.BlueAlliance)
                             .withVelocityX(errorController.calculate(
                                     currentX,
                                     targetTranslation.getX()

@@ -98,7 +98,6 @@ public class Localizer {
     }
 
     public void setPoses(Pose2d pose) {
-        this.swerve.resetPose(pose);
         poseEstimator.resetPose(pose);
         VisionUtil.QuestNav.setQuestPose(pose);
     }

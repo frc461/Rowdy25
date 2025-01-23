@@ -13,7 +13,6 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -144,7 +143,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                 seedFieldCentric();
                 localizer.setPoses(new Pose2d(
                         localizer.getStrategyPose().getTranslation(),
-                        new Rotation2d()
+                        getState().Pose.getRotation()
                 ));
         });
     }
@@ -168,10 +167,10 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
          */
         // TODO THIS IS A PROBLEM (CAUSES APPLYING STATES ON RED TEAM TO BE BACKWARD)
         if ((!hasAppliedDefaultRotation || DriverStation.isDisabled()) && Constants.ALLIANCE_SUPPLIER.get() != null) {
-            setOperatorPerspectiveForward(Constants.BLUE_DEFAULT_ROTATION
-//                    Constants.ALLIANCE_SUPPLIER.get() == Alliance.Blue
-//                            ? Constants.BLUE_DEFAULT_ROTATION
-//                            : Constants.RED_DEFAULT_ROTATION
+            setOperatorPerspectiveForward(
+                    Constants.ALLIANCE_SUPPLIER.get() == Alliance.Blue
+                            ? Constants.BLUE_DEFAULT_ROTATION
+                            : Constants.RED_DEFAULT_ROTATION
             );
             hasAppliedDefaultRotation = true;
         }
