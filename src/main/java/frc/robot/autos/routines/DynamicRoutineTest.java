@@ -10,8 +10,8 @@ public class DynamicRoutineTest {
     private final AutoEventLooper starter = new AutoEventLooper("DynamicRoutineTest");
 
     public DynamicRoutineTest(Swerve swerve) {
-        AutoTrigger testPath = starter.addTrigger("TestPath", new FollowPathRequiringAlgaeCommand(PathManager.TEST_PATH, false, swerve));
-        AutoTrigger testPath2 = starter.addTrigger("TestPath2", new FollowPathRequiringAlgaeCommand(PathManager.TEST_PATH_2, false, swerve));
+        AutoTrigger testPath = starter.addTrigger("TestPath", new FollowPathRequiringAlgaeCommand(PathManager.ONE_START_TO_SIX_RIGHT, false, swerve));
+        AutoTrigger testPath2 = starter.addTrigger("TestPath2", new FollowPathRequiringAlgaeCommand(PathManager.SIX_RIGHT_TO_STATION, false, swerve));
         AutoTrigger findObject2 = starter.addTrigger("FindObject2", swerve.pathFindFindScoreAlgae());
         Command stop = Commands.runOnce(swerve::forceStop);
 
