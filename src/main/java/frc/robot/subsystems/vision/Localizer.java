@@ -118,17 +118,7 @@ public class Localizer {
         VisionUtil.Photon.updateResults();
         for (VisionUtil.Photon.BW.BWCamera camera : VisionUtil.Photon.BW.BWCamera.values()) {
             if (VisionUtil.Photon.BW.isTagClear(camera)) {
-                if (VisionUtil.Photon.BW.isMultiTag(camera)) {
-                    EstimatedRobotPose poseEstimate = VisionUtil.Photon.BW.getMultiTagPose(camera);
-                    poseEstimator.addVisionMeasurement(
-                            poseEstimate.estimatedPose().toPose2d(),
-                            poseEstimate.timestampSeconds(),
-                            poseEstimate.stdDevs()
-                    );
-                    return;
-                }
-
-                EstimatedRobotPose poseEstimate = VisionUtil.Photon.BW.getSingleTagPose(camera, poseEstimator.getEstimatedPosition());
+                EstimatedRobotPose poseEstimate = getUpdatedPhotonPoseEstimate(camera);
                 poseEstimator.addVisionMeasurement(
                         poseEstimate.estimatedPose().toPose2d(),
                         poseEstimate.timestampSeconds(),
@@ -136,6 +126,10 @@ public class Localizer {
                 );
             }
         }
+    }
+
+    public EstimatedRobotPose getUpdatedPhotonPoseEstimate(VisionUtil.Photon.BW.BWCamera camera) {
+        return VisionUtil.Photon.BW.getBestTagPose(camera, poseEstimator.getEstimatedPosition());
     }
 
     public void updatePoseEstimation() {

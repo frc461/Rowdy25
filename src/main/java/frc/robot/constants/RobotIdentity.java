@@ -2,7 +2,6 @@ package frc.robot.constants;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.StringPublisher;
-import edu.wpi.first.networktables.StructPublisher;
 import frc.robot.constants.variants.DefaultConstants;
 import frc.robot.constants.variants.SimConstants;
 import frc.robot.constants.variants.TestConstants;
@@ -172,14 +171,14 @@ public enum RobotIdentity {
 
     private static void setTestConstants() {
         Constants.VisionConstants.PhotonConstants.BW_TOP_RIGHT_FORWARD = TestConstants.BW_TOP_RIGHT_FORWARD;
-        Constants.VisionConstants.PhotonConstants.BW_TOP_RIGHT_LEFT = TestConstants.BW_TOP_RIGHT_LEFT;
-        Constants.VisionConstants.PhotonConstants.BW_TOP_RIGHT_UP = TestConstants.BW_TOP_RIGHT_UP;
+        Constants.VisionConstants.PhotonConstants.BW_TOP_RIGHT_LEFT = TestConstants.BW_TOP_RIGHT_RIGHT;
+        Constants.VisionConstants.PhotonConstants.BW_TOP_RIGHT_UP = TestConstants.BW_TOP_RIGHT_DOWN;
         Constants.VisionConstants.PhotonConstants.BW_TOP_RIGHT_ROLL = TestConstants.BW_TOP_RIGHT_ROLL;
         Constants.VisionConstants.PhotonConstants.BW_TOP_RIGHT_PITCH = TestConstants.BW_TOP_RIGHT_PITCH;
         Constants.VisionConstants.PhotonConstants.BW_TOP_RIGHT_YAW = TestConstants.BW_TOP_RIGHT_YAW;
         Constants.VisionConstants.PhotonConstants.BW_TOP_LEFT_FORWARD = TestConstants.BW_TOP_LEFT_FORWARD;
-        Constants.VisionConstants.PhotonConstants.BW_TOP_LEFT_LEFT = TestConstants.BW_TOP_LEFT_LEFT;
-        Constants.VisionConstants.PhotonConstants.BW_TOP_LEFT_UP = TestConstants.BW_TOP_LEFT_UP;
+        Constants.VisionConstants.PhotonConstants.BW_TOP_LEFT_LEFT = TestConstants.BW_TOP_LEFT_RIGHT;
+        Constants.VisionConstants.PhotonConstants.BW_TOP_LEFT_UP = TestConstants.BW_TOP_LEFT_DOWN;
         Constants.VisionConstants.PhotonConstants.BW_TOP_LEFT_ROLL = TestConstants.BW_TOP_LEFT_ROLL;
         Constants.VisionConstants.PhotonConstants.BW_TOP_LEFT_PITCH = TestConstants.BW_TOP_LEFT_PITCH;
         Constants.VisionConstants.PhotonConstants.BW_TOP_LEFT_YAW = TestConstants.BW_TOP_LEFT_YAW;

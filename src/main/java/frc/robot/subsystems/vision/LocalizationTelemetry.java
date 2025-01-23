@@ -69,12 +69,12 @@ public class LocalizationTelemetry {
     private final DoubleArrayPublisher megaTagOnePosePub = robotPoseTable.getDoubleArrayTopic("MegaTagOne Pose").publish();
     private final StructPublisher<Pose2d> megaTagTwoPose2dPub = robotPoseTable.getStructTopic("MegaTagTwo Pose2d", Pose2d.struct).publish();
     private final DoubleArrayPublisher megaTagTwoPosePub = robotPoseTable.getDoubleArrayTopic("MegaTagTwo Pose").publish();
-    private final StructPublisher<Pose2d> photonTopRightPose2dPub = robotPoseTable.getStructTopic("Photon Pose2d", Pose2d.struct).publish();
-    private final DoubleArrayPublisher photonTopRightPosePub = robotPoseTable.getDoubleArrayTopic("Photon Pose").publish();
-    private final StructPublisher<Pose2d> photonTopLeftPose2dPub = robotPoseTable.getStructTopic("Photon Pose2d", Pose2d.struct).publish();
-    private final DoubleArrayPublisher photonTopLeftPosePub = robotPoseTable.getDoubleArrayTopic("Photon Pose").publish();
-    private final StructPublisher<Pose2d> photonBackPose2dPub = robotPoseTable.getStructTopic("Photon Pose2d", Pose2d.struct).publish();
-    private final DoubleArrayPublisher photonBackPosePub = robotPoseTable.getDoubleArrayTopic("Photon Pose").publish();
+    private final StructPublisher<Pose2d> photonTopRightPose2dPub = robotPoseTable.getStructTopic("Photon Top Right Pose2d", Pose2d.struct).publish();
+    private final DoubleArrayPublisher photonTopRightPosePub = robotPoseTable.getDoubleArrayTopic("Photon Top Right Pose").publish();
+    private final StructPublisher<Pose2d> photonTopLeftPose2dPub = robotPoseTable.getStructTopic("Photon Top Left Pose2d", Pose2d.struct).publish();
+    private final DoubleArrayPublisher photonTopLeftPosePub = robotPoseTable.getDoubleArrayTopic("Photon Top Left Pose").publish();
+    private final StructPublisher<Pose2d> photonBackPose2dPub = robotPoseTable.getStructTopic("Photon Back Pose2d", Pose2d.struct).publish();
+    private final DoubleArrayPublisher photonBackPosePub = robotPoseTable.getDoubleArrayTopic("Photon Back Pose").publish();
 
     public void publishValues() {
 
@@ -91,13 +91,13 @@ public class LocalizationTelemetry {
         nearestTagDistPub.set(VisionUtil.Limelight.getNearestTagDist());
         canAddLLMeasurementsPub.set(VisionUtil.Limelight.isTagClear());
 
-        Pose2d photonTopRightPose = VisionUtil.Photon.BW.getMultiTagPose(VisionUtil.Photon.BW.BWCamera.TOP_RIGHT).estimatedPose().toPose2d();
+        Pose2d photonTopRightPose = localizer.getUpdatedPhotonPoseEstimate(VisionUtil.Photon.BW.BWCamera.TOP_RIGHT).estimatedPose().toPose2d();
         photonTopRightPrettyPosePub.set("X: " + photonTopRightPose.getX() + ", Y: " + photonTopRightPose.getY() + ", Yaw: " + photonTopRightPose.getRotation().getDegrees());
         canAddTopRightMeasurementsPub.set(VisionUtil.Photon.BW.isTagClear(VisionUtil.Photon.BW.BWCamera.TOP_RIGHT));
-        Pose2d photonTopLeftPose = VisionUtil.Photon.BW.getMultiTagPose(VisionUtil.Photon.BW.BWCamera.TOP_LEFT).estimatedPose().toPose2d();
+        Pose2d photonTopLeftPose = localizer.getUpdatedPhotonPoseEstimate(VisionUtil.Photon.BW.BWCamera.TOP_LEFT).estimatedPose().toPose2d();
         photonTopLeftPrettyPosePub.set("X: " + photonTopLeftPose.getX() + ", Y: " + photonTopLeftPose.getY() + ", Yaw: " + photonTopLeftPose.getRotation().getDegrees());
         canAddTopLeftMeasurementsPub.set(VisionUtil.Photon.BW.isTagClear(VisionUtil.Photon.BW.BWCamera.TOP_LEFT));
-        Pose2d photonBackPose = VisionUtil.Photon.BW.getMultiTagPose(VisionUtil.Photon.BW.BWCamera.BACK).estimatedPose().toPose2d();
+        Pose2d photonBackPose = localizer.getUpdatedPhotonPoseEstimate(VisionUtil.Photon.BW.BWCamera.BACK).estimatedPose().toPose2d();
         photonBackPrettyPosePub.set("X: " + photonBackPose.getX() + ", Y: " + photonBackPose.getY() + ", Yaw: " + photonBackPose.getRotation().getDegrees());
         canAddBackMeasurementsPub.set(VisionUtil.Photon.BW.isTagClear(VisionUtil.Photon.BW.BWCamera.BACK));
 
