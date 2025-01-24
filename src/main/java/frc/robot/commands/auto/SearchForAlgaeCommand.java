@@ -45,7 +45,7 @@ public class SearchForAlgaeCommand extends Command {
     @Override
     public void initialize() {
         targetTranslation = new Translation2d(
-                8.275 + 0.5 * (Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red ? 1 : (-1)),
+                FieldUtil.FIELD_LENGTH / 2 + 0.5 * (Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red ? 1 : (-1)),
                 upperHalf() ? 0.5 : FieldUtil.FIELD_WIDTH - 0.5
         );
         searchAngle = Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red
@@ -85,23 +85,21 @@ public class SearchForAlgaeCommand extends Command {
         transitionMultiplier = 1 - Math.pow(0.9, transitionPoll);
 
         if (!translationComplete) {
-            double yError = Math.abs(targetTranslation.getY() - currentY);
-
+            double xError = targetTranslation.getX() - currentX;
+            double yError = targetTranslation.getY() - currentY;
             swerve.setControl(
                     fieldCentric.withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
                             .withForwardPerspective(SwerveRequest.ForwardPerspectiveValue.BlueAlliance)
-                            .withVelocityX(errorController.calculate(
-                                    currentX,
-                                    targetTranslation.getX()
-                            ) * Constants.MAX_VEL * transitionMultiplier + xVel)
-                            .withVelocityY(Constants.SwerveConstants.PATH_MANUAL_TRANSLATION_CONTROLLER.apply(yError)
-                                    * (searchAngle > 0 ? -1 : 1) * transitionMultiplier + yVel)
+                            .withVelocityX(Constants.SwerveConstants.PATH_MANUAL_TRANSLATION_CONTROLLER.apply(Math.abs(xError))
+                                    * (xError < 0 ? -1 : 1) * transitionMultiplier + xVel)
+                            .withVelocityY(Constants.SwerveConstants.PATH_MANUAL_TRANSLATION_CONTROLLER.apply(Math.abs(yError))
+                                    * (yError < 0 ? -1 : 1) * transitionMultiplier + yVel)
                             .withRotationalRate(errorController.calculate(
                                     currentYaw,
                                     searchAngle
                             ) * transitionMultiplier + rotVel)
             );
-            if (yError < Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_ACCEPT) {
+            if (Math.abs(yError) < Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_ACCEPT) {
                 translationComplete = true;
                 end = true;
             }
@@ -113,6 +111,14 @@ public class SearchForAlgaeCommand extends Command {
         if (VisionUtil.Photon.Color.hasTargets()) {
             end = true;
         }
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        System.out.println(translationComplete);
+        System.out.println(end);
+        System.out.println(interrupted);
+        System.out.println("Ended");
     }
 
     @Override
