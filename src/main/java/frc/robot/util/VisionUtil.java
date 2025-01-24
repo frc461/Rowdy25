@@ -6,6 +6,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.*;
 import frc.robot.constants.Constants;
 import org.photonvision.PhotonCamera;
+import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.targeting.MultiTargetPNPResult;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
@@ -227,8 +228,8 @@ public class VisionUtil {
                 BACK
             }
 
-            private static final PhotonCamera BW_TOP_RIGHT = new PhotonCamera(Constants.NT_INSTANCE, "ArducamBW");
-            private static final PhotonCamera BW_TOP_LEFT = new PhotonCamera(Constants.NT_INSTANCE, "ArducamBW2");
+            private static final PhotonCamera BW_TOP_RIGHT = new PhotonCamera(Constants.NT_INSTANCE, "ArducamBW2");
+            private static final PhotonCamera BW_TOP_LEFT = new PhotonCamera(Constants.NT_INSTANCE, "ArducamBW");
             private static final PhotonCamera BW_BACK = new PhotonCamera(Constants.NT_INSTANCE, "ArducamBW3");
 
             private static PhotonPipelineResult latestResultTopRight = new PhotonPipelineResult();
@@ -331,6 +332,8 @@ public class VisionUtil {
             }
 
             public static EstimatedRobotPose getMultiTagPose(BWCamera camera) {
+
+
                 MultiTargetPNPResult multiTagResult = getLatestResult(camera).getMultiTagResult().orElse(new MultiTargetPNPResult());
                 Pose3d bestPose = new Pose3d().plus(multiTagResult.estimatedPose.best).relativeTo(FieldUtil.ORIGIN).plus(getRobotToBWOffset(camera).inverse());
                 return new EstimatedRobotPose(
