@@ -133,7 +133,7 @@ public final class DefaultConstants {
             public static final double BW_BACK_PITCH = 0.0;
             public static final double BW_BACK_YAW = 0.0;
 
-            public static final double BW_MAX_TAG_CLEAR_DIST = 6.0;
+            public static final double BW_MAX_TAG_CLEAR_DIST = 3.0;
 
             public static final double OBJECT_GOAL_PITCH = -15;
             public static final double OBJECT_DEGREE_TOLERANCE_TO_ACCEPT = 2.5;
