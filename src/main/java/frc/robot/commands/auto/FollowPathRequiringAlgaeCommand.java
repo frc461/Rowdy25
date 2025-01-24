@@ -136,7 +136,7 @@ public class FollowPathRequiringAlgaeCommand extends FollowPathCommand {
 
     @Override
     public boolean isFinished() {
-        return super.isFinished() || interrupted;
+        return this.timer.hasElapsed(this.trajectory.getTotalTimeSeconds()) || interrupted;
     }
 
     @Override
@@ -144,7 +144,7 @@ public class FollowPathRequiringAlgaeCommand extends FollowPathCommand {
         return new WrapperCommand(this) {
             @Override
             public void end(boolean interrupted) {
-                end.accept(FollowPathRequiringAlgaeCommand.this.interrupted);
+                end.accept(FollowPathRequiringAlgaeCommand.this.interrupted || interrupted);
                 super.end(interrupted);
             }
         };
