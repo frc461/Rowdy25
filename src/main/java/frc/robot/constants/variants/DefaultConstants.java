@@ -253,14 +253,14 @@ public final class DefaultConstants {
         // The steer motor uses any SwerveModule.SteerRequestType control request with the
         // output type specified by SwerveModuleConstants.SteerMotorClosedLoopOutput
         private static final Slot0Configs STEER_GAINS = new Slot0Configs()
-                .withKP(75.0).withKI(0).withKD(0.5)
+                .withKP(100).withKI(0).withKD(0.5)
                 .withKS(0.1).withKV(2.66).withKA(0)
                 .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign);
         // When using closed-loop control, the drive motor uses the control
         // output type specified by SwerveModuleConstants.DriveMotorClosedLoopOutput
         private static final Slot0Configs DRIVE_GAINS = new Slot0Configs()
-                .withKP(0).withKI(0).withKD(0)
-                .withKS(0.149).withKV(0.1155).withKA(0);
+                .withKP(0.1).withKI(0).withKD(0)
+                .withKS(0).withKV(0.124);
 
         // The closed-loop output type to use for the steer motors;
         // This affects the PID/FF gains for the steer motors
@@ -348,12 +348,12 @@ public final class DefaultConstants {
             private static final int DRIVE_MOTOR_ID = 1;
             private static final int STEER_MOTOR_ID = 11;
             private static final int ENCODER_ID = 21;
-            private static final Angle ENCODER_OFFSET = Rotations.of(-0.422119140625);
+            private static final Angle ENCODER_OFFSET = Rotations.of(0.466552734375);
             private static final boolean STEER_MOTOR_INVERTED = true;
             private static final boolean CANCODER_INVERTED = false;
 
-            private static final Distance X_POS = Inches.of(8.25);
-            private static final Distance Y_POS = Inches.of(8.25);
+            private static final Distance X_POS = Inches.of(13.375);
+            private static final Distance Y_POS = Inches.of(10.375);
 
             public static final SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> FRONT_LEFT = CONSTANT_CREATOR.createModuleConstants(
                     STEER_MOTOR_ID, DRIVE_MOTOR_ID, ENCODER_ID, ENCODER_OFFSET,
@@ -366,12 +366,12 @@ public final class DefaultConstants {
             private static final int DRIVE_MOTOR_ID = 2;
             private static final int STEER_MOTOR_ID = 12;
             private static final int ENCODER_ID = 22;
-            private static final Angle ENCODER_OFFSET = Rotations.of(0.145751953125);
+            private static final Angle ENCODER_OFFSET = Rotations.of(-0.091796875);
             private static final boolean STEER_MOTOR_INVERTED = true;
             private static final boolean CANCODER_INVERTED = false;
 
-            private static final Distance X_POS = Inches.of(8.25);
-            private static final Distance Y_POS = Inches.of(-8.25);
+            private static final Distance X_POS = Inches.of(13.375);
+            private static final Distance Y_POS = Inches.of(-10.375);
 
             public static final SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> FRONT_RIGHT = CONSTANT_CREATOR.createModuleConstants(
                     STEER_MOTOR_ID, DRIVE_MOTOR_ID, ENCODER_ID, ENCODER_OFFSET,
@@ -384,12 +384,12 @@ public final class DefaultConstants {
             private static final int DRIVE_MOTOR_ID = 3;
             private static final int STEER_MOTOR_ID = 13;
             private static final int ENCODER_ID = 23;
-            private static final Angle ENCODER_OFFSET = Rotations.of(0.39794921875);
+            private static final Angle ENCODER_OFFSET = Rotations.of(-0.120361328125);
             private static final boolean STEER_MOTOR_INVERTED = true;
             private static final boolean CANCODER_INVERTED = false;
 
-            private static final Distance X_POS = Inches.of(-8.25);
-            private static final Distance Y_POS = Inches.of(8.25);
+            private static final Distance X_POS = Inches.of(-13.375);
+            private static final Distance Y_POS = Inches.of(10.375);
 
             public static final SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> BACK_LEFT = CONSTANT_CREATOR.createModuleConstants(
                     STEER_MOTOR_ID, DRIVE_MOTOR_ID, ENCODER_ID, ENCODER_OFFSET,
@@ -402,12 +402,13 @@ public final class DefaultConstants {
             private static final int DRIVE_MOTOR_ID = 4;
             private static final int STEER_MOTOR_ID = 14;
             private static final int ENCODER_ID = 24;
-            private static final Angle ENCODER_OFFSET = Rotations.of(-0.22607421875);
+            private static final Angle ENCODER_OFFSET = Rotations.of(-0.19921875);
             private static final boolean STEER_MOTOR_INVERTED = true;
             private static final boolean CANCODER_INVERTED = false;
 
-            private static final Distance X_POS = Inches.of(-8.25);
-            private static final Distance Y_POS = Inches.of(-8.25);
+            private static final Distance X_POS = Inches.of(-13.375);
+            private static final Distance Y_POS = Inches.of(-10.375);
+
 
             public static final SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> BACK_RIGHT = CONSTANT_CREATOR.createModuleConstants(
                     STEER_MOTOR_ID, DRIVE_MOTOR_ID, ENCODER_ID, ENCODER_OFFSET,
