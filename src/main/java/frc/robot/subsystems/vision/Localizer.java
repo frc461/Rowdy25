@@ -73,29 +73,23 @@ public class Localizer {
     }
 
     public Translation2d getTranslationToNearestBranch() {
-        Translation2d nearestReefSide = getTranslationToNearestReefSide(getStrategyPose());
-        Translation2d branchLocation = 
-            new Translation2d(
-                    Constants.VisionConstants.BRANCH_OFFSET * Math.cos(nearestReefSide.getAngle().getRadians()), 
-                    Constants.VisionConstants.BRANCH_OFFSET * Math.sin(nearestReefSide.getAngle().getRadians())
-            );
-
-        if (nearestReefSide.getX() < 0) {
-            return nearestReefSide.plus(branchLocation);
-                    
-        } else {
-            return nearestReefSide.minus(branchLocation);
-        }
+        Pose2d currentPose = getStrategyPose();
+        Translation2d nearestBranch = FieldUtil.TagLocation.getNearestBranchPose(currentPose).getTranslation();
+        return nearestBranch.minus(currentPose.getTranslation());
     }
 
-    public Translation2d getTranslationToNearestReefSide(Pose2d currentPose) {
-        Translation2d robotTranslation = getStrategyPose().getTranslation();
+    public double getAngleToNearestBranch() {
+        return getTranslationToNearestBranch().getAngle().getDegrees();
+    }
+
+    public Translation2d getTranslationToNearestReefSide() {
+        Pose2d currentPose = getStrategyPose();
         Translation2d tagTranslation = FieldUtil.TagLocation.getNearestReefTagPose(currentPose).getTranslation();
-        return tagTranslation.minus(robotTranslation);
+        return tagTranslation.minus(currentPose.getTranslation());
     }
 
-    public double getAngleToNearestReefSide(Pose2d currentPose) {
-        return getTranslationToNearestReefSide(currentPose).getAngle().getDegrees();
+    public double getAngleToNearestReefSide() {
+        return getTranslationToNearestReefSide().getAngle().getDegrees();
     }
 
     public void setLocalizationStrategyFromChooser() {

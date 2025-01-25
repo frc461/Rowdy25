@@ -4,6 +4,9 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.constants.Constants;
 
@@ -46,6 +49,9 @@ public class FieldUtil {
         ID_20,
         ID_21,
         ID_22;
+
+        public static final Transform2d LEFT_BRANCH_OFFSET = new Transform2d(Units.inchesToMeters(-1.00), Units.inchesToMeters(-5.5), new Rotation2d());
+        public static final Transform2d RIGHT_BRANCH_OFFSET = new Transform2d(Units.inchesToMeters(-1.00), Units.inchesToMeters(5.5), new Rotation2d());
 
         public static Pose3d getTagLocation3d(TagLocation tag) {
             return switch (tag) {
@@ -110,13 +116,13 @@ public class FieldUtil {
             return getTagLocation3d(tagID).toPose2d();
         }
 
-        public static TagLocation getNearestTagFromGroup(Pose2d reference, TagLocation... tags) {
-            TagLocation nearest = null;
+        public static Pose2d getNearestPoseFromGroup(Pose2d reference, Pose2d... poses) {
+            Pose2d nearest = null;
             double nearestDistance = Double.MAX_VALUE;
-            for (TagLocation tag : tags) {
-                double distance = reference.getTranslation().getDistance(getTagLocation2d(tag).getTranslation());
+            for (Pose2d pose : poses) {
+                double distance = reference.getTranslation().getDistance(pose.getTranslation());
                 if (distance < nearestDistance) {
-                    nearest = tag;
+                    nearest = pose;
                     nearestDistance = distance;
                 }
             }
@@ -125,36 +131,69 @@ public class FieldUtil {
 
         public static Pose2d getNearestReefTagPose(Pose2d currentPose) {
             DriverStation.Alliance alliance = Constants.ALLIANCE_SUPPLIER.get();
-            return getTagLocation2d(alliance == DriverStation.Alliance.Red ? getNearestTagFromGroup(
+            return alliance == DriverStation.Alliance.Red ? getNearestPoseFromGroup(
                     currentPose,
-                    TagLocation.ID_6,
-                    TagLocation.ID_7,
-                    TagLocation.ID_8,
-                    TagLocation.ID_9,
-                    TagLocation.ID_10,
-                    TagLocation.ID_11
-            ) : getNearestTagFromGroup(
+                    getTagLocation2d(TagLocation.ID_6),
+                    getTagLocation2d(TagLocation.ID_7),
+                    getTagLocation2d(TagLocation.ID_8),
+                    getTagLocation2d(TagLocation.ID_9),
+                    getTagLocation2d(TagLocation.ID_10),
+                    getTagLocation2d(TagLocation.ID_11)
+            ) : getNearestPoseFromGroup(
                     currentPose,
-                    TagLocation.ID_17,
-                    TagLocation.ID_18,
-                    TagLocation.ID_19,
-                    TagLocation.ID_20,
-                    TagLocation.ID_21,
-                    TagLocation.ID_22
-            ));
+                    getTagLocation2d(TagLocation.ID_17),
+                    getTagLocation2d(TagLocation.ID_18),
+                    getTagLocation2d(TagLocation.ID_19),
+                    getTagLocation2d(TagLocation.ID_20),
+                    getTagLocation2d(TagLocation.ID_21),
+                    getTagLocation2d(TagLocation.ID_22)
+            );
+        }
+
+        public static Pose2d getNearestBranchPose(Pose2d currentPose) {
+            DriverStation.Alliance alliance = Constants.ALLIANCE_SUPPLIER.get();
+            return alliance == DriverStation.Alliance.Red ? getNearestPoseFromGroup(
+                    currentPose,
+                    getTagLocation2d(TagLocation.ID_6).plus(LEFT_BRANCH_OFFSET),
+                    getTagLocation2d(TagLocation.ID_6).plus(RIGHT_BRANCH_OFFSET),
+                    getTagLocation2d(TagLocation.ID_7).plus(LEFT_BRANCH_OFFSET),
+                    getTagLocation2d(TagLocation.ID_7).plus(RIGHT_BRANCH_OFFSET),
+                    getTagLocation2d(TagLocation.ID_8).plus(LEFT_BRANCH_OFFSET),
+                    getTagLocation2d(TagLocation.ID_8).plus(RIGHT_BRANCH_OFFSET),
+                    getTagLocation2d(TagLocation.ID_9).plus(LEFT_BRANCH_OFFSET),
+                    getTagLocation2d(TagLocation.ID_9).plus(RIGHT_BRANCH_OFFSET),
+                    getTagLocation2d(TagLocation.ID_10).plus(LEFT_BRANCH_OFFSET),
+                    getTagLocation2d(TagLocation.ID_10).plus(RIGHT_BRANCH_OFFSET),
+                    getTagLocation2d(TagLocation.ID_11).plus(LEFT_BRANCH_OFFSET),
+                    getTagLocation2d(TagLocation.ID_11).plus(RIGHT_BRANCH_OFFSET)
+            ) : getNearestPoseFromGroup(
+                    currentPose,
+                    getTagLocation2d(TagLocation.ID_17).plus(LEFT_BRANCH_OFFSET),
+                    getTagLocation2d(TagLocation.ID_17).plus(RIGHT_BRANCH_OFFSET),
+                    getTagLocation2d(TagLocation.ID_18).plus(LEFT_BRANCH_OFFSET),
+                    getTagLocation2d(TagLocation.ID_18).plus(RIGHT_BRANCH_OFFSET),
+                    getTagLocation2d(TagLocation.ID_19).plus(LEFT_BRANCH_OFFSET),
+                    getTagLocation2d(TagLocation.ID_19).plus(RIGHT_BRANCH_OFFSET),
+                    getTagLocation2d(TagLocation.ID_20).plus(LEFT_BRANCH_OFFSET),
+                    getTagLocation2d(TagLocation.ID_20).plus(RIGHT_BRANCH_OFFSET),
+                    getTagLocation2d(TagLocation.ID_21).plus(LEFT_BRANCH_OFFSET),
+                    getTagLocation2d(TagLocation.ID_21).plus(RIGHT_BRANCH_OFFSET),
+                    getTagLocation2d(TagLocation.ID_22).plus(LEFT_BRANCH_OFFSET),
+                    getTagLocation2d(TagLocation.ID_22).plus(RIGHT_BRANCH_OFFSET)
+            );
         }
 
         public static Pose2d getNearestCoralStationTagPose(Pose2d currentPose) {
             DriverStation.Alliance alliance = Constants.ALLIANCE_SUPPLIER.get();
-            return getTagLocation2d(alliance == DriverStation.Alliance.Red ? getNearestTagFromGroup(
+            return alliance == DriverStation.Alliance.Red ? getNearestPoseFromGroup(
                     currentPose,
-                    TagLocation.ID_1,
-                    TagLocation.ID_2
-            ) : getNearestTagFromGroup(
+                    getTagLocation2d(TagLocation.ID_1),
+                    getTagLocation2d(TagLocation.ID_2)
+            ) : getNearestPoseFromGroup(
                     currentPose,
-                    TagLocation.ID_12,
-                    TagLocation.ID_13
-            ));
+                    getTagLocation2d(TagLocation.ID_12),
+                    getTagLocation2d(TagLocation.ID_13)
+            );
         }
     }
 }

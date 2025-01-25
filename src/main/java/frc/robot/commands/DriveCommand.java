@@ -3,6 +3,7 @@ package frc.robot.commands;
 import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.drivetrain.Swerve;
@@ -74,8 +75,9 @@ public class DriveCommand extends Command {
 
     @Override
     public void execute() {
+        Pose2d currentPose = swerve.localizer.getStrategyPose();
         if (tagTurret.getAsBoolean()) {
-            setConsistentHeading.accept(swerve.localizer.getStrategyPose().getRotation().getDegrees());
+            setConsistentHeading.accept(currentPose.getRotation().getDegrees());
             swerve.setControl(
                     fieldCentric.withDeadband(Constants.MAX_VEL * Constants.DEADBAND)
                             .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
@@ -84,13 +86,13 @@ public class DriveCommand extends Command {
                             .withRotationalRate(rot.getAsDouble() < -0.5
                                     ? -rot.getAsDouble() * Constants.MAX_REAL_ANGULAR_VEL
                                     : yawController.calculate(
-                                            swerve.localizer.getStrategyPose().getRotation().getDegrees(),
-                                            swerve.localizer.getAngleToNearestReefSide(swerve.localizer.getStrategyPose())
+                                            currentPose.getRotation().getDegrees(),
+                                            swerve.localizer.getAngleToNearestBranch()
                                     ) * Constants.MAX_CONTROLLED_ANGULAR_VEL
                             )
             );
         } else if (objectTurret.getAsBoolean()) {
-            setConsistentHeading.accept(swerve.localizer.getStrategyPose().getRotation().getDegrees());
+            setConsistentHeading.accept(currentPose.getRotation().getDegrees());
             swerve.setControl(
                     fieldCentric
                             .withDeadband(Constants.MAX_VEL * Constants.DEADBAND)
@@ -109,7 +111,7 @@ public class DriveCommand extends Command {
             );
         } else if (Math.abs(rot.getAsDouble()) >= Constants.DEADBAND
                 || (Math.abs(straight.getAsDouble()) < Constants.DEADBAND && Math.abs(strafe.getAsDouble()) < Constants.DEADBAND)) {
-            setConsistentHeading.accept(swerve.localizer.getStrategyPose().getRotation().getDegrees());
+            setConsistentHeading.accept(currentPose.getRotation().getDegrees());
             swerve.setControl(
                     fieldCentric.withDeadband(Constants.MAX_VEL * Constants.DEADBAND)
                             .withRotationalDeadband(Constants.MAX_CONTROLLED_ANGULAR_VEL * Constants.DEADBAND) // Add a 10% deadband
@@ -125,7 +127,7 @@ public class DriveCommand extends Command {
                             .withVelocityX(-straight.getAsDouble() * Constants.MAX_VEL)
                             .withVelocityY(-strafe.getAsDouble() * Constants.MAX_VEL)
                             .withRotationalRate(headingController.calculate(
-                                    swerve.localizer.getStrategyPose().getRotation().getDegrees(),
+                                    currentPose.getRotation().getDegrees(),
                                     consistentHeading.getAsDouble()
                             ) * Constants.MAX_CONTROLLED_ANGULAR_VEL)
             );

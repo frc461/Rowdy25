@@ -63,7 +63,6 @@ public final class Constants {
         public static Matrix<N3, N1> ODOM_STD_DEV;
         public static Function<Double, Matrix<N3, N1>> VISION_STD_DEV_MULTITAG_FUNCTION;
         public static Function<Double, Matrix<N3, N1>> VISION_STD_DEV_FUNCTION;
-        public static double BRANCH_OFFSET;
 
         public static final class LimelightConstants {
             public static String LIMELIGHT_NT_NAME;

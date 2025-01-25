@@ -95,7 +95,6 @@ public final class DefaultConstants {
                         : VecBuilder.fill(0.15 * dist, 0.15 * dist, Units.degreesToRadians(180.0) * dist);
         public static final Function<Double, Matrix<N3, N1>> VISION_STD_DEV_FUNCTION =
                 dist -> VecBuilder.fill(0.5 * dist, 0.5 * dist, Units.degreesToRadians(180.0) * dist);
-        public static final double BRANCH_OFFSET = Units.inchesToMeters(5.5);
 
         public static final class LimelightConstants {
             public static final String LIMELIGHT_NT_NAME = "limelight";
