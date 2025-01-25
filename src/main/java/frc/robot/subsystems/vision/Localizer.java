@@ -72,6 +72,22 @@ public class Localizer {
         return VisionUtil.QuestNav.getFinalRobotPose();
     }
 
+    public Translation2d getTranslationToNearestBranch() {
+        Translation2d nearestReefSide = getTranslationToNearestReefSide(getStrategyPose());
+        Translation2d branchLocation = 
+            new Translation2d(
+                    Constants.VisionConstants.BRANCH_OFFSET * Math.cos(nearestReefSide.getAngle().getRadians()), 
+                    Constants.VisionConstants.BRANCH_OFFSET * Math.sin(nearestReefSide.getAngle().getRadians())
+            );
+
+        if (nearestReefSide.getX() < 0) {
+            return nearestReefSide.plus(branchLocation);
+                    
+        } else {
+            return nearestReefSide.minus(branchLocation);
+        }
+    }
+
     public Translation2d getTranslationToNearestReefSide(Pose2d currentPose) {
         Translation2d robotTranslation = getStrategyPose().getTranslation();
         Translation2d tagTranslation = FieldUtil.TagLocation.getNearestReefTagPose(currentPose).getTranslation();
