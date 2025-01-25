@@ -140,11 +140,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
 
     public Command resetGyro() {
         return runOnce(() -> {
-                seedFieldCentric();
-                localizer.setPoses(new Pose2d(
-                        localizer.getStrategyPose().getTranslation(),
-                        getState().Pose.getRotation()
-                ));
+                resetRotation(localizer.getStrategyPose().getRotation());
         });
     }
 
