@@ -379,7 +379,7 @@ public class VisionUtil {
                                 poseToReturn,
                                 result.getTimestampSeconds(),
                                 result.getTargets(),
-                                Constants.VisionConstants.VISION_STD_DEV_MULTITAG_FUNCTION.apply(distToApply)
+                                Constants.VisionConstants.VISION_STD_DEV_FUNCTION.apply(distToApply)
                         );
                     }
                 }
