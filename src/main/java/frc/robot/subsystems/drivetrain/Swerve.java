@@ -5,31 +5,29 @@ import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.Utils;
+import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.swerve.*;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
-import frc.robot.autos.PathManager;
-import frc.robot.commands.auto.SearchForObjectCommand;
+import frc.robot.commands.auto.SearchForAlgaeCommand;
 import frc.robot.constants.Constants;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.DriveToObjectCommand;
 import frc.robot.subsystems.vision.Localizer;
-import frc.robot.util.Simulator;
 
 /**
  * Class that extends the Phoenix 6 SwerveDrivetrain class and implements
  * Subsystem so it can easily be used in command-based projects.
  */
-public class Swerve extends SwerveDrivetrain implements Subsystem {
+public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> implements Subsystem {
     /* An extension to the Swerve subsystem */
     public final Localizer localizer = new Localizer(this);
 
@@ -54,6 +52,9 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
      */
     public Swerve() {
         super(
+                TalonFX::new,
+                TalonFX::new,
+                CANcoder::new,
                 Constants.SwerveConstants.SWERVE_DRIVETRAIN_CONSTANTS,
                 Constants.SwerveConstants.FRONT_LEFT,
                 Constants.SwerveConstants.FRONT_RIGHT,
@@ -62,7 +63,7 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
         );
 
         if (Utils.isSimulation()) {
-            new Simulator(this).startSimThread();
+            new SwerveSim(this).startSimThread();
         }
 
         AutoBuilder.configure(
@@ -124,12 +125,12 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
         );
     }
 
-    public Command pathFindFindScoreObject() {
-        return new SearchForObjectCommand(this, fieldCentric)
+    public Command pathFindFindScoreAlgae() {
+        return new SearchForAlgaeCommand(this, fieldCentric)
                 .andThen(new DriveToObjectCommand(this, robotCentric, true));
     }
 
-    public Command moveToNote() {
+    public Command moveToObject() {
         return new DriveToObjectCommand(this, robotCentric, false);
     }
 
@@ -139,11 +140,7 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
 
     public Command resetGyro() {
         return runOnce(() -> {
-                seedFieldCentric();
-                localizer.setPoses(new Pose2d(
-                        localizer.getStrategyPose().getTranslation(),
-                        new Rotation2d()
-                ));
+                resetRotation(localizer.getStrategyPose().getRotation());
         });
     }
 
@@ -166,10 +163,10 @@ public class Swerve extends SwerveDrivetrain implements Subsystem {
          */
         // TODO THIS IS A PROBLEM (CAUSES APPLYING STATES ON RED TEAM TO BE BACKWARD)
         if ((!hasAppliedDefaultRotation || DriverStation.isDisabled()) && Constants.ALLIANCE_SUPPLIER.get() != null) {
-            setOperatorPerspectiveForward(Constants.BLUE_DEFAULT_ROTATION
-//                    Constants.ALLIANCE_SUPPLIER.get() == Alliance.Blue
-//                            ? Constants.BLUE_DEFAULT_ROTATION
-//                            : Constants.RED_DEFAULT_ROTATION
+            setOperatorPerspectiveForward(
+                    Constants.ALLIANCE_SUPPLIER.get() == Alliance.Blue
+                            ? Constants.BLUE_DEFAULT_ROTATION
+                            : Constants.RED_DEFAULT_ROTATION
             );
             hasAppliedDefaultRotation = true;
         }

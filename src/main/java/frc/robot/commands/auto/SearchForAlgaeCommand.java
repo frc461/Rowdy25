@@ -13,7 +13,7 @@ import frc.robot.subsystems.drivetrain.Swerve;
 import frc.robot.util.FieldUtil;
 import frc.robot.util.VisionUtil;
 
-public class SearchForObjectCommand extends Command {
+public class SearchForAlgaeCommand extends Command {
     private final Swerve swerve;
     private final SwerveRequest.FieldCentric fieldCentric;
     private final PIDController errorController;
@@ -27,7 +27,8 @@ public class SearchForObjectCommand extends Command {
     private boolean translationComplete;
     private boolean end;
 
-    public SearchForObjectCommand(Swerve swerve, SwerveRequest.FieldCentric fieldCentric) {
+    // TODO: REVAMP TO FOLLOW A CIRCULAR PATH AROUND REEF, THEN STOP IF EITHER AN ALGAE IS FOUND OR PATH IS COMPLETED
+    public SearchForAlgaeCommand(Swerve swerve, SwerveRequest.FieldCentric fieldCentric) {
         this.swerve = swerve;
         this.fieldCentric = fieldCentric;
 
@@ -44,16 +45,16 @@ public class SearchForObjectCommand extends Command {
     @Override
     public void initialize() {
         targetTranslation = new Translation2d(
-                8.275 + 0.5 * (Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red ? 1 : (-1)),
+                FieldUtil.FIELD_LENGTH / 2 + 0.5 * (Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red ? 1 : (-1)),
                 upperHalf() ? 0.5 : FieldUtil.FIELD_WIDTH - 0.5
         );
         searchAngle = Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red
                 ? upperHalf()
-                        ? Constants.AutoConstants.NOTE_SEARCH_DEGREE_SLANT
-                        : -Constants.AutoConstants.NOTE_SEARCH_DEGREE_SLANT
+                        ? Constants.AutoConstants.OBJECT_SEARCH_DEGREE_SLANT
+                        : -Constants.AutoConstants.OBJECT_SEARCH_DEGREE_SLANT
                 : upperHalf()
-                        ? 180.0 - Constants.AutoConstants.NOTE_SEARCH_DEGREE_SLANT
-                        : -180.0 + Constants.AutoConstants.NOTE_SEARCH_DEGREE_SLANT;
+                        ? 180.0 - Constants.AutoConstants.OBJECT_SEARCH_DEGREE_SLANT
+                        : -180.0 + Constants.AutoConstants.OBJECT_SEARCH_DEGREE_SLANT;
 
         ChassisSpeeds initial = swerve.getState().Speeds;
         Rotation2d rotationalOffset = swerve.localizer.getStrategyPose().getRotation();
@@ -76,31 +77,29 @@ public class SearchForObjectCommand extends Command {
         double currentX = currentTranslation.getX();
         double currentY = currentTranslation.getY();
 
-        // TODO TEST SMOOTHNESS
+        // TODO: TEST SMOOTHNESS
         xVel *= 0.9;
         yVel *= 0.9;
         rotVel *= 0.9;
-        System.out.println("xVel: " + xVel + ", yVel: " + yVel + ", rotVel: " + rotVel);
         transitionPoll++;
         transitionMultiplier = 1 - Math.pow(0.9, transitionPoll);
 
         if (!translationComplete) {
-            double yError = Math.abs(targetTranslation.getY() - currentY);
-
+            double xError = targetTranslation.getX() - currentX;
+            double yError = targetTranslation.getY() - currentY;
             swerve.setControl(
                     fieldCentric.withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
-                            .withVelocityX(errorController.calculate(
-                                    currentX,
-                                    targetTranslation.getX()
-                            ) * Constants.MAX_VEL * transitionMultiplier + xVel)
-                            .withVelocityY(Constants.SwerveConstants.PATH_MANUAL_TRANSLATION_CONTROLLER.apply(yError)
-                                    * (searchAngle > 0 ? -1 : 1) * transitionMultiplier + yVel)
+                            .withForwardPerspective(SwerveRequest.ForwardPerspectiveValue.BlueAlliance)
+                            .withVelocityX(Constants.SwerveConstants.PATH_MANUAL_TRANSLATION_CONTROLLER.apply(Math.abs(xError))
+                                    * (xError < 0 ? -1 : 1) * transitionMultiplier + xVel)
+                            .withVelocityY(Constants.SwerveConstants.PATH_MANUAL_TRANSLATION_CONTROLLER.apply(Math.abs(yError))
+                                    * (yError < 0 ? -1 : 1) * transitionMultiplier + yVel)
                             .withRotationalRate(errorController.calculate(
                                     currentYaw,
                                     searchAngle
                             ) * transitionMultiplier + rotVel)
             );
-            if (yError < Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_ACCEPT) {
+            if (Math.abs(yError) < Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_ACCEPT) {
                 translationComplete = true;
                 end = true;
             }
@@ -112,6 +111,14 @@ public class SearchForObjectCommand extends Command {
         if (VisionUtil.Photon.Color.hasTargets()) {
             end = true;
         }
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        System.out.println(translationComplete);
+        System.out.println(end);
+        System.out.println(interrupted);
+        System.out.println("Ended");
     }
 
     @Override

@@ -1,17 +1,18 @@
-package frc.robot.util;
+package frc.robot.subsystems.drivetrain;
 
 import com.ctre.phoenix6.Utils;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
-import frc.robot.subsystems.drivetrain.Swerve;
+import frc.robot.subsystems.vision.LocalizerSim;
 
-public class Simulator {
+public class SwerveSim {
     private final Swerve swerve;
+    private final LocalizerSim localizerSim = new LocalizerSim();
 
     private static final double SIM_LOOP_PERIOD = 0.005; // 5 ms
     private double lastSimTime;
 
-    public Simulator(Swerve swerve) {
+    public SwerveSim(Swerve swerve) {
         this.swerve = swerve;
     }
 
@@ -27,6 +28,7 @@ public class Simulator {
 
                 /* use the measured time delta, get battery voltage from WPILib */
                 swerve.updateSimState(deltaTime, RobotController.getBatteryVoltage());
+                localizerSim.update(swerve.localizer.getStrategyPose());
         }).startPeriodic(SIM_LOOP_PERIOD);
     }
 }

@@ -4,28 +4,29 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 import java.util.function.BooleanSupplier;
+import java.util.function.Supplier;
 
 public class AutoTrigger {
-    private final String name;
+    public final String name;
     private final AutoEventLooper auto;
-    private final Command triggeredCommand;
+    private final Supplier<Command> triggeredCommand;
 
-    private boolean isActive = false;
-    private boolean isFinished = false;
-    private boolean interrupted = false;
+    public boolean isActive = false;
+    public boolean isFinished = false;
+    public boolean interrupted = false;
 
-    public AutoTrigger(String name, Command command, AutoEventLooper auto) {
+    public AutoTrigger(String name, Supplier<Command> command, AutoEventLooper auto) {
         this.name = name;
         this.auto = auto;
         this.triggeredCommand = command;
     }
 
     public Command cmd() {
-        return triggeredCommand.finallyDo(
+        return triggeredCommand.get().finallyDo(
                 interrupted -> {
                     isActive = false;
                     isFinished = !interrupted;
-                    AutoTrigger.this.interrupted = interrupted;
+                    this.interrupted = interrupted;
                 }
         ).beforeStarting(
                 () -> {
@@ -81,5 +82,11 @@ public class AutoTrigger {
 
     public Trigger done() {
         return done(0);
+    }
+
+    public void reset() {
+        isActive = false;
+        isFinished = false;
+        interrupted = false;
     }
 }

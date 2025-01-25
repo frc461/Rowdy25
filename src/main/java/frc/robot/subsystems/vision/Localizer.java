@@ -8,10 +8,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.drivetrain.Swerve;
+import frc.robot.util.EstimatedRobotPose;
 import frc.robot.util.FieldUtil;
 import frc.robot.util.VisionUtil;
-
-import java.util.Optional;
 
 public class Localizer {
     private enum LocalizationStrategy {
@@ -73,14 +72,30 @@ public class Localizer {
         return VisionUtil.QuestNav.getRobotPose();
     }
 
-    public Translation2d getTranslationToSpeaker() {
+    public Translation2d getTranslationToNearestBranch() {
+        Translation2d nearestReefSide = getTranslationToNearestReefSide(getStrategyPose());
+        Translation2d branchLocation = 
+            new Translation2d(
+                    Constants.VisionConstants.BRANCH_OFFSET * Math.cos(nearestReefSide.getAngle().getRadians()), 
+                    Constants.VisionConstants.BRANCH_OFFSET * Math.sin(nearestReefSide.getAngle().getRadians())
+            );
+
+        if (nearestReefSide.getX() < 0) {
+            return nearestReefSide.plus(branchLocation);
+                    
+        } else {
+            return nearestReefSide.minus(branchLocation);
+        }
+    }
+
+    public Translation2d getTranslationToNearestReefSide(Pose2d currentPose) {
         Translation2d robotTranslation = getStrategyPose().getTranslation();
-        Translation2d tagTranslation = FieldUtil.TagLocation.getSpeakerTagPose().getTranslation();
+        Translation2d tagTranslation = FieldUtil.TagLocation.getNearestReefTagPose(currentPose).getTranslation();
         return tagTranslation.minus(robotTranslation);
     }
 
-    public double getAngleToSpeaker() {
-        return getTranslationToSpeaker().getAngle().getDegrees();
+    public double getAngleToNearestReefSide(Pose2d currentPose) {
+        return getTranslationToNearestReefSide(currentPose).getAngle().getDegrees();
     }
 
     public void setLocalizationStrategyFromChooser() {
@@ -99,7 +114,6 @@ public class Localizer {
     }
 
     public void setPoses(Pose2d pose) {
-        this.swerve.resetPose(pose);
         poseEstimator.resetPose(pose);
         VisionUtil.QuestNav.setQuestPose(pose);
     }
@@ -117,29 +131,25 @@ public class Localizer {
 
     public void updatePhotonPoseEstimation() {
         VisionUtil.Photon.updateResults();
-        if (VisionUtil.Photon.BW.isTagClear()) {
-            if (VisionUtil.Photon.BW.isMultiTag()) {
-                VisionUtil.Photon.BW.getOptionalPoseData().ifPresent(photonPose -> poseEstimator.addVisionMeasurement(
-                        photonPose.estimatedPose.toPose2d(),
-                        photonPose.timestampSeconds,
-                        Constants.VisionConstants.VISION_STD_DEV_MULTITAG_FUNCTION.apply(VisionUtil.Photon.BW.getBestTagDist())
-                ));
-                return;
+        for (VisionUtil.Photon.BW.BWCamera camera : VisionUtil.Photon.BW.BWCamera.values()) {
+            if (VisionUtil.Photon.BW.isTagClear(camera)) {
+                EstimatedRobotPose poseEstimate = getUpdatedPhotonPoseEstimate(camera);
+                poseEstimator.addVisionMeasurement(
+                        poseEstimate.estimatedPose().toPose2d(),
+                        poseEstimate.timestampSeconds(),
+                        poseEstimate.stdDevs()
+                );
             }
-
-            Optional<Pose2d> photonPose = VisionUtil.Photon.BW.getSingleTagPose(poseEstimator.getEstimatedPosition());
-            if (photonPose.isEmpty()) { return; }
-            poseEstimator.addVisionMeasurement(
-                    photonPose.get(),
-                    VisionUtil.Photon.BW.getLatestResultTimestamp(),
-                    Constants.VisionConstants.VISION_STD_DEV_FUNCTION.apply(VisionUtil.Photon.BW.getBestTagDist())
-            );
         }
+    }
+
+    public EstimatedRobotPose getUpdatedPhotonPoseEstimate(VisionUtil.Photon.BW.BWCamera camera) {
+        return VisionUtil.Photon.BW.getBestTagPose(camera, poseEstimator.getEstimatedPosition());
     }
 
     public void updatePoseEstimation() {
         poseEstimator.update(this.swerve.getState().RawHeading, this.swerve.getState().ModulePositions);
-        updateLimelightPoseEstimation();
+        // updateLimelightPoseEstimation();
         updatePhotonPoseEstimation();
     }
 

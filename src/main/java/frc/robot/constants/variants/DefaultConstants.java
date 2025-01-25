@@ -8,6 +8,7 @@ import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
@@ -59,6 +60,7 @@ public final class DefaultConstants {
 
     public static final NetworkTableInstance NT_INSTANCE = NetworkTableInstance.getDefault();
     public static final int ONE_MILLION = 1_000_000;
+    public static final double DEADBAND = 0.1;
 
     public static final class AutoConstants {
         public static final RobotConfig ROBOT_CONFIG;
@@ -71,9 +73,7 @@ public final class DefaultConstants {
             }
         }
 
-        // TODO: REMOVE ALL MENTIONS OF "NOTE"
-
-        public static final String NOTE_CHECK_MARKER = "checkNote";
+        public static final String ALGAE_CHECK_MARKER = "checkAlgae";
 
         public static final PathConstraints PATH_CONSTRAINTS = new PathConstraints(
                 MAX_VEL,
@@ -82,7 +82,7 @@ public final class DefaultConstants {
                 MAX_ANGULAR_ACCEL
         );
 
-        public static final double NOTE_SEARCH_DEGREE_SLANT = 30.0;
+        public static final double OBJECT_SEARCH_DEGREE_SLANT = 30.0;
         public static final double DEGREE_TOLERANCE_TO_ACCEPT = 2.5;
         public static final double TRANSLATION_TOLERANCE_TO_ACCEPT = 0.5;
     }
@@ -95,6 +95,7 @@ public final class DefaultConstants {
                         : VecBuilder.fill(0.15 * dist, 0.15 * dist, Units.degreesToRadians(180.0) * dist);
         public static final Function<Double, Matrix<N3, N1>> VISION_STD_DEV_FUNCTION =
                 dist -> VecBuilder.fill(0.5 * dist, 0.5 * dist, Units.degreesToRadians(180.0) * dist);
+        public static final double BRANCH_OFFSET = Units.inchesToMeters(5.5);
 
         public static final class LimelightConstants {
             public static final String LIMELIGHT_NT_NAME = "limelight";
@@ -104,22 +105,36 @@ public final class DefaultConstants {
             public static final double LL_RIGHT = 0.0;
             public static final double LL_UP = Units.inchesToMeters(22.5);
             public static final double LL_ROLL = 0.0;
-            public static final double LL_PITCH = 25.5;
+            public static final double LL_PITCH = 25.5; // TODO CONSIDER NEGATIVE ROLL & PITCH BECAUSE OF RIGHT HAND RULE & EULER ANGLES
             public static final double LL_YAW = 0.0;
 
             public static final double LL_MAX_TAG_CLEAR_DIST = 4.0;
         }
 
         public static final class PhotonConstants {
-            // TODO SET ARDUCAM BW CAMERA TO CENTER OF ROBOT OFFSETS
-            public static final double BW_FORWARD = 0.0;
-            public static final double BW_LEFT = Units.inchesToMeters(-4.0);
-            public static final double BW_UP = 0.0;
-            public static final double BW_ROLL = 0.0;
-            public static final double BW_PITCH = 25.5;
-            public static final double BW_YAW = 0.0;
+            // TODO SET CAMERAS TO CENTER OF ROBOT OFFSETS
+            public static final double BW_TOP_RIGHT_FORWARD = 0.0;
+            public static final double BW_TOP_RIGHT_LEFT = 0.0;
+            public static final double BW_TOP_RIGHT_UP = 0.0;
+            public static final double BW_TOP_RIGHT_ROLL = 0.0;
+            public static final double BW_TOP_RIGHT_PITCH = 0.0;
+            public static final double BW_TOP_RIGHT_YAW = 0.0;
 
-            public static final double BW_MAX_TAG_CLEAR_DIST = 6.0;
+            public static final double BW_TOP_LEFT_FORWARD = 0.0;
+            public static final double BW_TOP_LEFT_LEFT = 0.0;
+            public static final double BW_TOP_LEFT_UP = 0.0;
+            public static final double BW_TOP_LEFT_ROLL = 0.0;
+            public static final double BW_TOP_LEFT_PITCH = 0.0;
+            public static final double BW_TOP_LEFT_YAW = 0.0;
+
+            public static final double BW_BACK_FORWARD = 0.0;
+            public static final double BW_BACK_LEFT = 0.0;
+            public static final double BW_BACK_UP = 0.0;
+            public static final double BW_BACK_ROLL = 0.0;
+            public static final double BW_BACK_PITCH = 0.0;
+            public static final double BW_BACK_YAW = 0.0;
+
+            public static final double BW_MAX_TAG_CLEAR_DIST = 3;
 
             public static final double OBJECT_GOAL_PITCH = -15;
             public static final double OBJECT_DEGREE_TOLERANCE_TO_ACCEPT = 2.5;
@@ -144,11 +159,85 @@ public final class DefaultConstants {
         }
     }
 
+    // TODO: UPDATE VALUES FOR 2025 + TUNE
+    public final static class ElevatorConstants {
+        // basic configs
+        public static final int LEAD_ID = 31;
+        public static final int FOLLOWER_ID = 32;
+        public static final int LOWER_LIMIT_SWITCH_ID = 2;
+        public static final int CURRENT_LIMIT = 80;
+        public static final InvertedValue ELEVATOR_INVERT = InvertedValue.Clockwise_Positive; // TODO: CHECK ON REAL ROBOT
+
+        // pid
+        public static final double ELEVATOR_S = 0.0;
+        public static final double ELEVATOR_V = 0.0;
+        public static final double ELEVATOR_A = 0.0;
+        public static final double ELEVATOR_P = 0.0;
+        public static final double ELEVATOR_I = 0.0;
+        public static final double ELEVATOR_D = 0.0;
+
+        // presets
+        public static final double LOWER_LIMIT = 0;
+        public static final double UPPER_LIMIT = 37;
+    }
+
+    public final static class IntakeConstants {
+        // basic configs
+        public static final int MOTOR_ID = 11;
+        public static final int CORAL_BEAM_ID = 3;
+        public static final int ALGAE_BEAM_ID = 4;
+        public static final int CURRENT_LIMIT = 40;
+        public static final InvertedValue LEFT_INVERT = InvertedValue.Clockwise_Positive; // TODO: CHECK ON REAL ROBOT
+    }
+
+    public final static class PivotConstants {
+        // basic configs
+        public static final int LEAD_ID = 51;
+        public static final int FOLLOWER_ID = 52;
+        public static final int LOWER_LIMIT_SWITCH_ID = 0;
+        public static final int UPPER_LIMIT_SWITCH_ID = 0;
+        public static final int CURRENT_LIMIT = 0;
+        public static final InvertedValue PIVOT_INVERT = InvertedValue.Clockwise_Positive;
+
+        // pid
+        public static final double PIVOT_S = 0.0;
+        public static final double PIVOT_V = 0.0;
+        public static final double PIVOT_A = 0.0;
+        public static final double PIVOT_P = 0;
+        public static final double PIVOT_I = 0;
+        public static final double PIVOT_D = 0;
+
+        // presets
+        public static final double LOWER_LIMIT = 0;
+        public static final double UPPER_LIMIT = 0;
+    }
+
+    public final static class WristConstants {
+        // basic configs
+        public static final int MOTOR_ID = 62;
+        public static final int LOWER_LIMIT_SWITCH_ID = 6;
+        public static final int UPPER_LIMIT_SWITCH_ID = 0;
+        public static final int CURRENT_LIMIT = 35;
+        public static final InvertedValue WRIST_INVERT = InvertedValue.Clockwise_Positive;
+
+        // pid
+        public static final double WRIST_S = 0.0;
+        public static final double WRIST_V = 0.0;
+        public static final double WRIST_A = 0.0;
+        public static final double WRIST_P = 0.0;
+        public static final double WRIST_I = 0.0;
+        public static final double WRIST_D = 0.0;
+
+        // presets
+        public static final double LOWER_LIMIT = 0;
+        public static final double UPPER_LIMIT = 20;
+    }
+
     public static final class SwerveConstants {
         public static final double PATH_TRANSLATION_CONTROLLER_P = 10.0;
         public static final double PATH_ROTATION_CONTROLLER_P = 7.5;
 
-        public static Function<Double, Double> PATH_MANUAL_TRANSLATION_CONTROLLER = x -> ExpUtil.output(x, 4.0, 0.8, 6);
+        public static final Function<Double, Double> PATH_MANUAL_TRANSLATION_CONTROLLER = x -> ExpUtil.output(x, 4.0, 0.8, 6);
 
         public static final double ANGULAR_POSITION_P = 0.035;
         public static final double ANGULAR_POSITION_D = 0.0012;
@@ -232,25 +321,26 @@ public final class DefaultConstants {
                 .withPigeon2Id(PIGEON_ID)
                 .withPigeon2Configs(PIGEON_CONFIGS);
 
-        private static final SwerveModuleConstantsFactory CONSTANT_CREATOR = new SwerveModuleConstantsFactory()
-                .withDriveMotorGearRatio(DRIVE_GEAR_RATIO)
-                .withSteerMotorGearRatio(STEER_GEAR_RATIO)
-                .withCouplingGearRatio(COUPLE_RATIO)
-                .withWheelRadius(WHEEL_RADIUS)
-                .withSteerMotorGains(STEER_GAINS)
-                .withDriveMotorGains(DRIVE_GAINS)
-                .withSteerMotorClosedLoopOutput(STEER_CLOSED_LOOP_OUTPUT_TYPE)
-                .withDriveMotorClosedLoopOutput(DRIVE_CLOSED_LOOP_OUTPUT_TYPE)
-                .withSlipCurrent(SLIP_CURRENT)
-                .withSpeedAt12Volts(SPEED_AT_12_VOLTS)
-                .withFeedbackSource(STEER_FEEDBACK_TYPE)
-                .withDriveMotorInitialConfigs(DRIVE_INITIAL_CONFIGS)
-                .withSteerMotorInitialConfigs(STEER_INITIAL_CONFIGS)
-                .withCANcoderInitialConfigs(CANCODER_INITIAL_CONFIGS)
-                .withSteerInertia(STEER_INERTIA)
-                .withDriveInertia(DRIVE_INERTIA)
-                .withSteerFrictionVoltage(STEER_FRICTION_VOLTAGE)
-                .withDriveFrictionVoltage(DRIVE_FRICTION_VOLTAGE);
+        private static final SwerveModuleConstantsFactory<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> CONSTANT_CREATOR
+                = new SwerveModuleConstantsFactory<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration>()
+                        .withDriveMotorGearRatio(DRIVE_GEAR_RATIO)
+                        .withSteerMotorGearRatio(STEER_GEAR_RATIO)
+                        .withCouplingGearRatio(COUPLE_RATIO)
+                        .withWheelRadius(WHEEL_RADIUS)
+                        .withSteerMotorGains(STEER_GAINS)
+                        .withDriveMotorGains(DRIVE_GAINS)
+                        .withSteerMotorClosedLoopOutput(STEER_CLOSED_LOOP_OUTPUT_TYPE)
+                        .withDriveMotorClosedLoopOutput(DRIVE_CLOSED_LOOP_OUTPUT_TYPE)
+                        .withSlipCurrent(SLIP_CURRENT)
+                        .withSpeedAt12Volts(SPEED_AT_12_VOLTS)
+                        .withFeedbackSource(STEER_FEEDBACK_TYPE)
+                        .withDriveMotorInitialConfigs(DRIVE_INITIAL_CONFIGS)
+                        .withSteerMotorInitialConfigs(STEER_INITIAL_CONFIGS)
+                        .withEncoderInitialConfigs(CANCODER_INITIAL_CONFIGS)
+                        .withSteerInertia(STEER_INERTIA)
+                        .withDriveInertia(DRIVE_INERTIA)
+                        .withSteerFrictionVoltage(STEER_FRICTION_VOLTAGE)
+                        .withDriveFrictionVoltage(DRIVE_FRICTION_VOLTAGE);
 
 
         // Front Left Module
@@ -265,7 +355,7 @@ public final class DefaultConstants {
             private static final Distance X_POS = Inches.of(8.25);
             private static final Distance Y_POS = Inches.of(8.25);
 
-            public static final SwerveModuleConstants FRONT_LEFT = CONSTANT_CREATOR.createModuleConstants(
+            public static final SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> FRONT_LEFT = CONSTANT_CREATOR.createModuleConstants(
                     STEER_MOTOR_ID, DRIVE_MOTOR_ID, ENCODER_ID, ENCODER_OFFSET,
                     X_POS, Y_POS, INVERT_LEFT_SIDE, STEER_MOTOR_INVERTED, CANCODER_INVERTED
             );
@@ -283,7 +373,7 @@ public final class DefaultConstants {
             private static final Distance X_POS = Inches.of(8.25);
             private static final Distance Y_POS = Inches.of(-8.25);
 
-            public static final SwerveModuleConstants FRONT_RIGHT = CONSTANT_CREATOR.createModuleConstants(
+            public static final SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> FRONT_RIGHT = CONSTANT_CREATOR.createModuleConstants(
                     STEER_MOTOR_ID, DRIVE_MOTOR_ID, ENCODER_ID, ENCODER_OFFSET,
                     X_POS, Y_POS, INVERT_RIGHT_SIDE, STEER_MOTOR_INVERTED, CANCODER_INVERTED
             );
@@ -301,7 +391,7 @@ public final class DefaultConstants {
             private static final Distance X_POS = Inches.of(-8.25);
             private static final Distance Y_POS = Inches.of(8.25);
 
-            public static final SwerveModuleConstants BACK_LEFT = CONSTANT_CREATOR.createModuleConstants(
+            public static final SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> BACK_LEFT = CONSTANT_CREATOR.createModuleConstants(
                     STEER_MOTOR_ID, DRIVE_MOTOR_ID, ENCODER_ID, ENCODER_OFFSET,
                     X_POS, Y_POS, INVERT_LEFT_SIDE, STEER_MOTOR_INVERTED, CANCODER_INVERTED
             );
@@ -319,7 +409,7 @@ public final class DefaultConstants {
             private static final Distance X_POS = Inches.of(-8.25);
             private static final Distance Y_POS = Inches.of(-8.25);
 
-            public static final SwerveModuleConstants BACK_RIGHT = CONSTANT_CREATOR.createModuleConstants(
+            public static final SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> BACK_RIGHT = CONSTANT_CREATOR.createModuleConstants(
                     STEER_MOTOR_ID, DRIVE_MOTOR_ID, ENCODER_ID, ENCODER_OFFSET,
                     X_POS, Y_POS, INVERT_RIGHT_SIDE, STEER_MOTOR_INVERTED, CANCODER_INVERTED);
         }

@@ -13,27 +13,28 @@ import org.json.simple.parser.ParseException;
 import java.io.IOException;
 
 public final class PathManager {
-    public static PathPlannerPath TEST_PATH;
-    public static PathPlannerPath TEST_PATH_2;
-    public static PathPlannerPath TEST_PATH_3;
+    // TODO: CREATE 2025 PATHS
+    public static PathPlannerPath ONE_START_TO_SIX_RIGHT;
+    public static PathPlannerPath SIX_RIGHT_TO_STATION;
+    public static PathPlannerPath STATION_TO_FIVE_LEFT;
 
     static {
         try {
-            TEST_PATH = PathPlannerPath.fromPathFile("Test");
-            TEST_PATH_2 = PathPlannerPath.fromPathFile("Test2");
-            TEST_PATH_3 = PathPlannerPath.fromPathFile("Test3");
+            ONE_START_TO_SIX_RIGHT = PathPlannerPath.fromPathFile("1,6right");
+            SIX_RIGHT_TO_STATION = PathPlannerPath.fromPathFile("6right,station");
+            STATION_TO_FIVE_LEFT = PathPlannerPath.fromPathFile("station,5left");
         } catch (IOException | ParseException e) {
             DriverStation.reportError("Failed to load paths: " + e.getMessage(), e.getStackTrace());
         }
     }
 
+    // TODO: TEST & UPDATE SCORING LOCATIONS
     public enum ScoringLocations {
         AMP,
         STAGE,
         OPPONENT_SOURCE;
 
         // TODO IMPLEMENT RED SIDE POSES
-        // TODO UPDATE THESE PRESET TARGET POSES (MEANT TO BE USED FOR SCORING, NOT PICKING UP, WHICH IS SUPPOSED TO BE COMPLETELY DYNAMIC)
         public static Pose2d getScoringPose(ScoringLocations location) {
             return switch (location) {
                 case AMP -> new Pose2d(3.3, 6.35, Rotation2d.fromDegrees(-170));
@@ -50,6 +51,8 @@ public final class PathManager {
                 0.0
         );
     }
+
+    // TODO UPDATE THESE PRESET TARGET POSES (MEANT TO BE USED FOR SCORING OBJECTS)
     public static Command pathFindToNearestScoringLocation(Pose2d currentPose) {
         Translation2d currentTranslation = currentPose.getTranslation();
         ScoringLocations nearestLocation = ScoringLocations.STAGE;

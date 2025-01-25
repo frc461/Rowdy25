@@ -77,7 +77,7 @@ public class DriveCommand extends Command {
         if (tagTurret.getAsBoolean()) {
             setConsistentHeading.accept(swerve.localizer.getStrategyPose().getRotation().getDegrees());
             swerve.setControl(
-                    fieldCentric.withDeadband(Constants.MAX_VEL * 0.1)
+                    fieldCentric.withDeadband(Constants.MAX_VEL * Constants.DEADBAND)
                             .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
                             .withVelocityX(-straight.getAsDouble() * Constants.MAX_VEL)
                             .withVelocityY(-strafe.getAsDouble() * Constants.MAX_VEL)
@@ -85,7 +85,7 @@ public class DriveCommand extends Command {
                                     ? -rot.getAsDouble() * Constants.MAX_REAL_ANGULAR_VEL
                                     : yawController.calculate(
                                             swerve.localizer.getStrategyPose().getRotation().getDegrees(),
-                                            swerve.localizer.getAngleToSpeaker()
+                                            swerve.localizer.getAngleToNearestReefSide(swerve.localizer.getStrategyPose())
                                     ) * Constants.MAX_CONTROLLED_ANGULAR_VEL
                             )
             );
@@ -93,7 +93,7 @@ public class DriveCommand extends Command {
             setConsistentHeading.accept(swerve.localizer.getStrategyPose().getRotation().getDegrees());
             swerve.setControl(
                     fieldCentric
-                            .withDeadband(Constants.MAX_VEL * 0.1)
+                            .withDeadband(Constants.MAX_VEL * Constants.DEADBAND)
                             .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
                             .withVelocityX(-straight.getAsDouble() * Constants.MAX_VEL)
                             .withVelocityY(-strafe.getAsDouble() * Constants.MAX_VEL)
@@ -107,11 +107,12 @@ public class DriveCommand extends Command {
                                                     : 0.0
                             )
             );
-        } else if (Math.abs(rot.getAsDouble()) >= 0.1 || (Math.abs(straight.getAsDouble()) < 0.1 && Math.abs(strafe.getAsDouble()) < 0.1)) {
+        } else if (Math.abs(rot.getAsDouble()) >= Constants.DEADBAND
+                || (Math.abs(straight.getAsDouble()) < Constants.DEADBAND && Math.abs(strafe.getAsDouble()) < Constants.DEADBAND)) {
             setConsistentHeading.accept(swerve.localizer.getStrategyPose().getRotation().getDegrees());
             swerve.setControl(
-                    fieldCentric.withDeadband(Constants.MAX_VEL * 0.1)
-                            .withRotationalDeadband(Constants.MAX_CONTROLLED_ANGULAR_VEL * 0.1) // Add a 10% deadband
+                    fieldCentric.withDeadband(Constants.MAX_VEL * Constants.DEADBAND)
+                            .withRotationalDeadband(Constants.MAX_CONTROLLED_ANGULAR_VEL * Constants.DEADBAND) // Add a 10% deadband
                             .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage) // Use open-loop control for drive motors
                             .withVelocityX(-straight.getAsDouble() * Constants.MAX_VEL) // Drive forward with negative Y (forward)
                             .withVelocityY(-strafe.getAsDouble() * Constants.MAX_VEL) // Drive left with negative X (left)
@@ -119,7 +120,7 @@ public class DriveCommand extends Command {
             );
         } else {
             swerve.setControl(
-                    fieldCentric.withDeadband(Constants.MAX_VEL * 0.1)
+                    fieldCentric.withDeadband(Constants.MAX_VEL * Constants.DEADBAND)
                             .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
                             .withVelocityX(-straight.getAsDouble() * Constants.MAX_VEL)
                             .withVelocityY(-strafe.getAsDouble() * Constants.MAX_VEL)

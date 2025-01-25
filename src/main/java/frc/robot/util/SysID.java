@@ -1,6 +1,8 @@
 package frc.robot.util;
 
 import com.ctre.phoenix6.SignalLogger;
+import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.units.measure.*;
@@ -68,12 +70,12 @@ public class SysID {
                                 new SwerveRequest.SysIdSwerveTranslation().withVolts(output)
                         ),
                         log -> {
-                            SwerveModule[] modules = this.swerve.getModules();
+                            SwerveModule<TalonFX, TalonFX, CANcoder>[] modules = this.swerve.getModules();
                             for (int i = 0; i < modules.length; i++) {
                                 log.motor("module" + i)
                                         .voltage(
                                                 appliedVoltage.mut_replace(
-                                                        modules[i].getDriveMotor().get() * RobotController.getBatteryVoltage(), Volts
+                                                        modules[i].getDriveMotor().getMotorVoltage().getValueAsDouble() * RobotController.getBatteryVoltage(), Volts
                                                 )
                                         )
                                         .linearPosition(
@@ -102,12 +104,12 @@ public class SysID {
                                 new SwerveRequest.SysIdSwerveSteerGains().withVolts(volts)
                         ),
                         log -> {
-                            SwerveModule[] modules = this.swerve.getModules();
+                            SwerveModule<TalonFX, TalonFX, CANcoder>[] modules = this.swerve.getModules();
                             for (int i = 0; i < modules.length; i++) {
                                 log.motor("module" + i)
                                         .voltage(
                                                 appliedVoltage.mut_replace(
-                                                        modules[i].getSteerMotor().get() * RobotController.getBatteryVoltage(), Volts
+                                                        modules[i].getSteerMotor().getMotorVoltage().getValueAsDouble() * RobotController.getBatteryVoltage(), Volts
                                                 )
                                         )
                                         .angularPosition(

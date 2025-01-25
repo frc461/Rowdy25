@@ -5,9 +5,13 @@ import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.BooleanSupplier;
+import java.util.function.Supplier;
 
 /**
  * An object that represents an autonomous start or dynamic path.
@@ -24,6 +28,8 @@ public class AutoEventLooper {
 
     /** The name of the auto this loop is associated with */
     private final String name;
+
+    private final List<AutoTrigger> triggers;
 
     /** A boolean utilized in {@link #active()} to resolve trueness */
     protected boolean isActive = false;
@@ -43,6 +49,7 @@ public class AutoEventLooper {
     public AutoEventLooper(String name, EventLoop loop) {
         this.loop = loop;
         this.name = name;
+        triggers = new ArrayList<>();
     }
 
     /**
@@ -94,8 +101,10 @@ public class AutoEventLooper {
         return observe(() -> isActive && DriverStation.isAutonomousEnabled());
     }
 
-    public AutoTrigger addTrigger(String name, Command command) {
-        return new AutoTrigger(name, command, this);
+    public AutoTrigger addTrigger(String name, Supplier<Command> command) {
+        AutoTrigger trigger = new AutoTrigger(name, command, this);
+        triggers.add(trigger);
+        return trigger;
     }
 
     /**
@@ -163,6 +172,9 @@ public class AutoEventLooper {
     public void reset() {
         pollCount = 0;
         isActive = false;
+        for (AutoTrigger trigger : triggers) {
+            trigger.reset();
+        }
     }
 
     /** Kills the loop and prevents it from running again. */
@@ -202,6 +214,7 @@ public class AutoEventLooper {
     public Command cmd(BooleanSupplier finishCondition) {
         return Commands.run(this::poll)
                 .finallyDo(this::reset)
+                .beforeStarting(this::reset)
                 .until(() -> !DriverStation.isAutonomousEnabled() || finishCondition.getAsBoolean())
                 .withName(name);
     }
