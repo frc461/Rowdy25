@@ -33,8 +33,8 @@ public final class TestConstants {
     public static final CANBus CAN_BUS = new CANBus("", "./logs/example.hoot");
 
     // TODO RETUNE WITH PROPER NAMES (LEFT, UP) AND PROPER ANGLES
-    public final class VisionConstants {
-        public final class PhotonConstants {
+    public static final class VisionConstants {
+        public static final class PhotonConstants {
             public static final double BW_TOP_RIGHT_FORWARD = Units.inchesToMeters(8.25);
             public static final double BW_TOP_RIGHT_LEFT = Units.inchesToMeters(-9.25);
             public static final double BW_TOP_RIGHT_UP = 0.0;
@@ -53,7 +53,7 @@ public final class TestConstants {
 
     // The steer motor uses any SwerveModule.SteerRequestType control request with the
     // output type specified by SwerveModuleConstants.SteerMotorClosedLoopOutput
-    public final class SwerveConstants {
+    public static final class SwerveConstants {
         private static final Slot0Configs STEER_GAINS = new Slot0Configs()
                 .withKP(75.0).withKI(0).withKD(0.5)
                 .withKS(0.1).withKV(2.66).withKA(0)
@@ -64,11 +64,15 @@ public final class TestConstants {
                 .withKP(0).withKI(0).withKD(0)
                 .withKS(0.149).withKV(0.1155).withKA(0);
 
-
+        // The closed-loop output type to use for the steer motors;
+        // This affects the PID/FF gains for the steer motors
         private static final ClosedLoopOutputType STEER_CLOSED_LOOP_OUTPUT_TYPE = ClosedLoopOutputType.Voltage;
         // The closed-loop output type to use for the drive motors;
         // This affects the PID/FF gains for the drive motors
         private static final ClosedLoopOutputType DRIVE_CLOSED_LOOP_OUTPUT_TYPE = ClosedLoopOutputType.Voltage;
+
+        // The remote sensor feedback type to use for the steer motors;
+        // When not Pro-licensed, FusedCANcoder/SyncCANcoder automatically fall back to RemoteCANcoder
         private static final SteerFeedbackType STEER_FEEDBACK_TYPE = SteerFeedbackType.FusedCANcoder;
 
         // The stator current at which the wheels start to slip;
@@ -81,10 +85,10 @@ public final class TestConstants {
         private static final TalonFXConfiguration STEER_INITIAL_CONFIGS = new TalonFXConfiguration()
                 .withCurrentLimits(
                         new CurrentLimitsConfigs()
-                        // Swerve azimuth does not require much torque output, so we can set a relatively low
-                        // stator current limit to help avoid brownouts without impacting performance.
-                        .withStatorCurrentLimit(Amps.of(60))
-                        .withStatorCurrentLimitEnable(true)
+                                // Swerve azimuth does not require much torque output, so we can set a relatively low
+                                // stator current limit to help avoid brownouts without impacting performance.
+                                .withStatorCurrentLimit(Amps.of(60))
+                                .withStatorCurrentLimitEnable(true)
                 );
         private static final CANcoderConfiguration CANCODER_INITIAL_CONFIGS = new CANcoderConfiguration();
         // Configs for the Pigeon 2;
@@ -115,9 +119,9 @@ public final class TestConstants {
         private static final Voltage DRIVE_FRICTION_VOLTAGE = Volts.of(0.2);
 
         public static final SwerveDrivetrainConstants SWERVE_DRIVETRAIN_CONSTANTS = new SwerveDrivetrainConstants()
-            .withCANBusName(CAN_BUS.getName())
-            .withPigeon2Id(PIGEON_ID)
-            .withPigeon2Configs(PIGEON_CONFIGS);
+                .withCANBusName(CAN_BUS.getName())
+                .withPigeon2Id(PIGEON_ID)
+                .withPigeon2Configs(PIGEON_CONFIGS);
 
         private static final SwerveModuleConstantsFactory<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> CONSTANT_CREATOR
                 = new SwerveModuleConstantsFactory<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration>()
