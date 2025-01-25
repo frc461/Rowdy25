@@ -10,6 +10,9 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.constants.Constants;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class FieldUtil {
     public static final AprilTagFieldLayout layout2025 = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
     public static final double FIELD_LENGTH = layout2025.getFieldLength();
@@ -50,8 +53,8 @@ public class FieldUtil {
         ID_21,
         ID_22;
 
-        public static final Transform2d LEFT_BRANCH_OFFSET = new Transform2d(Units.inchesToMeters(-1.00), Units.inchesToMeters(-5.5), new Rotation2d());
-        public static final Transform2d RIGHT_BRANCH_OFFSET = new Transform2d(Units.inchesToMeters(-1.00), Units.inchesToMeters(5.5), new Rotation2d());
+        public static final Transform2d LEFT_BRANCH_OFFSET = new Transform2d(Units.inchesToMeters(-2.109), Units.inchesToMeters(-6.468878), new Rotation2d());
+        public static final Transform2d RIGHT_BRANCH_OFFSET = new Transform2d(Units.inchesToMeters(-2.109), Units.inchesToMeters(6.468878), new Rotation2d());
 
         public static Pose3d getTagLocation3d(TagLocation tag) {
             return switch (tag) {
@@ -116,84 +119,55 @@ public class FieldUtil {
             return getTagLocation3d(tagID).toPose2d();
         }
 
-        public static Pose2d getNearestPoseFromGroup(Pose2d reference, Pose2d... poses) {
-            Pose2d nearest = null;
-            double nearestDistance = Double.MAX_VALUE;
-            for (Pose2d pose : poses) {
-                double distance = reference.getTranslation().getDistance(pose.getTranslation());
-                if (distance < nearestDistance) {
-                    nearest = pose;
-                    nearestDistance = distance;
-                }
+        public static List<Pose2d> getCoralStationTagPoses() {
+            return Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red ?
+                    List.of(
+                            getTagLocation2d(TagLocation.ID_1),
+                            getTagLocation2d(TagLocation.ID_2)
+                    ) : List.of(
+                            getTagLocation2d(TagLocation.ID_12),
+                            getTagLocation2d(TagLocation.ID_13)
+                    );
+        }
+
+        public static List<Pose2d> getReefTagPoses() {
+            return Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red ?
+                    List.of(
+                            getTagLocation2d(TagLocation.ID_6),
+                            getTagLocation2d(TagLocation.ID_7),
+                            getTagLocation2d(TagLocation.ID_8),
+                            getTagLocation2d(TagLocation.ID_9),
+                            getTagLocation2d(TagLocation.ID_10),
+                            getTagLocation2d(TagLocation.ID_11)
+                    ) : List.of(
+                            getTagLocation2d(TagLocation.ID_17),
+                            getTagLocation2d(TagLocation.ID_18),
+                            getTagLocation2d(TagLocation.ID_19),
+                            getTagLocation2d(TagLocation.ID_20),
+                            getTagLocation2d(TagLocation.ID_21),
+                            getTagLocation2d(TagLocation.ID_22)
+                    );
+        }
+
+        public static List<Pose2d> getBranchPoses() {
+            List<Pose2d> branchPoses = new ArrayList<>();
+            for (Pose2d reefTagPose : getReefTagPoses()) {
+                branchPoses.add(reefTagPose.plus(LEFT_BRANCH_OFFSET));
+                branchPoses.add(reefTagPose.plus(RIGHT_BRANCH_OFFSET));
             }
-            return nearest;
-        }
-
-        public static Pose2d getNearestReefTagPose(Pose2d currentPose) {
-            DriverStation.Alliance alliance = Constants.ALLIANCE_SUPPLIER.get();
-            return alliance == DriverStation.Alliance.Red ? getNearestPoseFromGroup(
-                    currentPose,
-                    getTagLocation2d(TagLocation.ID_6),
-                    getTagLocation2d(TagLocation.ID_7),
-                    getTagLocation2d(TagLocation.ID_8),
-                    getTagLocation2d(TagLocation.ID_9),
-                    getTagLocation2d(TagLocation.ID_10),
-                    getTagLocation2d(TagLocation.ID_11)
-            ) : getNearestPoseFromGroup(
-                    currentPose,
-                    getTagLocation2d(TagLocation.ID_17),
-                    getTagLocation2d(TagLocation.ID_18),
-                    getTagLocation2d(TagLocation.ID_19),
-                    getTagLocation2d(TagLocation.ID_20),
-                    getTagLocation2d(TagLocation.ID_21),
-                    getTagLocation2d(TagLocation.ID_22)
-            );
-        }
-
-        public static Pose2d getNearestBranchPose(Pose2d currentPose) {
-            DriverStation.Alliance alliance = Constants.ALLIANCE_SUPPLIER.get();
-            return alliance == DriverStation.Alliance.Red ? getNearestPoseFromGroup(
-                    currentPose,
-                    getTagLocation2d(TagLocation.ID_6).plus(LEFT_BRANCH_OFFSET),
-                    getTagLocation2d(TagLocation.ID_6).plus(RIGHT_BRANCH_OFFSET),
-                    getTagLocation2d(TagLocation.ID_7).plus(LEFT_BRANCH_OFFSET),
-                    getTagLocation2d(TagLocation.ID_7).plus(RIGHT_BRANCH_OFFSET),
-                    getTagLocation2d(TagLocation.ID_8).plus(LEFT_BRANCH_OFFSET),
-                    getTagLocation2d(TagLocation.ID_8).plus(RIGHT_BRANCH_OFFSET),
-                    getTagLocation2d(TagLocation.ID_9).plus(LEFT_BRANCH_OFFSET),
-                    getTagLocation2d(TagLocation.ID_9).plus(RIGHT_BRANCH_OFFSET),
-                    getTagLocation2d(TagLocation.ID_10).plus(LEFT_BRANCH_OFFSET),
-                    getTagLocation2d(TagLocation.ID_10).plus(RIGHT_BRANCH_OFFSET),
-                    getTagLocation2d(TagLocation.ID_11).plus(LEFT_BRANCH_OFFSET),
-                    getTagLocation2d(TagLocation.ID_11).plus(RIGHT_BRANCH_OFFSET)
-            ) : getNearestPoseFromGroup(
-                    currentPose,
-                    getTagLocation2d(TagLocation.ID_17).plus(LEFT_BRANCH_OFFSET),
-                    getTagLocation2d(TagLocation.ID_17).plus(RIGHT_BRANCH_OFFSET),
-                    getTagLocation2d(TagLocation.ID_18).plus(LEFT_BRANCH_OFFSET),
-                    getTagLocation2d(TagLocation.ID_18).plus(RIGHT_BRANCH_OFFSET),
-                    getTagLocation2d(TagLocation.ID_19).plus(LEFT_BRANCH_OFFSET),
-                    getTagLocation2d(TagLocation.ID_19).plus(RIGHT_BRANCH_OFFSET),
-                    getTagLocation2d(TagLocation.ID_20).plus(LEFT_BRANCH_OFFSET),
-                    getTagLocation2d(TagLocation.ID_20).plus(RIGHT_BRANCH_OFFSET),
-                    getTagLocation2d(TagLocation.ID_21).plus(LEFT_BRANCH_OFFSET),
-                    getTagLocation2d(TagLocation.ID_21).plus(RIGHT_BRANCH_OFFSET),
-                    getTagLocation2d(TagLocation.ID_22).plus(LEFT_BRANCH_OFFSET),
-                    getTagLocation2d(TagLocation.ID_22).plus(RIGHT_BRANCH_OFFSET)
-            );
+            return branchPoses;
         }
 
         public static Pose2d getNearestCoralStationTagPose(Pose2d currentPose) {
-            DriverStation.Alliance alliance = Constants.ALLIANCE_SUPPLIER.get();
-            return alliance == DriverStation.Alliance.Red ? getNearestPoseFromGroup(
-                    currentPose,
-                    getTagLocation2d(TagLocation.ID_1),
-                    getTagLocation2d(TagLocation.ID_2)
-            ) : getNearestPoseFromGroup(
-                    currentPose,
-                    getTagLocation2d(TagLocation.ID_12),
-                    getTagLocation2d(TagLocation.ID_13)
-            );
+            return currentPose.nearest(getCoralStationTagPoses());
+        }
+
+        public static Pose2d getNearestReefTagPose(Pose2d currentPose) {
+            return currentPose.nearest(getReefTagPoses());
+        }
+
+        public static Pose2d getNearestBranchPose(Pose2d currentPose) {
+            return currentPose.nearest(getBranchPoses());
         }
     }
 }
