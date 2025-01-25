@@ -24,8 +24,8 @@ public class DriveCommand extends Command {
     private final DoubleSupplier straight;
     private final DoubleSupplier strafe;
     private final DoubleSupplier rot;
-    private final BooleanSupplier tagTurret;
-    private final BooleanSupplier objectTurret;
+    private final BooleanSupplier tagHeadingSnap;
+    private final BooleanSupplier objectHeadingSnap;
 
     public DriveCommand(
             Swerve swerve,
@@ -36,8 +36,8 @@ public class DriveCommand extends Command {
             DoubleSupplier strafe,
             DoubleSupplier rotLeft,
             DoubleSupplier rotRight,
-            BooleanSupplier tagTurret,
-            BooleanSupplier objectTurret
+            BooleanSupplier tagHeadingSnap,
+            BooleanSupplier objectHeadingSnap
     ) {
         this.swerve = swerve;
         this.fieldCentric = fieldCentric;
@@ -68,15 +68,15 @@ public class DriveCommand extends Command {
         this.straight = straight;
         this.strafe = strafe;
         this.rot = () -> rotRight.getAsDouble() - rotLeft.getAsDouble();
-        this.tagTurret = tagTurret;
-        this.objectTurret = objectTurret;
+        this.tagHeadingSnap = tagHeadingSnap;
+        this.objectHeadingSnap = objectHeadingSnap;
         addRequirements(this.swerve);
     }
 
     @Override
     public void execute() {
         Pose2d currentPose = swerve.localizer.getStrategyPose();
-        if (tagTurret.getAsBoolean()) {
+        if (tagHeadingSnap.getAsBoolean()) {
             setConsistentHeading.accept(currentPose.getRotation().getDegrees());
             swerve.setControl(
                     fieldCentric.withDeadband(Constants.MAX_VEL * Constants.DEADBAND)
@@ -91,7 +91,7 @@ public class DriveCommand extends Command {
                                     ) * Constants.MAX_CONTROLLED_ANGULAR_VEL
                             )
             );
-        } else if (objectTurret.getAsBoolean()) {
+        } else if (objectHeadingSnap.getAsBoolean()) {
             setConsistentHeading.accept(currentPose.getRotation().getDegrees());
             swerve.setControl(
                     fieldCentric

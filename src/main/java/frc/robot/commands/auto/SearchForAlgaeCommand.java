@@ -114,14 +114,6 @@ public class SearchForAlgaeCommand extends Command {
     }
 
     @Override
-    public void end(boolean interrupted) {
-        System.out.println(translationComplete);
-        System.out.println(end);
-        System.out.println(interrupted);
-        System.out.println("Ended");
-    }
-
-    @Override
     public boolean isFinished() {
         return end;
     }

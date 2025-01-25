@@ -59,7 +59,7 @@ public class DriveToObjectCommand extends Command {
                                     0.0
                             ) * Constants.MAX_CONTROLLED_ANGULAR_VEL)
             );
-            if (degreeError < Constants.VisionConstants.PhotonConstants.OBJECT_DEGREE_TOLERANCE_TO_ACCEPT) {
+            if (degreeError < Constants.AutoConstants.DEGREE_TOLERANCE_TO_ACCEPT) {
                 rotationComplete = true;
             }
         } else if (targetValid && !translationComplete) {
@@ -77,7 +77,7 @@ public class DriveToObjectCommand extends Command {
                             ))
                             .withRotationalRate(0.0)
             );
-            if (degreeError < Constants.VisionConstants.PhotonConstants.OBJECT_DEGREE_TOLERANCE_TO_ACCEPT) {
+            if (degreeError < Constants.AutoConstants.DEGREE_TOLERANCE_TO_ACCEPT) {
                 translationComplete = true;
                 end = true;
                 successful = true;

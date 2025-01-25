@@ -57,6 +57,7 @@ public final class Constants {
         public static double OBJECT_SEARCH_DEGREE_SLANT;
         public static double DEGREE_TOLERANCE_TO_ACCEPT;
         public static double TRANSLATION_TOLERANCE_TO_ACCEPT;
+        public static double DISTANCE_TOLERANCE_TO_DRIVE_INTO;
     }
 
     public static final class VisionConstants {
@@ -102,7 +103,6 @@ public final class Constants {
             public static double BW_MAX_TAG_CLEAR_DIST;
 
             public static double OBJECT_GOAL_PITCH;
-            public static double OBJECT_DEGREE_TOLERANCE_TO_ACCEPT;
         }
 
         public static final class QuestNavConstants {

@@ -13,15 +13,19 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import frc.robot.commands.DriveToNearestBranchCommand;
+import frc.robot.commands.PathfindingUntilCloseCommand;
 import frc.robot.commands.auto.SearchForAlgaeCommand;
 import frc.robot.constants.Constants;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.DriveToObjectCommand;
 import frc.robot.subsystems.vision.Localizer;
+import frc.robot.util.FieldUtil;
 
 /**
  * Class that extends the Phoenix 6 SwerveDrivetrain class and implements
@@ -132,6 +136,19 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
 
     public Command moveToObject() {
         return new DriveToObjectCommand(this, robotCentric, false);
+    }
+
+    public Command moveToNearestBranch() {
+        return new PathfindingUntilCloseCommand(
+                FieldUtil.TagLocation.getNearestBranchPose(localizer.getStrategyPose()).rotateBy(Rotation2d.kPi),
+                Constants.AutoConstants.DISTANCE_TOLERANCE_TO_DRIVE_INTO,
+                true,
+                this
+        );
+    }
+
+    public Command driveDirectToNearestBranch() {
+        return new DriveToNearestBranchCommand(this, fieldCentric);
     }
 
     public Command xMode() {
