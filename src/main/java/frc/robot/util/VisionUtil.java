@@ -469,7 +469,7 @@ public class VisionUtil {
         }
 
         public static void completeQuestPose() {
-            if (questMiso.get() == 98) {
+            if (questMiso.get() == 98 || questMiso.get() == 99) {
                 questMosi.set(0);
             }
         }
