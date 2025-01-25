@@ -469,14 +469,14 @@ public class VisionUtil {
         }
 
         public static void completeQuestPose() {
-            if (questMiso.get() == 99) {
+            if (questMiso.get() == 98) {
                 questMosi.set(0);
             }
         }
 
         public static void setQuestPose(Pose2d robotPose) {
             Pose2d cameraPose = robotPose.plus(robotToCameraOffset);
-            if (questMiso.get() != 99) {
+            if (questMiso.get() != 98) {
                 questResetPose.set(new double[] {
                         cameraPose.getX(),
                         cameraPose.getY(),
