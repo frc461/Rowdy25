@@ -152,7 +152,8 @@ public class RobotContainer {
                         driverXbox::getLeftTriggerAxis,
                         driverXbox::getRightTriggerAxis,
                         () -> driverXbox.leftBumper().getAsBoolean(),
-                        () -> driverXbox.rightBumper().getAsBoolean()
+                        () -> driverXbox.rightBumper().getAsBoolean(),
+                        () -> driverXbox.x().getAsBoolean()
                 )
         );
 

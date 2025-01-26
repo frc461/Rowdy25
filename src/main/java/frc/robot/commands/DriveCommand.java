@@ -26,6 +26,7 @@ public class DriveCommand extends Command {
     private final DoubleSupplier rot;
     private final BooleanSupplier tagHeadingSnap;
     private final BooleanSupplier objectHeadingSnap;
+    private final BooleanSupplier coralStationHeadingSnap
 
     public DriveCommand(
             Swerve swerve,
@@ -37,7 +38,8 @@ public class DriveCommand extends Command {
             DoubleSupplier rotLeft,
             DoubleSupplier rotRight,
             BooleanSupplier tagHeadingSnap,
-            BooleanSupplier objectHeadingSnap
+            BooleanSupplier objectHeadingSnap,
+            BooleanSupplier coralStationHeadingSnap
     ) {
         this.swerve = swerve;
         this.fieldCentric = fieldCentric;
@@ -70,6 +72,7 @@ public class DriveCommand extends Command {
         this.rot = () -> rotRight.getAsDouble() - rotLeft.getAsDouble();
         this.tagHeadingSnap = tagHeadingSnap;
         this.objectHeadingSnap = objectHeadingSnap;
+        this.coralStationHeadingSnap = coralStationHeadingSnap;
         addRequirements(this.swerve);
     }
 
@@ -90,6 +93,23 @@ public class DriveCommand extends Command {
                                             swerve.localizer.getAngleToNearestBranch()
                                     ) * Constants.MAX_CONTROLLED_ANGULAR_VEL
                             )
+            );
+        } else if (coralStationHeadingSnap.getAsBoolean()) {
+            setConsistentHeading.accept(currentPose.getRotation().getDegrees());
+            swerve.setControl(
+                    fieldCentric.withDeadband(Constants.MAX_VEL * Constants.DEADBAND)
+                    .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
+                    .withVelocityX(-straight.getAsDouble() * Constants.MAX_VEL)
+                    .withVelocityY(-strafe.getAsDouble() * Constants.MAX_VEL)
+                    .withRotationalRate(rot.getAsDouble() < -0.5
+                            ? -rot.getAsDouble() * Constants.MAX_REAL_ANGULAR_VEL
+                            : yawController.calculate(
+                                    currentPose.getRotation().getDegrees() < 0
+                                    ? currentPose.getRotation().getDegrees() + 180
+                                    : currentPose.getRotation().getDegrees() - 180,
+                                    swerve.localizer.getAngleToNearestCoralStation()
+                            ) * Constants.MAX_CONTROLLED_ANGULAR_VEL
+                    )
             );
         } else if (objectHeadingSnap.getAsBoolean()) {
             setConsistentHeading.accept(currentPose.getRotation().getDegrees());

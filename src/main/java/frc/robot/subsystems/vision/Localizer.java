@@ -92,6 +92,16 @@ public class Localizer {
         return getTranslationToNearestReefSide().getAngle().getDegrees();
     }
 
+    public Translation2d getTranslationToNearestCoralStation() {
+        Pose2d currentPose = getStrategyPose();
+        Translation2d tagTranslation = FieldUtil.TagLocation.getNearestCoralStationTagPose(currentPose).getTranslation();
+        return tagTranslation.minus(currentPose.getTranslation());
+    }
+
+    public double getAngleToNearestCoralStation() {
+        return getTranslationToNearestCoralStation().getAngle().getDegrees();
+    }
+
     public void setLocalizationStrategyFromChooser() {
         LocalizationStrategy strategy = localizationChooser.getSelected();
         if (strategy != this.strategy) {
