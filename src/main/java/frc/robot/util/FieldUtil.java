@@ -149,6 +149,17 @@ public class FieldUtil {
                     );
         }
 
+        public static List<Pose2d> getAlgaeScoringTagPoses() {
+            return Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red ?
+                    List.of(
+                    getTagLocation2d(TagLocation.ID_3),
+                    getTagLocation2d(TagLocation.ID_5)
+                    ) : List.of(
+                    getTagLocation2d(TagLocation.ID_14),
+                    getTagLocation2d(TagLocation.ID_16)
+                    ); 
+        }
+
         public static List<Pose2d> getBranchPoses() {
             List<Pose2d> branchPoses = new ArrayList<>();
             for (Pose2d reefTagPose : getReefTagPoses()) {
@@ -168,6 +179,13 @@ public class FieldUtil {
 
         public static Pose2d getNearestBranchPose(Pose2d currentPose) {
             return currentPose.nearest(getBranchPoses());
+        }
+
+        public static Pose2d getAlgaeScoringPose(Pose2d currentPose) {
+            if (Math.abs(getAlgaeScoringTagPoses().get(0).getRotation().getDegrees() - currentPose.getRotation().getDegrees()) < 45) {
+                return getAlgaeScoringTagPoses().get(0);
+            }
+            return getAlgaeScoringTagPoses().get(1);
         }
     }
 }

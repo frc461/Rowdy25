@@ -26,7 +26,7 @@ public class DriveCommand extends Command {
     private final DoubleSupplier rot;
     private final BooleanSupplier tagHeadingSnap;
     private final BooleanSupplier objectHeadingSnap;
-    private final BooleanSupplier coralStationHeadingSnap
+    private final BooleanSupplier coralStationHeadingSnap;
 
     public DriveCommand(
             Swerve swerve,

@@ -26,7 +26,7 @@ public class Intake extends SubsystemBase{
         motor.getConfigurator().apply(new TalonFXConfiguration()
                 .withVoltage(new VoltageConfigs().withPeakForwardVoltage(6))
                 .withMotorOutput(new MotorOutputConfigs()
-                        .withInverted(Constants.IntakeConstants.LEFT_INVERT)
+                        .withInverted(Constants.IntakeConstants.INVERT)
                         .withNeutralMode(NeutralModeValue.Coast))
                 .withCurrentLimits(new CurrentLimitsConfigs()
                         .withSupplyCurrentLimit(Constants.IntakeConstants.CURRENT_LIMIT))
@@ -41,11 +41,7 @@ public class Intake extends SubsystemBase{
     public void setIntakeSpeed(double speed) {
         motor.set(speed);
     }
-
-    public void setIntakeSpeed(double leftSpeed, double rightSpeed) {
-        motor.set(leftSpeed);
-    }
-
+ 
     public boolean hasCoral() {
         return !coralBeam.get();
     }

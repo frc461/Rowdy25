@@ -3,6 +3,7 @@ package frc.robot.subsystems.vision;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -100,6 +101,16 @@ public class Localizer {
 
     public double getAngleToNearestCoralStation() {
         return getTranslationToNearestCoralStation().getAngle().getDegrees();
+    }
+
+    public Translation2d getTranslationToAlgaeScoringLocation() {
+        Pose2d currentPose = getStrategyPose();
+        Translation2d tagTranslation = FieldUtil.TagLocation.getAlgaeScoringPose(currentPose).getTranslation();
+        return tagTranslation.minus(currentPose.getTranslation());
+    }
+
+    public double getAngleToAlgaeScoringLocation() {
+        return getTranslationToAlgaeScoringLocation().getAngle().getDegrees();
     }
 
     public void setLocalizationStrategyFromChooser() {
