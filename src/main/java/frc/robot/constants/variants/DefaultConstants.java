@@ -178,6 +178,16 @@ public final class DefaultConstants {
         // presets
         public static final double LOWER_LIMIT = 0;
         public static final double UPPER_LIMIT = 37;
+        public static final double GROUND_CORAL = 0;
+        public static final double GROUND_ALGAE = 0;
+        public static final double L1_CORAL = 0;
+        public static final double L2_CORAL = 0;
+        public static final double L3_CORAL = 0;
+        public static final double L4_CORAL = 0;
+        public static final double LOW_REEF_ALGAE = 0;
+        public static final double HIGH_REEF_ALGAE = 0;
+        public static final double PROCESSOR = 0;
+        public static final double NET = 0;
     }
 
     public final static class IntakeConstants {
@@ -186,7 +196,7 @@ public final class DefaultConstants {
         public static final int CORAL_BEAM_ID = 3;
         public static final int ALGAE_BEAM_ID = 4;
         public static final int CURRENT_LIMIT = 40;
-        public static final InvertedValue LEFT_INVERT = InvertedValue.Clockwise_Positive; // TODO: CHECK ON REAL ROBOT
+        public static final InvertedValue INVERT = InvertedValue.Clockwise_Positive; // TODO: CHECK ON REAL ROBOT
     }
 
     public final static class PivotConstants {
@@ -209,6 +219,12 @@ public final class DefaultConstants {
         // presets
         public static final double LOWER_LIMIT = 0;
         public static final double UPPER_LIMIT = 0;
+        public static final double CORAL_STATION = 0;
+        public static final double GROUND_ALGAE = 0;
+        public static final double GROUND_CORAL = 0;
+        public static final double SCORE_CORAL = 0;
+        public static final double SCORE_ALGAE = 0;
+
     }
 
     public final static class WristConstants {
@@ -230,6 +246,15 @@ public final class DefaultConstants {
         // presets
         public static final double LOWER_LIMIT = 0;
         public static final double UPPER_LIMIT = 20;
+        public static final double GROUND_CORAL = 0;
+        public static final double GROUND_ALGAE = 0;
+        public static final double L1_CORAL = 0;
+        public static final double L2_L3_CORAL = 0;
+        public static final double L4_CORAL = 0;
+        public static final double REEF_ALGAE = 0;
+        public static final double PROCESSOR = 0;
+        public static final double NET = 0;
+
     }
 
     public static final class SwerveConstants {

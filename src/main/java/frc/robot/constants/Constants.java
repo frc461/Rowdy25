@@ -142,6 +142,17 @@ public final class Constants {
         // presets
         public static double LOWER_LIMIT;
         public static double UPPER_LIMIT;
+        public static double GROUND_CORAL;
+        public static double GROUND_ALGAE;
+        public static double L1_CORAL;
+        public static double L2_CORAL;
+        public static double L3_CORAL;
+        public static double L4_CORAL;
+        public static double LOW_REEF_ALGAE;
+        public static double HIGH_REEF_ALGAE;
+        public static double PROCESSOR;
+        public static double NET;
+
     }
 
     public final static class IntakeConstants {
@@ -150,7 +161,7 @@ public final class Constants {
         public static int CORAL_BEAM_ID;
         public static int ALGAE_BEAM_ID;
         public static int CURRENT_LIMIT;
-        public static InvertedValue LEFT_INVERT;
+        public static InvertedValue INVERT;
     }
 
     public final static class PivotConstants {
@@ -170,9 +181,14 @@ public final class Constants {
         public static double PIVOT_I;
         public static double PIVOT_D;
 
-
+        // presets
         public static double LOWER_LIMIT;
         public static double UPPER_LIMIT;
+        public static double CORAL_STATION;
+        public static double GROUND_ALGAE;
+        public static double GROUND_CORAL;
+        public static double SCORE_CORAL;
+        public static double SCORE_ALGAE;
     }
 
     public final static class WristConstants {
@@ -193,7 +209,16 @@ public final class Constants {
 
         // presets
         public static double LOWER_LIMIT;
-        public static double UPPER_LIMIT;
+        public static double UPPER_LIMIT; 
+        public static double GROUND_CORAL;
+        public static double GROUND_ALGAE;
+        public static double L1_CORAL;
+        public static double L2_L3_CORAL;
+        public static double L4_CORAL;
+        public static double REEF_ALGAE;
+        public static double PROCESSOR;
+        public static double NET;
+
     }
 
     public static final class SwerveConstants {

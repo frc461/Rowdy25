@@ -122,7 +122,7 @@ public enum RobotIdentity {
         Constants.IntakeConstants.CORAL_BEAM_ID = DefaultConstants.IntakeConstants.CORAL_BEAM_ID;
         Constants.IntakeConstants.ALGAE_BEAM_ID = DefaultConstants.IntakeConstants.ALGAE_BEAM_ID;
         Constants.IntakeConstants.CURRENT_LIMIT = DefaultConstants.IntakeConstants.CURRENT_LIMIT;
-        Constants.IntakeConstants.LEFT_INVERT = DefaultConstants.IntakeConstants.LEFT_INVERT;
+        Constants.IntakeConstants.INVERT = DefaultConstants.IntakeConstants.INVERT;
 
         Constants.PivotConstants.LEAD_ID = DefaultConstants.PivotConstants.LEAD_ID;
         Constants.PivotConstants.FOLLOWER_ID = DefaultConstants.PivotConstants.FOLLOWER_ID;

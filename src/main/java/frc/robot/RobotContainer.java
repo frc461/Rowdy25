@@ -12,15 +12,19 @@ import edu.wpi.first.wpilibj.PowerDistribution;
 import frc.robot.autos.AutoChooser;
 import frc.robot.subsystems.drivetrain.Swerve;
 import frc.robot.util.SysID;
+import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Pivot;
+import frc.robot.subsystems.Wrist;
 
 public class RobotContainer {
     /* Subsystems */
     private final Swerve swerve = new Swerve();
-//    private final Elevator elevator = new Elevator();
-//    private final Intake intake = new Intake();
-//    private final Pivot pivot = new Pivot();
-//    private final Wrist wrist = new Wrist();
-
+    // private final Elevator elevator = new Elevator();
+    // private final Intake intake = new Intake();
+    // private final Pivot pivot = new Pivot();
+    // private final Wrist wrist = new Wrist();
+    
     private final AutoChooser autoChooser = new AutoChooser(swerve);
 
     /* Sys ID */
