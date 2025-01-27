@@ -27,6 +27,7 @@ public class DriveCommand extends Command {
     private final BooleanSupplier tagHeadingSnap;
     private final BooleanSupplier objectHeadingSnap;
     private final BooleanSupplier coralStationHeadingSnap;
+    private final BooleanSupplier algaeScoringHeadingSnap;
 
     public DriveCommand(
             Swerve swerve,
@@ -39,7 +40,8 @@ public class DriveCommand extends Command {
             DoubleSupplier rotRight,
             BooleanSupplier tagHeadingSnap,
             BooleanSupplier objectHeadingSnap,
-            BooleanSupplier coralStationHeadingSnap
+            BooleanSupplier coralStationHeadingSnap,
+            BooleanSupplier algaeScoringHeadingSnap
     ) {
         this.swerve = swerve;
         this.fieldCentric = fieldCentric;
@@ -73,11 +75,13 @@ public class DriveCommand extends Command {
         this.tagHeadingSnap = tagHeadingSnap;
         this.objectHeadingSnap = objectHeadingSnap;
         this.coralStationHeadingSnap = coralStationHeadingSnap;
+        this.algaeScoringHeadingSnap = algaeScoringHeadingSnap; 
         addRequirements(this.swerve);
     }
 
     @Override
     public void execute() {
+        // TODO: FIGURE OUT WHICH SIDE IS THE "FRONT" OF THE ROBOT TO KNOW WHEN TO TURRET WITH THE BACK OF THE ROBOT 
         Pose2d currentPose = swerve.localizer.getStrategyPose();
         if (tagHeadingSnap.getAsBoolean()) {
             setConsistentHeading.accept(currentPose.getRotation().getDegrees());
@@ -108,6 +112,21 @@ public class DriveCommand extends Command {
                                             swerve.localizer.getAngleToNearestCoralStation()
                                     ) * Constants.MAX_CONTROLLED_ANGULAR_VEL
                             )
+            );
+        } else if (algaeScoringHeadingSnap.getAsBoolean()) {
+            setConsistentHeading.accept(currentPose.getRotation().getDegrees());
+            swerve.setControl(
+                    fieldCentric.withDeadband(Constants.MAX_VEL * Constants.DEADBAND)
+                    .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
+                    .withVelocityX(-straight.getAsDouble() * Constants.MAX_VEL)
+                    .withVelocityY(-strafe.getAsDouble() * Constants.MAX_VEL)
+                    .withRotationalRate(rot.getAsDouble() < -0.5
+                            ? -rot.getAsDouble() * Constants.MAX_REAL_ANGULAR_VEL
+                            : yawController.calculate(
+                                    currentPose.getRotation().getDegrees(),
+                                    swerve.localizer.getAngleToNearestAlgaeScoringLocation()
+                            ) * Constants.MAX_CONTROLLED_ANGULAR_VEL
+                    )
             );
         } else if (objectHeadingSnap.getAsBoolean()) {
             setConsistentHeading.accept(currentPose.getRotation().getDegrees());

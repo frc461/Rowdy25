@@ -113,7 +113,8 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
             DoubleSupplier rotRight,
             BooleanSupplier tagTurret,
             BooleanSupplier objectTurret,
-            BooleanSupplier coralStationTurret
+            BooleanSupplier coralStationTurret,
+            BooleanSupplier algaeScoringTurret
     ) {
         return new DriveCommand(
                 this,
@@ -126,7 +127,8 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                 rotRight,
                 tagTurret,
                 objectTurret,
-                coralStationTurret
+                coralStationTurret,
+                algaeScoringTurret
         );
     }
 
