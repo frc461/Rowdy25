@@ -6,7 +6,6 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.*;
 import frc.robot.constants.Constants;
 import org.photonvision.PhotonCamera;
-import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.targeting.MultiTargetPNPResult;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
@@ -346,7 +345,7 @@ public class VisionUtil {
 
             public static EstimatedRobotPose getSingleTagPose(BWCamera camera, Pose2d currentPose) {
                 if (hasTargets(camera)) {
-                    Pose3d tagPose = FieldUtil.TagLocation.getTagLocation3d(getBestTagID(camera));
+                    Pose3d tagPose = FieldUtil.TagManager.getTagLocation3d(getBestTagID(camera));
                     PhotonPipelineResult result = getLatestResult(camera);
                     Transform3d cameraToTargetBest = result.getBestTarget().getBestCameraToTarget();
                     Transform3d cameraToTargetAlt = result.getBestTarget().getAlternateCameraToTarget();

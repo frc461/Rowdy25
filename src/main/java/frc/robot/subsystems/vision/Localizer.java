@@ -3,7 +3,6 @@ package frc.robot.subsystems.vision;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -73,29 +72,9 @@ public class Localizer {
         return VisionUtil.QuestNav.getRobotPose();
     }
 
-    public Translation2d getTranslationToNearestBranch() {
-        Pose2d currentPose = getStrategyPose();
-        Translation2d nearestBranch = FieldUtil.TagLocation.getNearestBranchPose(currentPose).getTranslation();
-        return nearestBranch.minus(currentPose.getTranslation());
-    }
-
-    public double getAngleToNearestBranch() {
-        return getTranslationToNearestBranch().getAngle().getDegrees();
-    }
-
-    public Translation2d getTranslationToNearestReefSide() {
-        Pose2d currentPose = getStrategyPose();
-        Translation2d tagTranslation = FieldUtil.TagLocation.getNearestReefTagPose(currentPose).getTranslation();
-        return tagTranslation.minus(currentPose.getTranslation());
-    }
-
-    public double getAngleToNearestReefSide() {
-        return getTranslationToNearestReefSide().getAngle().getDegrees();
-    }
-
     public Translation2d getTranslationToNearestCoralStation() {
         Pose2d currentPose = getStrategyPose();
-        Translation2d tagTranslation = FieldUtil.TagLocation.getNearestCoralStationTagPose(currentPose).getTranslation();
+        Translation2d tagTranslation = FieldUtil.Coral.getNearestCoralStationTagPose(currentPose).getTranslation();
         return tagTranslation.minus(currentPose.getTranslation());
     }
 
@@ -103,14 +82,34 @@ public class Localizer {
         return getTranslationToNearestCoralStation().getAngle().getDegrees();
     }
 
-    public Translation2d getTranslationToAlgaeScoringLocation() {
+    public Translation2d getTranslationToNearestReefSide() {
         Pose2d currentPose = getStrategyPose();
-        Translation2d tagTranslation = FieldUtil.TagLocation.getAlgaeScoringPose(currentPose).getTranslation();
+        Translation2d tagTranslation = FieldUtil.Coral.getNearestReefTagPose(currentPose).getTranslation();
         return tagTranslation.minus(currentPose.getTranslation());
     }
 
-    public double getAngleToAlgaeScoringLocation() {
-        return getTranslationToAlgaeScoringLocation().getAngle().getDegrees();
+    public double getAngleToNearestReefSide() {
+        return getTranslationToNearestReefSide().getAngle().getDegrees();
+    }
+
+    public Translation2d getTranslationToNearestBranch() {
+        Pose2d currentPose = getStrategyPose();
+        Translation2d nearestBranch = FieldUtil.Coral.getNearestBranchPose(currentPose).getTranslation();
+        return nearestBranch.minus(currentPose.getTranslation());
+    }
+
+    public double getAngleToNearestBranch() {
+        return getTranslationToNearestBranch().getAngle().getDegrees();
+    }
+
+    public Translation2d getTranslationToNearestAlgaeScoringLocation() {
+        Pose2d currentPose = getStrategyPose();
+        Translation2d tagTranslation = FieldUtil.Algae.getNearestAlgaeScoringTagPose(currentPose).getTranslation();
+        return tagTranslation.minus(currentPose.getTranslation());
+    }
+
+    public double getAngleToNearestAlgaeScoringLocation() {
+        return getTranslationToNearestAlgaeScoringLocation().getAngle().getDegrees();
     }
 
     public void setLocalizationStrategyFromChooser() {

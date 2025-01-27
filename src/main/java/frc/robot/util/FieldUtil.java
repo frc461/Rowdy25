@@ -29,7 +29,7 @@ public class FieldUtil {
                 pose.getY() >= origin2d.getY() && pose.getY() <= origin2d.getY() + FIELD_WIDTH;
     }
 
-    public enum TagLocation {
+    public enum TagManager {
         ID_1,
         ID_2,
         ID_3,
@@ -53,10 +53,7 @@ public class FieldUtil {
         ID_21,
         ID_22;
 
-        public static final Transform2d LEFT_BRANCH_OFFSET = new Transform2d(Units.inchesToMeters(-2.109), Units.inchesToMeters(-6.468878), new Rotation2d());
-        public static final Transform2d RIGHT_BRANCH_OFFSET = new Transform2d(Units.inchesToMeters(-2.109), Units.inchesToMeters(6.468878), new Rotation2d());
-
-        public static Pose3d getTagLocation3d(TagLocation tag) {
+        public static Pose3d getTagLocation3d(TagManager tag) {
             return switch (tag) {
                 case ID_1 -> layout2025.getTagPose(1).orElse(new Pose3d());
                 case ID_2 -> layout2025.getTagPose(2).orElse(new Pose3d());
@@ -111,61 +108,55 @@ public class FieldUtil {
             };
         }
 
-        public static Pose2d getTagLocation2d(TagLocation tag) {
+        public static Pose2d getTagLocation2d(TagManager tag) {
             return getTagLocation3d(tag).toPose2d();
         }
 
         public static Pose2d getTagLocation2d(double tagID) {
             return getTagLocation3d(tagID).toPose2d();
         }
+    }
+
+    public static class Coral {
+        public static final Transform2d LEFT_BRANCH_OFFSET_FROM_TAG = new Transform2d(Units.inchesToMeters(-2.109), Units.inchesToMeters(-6.468878), new Rotation2d());
+        public static final Transform2d RIGHT_BRANCH_OFFSET_FROM_TAG = new Transform2d(Units.inchesToMeters(-2.109), Units.inchesToMeters(6.468878), new Rotation2d());
 
         public static List<Pose2d> getCoralStationTagPoses() {
             return Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red ?
                     List.of(
-                            getTagLocation2d(TagLocation.ID_1),
-                            getTagLocation2d(TagLocation.ID_2)
+                            TagManager.getTagLocation2d(TagManager.ID_1),
+                            TagManager.getTagLocation2d(TagManager.ID_2)
                     ) : List.of(
-                            getTagLocation2d(TagLocation.ID_12),
-                            getTagLocation2d(TagLocation.ID_13)
+                            TagManager.getTagLocation2d(TagManager.ID_12),
+                            TagManager.getTagLocation2d(TagManager.ID_13)
                     );
         }
 
         public static List<Pose2d> getReefTagPoses() {
             return Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red ?
                     List.of(
-                            getTagLocation2d(TagLocation.ID_6),
-                            getTagLocation2d(TagLocation.ID_7),
-                            getTagLocation2d(TagLocation.ID_8),
-                            getTagLocation2d(TagLocation.ID_9),
-                            getTagLocation2d(TagLocation.ID_10),
-                            getTagLocation2d(TagLocation.ID_11)
+                            TagManager.getTagLocation2d(TagManager.ID_6),
+                            TagManager.getTagLocation2d(TagManager.ID_7),
+                            TagManager.getTagLocation2d(TagManager.ID_8),
+                            TagManager.getTagLocation2d(TagManager.ID_9),
+                            TagManager.getTagLocation2d(TagManager.ID_10),
+                            TagManager.getTagLocation2d(TagManager.ID_11)
                     ) : List.of(
-                            getTagLocation2d(TagLocation.ID_17),
-                            getTagLocation2d(TagLocation.ID_18),
-                            getTagLocation2d(TagLocation.ID_19),
-                            getTagLocation2d(TagLocation.ID_20),
-                            getTagLocation2d(TagLocation.ID_21),
-                            getTagLocation2d(TagLocation.ID_22)
+                            TagManager.getTagLocation2d(TagManager.ID_17),
+                            TagManager.getTagLocation2d(TagManager.ID_18),
+                            TagManager.getTagLocation2d(TagManager.ID_19),
+                            TagManager.getTagLocation2d(TagManager.ID_20),
+                            TagManager.getTagLocation2d(TagManager.ID_21),
+                            TagManager.getTagLocation2d(TagManager.ID_22)
                     );
-        }
-
-        public static List<Pose2d> getAlgaeScoringTagPoses() {
-            return Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red ?
-                    List.of(
-                    getTagLocation2d(TagLocation.ID_3),
-                    getTagLocation2d(TagLocation.ID_5)
-                    ) : List.of(
-                    getTagLocation2d(TagLocation.ID_14),
-                    getTagLocation2d(TagLocation.ID_16)
-                    ); 
         }
 
         public static List<Pose2d> getBranchPoses() {
             List<Pose2d> branchPoses = new ArrayList<>();
-            for (Pose2d reefTagPose : getReefTagPoses()) {
-                branchPoses.add(reefTagPose.plus(LEFT_BRANCH_OFFSET));
-                branchPoses.add(reefTagPose.plus(RIGHT_BRANCH_OFFSET));
-            }
+            getReefTagPoses().forEach(reefTagPose -> {
+                branchPoses.add(reefTagPose.plus(LEFT_BRANCH_OFFSET_FROM_TAG));
+                branchPoses.add(reefTagPose.plus(RIGHT_BRANCH_OFFSET_FROM_TAG));
+            });
             return branchPoses;
         }
 
@@ -180,12 +171,22 @@ public class FieldUtil {
         public static Pose2d getNearestBranchPose(Pose2d currentPose) {
             return currentPose.nearest(getBranchPoses());
         }
+    }
 
-        public static Pose2d getAlgaeScoringPose(Pose2d currentPose) {
-            if (Math.abs(getAlgaeScoringTagPoses().get(0).getRotation().getDegrees() - currentPose.getRotation().getDegrees()) < 45) {
-                return getAlgaeScoringTagPoses().get(0);
-            }
-            return getAlgaeScoringTagPoses().get(1);
+    public static class Algae {
+        public static List<Pose2d> getAlgaeScoringTagPoses() {
+            return Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red ?
+                    List.of(
+                            TagManager.getTagLocation2d(TagManager.ID_3),
+                            TagManager.getTagLocation2d(TagManager.ID_5)
+                    ) : List.of(
+                            TagManager.getTagLocation2d(TagManager.ID_14),
+                            TagManager.getTagLocation2d(TagManager.ID_16)
+                    );
+        }
+
+        public static Pose2d getNearestAlgaeScoringTagPose(Pose2d currentPose) {
+            return currentPose.nearest(getAlgaeScoringTagPoses());
         }
     }
 }

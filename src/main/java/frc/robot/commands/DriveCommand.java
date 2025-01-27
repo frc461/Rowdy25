@@ -98,18 +98,16 @@ public class DriveCommand extends Command {
             setConsistentHeading.accept(currentPose.getRotation().getDegrees());
             swerve.setControl(
                     fieldCentric.withDeadband(Constants.MAX_VEL * Constants.DEADBAND)
-                    .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
-                    .withVelocityX(-straight.getAsDouble() * Constants.MAX_VEL)
-                    .withVelocityY(-strafe.getAsDouble() * Constants.MAX_VEL)
-                    .withRotationalRate(rot.getAsDouble() < -0.5
-                            ? -rot.getAsDouble() * Constants.MAX_REAL_ANGULAR_VEL
-                            : yawController.calculate(
-                                    currentPose.getRotation().getDegrees() < 0
-                                    ? currentPose.getRotation().getDegrees() + 180
-                                    : currentPose.getRotation().getDegrees() - 180,
-                                    swerve.localizer.getAngleToNearestCoralStation()
-                            ) * Constants.MAX_CONTROLLED_ANGULAR_VEL
-                    )
+                            .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
+                            .withVelocityX(-straight.getAsDouble() * Constants.MAX_VEL)
+                            .withVelocityY(-strafe.getAsDouble() * Constants.MAX_VEL)
+                            .withRotationalRate(rot.getAsDouble() < -0.5
+                                    ? -rot.getAsDouble() * Constants.MAX_REAL_ANGULAR_VEL
+                                    : yawController.calculate(
+                                            currentPose.getRotation().getDegrees(),
+                                            swerve.localizer.getAngleToNearestCoralStation()
+                                    ) * Constants.MAX_CONTROLLED_ANGULAR_VEL
+                            )
             );
         } else if (objectHeadingSnap.getAsBoolean()) {
             setConsistentHeading.accept(currentPose.getRotation().getDegrees());

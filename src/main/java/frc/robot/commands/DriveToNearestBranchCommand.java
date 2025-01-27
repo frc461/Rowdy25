@@ -29,7 +29,7 @@ public class DriveToNearestBranchCommand extends Command {
         );
         yawController.enableContinuousInput(Constants.SwerveConstants.ANGULAR_MINIMUM_ANGLE, Constants.SwerveConstants.ANGULAR_MAXIMUM_ANGLE);
 
-        targetPose = FieldUtil.TagLocation.getNearestBranchPose(swerve.localizer.getStrategyPose()).rotateBy(Rotation2d.kPi);
+        targetPose = FieldUtil.Coral.getNearestBranchPose(swerve.localizer.getStrategyPose()).rotateBy(Rotation2d.kPi);
         end = false;
         addRequirements(this.swerve);
     }

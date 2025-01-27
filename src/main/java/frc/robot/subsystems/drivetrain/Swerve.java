@@ -141,7 +141,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
 
     public Command moveToNearestBranch() {
         return new PathfindingUntilCloseCommand(
-                FieldUtil.TagLocation.getNearestBranchPose(localizer.getStrategyPose()).rotateBy(Rotation2d.kPi),
+                FieldUtil.Coral.getNearestBranchPose(localizer.getStrategyPose()).rotateBy(Rotation2d.kPi),
                 Constants.AutoConstants.DISTANCE_TOLERANCE_TO_DRIVE_INTO,
                 true,
                 this
