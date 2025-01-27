@@ -7,14 +7,17 @@ import frc.robot.constants.variants.SimConstants;
 import frc.robot.constants.variants.TestConstants;
 
 public enum RobotIdentity {
-    ROWDY,
+    ROWDY1,
+    ROWDY2,
     TEST,
     SIM;
 
     private static RobotIdentity getIdentity() {
         String mac = MacAddress.getMACAddress();
-        if (mac.equals(MacAddress.ROWDY1) || mac.equals(MacAddress.ROWDY2)) {
-            return ROWDY;
+        if (mac.equals(MacAddress.ROWDY1)) {
+            return ROWDY1;
+        } else if (mac.equals(MacAddress.ROWDY2)) {
+            return ROWDY2;
         } else if (mac.equals(MacAddress.TEST)) {
             return TEST;
         }
@@ -26,8 +29,12 @@ public enum RobotIdentity {
         NetworkTable identityEntry = Constants.NT_INSTANCE.getTable("Robot");
         StringPublisher identityPublisher = identityEntry.getStringTopic("Robot Identity").publish();
         switch (getIdentity()) {
-            case ROWDY:
-                identityPublisher.set(ROWDY.name());
+            case ROWDY1:
+                identityPublisher.set(ROWDY1.name());
+                break;
+            case ROWDY2:
+                identityPublisher.set(ROWDY2.name());
+                break;
             case TEST:
                 setTestConstants();
                 identityPublisher.set(TEST.name());
@@ -171,18 +178,24 @@ public enum RobotIdentity {
     }
 
     private static void setTestConstants() {
-        Constants.VisionConstants.PhotonConstants.BW_TOP_RIGHT_FORWARD = TestConstants.BW_TOP_RIGHT_FORWARD;
-        Constants.VisionConstants.PhotonConstants.BW_TOP_RIGHT_LEFT = TestConstants.BW_TOP_RIGHT_LEFT;
-        Constants.VisionConstants.PhotonConstants.BW_TOP_RIGHT_UP = TestConstants.BW_TOP_RIGHT_UP;
-        Constants.VisionConstants.PhotonConstants.BW_TOP_RIGHT_ROLL = TestConstants.BW_TOP_RIGHT_ROLL;
-        Constants.VisionConstants.PhotonConstants.BW_TOP_RIGHT_PITCH = TestConstants.BW_TOP_RIGHT_PITCH;
-        Constants.VisionConstants.PhotonConstants.BW_TOP_RIGHT_YAW = TestConstants.BW_TOP_RIGHT_YAW;
-        Constants.VisionConstants.PhotonConstants.BW_TOP_LEFT_FORWARD = TestConstants.BW_TOP_LEFT_FORWARD;
-        Constants.VisionConstants.PhotonConstants.BW_TOP_LEFT_LEFT = TestConstants.BW_TOP_LEFT_LEFT;
-        Constants.VisionConstants.PhotonConstants.BW_TOP_LEFT_UP = TestConstants.BW_TOP_LEFT_UP;
-        Constants.VisionConstants.PhotonConstants.BW_TOP_LEFT_ROLL = TestConstants.BW_TOP_LEFT_ROLL;
-        Constants.VisionConstants.PhotonConstants.BW_TOP_LEFT_PITCH = TestConstants.BW_TOP_LEFT_PITCH;
-        Constants.VisionConstants.PhotonConstants.BW_TOP_LEFT_YAW = TestConstants.BW_TOP_LEFT_YAW;
+        Constants.VisionConstants.PhotonConstants.BW_TOP_RIGHT_FORWARD = TestConstants.VisionConstants.PhotonConstants.BW_TOP_RIGHT_FORWARD;
+        Constants.VisionConstants.PhotonConstants.BW_TOP_RIGHT_LEFT = TestConstants.VisionConstants.PhotonConstants.BW_TOP_RIGHT_LEFT;
+        Constants.VisionConstants.PhotonConstants.BW_TOP_RIGHT_UP = TestConstants.VisionConstants.PhotonConstants.BW_TOP_RIGHT_UP;
+        Constants.VisionConstants.PhotonConstants.BW_TOP_RIGHT_ROLL = TestConstants.VisionConstants.PhotonConstants.BW_TOP_RIGHT_ROLL;
+        Constants.VisionConstants.PhotonConstants.BW_TOP_RIGHT_PITCH = TestConstants.VisionConstants.PhotonConstants.BW_TOP_RIGHT_PITCH;
+        Constants.VisionConstants.PhotonConstants.BW_TOP_RIGHT_YAW = TestConstants.VisionConstants.PhotonConstants.BW_TOP_RIGHT_YAW;
+        Constants.VisionConstants.PhotonConstants.BW_TOP_LEFT_FORWARD = TestConstants.VisionConstants.PhotonConstants.BW_TOP_LEFT_FORWARD;
+        Constants.VisionConstants.PhotonConstants.BW_TOP_LEFT_LEFT = TestConstants.VisionConstants.PhotonConstants.BW_TOP_LEFT_LEFT;
+        Constants.VisionConstants.PhotonConstants.BW_TOP_LEFT_UP = TestConstants.VisionConstants.PhotonConstants.BW_TOP_LEFT_UP;
+        Constants.VisionConstants.PhotonConstants.BW_TOP_LEFT_ROLL = TestConstants.VisionConstants.PhotonConstants.BW_TOP_LEFT_ROLL;
+        Constants.VisionConstants.PhotonConstants.BW_TOP_LEFT_PITCH = TestConstants.VisionConstants.PhotonConstants.BW_TOP_LEFT_PITCH;
+        Constants.VisionConstants.PhotonConstants.BW_TOP_LEFT_YAW = TestConstants.VisionConstants.PhotonConstants.BW_TOP_LEFT_YAW;
+
+        Constants.SwerveConstants.SWERVE_DRIVETRAIN_CONSTANTS = TestConstants.SwerveConstants.SWERVE_DRIVETRAIN_CONSTANTS;
+        Constants.SwerveConstants.FRONT_LEFT = TestConstants.SwerveConstants.FrontLeft.FRONT_LEFT;
+        Constants.SwerveConstants.FRONT_RIGHT = TestConstants.SwerveConstants.FrontRight.FRONT_RIGHT;
+        Constants.SwerveConstants.BACK_LEFT = TestConstants.SwerveConstants.BackLeft.BACK_LEFT;
+        Constants.SwerveConstants.BACK_RIGHT = TestConstants.SwerveConstants.BackRight.BACK_RIGHT;
     }
 
     private static void setSimConstants() {
