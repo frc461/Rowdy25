@@ -99,4 +99,11 @@ public class Elevator extends SubsystemBase {
             target = getPosition();
         }
     }
+
+    public double getAlgaeHeight(double reefAngle) { 
+        if (Constants.ElevatorConstants.HIGH_ALGAE_PICKUP.apply(reefAngle)) {
+            return Constants.ElevatorConstants.HIGH_REEF_ALGAE;
+        }
+        return Constants.ElevatorConstants.LOW_REEF_ALGAE;
+    }
 }

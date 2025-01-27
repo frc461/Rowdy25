@@ -110,7 +110,7 @@ public class Localizer {
 
     public double getAngleToNearestAlgaeScoringLocation() {
         return getTranslationToNearestAlgaeScoringLocation().getAngle().getDegrees();
-    }
+    } 
 
     public void setLocalizationStrategyFromChooser() {
         LocalizationStrategy strategy = localizationChooser.getSelected();
