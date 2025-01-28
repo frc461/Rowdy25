@@ -11,14 +11,14 @@ import frc.robot.subsystems.drivetrain.Swerve;
 import frc.robot.util.ExpUtil;
 import frc.robot.util.FieldUtil;
 
-public class DriveToNearestBranchCommand extends Command {
+public class DirectAlignToNearestBranchCommand extends Command {
     private final Swerve swerve;
     private final SwerveRequest.FieldCentric fieldCentric;
     private final Pose2d targetPose;
     private final PIDController yawController;
     private boolean end;
 
-    public DriveToNearestBranchCommand(Swerve swerve, SwerveRequest.FieldCentric fieldCentric) {
+    public DirectAlignToNearestBranchCommand(Swerve swerve, SwerveRequest.FieldCentric fieldCentric) {
         this.swerve = swerve;
         this.fieldCentric = fieldCentric;
 
@@ -37,7 +37,7 @@ public class DriveToNearestBranchCommand extends Command {
     @Override
     public void initialize() {
         end = swerve.localizer.getStrategyPose().getTranslation().getDistance(targetPose.getTranslation())
-                > Constants.AutoConstants.DISTANCE_TOLERANCE_TO_DRIVE_INTO;
+                > Constants.AutoConstants.DISTANCE_TOLERANCE_TO_DRIVE_INTO + 0.5;
     }
 
     @Override
@@ -60,16 +60,11 @@ public class DriveToNearestBranchCommand extends Command {
                                 0.0
                         ) * Constants.MAX_CONTROLLED_ANGULAR_VEL)
         );
-        if (Math.hypot(xError, yError) < Constants.AutoConstants.DISTANCE_TOLERANCE_TO_DRIVE_INTO
+        if (Math.hypot(xError, yError) < Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_ACCEPT
                 && Math.abs(yawError) < Constants.AutoConstants.DEGREE_TOLERANCE_TO_ACCEPT) {
             swerve.forceStop();
             end = true;
         }
-    }
-
-    @Override
-    public void end(boolean interrupted) {
-        super.end(interrupted);
     }
 
     @Override

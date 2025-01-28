@@ -17,8 +17,8 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
-import frc.robot.commands.DriveToNearestBranchCommand;
-import frc.robot.commands.PathfindingUntilCloseCommand;
+import frc.robot.autos.PathManager;
+import frc.robot.commands.DirectAlignToNearestBranchCommand;
 import frc.robot.commands.auto.SearchForAlgaeCommand;
 import frc.robot.constants.Constants;
 import frc.robot.commands.DriveCommand;
@@ -142,16 +142,17 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
     }
 
     public Command moveToNearestBranch() {
-        return new PathfindingUntilCloseCommand(
+        return PathManager.pathFindToClosePose(
+                localizer.getStrategyPose(),
                 FieldUtil.Coral.getNearestBranchPose(localizer.getStrategyPose()).rotateBy(Rotation2d.kPi),
-                Constants.AutoConstants.DISTANCE_TOLERANCE_TO_DRIVE_INTO,
-                true,
-                this
-        );
+                FieldUtil.Coral.getNearestBranchPose(localizer.getStrategyPose()).getRotation().rotateBy(Rotation2d.fromDegrees(-80)),
+                FieldUtil.Coral.getNearestBranchPose(localizer.getStrategyPose()).getRotation().rotateBy(Rotation2d.fromDegrees(80)),
+                Constants.AutoConstants.DISTANCE_TOLERANCE_TO_DRIVE_INTO
+        ).andThen(directAlignToNearestBranch());
     }
 
-    public Command driveDirectToNearestBranch() {
-        return new DriveToNearestBranchCommand(this, fieldCentric);
+    public Command directAlignToNearestBranch() {
+        return new DirectAlignToNearestBranchCommand(this, fieldCentric);
     }
 
     public Command xMode() {
@@ -159,9 +160,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
     }
 
     public Command resetGyro() {
-        return runOnce(() -> {
-                resetRotation(localizer.getStrategyPose().getRotation());
-        });
+        return runOnce(() -> resetRotation(localizer.getStrategyPose().getRotation()));
     }
 
     public void forceStop() {

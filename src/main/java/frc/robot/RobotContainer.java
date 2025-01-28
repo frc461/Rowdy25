@@ -192,7 +192,7 @@ public class RobotContainer {
         driverXbox.b().onTrue(swerve.runOnce(swerve.localizer::toggleLocalizationStrategy));
 
         // reset the field-centric heading on y press
-        driverXbox.y().onTrue(swerve.resetGyro());
+        driverXbox.leftStick().onTrue(swerve.resetGyro());
 
         driverXbox.povUp().whileTrue(swerve.moveToObject());
 
