@@ -1,5 +1,6 @@
 package frc.robot.subsystems.drivetrain;
 
+import java.util.Set;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
@@ -12,13 +13,15 @@ import com.ctre.phoenix6.swerve.*;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
-import frc.robot.commands.DriveToNearestBranchCommand;
-import frc.robot.commands.PathfindingUntilCloseCommand;
+import frc.robot.autos.PathManager;
+import frc.robot.commands.DirectAlignToNearestBranchCommand;
 import frc.robot.commands.auto.SearchForAlgaeCommand;
 import frc.robot.constants.Constants;
 import frc.robot.commands.DriveCommand;
@@ -44,7 +47,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
     /* Keep track if we've ever applied the operator perspective before or not */
     private boolean hasAppliedDefaultRotation = false;
 
-    private double consistentHeading = 0.0;
+    public double consistentHeading = 0.0;
 
     /**
      * Constructs a CTRE SwerveDrivetrain using the specified constants.
@@ -119,8 +122,6 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
         return new DriveCommand(
                 this,
                 fieldCentric,
-                heading -> consistentHeading = heading,
-                () -> consistentHeading,
                 straight,
                 strafe,
                 rotLeft,
@@ -134,24 +135,36 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
 
     public Command pathFindFindScoreAlgae() {
         return new SearchForAlgaeCommand(this, fieldCentric)
-                .andThen(new DriveToObjectCommand(this, robotCentric, true));
+                .andThen(new DriveToObjectCommand(this, robotCentric))
+                .andThen(Commands.defer(
+                        () -> PathManager.pathFindToNearestScoringLocation(localizer.getStrategyPose()),
+                        Set.of(this)
+                ));
     }
 
     public Command moveToObject() {
-        return new DriveToObjectCommand(this, robotCentric, false);
+        return new DriveToObjectCommand(this, robotCentric);
     }
 
     public Command moveToNearestBranch() {
-        return new PathfindingUntilCloseCommand(
-                FieldUtil.Coral.getNearestBranchPose(localizer.getStrategyPose()).rotateBy(Rotation2d.kPi),
-                Constants.AutoConstants.DISTANCE_TOLERANCE_TO_DRIVE_INTO,
-                true,
-                this
-        );
+        return Commands.defer(() -> {
+            Pose2d nearestBranchPose = FieldUtil.Coral.getNearestBranchPose(localizer.getStrategyPose());
+            return PathManager.pathFindToClosePose(
+                    localizer.getStrategyPose(),
+                    new Pose2d(
+                            nearestBranchPose.getTranslation(),
+                            nearestBranchPose.getRotation().rotateBy(Rotation2d.kPi)
+                    ),
+                    nearestBranchPose.getRotation().rotateBy(Rotation2d.fromDegrees(-80)),
+                    nearestBranchPose.getRotation().rotateBy(Rotation2d.fromDegrees(80)),
+                    Constants.AutoConstants.DISTANCE_TOLERANCE_TO_DRIVE_INTO,
+                    2.0
+            );
+        }, Set.of(this)).andThen(directAlignToNearestBranch());
     }
 
-    public Command driveDirectToNearestBranch() {
-        return new DriveToNearestBranchCommand(this, fieldCentric);
+    public Command directAlignToNearestBranch() {
+        return new DirectAlignToNearestBranchCommand(this, fieldCentric);
     }
 
     public Command xMode() {
@@ -159,9 +172,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
     }
 
     public Command resetGyro() {
-        return runOnce(() -> {
-                resetRotation(localizer.getStrategyPose().getRotation());
-        });
+        return runOnce(() -> resetRotation(localizer.getStrategyPose().getRotation()));
     }
 
     public void forceStop() {

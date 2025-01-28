@@ -51,12 +51,12 @@ public final class DefaultConstants {
     // kSpeedAt12Volts desired top speed
     public static final double MAX_VEL = SwerveConstants.SPEED_AT_12_VOLTS.in(MetersPerSecond);
     // 1.96664381049 rotations per second tuned max angular velocity
-    public static final double MAX_REAL_ANGULAR_VEL = RotationsPerSecond.of(1.96664381049).in(RadiansPerSecond);
+    public static final double MAX_ANGULAR_VEL = RotationsPerSecond.of(1.96664381049).in(RadiansPerSecond);
     public static final double MAX_CONTROLLED_ANGULAR_VEL = RotationsPerSecond.of(0.75).in(RadiansPerSecond);
 
     public static final double MAX_ACCEL = MetersPerSecondPerSecond.of(10.8).in(MetersPerSecondPerSecond);
-    public static final double MAX_CONTROLLED_ACCEL = MetersPerSecondPerSecond.of(5.0).in(MetersPerSecondPerSecond);
     public static final double MAX_ANGULAR_ACCEL = DegreesPerSecondPerSecond.of(485.0).in(RadiansPerSecondPerSecond);
+    public static final double MAX_CONTROLLED_ACCEL = MetersPerSecondPerSecond.of(5.0).in(MetersPerSecondPerSecond);
 
     public static final NetworkTableInstance NT_INSTANCE = NetworkTableInstance.getDefault();
     public static final int ONE_MILLION = 1_000_000;
@@ -84,8 +84,8 @@ public final class DefaultConstants {
 
         public static final double OBJECT_SEARCH_DEGREE_SLANT = 30.0;
         public static final double DEGREE_TOLERANCE_TO_DRIVE_INTO = 2.5;
-        public static final double TRANSLATION_TOLERANCE_TO_ACCEPT = 0.5;
-        public static final double DISTANCE_TOLERANCE_TO_DRIVE_INTO = 2.0;
+        public static final double TRANSLATION_TOLERANCE_TO_ACCEPT = 0.2;
+        public static final double DISTANCE_TOLERANCE_TO_DRIVE_INTO = 1.25;
     }
 
     public static final class VisionConstants {
@@ -261,6 +261,8 @@ public final class DefaultConstants {
     public static final class SwerveConstants {
         public static final double PATH_TRANSLATION_CONTROLLER_P = 10.0;
         public static final double PATH_ROTATION_CONTROLLER_P = 7.5;
+
+        public static final double TRANSLATION_ALIGNMENT_CONTROLLER_P = 1.0;
 
         public static final Function<Double, Double> PATH_MANUAL_TRANSLATION_CONTROLLER = x -> ExpUtil.output(x, 4.0, 0.8, 6);
 

@@ -2,6 +2,7 @@ package frc.robot.commands;
 
 import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -11,16 +12,23 @@ import frc.robot.subsystems.drivetrain.Swerve;
 import frc.robot.util.ExpUtil;
 import frc.robot.util.FieldUtil;
 
-public class DriveToNearestBranchCommand extends Command {
+public class DirectAlignToNearestBranchCommand extends Command {
     private final Swerve swerve;
     private final SwerveRequest.FieldCentric fieldCentric;
-    private final Pose2d targetPose;
+    private final PIDController translationController;
     private final PIDController yawController;
+    private Pose2d targetPose;
     private boolean end;
 
-    public DriveToNearestBranchCommand(Swerve swerve, SwerveRequest.FieldCentric fieldCentric) {
+    public DirectAlignToNearestBranchCommand(Swerve swerve, SwerveRequest.FieldCentric fieldCentric) {
         this.swerve = swerve;
         this.fieldCentric = fieldCentric;
+
+        translationController = new PIDController(
+                Constants.SwerveConstants.TRANSLATION_ALIGNMENT_CONTROLLER_P, // TODO: TUNE THIS (ADD D AND SET D TO 0 FOR SIM)
+                0,
+                0
+        );
 
         yawController = new PIDController(
                 Constants.SwerveConstants.ANGULAR_POSITION_P,
@@ -29,15 +37,21 @@ public class DriveToNearestBranchCommand extends Command {
         );
         yawController.enableContinuousInput(Constants.SwerveConstants.ANGULAR_MINIMUM_ANGLE, Constants.SwerveConstants.ANGULAR_MAXIMUM_ANGLE);
 
-        targetPose = FieldUtil.Coral.getNearestBranchPose(swerve.localizer.getStrategyPose()).rotateBy(Rotation2d.kPi);
+        targetPose = new Pose2d();
         end = false;
         addRequirements(this.swerve);
     }
 
     @Override
     public void initialize() {
+        Pose2d nearestBranchPose = FieldUtil.Coral.getNearestBranchPose(swerve.localizer.getStrategyPose());
+        targetPose = new Pose2d(
+                nearestBranchPose.getTranslation(),
+                nearestBranchPose.getRotation().rotateBy(Rotation2d.kPi)
+        );
+
         end = swerve.localizer.getStrategyPose().getTranslation().getDistance(targetPose.getTranslation())
-                > Constants.AutoConstants.DISTANCE_TOLERANCE_TO_DRIVE_INTO;
+                > Constants.AutoConstants.DISTANCE_TOLERANCE_TO_DRIVE_INTO + 0.5;
     }
 
     @Override
@@ -45,31 +59,26 @@ public class DriveToNearestBranchCommand extends Command {
         Pose2d currentPose = swerve.localizer.getStrategyPose();
         double xError = currentPose.getX() - targetPose.getX();
         double yError = currentPose.getY() - targetPose.getY();
-        double yawError = currentPose.getRotation().getDegrees() - targetPose.getRotation().getDegrees();
+        double yawError = MathUtil.inputModulus(currentPose.getRotation().getDegrees() - targetPose.getRotation().getDegrees(), -180, 180);
 
         swerve.setControl(
                 fieldCentric.withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
-                        .withVelocityX(ExpUtil.output(
-                                Math.abs(xError), 2.0, 0.8, 10.0
-                        ) * (xError < 0 ? 1 : -1))
-                        .withVelocityY(ExpUtil.output(
-                                Math.abs(yError), 2.0, 0.8, 10.0
-                        ) * (yError < 0 ? 1 : -1))
+                        .withForwardPerspective(SwerveRequest.ForwardPerspectiveValue.BlueAlliance)
+                        .withVelocityX(translationController.calculate(xError, 0) * Constants.MAX_VEL)
+                        .withVelocityY(translationController.calculate(yError, 0) * Constants.MAX_VEL)
                         .withRotationalRate(yawController.calculate(
                                 yawError,
                                 0.0
                         ) * Constants.MAX_CONTROLLED_ANGULAR_VEL)
         );
-        if (Math.hypot(xError, yError) < Constants.AutoConstants.DISTANCE_TOLERANCE_TO_DRIVE_INTO
+        if (Math.hypot(xError, yError) < Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_ACCEPT
                 && Math.abs(yawError) < Constants.AutoConstants.DEGREE_TOLERANCE_TO_ACCEPT) {
             swerve.forceStop();
+            // TODO: FIX THIS
+            swerve.consistentHeading = currentPose.getRotation().getDegrees();
+            System.out.println(swerve.consistentHeading);
             end = true;
         }
-    }
-
-    @Override
-    public void end(boolean interrupted) {
-        super.end(interrupted);
     }
 
     @Override
