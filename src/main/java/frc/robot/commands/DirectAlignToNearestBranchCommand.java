@@ -14,8 +14,8 @@ import frc.robot.util.FieldUtil;
 public class DirectAlignToNearestBranchCommand extends Command {
     private final Swerve swerve;
     private final SwerveRequest.FieldCentric fieldCentric;
-    private final Pose2d targetPose;
     private final PIDController yawController;
+    private Pose2d targetPose;
     private boolean end;
 
     public DirectAlignToNearestBranchCommand(Swerve swerve, SwerveRequest.FieldCentric fieldCentric) {
@@ -29,13 +29,19 @@ public class DirectAlignToNearestBranchCommand extends Command {
         );
         yawController.enableContinuousInput(Constants.SwerveConstants.ANGULAR_MINIMUM_ANGLE, Constants.SwerveConstants.ANGULAR_MAXIMUM_ANGLE);
 
-        targetPose = FieldUtil.Coral.getNearestBranchPose(swerve.localizer.getStrategyPose()).rotateBy(Rotation2d.kPi);
+        targetPose = new Pose2d();
         end = false;
         addRequirements(this.swerve);
     }
 
     @Override
     public void initialize() {
+        Pose2d nearestBranchPose = FieldUtil.Coral.getNearestBranchPose(swerve.localizer.getStrategyPose());
+        targetPose = new Pose2d(
+                nearestBranchPose.getTranslation(),
+                nearestBranchPose.getRotation().rotateBy(Rotation2d.kPi)
+        );
+
         end = swerve.localizer.getStrategyPose().getTranslation().getDistance(targetPose.getTranslation())
                 > Constants.AutoConstants.DISTANCE_TOLERANCE_TO_DRIVE_INTO + 0.5;
     }
@@ -49,6 +55,7 @@ public class DirectAlignToNearestBranchCommand extends Command {
 
         swerve.setControl(
                 fieldCentric.withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
+                        .withForwardPerspective(SwerveRequest.ForwardPerspectiveValue.BlueAlliance)
                         .withVelocityX(ExpUtil.output(
                                 Math.abs(xError), 2.0, 0.8, 10.0
                         ) * (xError < 0 ? 1 : -1))

@@ -1,5 +1,6 @@
 package frc.robot.subsystems.drivetrain;
 
+import java.util.Set;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
@@ -12,10 +13,12 @@ import com.ctre.phoenix6.swerve.*;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.autos.PathManager;
 import frc.robot.commands.DirectAlignToNearestBranchCommand;
@@ -134,21 +137,31 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
 
     public Command pathFindFindScoreAlgae() {
         return new SearchForAlgaeCommand(this, fieldCentric)
-                .andThen(new DriveToObjectCommand(this, robotCentric, true));
+                .andThen(new DriveToObjectCommand(this, robotCentric))
+                .andThen(Commands.defer(
+                        () -> PathManager.pathFindToNearestScoringLocation(localizer.getStrategyPose()),
+                        Set.of(this)
+                ));
     }
 
     public Command moveToObject() {
-        return new DriveToObjectCommand(this, robotCentric, false);
+        return new DriveToObjectCommand(this, robotCentric);
     }
 
     public Command moveToNearestBranch() {
-        return PathManager.pathFindToClosePose(
-                localizer.getStrategyPose(),
-                FieldUtil.Coral.getNearestBranchPose(localizer.getStrategyPose()).rotateBy(Rotation2d.kPi),
-                FieldUtil.Coral.getNearestBranchPose(localizer.getStrategyPose()).getRotation().rotateBy(Rotation2d.fromDegrees(-80)),
-                FieldUtil.Coral.getNearestBranchPose(localizer.getStrategyPose()).getRotation().rotateBy(Rotation2d.fromDegrees(80)),
-                Constants.AutoConstants.DISTANCE_TOLERANCE_TO_DRIVE_INTO
-        ).andThen(directAlignToNearestBranch());
+        return Commands.defer(() -> {
+            Pose2d nearestBranchPose = FieldUtil.Coral.getNearestBranchPose(localizer.getStrategyPose());
+            return PathManager.pathFindToClosePose(
+                    localizer.getStrategyPose(),
+                    new Pose2d(
+                            nearestBranchPose.getTranslation(),
+                            nearestBranchPose.getRotation().rotateBy(Rotation2d.kPi)
+                    ),
+                    nearestBranchPose.getRotation().rotateBy(Rotation2d.fromDegrees(-80)),
+                    nearestBranchPose.getRotation().rotateBy(Rotation2d.fromDegrees(80)),
+                    Constants.AutoConstants.DISTANCE_TOLERANCE_TO_DRIVE_INTO
+            ).andThen(directAlignToNearestBranch());
+        }, Set.of(this));
     }
 
     public Command directAlignToNearestBranch() {

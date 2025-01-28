@@ -13,13 +13,11 @@ public class DriveToObjectCommand extends Command {
     private final Swerve swerve;
     private final SwerveRequest.RobotCentric robotCentric;
     private final PIDController objectDetectionController;
-    private final boolean auto;
     private boolean rotationComplete;
     private boolean translationComplete;
     private boolean end;
-    private boolean successful;
 
-    public DriveToObjectCommand(Swerve swerve, SwerveRequest.RobotCentric robotCentric, boolean auto) {
+    public DriveToObjectCommand(Swerve swerve, SwerveRequest.RobotCentric robotCentric) {
         this.swerve = swerve;
         this.robotCentric = robotCentric;
 
@@ -30,7 +28,6 @@ public class DriveToObjectCommand extends Command {
         );
         objectDetectionController.enableContinuousInput(Constants.SwerveConstants.ANGULAR_MINIMUM_ANGLE, Constants.SwerveConstants.ANGULAR_MAXIMUM_ANGLE);
 
-        this.auto = auto;
         addRequirements(this.swerve);
     }
 
@@ -39,7 +36,6 @@ public class DriveToObjectCommand extends Command {
         rotationComplete = false;
         translationComplete = false;
         end = false;
-        successful = false;
     }
 
     @Override
@@ -80,20 +76,11 @@ public class DriveToObjectCommand extends Command {
             if (degreeError < Constants.AutoConstants.DEGREE_TOLERANCE_TO_ACCEPT) {
                 translationComplete = true;
                 end = true;
-                successful = true;
             }
         } else {
             // TODO MORE ROBUST CHECKING I.E., IF OBJECT IN INTAKE, OTHERWISE METHOD TO INTAKE OBJECT OR GIVE UP, DEPENDING ON AUTO OR TELEOP
             swerve.forceStop();
             end = true;
-            successful = false;
-        }
-    }
-
-    @Override
-    public void end(boolean interrupted) {
-        if (auto && successful) {
-            PathManager.pathFindToNearestScoringLocation(swerve.localizer.getStrategyPose()).schedule();
         }
     }
 
