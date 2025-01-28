@@ -28,7 +28,7 @@ public class FieldUtil {
         return pose.getX() >= origin2d.getX() && pose.getX() <= origin2d.getX() + FIELD_LENGTH &&
                 pose.getY() >= origin2d.getY() && pose.getY() <= origin2d.getY() + FIELD_WIDTH;
     }
-
+    
     public enum TagManager {
         ID_1,
         ID_2,

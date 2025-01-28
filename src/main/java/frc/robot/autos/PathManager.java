@@ -44,7 +44,7 @@ public final class PathManager {
         }
     }
 
-    private static Command pathFindToPose(Pose2d targetPose) {
+    public static Command pathFindToPose(Pose2d targetPose) {
         return AutoBuilder.pathfindToPose(
                 targetPose,
                 Constants.AutoConstants.PATH_CONSTRAINTS,
