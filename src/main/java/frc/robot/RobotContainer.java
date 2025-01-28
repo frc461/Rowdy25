@@ -1,5 +1,7 @@
 package frc.robot;
 
+import java.util.function.Supplier;
+
 import com.pathplanner.lib.commands.PathfindingCommand;
 import com.pathplanner.lib.pathfinding.LocalADStar;
 import com.pathplanner.lib.pathfinding.Pathfinding;
@@ -8,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import dev.doglog.DogLog;
 import dev.doglog.DogLogOptions;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import frc.robot.autos.AutoChooser;
 import frc.robot.subsystems.drivetrain.Swerve;
@@ -202,8 +205,8 @@ public class RobotContainer {
         // Note that each routine should be run exactly once in a single log.
         sysID.configureBindings(driverXbox);
     }
-
+    public Supplier<Pose2d> poseSupplier;
     public Command getAutonomousCommand() {
-        return autoChooser.getFinalAutoCommand();
+        return autoChooser.getFinalAutoCommand(poseSupplier);
     }
 }
