@@ -160,8 +160,8 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                     nearestBranchPose.getRotation().rotateBy(Rotation2d.fromDegrees(-80)),
                     nearestBranchPose.getRotation().rotateBy(Rotation2d.fromDegrees(80)),
                     Constants.AutoConstants.DISTANCE_TOLERANCE_TO_DRIVE_INTO
-            ).andThen(directAlignToNearestBranch());
-        }, Set.of(this));
+            );
+        }, Set.of(this)).andThen(directAlignToNearestBranch());
     }
 
     public Command directAlignToNearestBranch() {

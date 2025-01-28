@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.constants.Constants;
 import org.json.simple.parser.ParseException;
 
@@ -94,7 +95,9 @@ public final class PathManager {
             Rotation2d upperThreshold,
             double distance
     ) {
-
+        if (currentPose.getTranslation().getDistance(targetPose.getTranslation()) < distance) {
+            return Commands.none();
+        }
         return pathFindToPose(
                 calculateClosePoseWithAngleScopeAndRadius(
                         currentPose,
@@ -116,19 +119,21 @@ public final class PathManager {
         Rotation2d distAngle = currentPose.getTranslation().minus(targetPose.getTranslation()).getAngle();
 
         if (inBetween(distAngle, lowerAngleThreshold, upperAngleThreshold)) {
+            System.out.println("In between: " + distAngle.unaryMinus().getDegrees());
             return new Pose2d(
                     targetPose.getTranslation().plus(new Translation2d(distance, distAngle)),
-                    distAngle.unaryMinus()
+                    distAngle.rotateBy(Rotation2d.kPi)
             );
         }
+        System.out.println("Not in between: " + distAngle.getDegrees() + " " + lowerAngleThreshold.getDegrees() + " " + upperAngleThreshold.getDegrees());
         return currentPose.nearest(List.of(
                 new Pose2d(
                         targetPose.getTranslation().plus(new Translation2d(distance, lowerAngleThreshold)),
-                        lowerAngleThreshold.unaryMinus()
+                        lowerAngleThreshold.rotateBy(Rotation2d.kPi)
                 ),
                 new Pose2d(
                         targetPose.getTranslation().plus(new Translation2d(distance, upperAngleThreshold)),
-                        upperAngleThreshold.unaryMinus()
+                        upperAngleThreshold.rotateBy(Rotation2d.kPi)
                 )
         ));
     }
