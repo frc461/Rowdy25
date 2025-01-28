@@ -47,7 +47,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
     /* Keep track if we've ever applied the operator perspective before or not */
     private boolean hasAppliedDefaultRotation = false;
 
-    private double consistentHeading = 0.0;
+    public double consistentHeading = 0.0;
 
     /**
      * Constructs a CTRE SwerveDrivetrain using the specified constants.
@@ -122,8 +122,6 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
         return new DriveCommand(
                 this,
                 fieldCentric,
-                heading -> consistentHeading = heading,
-                () -> consistentHeading,
                 straight,
                 strafe,
                 rotLeft,
@@ -159,7 +157,8 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                     ),
                     nearestBranchPose.getRotation().rotateBy(Rotation2d.fromDegrees(-80)),
                     nearestBranchPose.getRotation().rotateBy(Rotation2d.fromDegrees(80)),
-                    Constants.AutoConstants.DISTANCE_TOLERANCE_TO_DRIVE_INTO
+                    Constants.AutoConstants.DISTANCE_TOLERANCE_TO_DRIVE_INTO,
+                    2.0
             );
         }, Set.of(this)).andThen(directAlignToNearestBranch());
     }

@@ -2,6 +2,7 @@ package frc.robot.commands;
 
 import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -14,6 +15,7 @@ import frc.robot.util.FieldUtil;
 public class DirectAlignToNearestBranchCommand extends Command {
     private final Swerve swerve;
     private final SwerveRequest.FieldCentric fieldCentric;
+    private final PIDController translationController;
     private final PIDController yawController;
     private Pose2d targetPose;
     private boolean end;
@@ -21,6 +23,12 @@ public class DirectAlignToNearestBranchCommand extends Command {
     public DirectAlignToNearestBranchCommand(Swerve swerve, SwerveRequest.FieldCentric fieldCentric) {
         this.swerve = swerve;
         this.fieldCentric = fieldCentric;
+
+        translationController = new PIDController(
+                Constants.SwerveConstants.TRANSLATION_ALIGNMENT_CONTROLLER_P, // TODO: TUNE THIS (ADD D AND SET D TO 0 FOR SIM)
+                0,
+                0
+        );
 
         yawController = new PIDController(
                 Constants.SwerveConstants.ANGULAR_POSITION_P,
@@ -51,17 +59,13 @@ public class DirectAlignToNearestBranchCommand extends Command {
         Pose2d currentPose = swerve.localizer.getStrategyPose();
         double xError = currentPose.getX() - targetPose.getX();
         double yError = currentPose.getY() - targetPose.getY();
-        double yawError = currentPose.getRotation().getDegrees() - targetPose.getRotation().getDegrees();
+        double yawError = MathUtil.inputModulus(currentPose.getRotation().getDegrees() - targetPose.getRotation().getDegrees(), -180, 180);
 
         swerve.setControl(
                 fieldCentric.withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
                         .withForwardPerspective(SwerveRequest.ForwardPerspectiveValue.BlueAlliance)
-                        .withVelocityX(ExpUtil.output(
-                                Math.abs(xError), 2.0, 0.8, 10.0
-                        ) * (xError < 0 ? 1 : -1))
-                        .withVelocityY(ExpUtil.output(
-                                Math.abs(yError), 2.0, 0.8, 10.0
-                        ) * (yError < 0 ? 1 : -1))
+                        .withVelocityX(translationController.calculate(xError, 0) * Constants.MAX_VEL)
+                        .withVelocityY(translationController.calculate(yError, 0) * Constants.MAX_VEL)
                         .withRotationalRate(yawController.calculate(
                                 yawError,
                                 0.0
@@ -70,6 +74,9 @@ public class DirectAlignToNearestBranchCommand extends Command {
         if (Math.hypot(xError, yError) < Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_ACCEPT
                 && Math.abs(yawError) < Constants.AutoConstants.DEGREE_TOLERANCE_TO_ACCEPT) {
             swerve.forceStop();
+            // TODO: FIX THIS
+            swerve.consistentHeading = currentPose.getRotation().getDegrees();
+            System.out.println(swerve.consistentHeading);
             end = true;
         }
     }

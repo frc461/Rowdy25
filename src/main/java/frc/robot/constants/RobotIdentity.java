@@ -52,11 +52,11 @@ public enum RobotIdentity {
         Constants.RED_DEFAULT_ROTATION = DefaultConstants.RED_DEFAULT_ROTATION;
         Constants.ALLIANCE_SUPPLIER = DefaultConstants.ALLIANCE_SUPPLIER;
         Constants.MAX_VEL = DefaultConstants.MAX_VEL;
-        Constants.MAX_REAL_ANGULAR_VEL = DefaultConstants.MAX_REAL_ANGULAR_VEL;
+        Constants.MAX_ANGULAR_VEL = DefaultConstants.MAX_ANGULAR_VEL;
         Constants.MAX_CONTROLLED_ANGULAR_VEL = DefaultConstants.MAX_CONTROLLED_ANGULAR_VEL;
         Constants.MAX_ACCEL = DefaultConstants.MAX_ACCEL;
-        Constants.MAX_CONTROLLED_ACCEL = DefaultConstants.MAX_CONTROLLED_ACCEL;
         Constants.MAX_ANGULAR_ACCEL = DefaultConstants.MAX_ANGULAR_ACCEL;
+        Constants.MAX_CONTROLLED_ACCEL = DefaultConstants.MAX_CONTROLLED_ACCEL;
         Constants.NT_INSTANCE = DefaultConstants.NT_INSTANCE;
         Constants.ONE_MILLION = DefaultConstants.ONE_MILLION;
         Constants.DEADBAND = DefaultConstants.DEADBAND;
@@ -163,6 +163,7 @@ public enum RobotIdentity {
 
         Constants.SwerveConstants.PATH_TRANSLATION_CONTROLLER_P = DefaultConstants.SwerveConstants.PATH_TRANSLATION_CONTROLLER_P;
         Constants.SwerveConstants.PATH_ROTATION_CONTROLLER_P = DefaultConstants.SwerveConstants.PATH_ROTATION_CONTROLLER_P;
+        Constants.SwerveConstants.TRANSLATION_ALIGNMENT_CONTROLLER_P = DefaultConstants.SwerveConstants.TRANSLATION_ALIGNMENT_CONTROLLER_P;
         Constants.SwerveConstants.PATH_MANUAL_TRANSLATION_CONTROLLER = DefaultConstants.SwerveConstants.PATH_MANUAL_TRANSLATION_CONTROLLER;
         Constants.SwerveConstants.ANGULAR_POSITION_P = DefaultConstants.SwerveConstants.ANGULAR_POSITION_P;
         Constants.SwerveConstants.ANGULAR_POSITION_D = DefaultConstants.SwerveConstants.ANGULAR_POSITION_D;

@@ -196,7 +196,7 @@ public class RobotContainer {
 
         driverXbox.povUp().whileTrue(swerve.moveToObject());
 
-        driverXbox.povRight().whileTrue(swerve.moveToNearestBranch());
+        driverXbox.y().whileTrue(swerve.moveToNearestBranch());
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.

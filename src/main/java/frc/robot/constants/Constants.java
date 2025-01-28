@@ -36,12 +36,12 @@ public final class Constants {
     // kSpeedAt12Volts desired top speed
     public static double MAX_VEL;
     // 1.96664381049 rotations per second tuned max angular velocity
-    public static double MAX_REAL_ANGULAR_VEL;
+    public static double MAX_ANGULAR_VEL;
     public static double MAX_CONTROLLED_ANGULAR_VEL;
 
     public static double MAX_ACCEL;
-    public static double MAX_CONTROLLED_ACCEL;
     public static double MAX_ANGULAR_ACCEL;
+    public static double MAX_CONTROLLED_ACCEL;
 
     public static NetworkTableInstance NT_INSTANCE;
     public static int ONE_MILLION;
@@ -225,6 +225,8 @@ public final class Constants {
     public static final class SwerveConstants {
         public static double PATH_TRANSLATION_CONTROLLER_P;
         public static double PATH_ROTATION_CONTROLLER_P;
+
+        public static double TRANSLATION_ALIGNMENT_CONTROLLER_P;
 
         public static Function<Double, Double> PATH_MANUAL_TRANSLATION_CONTROLLER;
 

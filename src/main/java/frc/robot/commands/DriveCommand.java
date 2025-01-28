@@ -19,8 +19,6 @@ public class DriveCommand extends Command {
     private final PIDController yawController;
     private final PIDController objectDetectionController;
     private final PIDController headingController;
-    private final DoubleConsumer setConsistentHeading;
-    private final DoubleSupplier consistentHeading;
     private final DoubleSupplier straight;
     private final DoubleSupplier strafe;
     private final DoubleSupplier rot;
@@ -32,8 +30,6 @@ public class DriveCommand extends Command {
     public DriveCommand(
             Swerve swerve,
             SwerveRequest.FieldCentric fieldCentric,
-            DoubleConsumer setConsistentHeading,
-            DoubleSupplier consistentHeading,
             DoubleSupplier straight,
             DoubleSupplier strafe,
             DoubleSupplier rotLeft,
@@ -66,9 +62,6 @@ public class DriveCommand extends Command {
                 0
         );
         headingController.enableContinuousInput(Constants.SwerveConstants.ANGULAR_MINIMUM_ANGLE, Constants.SwerveConstants.ANGULAR_MAXIMUM_ANGLE);
-
-        this.setConsistentHeading = setConsistentHeading;
-        this.consistentHeading = consistentHeading;
         this.straight = straight;
         this.strafe = strafe;
         this.rot = () -> rotRight.getAsDouble() - rotLeft.getAsDouble();
@@ -85,7 +78,7 @@ public class DriveCommand extends Command {
         // TODO: CLEAN UP THIS MESS
         Pose2d currentPose = swerve.localizer.getStrategyPose();
         if (tagHeadingSnap.getAsBoolean()) {
-            setConsistentHeading.accept(currentPose.getRotation().getDegrees());
+            swerve.consistentHeading = currentPose.getRotation().getDegrees();
             swerve.setControl(
                     fieldCentric.withDeadband(Constants.MAX_VEL * Constants.DEADBAND)
                             .withForwardPerspective(SwerveRequest.ForwardPerspectiveValue.OperatorPerspective)
@@ -93,7 +86,7 @@ public class DriveCommand extends Command {
                             .withVelocityX(-straight.getAsDouble() * Constants.MAX_VEL)
                             .withVelocityY(-strafe.getAsDouble() * Constants.MAX_VEL)
                             .withRotationalRate(rot.getAsDouble() < -0.5
-                                    ? -rot.getAsDouble() * Constants.MAX_REAL_ANGULAR_VEL
+                                    ? -rot.getAsDouble() * Constants.MAX_ANGULAR_VEL
                                     : yawController.calculate(
                                             currentPose.getRotation().getDegrees(),
                                             swerve.localizer.getAngleToNearestBranch()
@@ -101,7 +94,7 @@ public class DriveCommand extends Command {
                             )
             );
         } else if (coralStationHeadingSnap.getAsBoolean()) {
-            setConsistentHeading.accept(currentPose.getRotation().getDegrees());
+            swerve.consistentHeading = currentPose.getRotation().getDegrees();
             swerve.setControl(
                     fieldCentric.withDeadband(Constants.MAX_VEL * Constants.DEADBAND)
                             .withForwardPerspective(SwerveRequest.ForwardPerspectiveValue.OperatorPerspective)
@@ -109,7 +102,7 @@ public class DriveCommand extends Command {
                             .withVelocityX(-straight.getAsDouble() * Constants.MAX_VEL)
                             .withVelocityY(-strafe.getAsDouble() * Constants.MAX_VEL)
                             .withRotationalRate(rot.getAsDouble() < -0.5
-                                    ? -rot.getAsDouble() * Constants.MAX_REAL_ANGULAR_VEL
+                                    ? -rot.getAsDouble() * Constants.MAX_ANGULAR_VEL
                                     : yawController.calculate(
                                             currentPose.getRotation().getDegrees(),
                                             swerve.localizer.getAngleToNearestCoralStation()
@@ -117,7 +110,7 @@ public class DriveCommand extends Command {
                             )
             );
         } else if (algaeScoringHeadingSnap.getAsBoolean()) {
-            setConsistentHeading.accept(currentPose.getRotation().getDegrees());
+            swerve.consistentHeading = currentPose.getRotation().getDegrees();
             swerve.setControl(
                     fieldCentric.withDeadband(Constants.MAX_VEL * Constants.DEADBAND)
                             .withForwardPerspective(SwerveRequest.ForwardPerspectiveValue.OperatorPerspective)
@@ -125,7 +118,7 @@ public class DriveCommand extends Command {
                             .withVelocityX(-straight.getAsDouble() * Constants.MAX_VEL)
                             .withVelocityY(-strafe.getAsDouble() * Constants.MAX_VEL)
                             .withRotationalRate(rot.getAsDouble() < -0.5
-                                    ? -rot.getAsDouble() * Constants.MAX_REAL_ANGULAR_VEL
+                                    ? -rot.getAsDouble() * Constants.MAX_ANGULAR_VEL
                                     : yawController.calculate(
                                             currentPose.getRotation().getDegrees(),
                                             swerve.localizer.getAngleToNearestAlgaeScoringLocation()
@@ -133,7 +126,7 @@ public class DriveCommand extends Command {
                             )
             );
         } else if (objectHeadingSnap.getAsBoolean()) {
-            setConsistentHeading.accept(currentPose.getRotation().getDegrees());
+            swerve.consistentHeading = currentPose.getRotation().getDegrees();
             swerve.setControl(
                     fieldCentric.withDeadband(Constants.MAX_VEL * Constants.DEADBAND)
                             .withForwardPerspective(SwerveRequest.ForwardPerspectiveValue.OperatorPerspective)
@@ -141,7 +134,7 @@ public class DriveCommand extends Command {
                             .withVelocityX(-straight.getAsDouble() * Constants.MAX_VEL)
                             .withVelocityY(-strafe.getAsDouble() * Constants.MAX_VEL)
                             .withRotationalRate(rot.getAsDouble() > 0.5
-                                    ? -rot.getAsDouble() * Constants.MAX_REAL_ANGULAR_VEL
+                                    ? -rot.getAsDouble() * Constants.MAX_ANGULAR_VEL
                                     : VisionUtil.Photon.Color.hasTargets()
                                             ? objectDetectionController.calculate(
                                                     VisionUtil.Photon.Color.getBestObjectYaw(),
@@ -152,7 +145,7 @@ public class DriveCommand extends Command {
             );
         } else if (Math.abs(rot.getAsDouble()) >= Constants.DEADBAND
                 || (Math.abs(straight.getAsDouble()) < Constants.DEADBAND && Math.abs(strafe.getAsDouble()) < Constants.DEADBAND)) {
-            setConsistentHeading.accept(currentPose.getRotation().getDegrees());
+            swerve.consistentHeading = currentPose.getRotation().getDegrees();
             swerve.setControl(
                     fieldCentric.withDeadband(Constants.MAX_VEL * Constants.DEADBAND)
                             .withForwardPerspective(SwerveRequest.ForwardPerspectiveValue.OperatorPerspective)
@@ -171,7 +164,7 @@ public class DriveCommand extends Command {
                             .withVelocityY(-strafe.getAsDouble() * Constants.MAX_VEL)
                             .withRotationalRate(headingController.calculate(
                                     currentPose.getRotation().getDegrees(),
-                                    consistentHeading.getAsDouble()
+                                    swerve.consistentHeading
                             ) * Constants.MAX_CONTROLLED_ANGULAR_VEL)
             );
         }

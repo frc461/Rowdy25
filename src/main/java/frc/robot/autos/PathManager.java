@@ -49,12 +49,16 @@ public final class PathManager {
         }
     }
 
-    private static Command pathFindToPose(Pose2d targetPose) {
+    private static Command pathFindToPose(Pose2d targetPose, double goalEndVelocity) {
         return AutoBuilder.pathfindToPose(
                 targetPose,
                 Constants.AutoConstants.PATH_CONSTRAINTS,
-                0.0
+                goalEndVelocity
         );
+    }
+
+    private static Command pathFindToPose(Pose2d targetPose) {
+        return pathFindToPose(targetPose, 0.0);
     }
 
     // TODO UPDATE THESE PRESET TARGET POSES (MEANT TO BE USED FOR SCORING OBJECTS)
@@ -95,6 +99,24 @@ public final class PathManager {
             Rotation2d upperThreshold,
             double distance
     ) {
+        return pathFindToClosePose(
+                currentPose,
+                targetPose,
+                lowerThreshold,
+                upperThreshold,
+                distance,
+                0.0
+        );
+    }
+
+    public static Command pathFindToClosePose(
+            Pose2d currentPose,
+            Pose2d targetPose,
+            Rotation2d lowerThreshold,
+            Rotation2d upperThreshold,
+            double distance,
+            double goalEndVelocity
+    ) {
         if (currentPose.getTranslation().getDistance(targetPose.getTranslation()) < distance) {
             return Commands.none();
         }
@@ -105,7 +127,8 @@ public final class PathManager {
                         lowerThreshold,
                         upperThreshold,
                         distance
-                )
+                ),
+                goalEndVelocity
         );
     }
 
@@ -119,13 +142,11 @@ public final class PathManager {
         Rotation2d distAngle = currentPose.getTranslation().minus(targetPose.getTranslation()).getAngle();
 
         if (inBetween(distAngle, lowerAngleThreshold, upperAngleThreshold)) {
-            System.out.println("In between: " + distAngle.unaryMinus().getDegrees());
             return new Pose2d(
                     targetPose.getTranslation().plus(new Translation2d(distance, distAngle)),
                     distAngle.rotateBy(Rotation2d.kPi)
             );
         }
-        System.out.println("Not in between: " + distAngle.getDegrees() + " " + lowerAngleThreshold.getDegrees() + " " + upperAngleThreshold.getDegrees());
         return currentPose.nearest(List.of(
                 new Pose2d(
                         targetPose.getTranslation().plus(new Translation2d(distance, lowerAngleThreshold)),

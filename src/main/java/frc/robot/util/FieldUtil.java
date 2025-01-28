@@ -118,8 +118,8 @@ public class FieldUtil {
     }
 
     public static class Coral {
-        public static final Transform2d LEFT_BRANCH_OFFSET_FROM_TAG = new Transform2d(Units.inchesToMeters(-2.109), Units.inchesToMeters(-6.468878), new Rotation2d());
-        public static final Transform2d RIGHT_BRANCH_OFFSET_FROM_TAG = new Transform2d(Units.inchesToMeters(-2.109), Units.inchesToMeters(6.468878), new Rotation2d());
+        public static final Transform2d LEFT_BRANCH_OFFSET_FROM_TAG = new Transform2d(Units.inchesToMeters(6.0), Units.inchesToMeters(-6.468878), new Rotation2d());
+        public static final Transform2d RIGHT_BRANCH_OFFSET_FROM_TAG = new Transform2d(Units.inchesToMeters(6.0), Units.inchesToMeters(6.468878), new Rotation2d());
 
         public static List<Pose2d> getCoralStationTagPoses() {
             return Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red ?
