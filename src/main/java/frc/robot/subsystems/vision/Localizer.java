@@ -79,7 +79,7 @@ public class Localizer {
     }
 
     public double getAngleToNearestCoralStation() {
-        return getTranslationToNearestCoralStation().getAngle().getDegrees();
+        return FieldUtil.Coral.getNearestCoralStationTagPose(getStrategyPose()).getRotation().getDegrees();
     }
 
     public Translation2d getTranslationToNearestReefSide() {
@@ -109,7 +109,7 @@ public class Localizer {
     }
 
     public double getAngleToNearestAlgaeScoringLocation() {
-        return getTranslationToNearestAlgaeScoringLocation().getAngle().getDegrees();
+        return FieldUtil.Algae.getNearestAlgaeScoringTagPose(getStrategyPose()).getRotation().getDegrees();
     } 
 
     public void setLocalizationStrategyFromChooser() {
