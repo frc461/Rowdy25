@@ -160,7 +160,7 @@ public final class DefaultConstants {
 
     // TODO: UPDATE VALUES FOR 2025 + TUNE
     public final static class ElevatorConstants {
-        public static final Function <Double, Boolean> HIGH_ALGAE_PICKUP = angle -> (ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red ? angle % 60 == 0 : angle % 120 == 0);
+        public static final Function <Double, Boolean> HIGH_ALGAE_PICKUP = angle -> (ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red ? angle % 120 == 60 : angle % 120 == 0);
         // basic configs
         public static final int LEAD_ID = 31;
         public static final int FOLLOWER_ID = 32;
