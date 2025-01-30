@@ -2,7 +2,6 @@ package frc.robot.autos;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathPlannerPath;
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -14,8 +13,6 @@ import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.function.DoubleSupplier;
-import java.util.function.Supplier;
 
 public final class PathManager {
     // TODO: CREATE 2025 PATHS

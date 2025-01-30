@@ -10,7 +10,6 @@ import frc.robot.subsystems.drivetrain.Swerve;
 import frc.robot.util.VisionUtil;
 
 import java.util.function.BooleanSupplier;
-import java.util.function.DoubleConsumer;
 import java.util.function.DoubleSupplier;
 
 public class DriveCommand extends Command {
@@ -22,10 +21,21 @@ public class DriveCommand extends Command {
     private final DoubleSupplier straight;
     private final DoubleSupplier strafe;
     private final DoubleSupplier rot;
-    private final BooleanSupplier tagHeadingSnap;
-    private final BooleanSupplier objectHeadingSnap;
-    private final BooleanSupplier coralStationHeadingSnap;
-    private final BooleanSupplier algaeScoringHeadingSnap;
+    private final BooleanSupplier branchAlignment;
+    private final BooleanSupplier objectAlignment;
+    private final BooleanSupplier coralStationAlignment;
+    private final BooleanSupplier algaeScoringAlignment;
+    private DriveMode driveMode;
+
+    public enum DriveMode {
+        IDLE_OR_ROTATION,
+        FAST_ROTATION,
+        TRANSLATING,
+        BRANCH_ALIGNMENT,
+        OBJECT_ALIGNMENT,
+        CORAL_STATION_ALIGNMENT,
+        ALGAE_SCORING_ALIGNMENT
+    }
 
     public DriveCommand(
             Swerve swerve,
@@ -34,10 +44,10 @@ public class DriveCommand extends Command {
             DoubleSupplier strafe,
             DoubleSupplier rotLeft,
             DoubleSupplier rotRight,
-            BooleanSupplier tagHeadingSnap,
-            BooleanSupplier objectHeadingSnap,
-            BooleanSupplier coralStationHeadingSnap,
-            BooleanSupplier algaeScoringHeadingSnap
+            BooleanSupplier branchAlignment,
+            BooleanSupplier objectAlignment,
+            BooleanSupplier coralStationAlignment,
+            BooleanSupplier algaeScoringAlignment
     ) {
         this.swerve = swerve;
         this.fieldCentric = fieldCentric;
@@ -65,108 +75,71 @@ public class DriveCommand extends Command {
         this.straight = straight;
         this.strafe = strafe;
         this.rot = () -> rotRight.getAsDouble() - rotLeft.getAsDouble();
-        this.tagHeadingSnap = tagHeadingSnap;
-        this.objectHeadingSnap = objectHeadingSnap;
-        this.coralStationHeadingSnap = coralStationHeadingSnap;
-        this.algaeScoringHeadingSnap = algaeScoringHeadingSnap; 
+        this.branchAlignment = branchAlignment;
+        this.objectAlignment = objectAlignment;
+        this.coralStationAlignment = coralStationAlignment;
+        this.algaeScoringAlignment = algaeScoringAlignment;
+        this.driveMode = DriveMode.IDLE_OR_ROTATION;
         addRequirements(this.swerve);
+    }
+
+    @Override
+    public void initialize() {
+        driveMode = DriveMode.IDLE_OR_ROTATION;
     }
 
     @Override
     public void execute() {
         // TODO: FIGURE OUT WHICH SIDE IS THE "FRONT" OF THE ROBOT TO KNOW WHEN TO TURRET WITH THE BACK OF THE ROBOT
-        // TODO: CLEAN UP THIS MESS
         Pose2d currentPose = swerve.localizer.getStrategyPose();
-        if (tagHeadingSnap.getAsBoolean()) {
-            swerve.consistentHeading = currentPose.getRotation().getDegrees();
-            swerve.setControl(
-                    fieldCentric.withDeadband(Constants.MAX_VEL * Constants.DEADBAND)
-                            .withForwardPerspective(SwerveRequest.ForwardPerspectiveValue.OperatorPerspective)
-                            .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
-                            .withVelocityX(-straight.getAsDouble() * Constants.MAX_VEL)
-                            .withVelocityY(-strafe.getAsDouble() * Constants.MAX_VEL)
-                            .withRotationalRate(rot.getAsDouble() < -0.5
-                                    ? -rot.getAsDouble() * Constants.MAX_ANGULAR_VEL
-                                    : yawController.calculate(
-                                            currentPose.getRotation().getDegrees(),
-                                            swerve.localizer.getAngleToNearestBranch()
-                                    ) * Constants.MAX_CONTROLLED_ANGULAR_VEL
-                            )
-            );
-        } else if (coralStationHeadingSnap.getAsBoolean()) {
-            swerve.consistentHeading = currentPose.getRotation().getDegrees();
-            swerve.setControl(
-                    fieldCentric.withDeadband(Constants.MAX_VEL * Constants.DEADBAND)
-                            .withForwardPerspective(SwerveRequest.ForwardPerspectiveValue.OperatorPerspective)
-                            .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
-                            .withVelocityX(-straight.getAsDouble() * Constants.MAX_VEL)
-                            .withVelocityY(-strafe.getAsDouble() * Constants.MAX_VEL)
-                            .withRotationalRate(rot.getAsDouble() < -0.5
-                                    ? -rot.getAsDouble() * Constants.MAX_ANGULAR_VEL
-                                    : yawController.calculate(
-                                            currentPose.getRotation().getDegrees(),
-                                            swerve.localizer.getAngleToNearestCoralStation()
-                                    ) * Constants.MAX_CONTROLLED_ANGULAR_VEL
-                            )
-            );
-        } else if (algaeScoringHeadingSnap.getAsBoolean()) {
-            swerve.consistentHeading = currentPose.getRotation().getDegrees();
-            swerve.setControl(
-                    fieldCentric.withDeadband(Constants.MAX_VEL * Constants.DEADBAND)
-                            .withForwardPerspective(SwerveRequest.ForwardPerspectiveValue.OperatorPerspective)
-                            .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
-                            .withVelocityX(-straight.getAsDouble() * Constants.MAX_VEL)
-                            .withVelocityY(-strafe.getAsDouble() * Constants.MAX_VEL)
-                            .withRotationalRate(rot.getAsDouble() < -0.5
-                                    ? -rot.getAsDouble() * Constants.MAX_ANGULAR_VEL
-                                    : yawController.calculate(
-                                            currentPose.getRotation().getDegrees(),
-                                            swerve.localizer.getAngleToNearestAlgaeScoringLocation()
-                                    ) * Constants.MAX_CONTROLLED_ANGULAR_VEL
-                            )
-            );
-        } else if (objectHeadingSnap.getAsBoolean()) {
-            swerve.consistentHeading = currentPose.getRotation().getDegrees();
-            swerve.setControl(
-                    fieldCentric.withDeadband(Constants.MAX_VEL * Constants.DEADBAND)
-                            .withForwardPerspective(SwerveRequest.ForwardPerspectiveValue.OperatorPerspective)
-                            .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
-                            .withVelocityX(-straight.getAsDouble() * Constants.MAX_VEL)
-                            .withVelocityY(-strafe.getAsDouble() * Constants.MAX_VEL)
-                            .withRotationalRate(rot.getAsDouble() > 0.5
-                                    ? -rot.getAsDouble() * Constants.MAX_ANGULAR_VEL
-                                    : VisionUtil.Photon.Color.hasTargets()
-                                            ? objectDetectionController.calculate(
-                                                    VisionUtil.Photon.Color.getBestObjectYaw(),
-                                                    0
-                                            ) * Constants.MAX_CONTROLLED_ANGULAR_VEL
-                                                    : 0.0
-                            )
-            );
-        } else if (Math.abs(rot.getAsDouble()) >= Constants.DEADBAND
-                || (Math.abs(straight.getAsDouble()) < Constants.DEADBAND && Math.abs(strafe.getAsDouble()) < Constants.DEADBAND)) {
-            swerve.consistentHeading = currentPose.getRotation().getDegrees();
-            swerve.setControl(
-                    fieldCentric.withDeadband(Constants.MAX_VEL * Constants.DEADBAND)
-                            .withForwardPerspective(SwerveRequest.ForwardPerspectiveValue.OperatorPerspective)
-                            .withRotationalDeadband(Constants.MAX_CONTROLLED_ANGULAR_VEL * Constants.DEADBAND) // Add a 10% deadband
-                            .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage) // Use open-loop control for drive motors
-                            .withVelocityX(-straight.getAsDouble() * Constants.MAX_VEL) // Drive forward with negative Y (forward)
-                            .withVelocityY(-strafe.getAsDouble() * Constants.MAX_VEL) // Drive left with negative X (left)
-                            .withRotationalRate(-rot.getAsDouble() * Constants.MAX_CONTROLLED_ANGULAR_VEL) // Drive counterclockwise with negative X (left)
-            );
-        } else {
-            swerve.setControl(
-                    fieldCentric.withDeadband(Constants.MAX_VEL * Constants.DEADBAND)
-                            .withForwardPerspective(SwerveRequest.ForwardPerspectiveValue.OperatorPerspective)
-                            .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
-                            .withVelocityX(-straight.getAsDouble() * Constants.MAX_VEL)
-                            .withVelocityY(-strafe.getAsDouble() * Constants.MAX_VEL)
-                            .withRotationalRate(headingController.calculate(
-                                    currentPose.getRotation().getDegrees(),
-                                    swerve.consistentHeading
-                            ) * Constants.MAX_CONTROLLED_ANGULAR_VEL)
-            );
-        }
+        driveMode = branchAlignment.getAsBoolean() ?
+                        rot.getAsDouble() < -0.5 ? DriveMode.FAST_ROTATION : DriveMode.BRANCH_ALIGNMENT
+                : objectAlignment.getAsBoolean() ?
+                        rot.getAsDouble() > 0.5 ? DriveMode.FAST_ROTATION : DriveMode.OBJECT_ALIGNMENT
+                : coralStationAlignment.getAsBoolean() ? DriveMode.CORAL_STATION_ALIGNMENT
+                : algaeScoringAlignment.getAsBoolean() ? DriveMode.ALGAE_SCORING_ALIGNMENT
+                : Math.abs(rot.getAsDouble()) >= Constants.DEADBAND
+                        || (Math.abs(straight.getAsDouble()) < Constants.DEADBAND && Math.abs(strafe.getAsDouble()) < Constants.DEADBAND) ? DriveMode.IDLE_OR_ROTATION
+                : DriveMode.TRANSLATING;
+
+        swerve.consistentHeading = driveMode == DriveMode.TRANSLATING ? swerve.consistentHeading : currentPose.getRotation().getDegrees();
+
+        swerve.setControl(
+                fieldCentric.withDeadband(Constants.MAX_VEL * Constants.DEADBAND)
+                        .withForwardPerspective(SwerveRequest.ForwardPerspectiveValue.OperatorPerspective)
+                        .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
+                        .withVelocityX(-straight.getAsDouble() * Constants.MAX_VEL)
+                        .withVelocityY(-strafe.getAsDouble() * Constants.MAX_VEL)
+                        .withRotationalRate(determineRotationalRate())
+        );
+    }
+
+    private double determineRotationalRate() {
+        return switch (driveMode) {
+            case IDLE_OR_ROTATION -> -rot.getAsDouble() * Constants.MAX_CONTROLLED_ANGULAR_VEL;
+            case FAST_ROTATION -> -rot.getAsDouble() * Constants.MAX_ANGULAR_VEL;
+            case TRANSLATING -> headingController.calculate(
+                    swerve.localizer.getStrategyPose().getRotation().getDegrees(),
+                    swerve.consistentHeading
+            ) * Constants.MAX_CONTROLLED_ANGULAR_VEL;
+            case BRANCH_ALIGNMENT -> yawController.calculate(
+                    swerve.localizer.getStrategyPose().getRotation().getDegrees(),
+                    swerve.localizer.getAngleToNearestBranch()
+            ) * Constants.MAX_CONTROLLED_ANGULAR_VEL;
+            case OBJECT_ALIGNMENT -> VisionUtil.Photon.Color.hasTargets()
+                    ? objectDetectionController.calculate(
+                            VisionUtil.Photon.Color.getBestObjectYaw(),
+                            0
+                    ) * Constants.MAX_CONTROLLED_ANGULAR_VEL
+                    : 0.0;
+            case CORAL_STATION_ALIGNMENT -> yawController.calculate(
+                    swerve.localizer.getStrategyPose().getRotation().getDegrees(),
+                    swerve.localizer.getAngleToNearestCoralStation()
+            ) * Constants.MAX_CONTROLLED_ANGULAR_VEL;
+            case ALGAE_SCORING_ALIGNMENT -> yawController.calculate(
+                    swerve.localizer.getStrategyPose().getRotation().getDegrees(),
+                    swerve.localizer.getAngleToNearestAlgaeScoringLocation()
+            ) * Constants.MAX_CONTROLLED_ANGULAR_VEL;
+        };
     }
 }
