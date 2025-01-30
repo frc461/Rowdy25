@@ -345,7 +345,7 @@ public class VisionUtil {
 
             public static EstimatedRobotPose getSingleTagPose(BWCamera camera, Pose2d currentPose) {
                 if (hasTargets(camera)) {
-                    Pose3d tagPose = FieldUtil.TagManager.getTagLocation3d(getBestTagID(camera));
+                    Pose3d tagPose = FieldUtil.AprilTag.getTag(getBestTagID(camera)).pose3d;
                     PhotonPipelineResult result = getLatestResult(camera);
                     Transform3d cameraToTargetBest = result.getBestTarget().getBestCameraToTarget();
                     Transform3d cameraToTargetAlt = result.getBestTarget().getAlternateCameraToTarget();
