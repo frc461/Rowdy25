@@ -124,7 +124,6 @@ public final class Constants {
     }
 
     public final static class ElevatorConstants {
-        public static Function<Double, Boolean> HIGH_ALGAE_PICKUP;
         // basic configs
         public static int LEAD_ID;
         public static int FOLLOWER_ID;

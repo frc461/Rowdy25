@@ -92,7 +92,7 @@ public final class DefaultConstants {
         public static final Matrix<N3, N1> ODOM_STD_DEV = VecBuilder.fill(0.01, 0.01, Units.degreesToRadians(0.01));
         public static final Function<Double, Matrix<N3, N1>> VISION_STD_DEV_MULTITAG_FUNCTION =
                 dist -> dist < 2.0
-                        ? VecBuilder.fill(0.1, 0.1, Units.degreesToRadians(1.0))
+                        ? VecBuilder.fill(0.1, 0.1, Units.degreesToRadians(1.0)) // TODO BE LESS STRICT WITH ROTATION
                         : VecBuilder.fill(0.15 * dist, 0.15 * dist, Units.degreesToRadians(180.0) * dist);
         public static final Function<Double, Matrix<N3, N1>> VISION_STD_DEV_FUNCTION =
                 dist -> VecBuilder.fill(0.5 * dist, 0.5 * dist, Units.degreesToRadians(180.0) * dist);
@@ -160,7 +160,6 @@ public final class DefaultConstants {
 
     // TODO: UPDATE VALUES FOR 2025 + TUNE
     public final static class ElevatorConstants {
-        public static final Function <Double, Boolean> HIGH_ALGAE_PICKUP = angle -> (ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red ? angle % 120 == 60 : angle % 120 == 0);
         // basic configs
         public static final int LEAD_ID = 31;
         public static final int FOLLOWER_ID = 32;

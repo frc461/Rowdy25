@@ -111,7 +111,6 @@ public enum RobotIdentity {
         Constants.VisionConstants.QuestNavConstants.ROTATION_ERROR_TOLERANCE = DefaultConstants.VisionConstants.QuestNavConstants.ROTATION_ERROR_TOLERANCE;
         Constants.VisionConstants.QuestNavConstants.MIN_TAG_DIST_TO_BE_FAR = DefaultConstants.VisionConstants.QuestNavConstants.MIN_TAG_DIST_TO_BE_FAR;
 
-        Constants.ElevatorConstants.HIGH_ALGAE_PICKUP = DefaultConstants.ElevatorConstants.HIGH_ALGAE_PICKUP;
         Constants.ElevatorConstants.LEAD_ID = DefaultConstants.ElevatorConstants.LEAD_ID;
         Constants.ElevatorConstants.FOLLOWER_ID = DefaultConstants.ElevatorConstants.FOLLOWER_ID;
         Constants.ElevatorConstants.LOWER_LIMIT_SWITCH_ID = DefaultConstants.ElevatorConstants.LOWER_LIMIT_SWITCH_ID;

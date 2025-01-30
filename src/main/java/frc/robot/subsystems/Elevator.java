@@ -6,10 +6,12 @@ import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
 import frc.robot.util.ExpUtil;
+import frc.robot.util.FieldUtil;
 
 public class Elevator extends SubsystemBase {
     private final TalonFX elevator;
@@ -100,10 +102,8 @@ public class Elevator extends SubsystemBase {
         }
     }
 
-    public double getAlgaeHeight(double reefAngle) { 
-        if (Constants.ElevatorConstants.HIGH_ALGAE_PICKUP.apply(reefAngle)) {
-            return Constants.ElevatorConstants.HIGH_REEF_ALGAE;
-        }
-        return Constants.ElevatorConstants.LOW_REEF_ALGAE;
+    public double getAlgaeHeight(Pose2d currentPose) {
+        return FieldUtil.Reef.getAlgaeReefLevelFromTag(FieldUtil.Reef.getNearestReefTag(currentPose)) == FieldUtil.Reef.AlgaeLocation.UPPER
+                ? Constants.ElevatorConstants.HIGH_REEF_ALGAE : Constants.ElevatorConstants.LOW_REEF_ALGAE;
     }
 }
