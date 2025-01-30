@@ -263,6 +263,7 @@ public final class DefaultConstants {
         public static final double PATH_ROTATION_CONTROLLER_P = 7.5;
 
         public static final double TRANSLATION_ALIGNMENT_CONTROLLER_P = 1.0;
+        public static final double TRANSLATION_ALIGNMENT_CONTROLLER_D = 0.002;
 
         public static final Function<Double, Double> PATH_MANUAL_TRANSLATION_CONTROLLER = x -> ExpUtil.output(x, 4.0, 0.8, 6);
 

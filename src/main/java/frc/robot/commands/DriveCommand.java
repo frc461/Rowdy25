@@ -134,11 +134,11 @@ public class DriveCommand extends Command {
                     : 0.0;
             case CORAL_STATION_ALIGNMENT -> yawController.calculate(
                     swerve.localizer.getStrategyPose().getRotation().getDegrees(),
-                    swerve.localizer.getAngleToNearestCoralStation()
+                    swerve.localizer.getNearestCoralStationHeading()
             ) * Constants.MAX_CONTROLLED_ANGULAR_VEL;
             case ALGAE_SCORING_ALIGNMENT -> yawController.calculate(
                     swerve.localizer.getStrategyPose().getRotation().getDegrees(),
-                    swerve.localizer.getAngleToNearestAlgaeScoringLocation()
+                    swerve.localizer.getNearestAlgaeScoringHeading()
             ) * Constants.MAX_CONTROLLED_ANGULAR_VEL;
         };
     }

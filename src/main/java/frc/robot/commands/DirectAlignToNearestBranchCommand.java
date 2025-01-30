@@ -25,9 +25,9 @@ public class DirectAlignToNearestBranchCommand extends Command {
         this.fieldCentric = fieldCentric;
 
         translationController = new PIDController(
-                Constants.SwerveConstants.TRANSLATION_ALIGNMENT_CONTROLLER_P, // TODO: TUNE THIS (ADD D AND SET D TO 0 FOR SIM)
+                Constants.SwerveConstants.TRANSLATION_ALIGNMENT_CONTROLLER_P,
                 0,
-                0
+                Constants.SwerveConstants.TRANSLATION_ALIGNMENT_CONTROLLER_D
         );
 
         yawController = new PIDController(
