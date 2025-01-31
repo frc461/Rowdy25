@@ -1,11 +1,15 @@
 package frc.robot.subsystems.drivetrain;
 
+import java.util.Arrays;
 import java.util.Set;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
+import com.ctre.phoenix6.Orchestra;
+import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.Utils;
+import com.ctre.phoenix6.configs.AudioConfigs;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.swerve.*;
@@ -17,6 +21,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
@@ -27,6 +32,7 @@ import frc.robot.constants.Constants;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.DriveToObjectCommand;
 import frc.robot.subsystems.vision.Localizer;
+import frc.robot.util.Elastic;
 import frc.robot.util.FieldUtil;
 
 /**
@@ -38,6 +44,8 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
     public final Localizer localizer = new Localizer(this);
 
     private final SwerveTelemetry swerveTelemetry = new SwerveTelemetry(this);
+
+    public final Orchestra orchestra;
 
     /* Swerve Command Requests */
     private final SwerveRequest.FieldCentric fieldCentric = new SwerveRequest.FieldCentric();
@@ -57,7 +65,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
      * through getters in the classes.
      */
     public Swerve() {
-        super(
+        /* ah, */ super(
                 TalonFX::new,
                 TalonFX::new,
                 CANcoder::new,
@@ -71,6 +79,35 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
         if (Utils.isSimulation()) {
             new SwerveSim(this).startSimThread();
         }
+
+        orchestra = new Orchestra();
+
+        Arrays.stream(this.getModules()).forEach(
+                module ->
+                        orchestra.addInstrument(module.getDriveMotor()));
+
+        StatusCode status = orchestra.loadMusic("sound/mario.chrp");
+
+
+
+        if (!status.isOK()) {
+            Elastic.Notification.NotificationLevel notificationLevel = null;
+            if (status.isWarning()) {
+                notificationLevel = Elastic.Notification.NotificationLevel.WARNING;
+            } else if (status.isError()) {
+                notificationLevel = Elastic.Notification.NotificationLevel.ERROR;
+            }
+
+            Elastic.sendNotification(
+                    new Elastic.Notification(
+                            notificationLevel,
+                            "Orchestra status",
+                            status.getName() + ": " + status.getDescription()
+                    )
+            );
+        }
+
+        orchestra.play();
 
         AutoBuilder.configure(
                 localizer::getStrategyPose,
