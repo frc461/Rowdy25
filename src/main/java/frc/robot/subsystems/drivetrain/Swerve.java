@@ -45,7 +45,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
 
     private final SwerveTelemetry swerveTelemetry = new SwerveTelemetry(this);
 
-    public final Orchestra orchestra;
+    public final Orchestra orchestra = new Orchestra();
 
     /* Swerve Command Requests */
     private final SwerveRequest.FieldCentric fieldCentric = new SwerveRequest.FieldCentric();
@@ -80,8 +80,6 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
             new SwerveSim(this).startSimThread();
         }
 
-        orchestra = new Orchestra();
-
         Arrays.stream(this.getModules()).forEach(
                 module ->
                         orchestra.addInstrument(module.getDriveMotor()));
@@ -104,8 +102,6 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                         status.getName() + ": " + status.getDescription()
                 )
         );
-
-        orchestra.play();
 
         AutoBuilder.configure(
                 localizer::getStrategyPose,
@@ -235,6 +231,12 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                             : Constants.RED_DEFAULT_ROTATION
             );
             hasAppliedDefaultRotation = true;
+        }
+
+        if (DriverStation.isDisabled() && !orchestra.isPlaying()) {
+            orchestra.play();
+        } else if (orchestra.isPlaying()) {
+            orchestra.stop();
         }
         swerveTelemetry.publishValues();
         localizer.periodic();

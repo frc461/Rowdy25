@@ -301,7 +301,7 @@ public final class DefaultConstants {
         // TODO TUNE FOR 2025 ROBOT
         private static final Current SLIP_CURRENT = Amps.of(120.0);
 
-        private static final AudioConfigs AUDIO_CONFIGS = new AudioConfigs().withBeepOnBoot(false).withAllowMusicDurDisable(true);
+        private static final AudioConfigs AUDIO_CONFIGS = new AudioConfigs().withAllowMusicDurDisable(true);
 
         // Initial configs for the drive and steer motors and the CANcoder; these cannot be null.
         // Some configs will be overwritten; check the `with*InitialConfigs()` API documentation.
