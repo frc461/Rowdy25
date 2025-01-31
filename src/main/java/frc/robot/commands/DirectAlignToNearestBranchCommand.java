@@ -9,7 +9,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.drivetrain.Swerve;
-import frc.robot.util.ExpUtil;
 import frc.robot.util.FieldUtil;
 
 public class DirectAlignToNearestBranchCommand extends Command {
@@ -25,9 +24,9 @@ public class DirectAlignToNearestBranchCommand extends Command {
         this.fieldCentric = fieldCentric;
 
         translationController = new PIDController(
-                Constants.SwerveConstants.TRANSLATION_ALIGNMENT_CONTROLLER_P, // TODO: TUNE THIS (ADD D AND SET D TO 0 FOR SIM)
+                Constants.SwerveConstants.TRANSLATION_ALIGNMENT_CONTROLLER_P,
                 0,
-                0
+                Constants.SwerveConstants.TRANSLATION_ALIGNMENT_CONTROLLER_D
         );
 
         yawController = new PIDController(
@@ -44,7 +43,7 @@ public class DirectAlignToNearestBranchCommand extends Command {
 
     @Override
     public void initialize() {
-        Pose2d nearestBranchPose = FieldUtil.Coral.getNearestBranchPose(swerve.localizer.getStrategyPose());
+        Pose2d nearestBranchPose = FieldUtil.Reef.getNearestBranchPose(swerve.localizer.getStrategyPose());
         targetPose = new Pose2d(
                 nearestBranchPose.getTranslation(),
                 nearestBranchPose.getRotation().rotateBy(Rotation2d.kPi)

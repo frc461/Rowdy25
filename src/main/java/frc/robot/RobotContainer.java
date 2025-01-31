@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.PowerDistribution;
 import frc.robot.autos.AutoChooser;
 import frc.robot.subsystems.drivetrain.Swerve;
 import frc.robot.util.SysID;
+import frc.robot.util.Lights;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Pivot;
@@ -136,11 +137,13 @@ public class RobotContainer {
     public RobotContainer() {
         setDefaultCommands();
         configureBindings();
-       
+
+        Lights.configureLights();
+
         // DogLogOptions(BooleanSupplier ntPublish, boolean captureNt, boolean captureDs, boolean logExtras, boolean captureConsole, int logEntryQueueCapacity)
         // DogLog.setOptions(new DogLogOptions(() -> false, false, true, true, false, 5000));
         // DogLog.setPdh(new PowerDistribution());
-
+        
         Pathfinding.setPathfinder(new LocalADStar());
         PathfindingCommand.warmupCommand().schedule();
     }
@@ -199,7 +202,7 @@ public class RobotContainer {
 
         driverXbox.povUp().whileTrue(swerve.moveToObject());
 
-        driverXbox.y().whileTrue(swerve.moveToNearestBranch());
+        driverXbox.povRight().whileTrue(swerve.moveToNearestBranch());
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.

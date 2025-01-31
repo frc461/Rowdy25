@@ -74,7 +74,7 @@ public class Localizer {
 
     public Translation2d getTranslationToNearestCoralStation() {
         Pose2d currentPose = getStrategyPose();
-        Translation2d tagTranslation = FieldUtil.Coral.getNearestCoralStationTagPose(currentPose).getTranslation();
+        Translation2d tagTranslation = FieldUtil.CoralStation.getNearestCoralStationTagPose(currentPose).getTranslation();
         return tagTranslation.minus(currentPose.getTranslation());
     }
 
@@ -82,9 +82,13 @@ public class Localizer {
         return getTranslationToNearestCoralStation().getAngle().getDegrees();
     }
 
+    public double getNearestCoralStationHeading() {
+        return FieldUtil.CoralStation.getNearestCoralStationTagPose(getStrategyPose()).getRotation().getDegrees();
+    }
+
     public Translation2d getTranslationToNearestReefSide() {
         Pose2d currentPose = getStrategyPose();
-        Translation2d tagTranslation = FieldUtil.Coral.getNearestReefTagPose(currentPose).getTranslation();
+        Translation2d tagTranslation = FieldUtil.Reef.getNearestReefTagPose(currentPose).getTranslation();
         return tagTranslation.minus(currentPose.getTranslation());
     }
 
@@ -94,7 +98,7 @@ public class Localizer {
 
     public Translation2d getTranslationToNearestBranch() {
         Pose2d currentPose = getStrategyPose();
-        Translation2d nearestBranch = FieldUtil.Coral.getNearestBranchPose(currentPose).getTranslation();
+        Translation2d nearestBranch = FieldUtil.Reef.getNearestBranchPose(currentPose).getTranslation();
         return nearestBranch.minus(currentPose.getTranslation());
     }
 
@@ -104,12 +108,16 @@ public class Localizer {
 
     public Translation2d getTranslationToNearestAlgaeScoringLocation() {
         Pose2d currentPose = getStrategyPose();
-        Translation2d tagTranslation = FieldUtil.Algae.getNearestAlgaeScoringTagPose(currentPose).getTranslation();
+        Translation2d tagTranslation = FieldUtil.AlgaeScoring.getNearestAlgaeScoringTagPose(currentPose).getTranslation();
         return tagTranslation.minus(currentPose.getTranslation());
     }
 
     public double getAngleToNearestAlgaeScoringLocation() {
         return getTranslationToNearestAlgaeScoringLocation().getAngle().getDegrees();
+    }
+
+    public double getNearestAlgaeScoringHeading() {
+        return FieldUtil.AlgaeScoring.getNearestAlgaeScoringTagPose(getStrategyPose()).getRotation().getDegrees();
     } 
 
     public void setLocalizationStrategyFromChooser() {

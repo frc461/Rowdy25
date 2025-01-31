@@ -7,9 +7,11 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
 import frc.robot.util.ExpUtil;
+import frc.robot.util.Lights;
 
 public class Pivot extends SubsystemBase {
     private final TalonFX pivot;
@@ -57,6 +59,7 @@ public class Pivot extends SubsystemBase {
 
     @Override
     public void periodic() {
+        Lights.setLights((Math.abs(getPosition() - Constants.PivotConstants.STOW_POSITION) <= Constants.PivotConstants.TOLERANCE) && DriverStation.isDisabled());
         error = Math.abs(target - getPosition());
         accuracy = target > getPosition() ? getPosition() / target : target / getPosition();
     }

@@ -124,7 +124,6 @@ public final class Constants {
     }
 
     public final static class ElevatorConstants {
-        public static Function<Double, Boolean> HIGH_ALGAE_PICKUP;
         // basic configs
         public static int LEAD_ID;
         public static int FOLLOWER_ID;
@@ -190,6 +189,8 @@ public final class Constants {
         public static double GROUND_CORAL;
         public static double SCORE_CORAL;
         public static double SCORE_ALGAE;
+        public static double STOW_POSITION;
+        public static double TOLERANCE;
     }
 
     public final static class WristConstants {
@@ -227,6 +228,7 @@ public final class Constants {
         public static double PATH_ROTATION_CONTROLLER_P;
 
         public static double TRANSLATION_ALIGNMENT_CONTROLLER_P;
+        public static double TRANSLATION_ALIGNMENT_CONTROLLER_D;
 
         public static Function<Double, Double> PATH_MANUAL_TRANSLATION_CONTROLLER;
 

@@ -111,7 +111,6 @@ public enum RobotIdentity {
         Constants.VisionConstants.QuestNavConstants.ROTATION_ERROR_TOLERANCE = DefaultConstants.VisionConstants.QuestNavConstants.ROTATION_ERROR_TOLERANCE;
         Constants.VisionConstants.QuestNavConstants.MIN_TAG_DIST_TO_BE_FAR = DefaultConstants.VisionConstants.QuestNavConstants.MIN_TAG_DIST_TO_BE_FAR;
 
-        Constants.ElevatorConstants.HIGH_ALGAE_PICKUP = DefaultConstants.ElevatorConstants.HIGH_ALGAE_PICKUP;
         Constants.ElevatorConstants.LEAD_ID = DefaultConstants.ElevatorConstants.LEAD_ID;
         Constants.ElevatorConstants.FOLLOWER_ID = DefaultConstants.ElevatorConstants.FOLLOWER_ID;
         Constants.ElevatorConstants.LOWER_LIMIT_SWITCH_ID = DefaultConstants.ElevatorConstants.LOWER_LIMIT_SWITCH_ID;
@@ -146,6 +145,8 @@ public enum RobotIdentity {
         Constants.PivotConstants.PIVOT_D = DefaultConstants.PivotConstants.PIVOT_D;
         Constants.PivotConstants.LOWER_LIMIT = DefaultConstants.PivotConstants.LOWER_LIMIT;
         Constants.PivotConstants.UPPER_LIMIT = DefaultConstants.PivotConstants.UPPER_LIMIT;
+        Constants.PivotConstants.STOW_POSITION = DefaultConstants.PivotConstants.STOW_POSITION;
+        Constants.PivotConstants.TOLERANCE = DefaultConstants.PivotConstants.TOLERANCE;
 
         Constants.WristConstants.MOTOR_ID = DefaultConstants.WristConstants.MOTOR_ID;
         Constants.WristConstants.LOWER_LIMIT_SWITCH_ID = DefaultConstants.WristConstants.LOWER_LIMIT_SWITCH_ID;
@@ -164,6 +165,7 @@ public enum RobotIdentity {
         Constants.SwerveConstants.PATH_TRANSLATION_CONTROLLER_P = DefaultConstants.SwerveConstants.PATH_TRANSLATION_CONTROLLER_P;
         Constants.SwerveConstants.PATH_ROTATION_CONTROLLER_P = DefaultConstants.SwerveConstants.PATH_ROTATION_CONTROLLER_P;
         Constants.SwerveConstants.TRANSLATION_ALIGNMENT_CONTROLLER_P = DefaultConstants.SwerveConstants.TRANSLATION_ALIGNMENT_CONTROLLER_P;
+        Constants.SwerveConstants.TRANSLATION_ALIGNMENT_CONTROLLER_D = DefaultConstants.SwerveConstants.TRANSLATION_ALIGNMENT_CONTROLLER_D;
         Constants.SwerveConstants.PATH_MANUAL_TRANSLATION_CONTROLLER = DefaultConstants.SwerveConstants.PATH_MANUAL_TRANSLATION_CONTROLLER;
         Constants.SwerveConstants.ANGULAR_POSITION_P = DefaultConstants.SwerveConstants.ANGULAR_POSITION_P;
         Constants.SwerveConstants.ANGULAR_POSITION_D = DefaultConstants.SwerveConstants.ANGULAR_POSITION_D;
