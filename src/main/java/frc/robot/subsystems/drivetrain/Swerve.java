@@ -88,24 +88,22 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
 
         StatusCode status = orchestra.loadMusic("sound/mario.chrp");
 
-
-
-        if (!status.isOK()) {
-            Elastic.Notification.NotificationLevel notificationLevel = null;
-            if (status.isWarning()) {
-                notificationLevel = Elastic.Notification.NotificationLevel.WARNING;
-            } else if (status.isError()) {
-                notificationLevel = Elastic.Notification.NotificationLevel.ERROR;
-            }
-
-            Elastic.sendNotification(
-                    new Elastic.Notification(
-                            notificationLevel,
-                            "Orchestra status",
-                            status.getName() + ": " + status.getDescription()
-                    )
-            );
+        Elastic.Notification.NotificationLevel notificationLevel;
+        if (status.isWarning()) {
+            notificationLevel = Elastic.Notification.NotificationLevel.WARNING;
+        } else if (status.isError()) {
+            notificationLevel = Elastic.Notification.NotificationLevel.ERROR;
+        } else {
+            notificationLevel = Elastic.Notification.NotificationLevel.INFO;
         }
+
+        Elastic.sendNotification(
+                new Elastic.Notification(
+                        notificationLevel,
+                        "Orchestra status",
+                        status.getName() + ": " + status.getDescription()
+                )
+        );
 
         orchestra.play();
 

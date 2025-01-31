@@ -3,11 +3,7 @@ package frc.robot.constants.variants;
 import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.CANBus;
-import com.ctre.phoenix6.configs.CANcoderConfiguration;
-import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
-import com.ctre.phoenix6.configs.Pigeon2Configuration;
-import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.configs.*;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
@@ -305,10 +301,12 @@ public final class DefaultConstants {
         // TODO TUNE FOR 2025 ROBOT
         private static final Current SLIP_CURRENT = Amps.of(120.0);
 
+        private static final AudioConfigs AUDIO_CONFIGS = new AudioConfigs().withBeepOnBoot(false).withAllowMusicDurDisable(true);
+
         // Initial configs for the drive and steer motors and the CANcoder; these cannot be null.
         // Some configs will be overwritten; check the `with*InitialConfigs()` API documentation.
-        private static final TalonFXConfiguration DRIVE_INITIAL_CONFIGS = new TalonFXConfiguration();
-        private static final TalonFXConfiguration STEER_INITIAL_CONFIGS = new TalonFXConfiguration()
+        private static final TalonFXConfiguration DRIVE_INITIAL_CONFIGS = new TalonFXConfiguration().withAudio(AUDIO_CONFIGS);
+        private static final TalonFXConfiguration STEER_INITIAL_CONFIGS = new TalonFXConfiguration().withAudio(AUDIO_CONFIGS)
                 .withCurrentLimits(
                         new CurrentLimitsConfigs()
                                 // Swerve azimuth does not require much torque output, so we can set a relatively low
