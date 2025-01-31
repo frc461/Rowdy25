@@ -135,6 +135,7 @@ public enum RobotIdentity {
         Constants.PivotConstants.FOLLOWER_ID = DefaultConstants.PivotConstants.FOLLOWER_ID;
         Constants.PivotConstants.LOWER_LIMIT_SWITCH_ID = DefaultConstants.PivotConstants.LOWER_LIMIT_SWITCH_ID;
         Constants.PivotConstants.UPPER_LIMIT_SWITCH_ID = DefaultConstants.PivotConstants.UPPER_LIMIT_SWITCH_ID;
+        Constants.PivotConstants.RATCHET_ID = DefaultConstants.PivotConstants.RATCHET_ID;
         Constants.PivotConstants.CURRENT_LIMIT = DefaultConstants.PivotConstants.CURRENT_LIMIT;
         Constants.PivotConstants.PIVOT_INVERT = DefaultConstants.PivotConstants.PIVOT_INVERT;
         Constants.PivotConstants.PIVOT_S = DefaultConstants.PivotConstants.PIVOT_S;
@@ -147,6 +148,8 @@ public enum RobotIdentity {
         Constants.PivotConstants.UPPER_LIMIT = DefaultConstants.PivotConstants.UPPER_LIMIT;
         Constants.PivotConstants.STOW_POSITION = DefaultConstants.PivotConstants.STOW_POSITION;
         Constants.PivotConstants.TOLERANCE = DefaultConstants.PivotConstants.TOLERANCE;
+        Constants.PivotConstants.RATCHET_ON = DefaultConstants.PivotConstants.RATCHET_ON;
+        Constants.PivotConstants.RATCHET_OFF = DefaultConstants.PivotConstants.RATCHET_OFF;
 
         Constants.WristConstants.MOTOR_ID = DefaultConstants.WristConstants.MOTOR_ID;
         Constants.WristConstants.LOWER_LIMIT_SWITCH_ID = DefaultConstants.WristConstants.LOWER_LIMIT_SWITCH_ID;

@@ -170,6 +170,7 @@ public final class Constants {
         public static int FOLLOWER_ID;
         public static int LOWER_LIMIT_SWITCH_ID;
         public static int UPPER_LIMIT_SWITCH_ID;
+        public static int RATCHET_ID;
         public static int CURRENT_LIMIT;
         public static InvertedValue PIVOT_INVERT;
 
@@ -191,6 +192,9 @@ public final class Constants {
         public static double SCORE_ALGAE;
         public static double STOW_POSITION;
         public static double TOLERANCE;
+
+        public static double RATCHET_ON;
+        public static double RATCHET_OFF;
     }
 
     public final static class WristConstants {

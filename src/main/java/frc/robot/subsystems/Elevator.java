@@ -45,7 +45,7 @@ public class Elevator extends SubsystemBase {
                         .withMotionMagicExpo_kA(Constants.ElevatorConstants.ELEVATOR_A)));
 
         try (TalonFX elevator2 = new TalonFX(Constants.ElevatorConstants.FOLLOWER_ID)) {
-            elevator2.setControl(new Follower(Constants.ElevatorConstants.LEAD_ID, true)); //TODO: CHECK OPPOSER MASTER
+            elevator2.setControl(new Follower(Constants.ElevatorConstants.LEAD_ID, true));
         }
 
         lowerSwitch = new DigitalInput(Constants.ElevatorConstants.LOWER_LIMIT_SWITCH_ID);
