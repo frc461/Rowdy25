@@ -189,6 +189,8 @@ public final class Constants {
         public static double GROUND_CORAL;
         public static double SCORE_CORAL;
         public static double SCORE_ALGAE;
+        public static double STOW_POSITION;
+        public static double TOLERANCE;
     }
 
     public final static class WristConstants {

@@ -145,6 +145,8 @@ public enum RobotIdentity {
         Constants.PivotConstants.PIVOT_D = DefaultConstants.PivotConstants.PIVOT_D;
         Constants.PivotConstants.LOWER_LIMIT = DefaultConstants.PivotConstants.LOWER_LIMIT;
         Constants.PivotConstants.UPPER_LIMIT = DefaultConstants.PivotConstants.UPPER_LIMIT;
+        Constants.PivotConstants.STOW_POSITION = DefaultConstants.PivotConstants.STOW_POSITION;
+        Constants.PivotConstants.TOLERANCE = DefaultConstants.PivotConstants.TOLERANCE;
 
         Constants.WristConstants.MOTOR_ID = DefaultConstants.WristConstants.MOTOR_ID;
         Constants.WristConstants.LOWER_LIMIT_SWITCH_ID = DefaultConstants.WristConstants.LOWER_LIMIT_SWITCH_ID;

@@ -224,6 +224,8 @@ public final class DefaultConstants {
         public static final double GROUND_CORAL = 0;
         public static final double SCORE_CORAL = 0;
         public static final double SCORE_ALGAE = 0;
+        public static final double STOW_POSITION = 0;
+        public static final double TOLERANCE = 0;
 
     }
 
