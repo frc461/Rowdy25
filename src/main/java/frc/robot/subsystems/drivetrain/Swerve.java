@@ -81,15 +81,16 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
             new SwerveSim(this).startSimThread();
         }
 
-        Arrays.stream(this.getModules()).forEach(
-                module -> {
-                    module.getDriveMotor().getConfigurator().apply(Constants.SwerveConstants.AUDIO_CONFIGS, 0.05);
-                    module.getSteerMotor().getConfigurator().apply(Constants.SwerveConstants.AUDIO_CONFIGS, 0.05);
+        int i = 0;
+        for (SwerveModule<TalonFX, TalonFX, CANcoder> module : this.getModules()) {
+            module.getDriveMotor().getConfigurator().apply(Constants.SwerveConstants.AUDIO_CONFIGS, 0.05);
+            module.getSteerMotor().getConfigurator().apply(Constants.SwerveConstants.AUDIO_CONFIGS, 0.05);
 
-                    orchestra.addInstrument(module.getDriveMotor());
-                    orchestra.addInstrument(module.getSteerMotor());
-                }
-        );
+            orchestra.addInstrument(module.getDriveMotor(), i);
+            orchestra.addInstrument(module.getSteerMotor(), i);
+            i ++;
+        }
+
 
         StatusCode status = orchestra.loadMusic("sound/mario.chrp");
 
