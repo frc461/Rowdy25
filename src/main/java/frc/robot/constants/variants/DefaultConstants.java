@@ -164,7 +164,7 @@ public final class DefaultConstants {
         public static final int LEAD_ID = 31;
         public static final int FOLLOWER_ID = 32;
         public static final int LOWER_LIMIT_SWITCH_ID = 2;
-        public static final int CURRENT_LIMIT = 80;
+        public static final int CURRENT_LIMIT = 60;
         public static final InvertedValue ELEVATOR_INVERT = InvertedValue.Clockwise_Positive; // TODO: CHECK ON REAL ROBOT
 
         // pid
@@ -206,7 +206,7 @@ public final class DefaultConstants {
         public static final int RATCHET_ID = 1;
         public static final int LOWER_LIMIT_SWITCH_ID = 0;
         public static final int UPPER_LIMIT_SWITCH_ID = 0;
-        public static final int CURRENT_LIMIT = 0;
+        public static final int CURRENT_LIMIT = 60;
         public static final InvertedValue PIVOT_INVERT = InvertedValue.Clockwise_Positive;
 
         // pid
