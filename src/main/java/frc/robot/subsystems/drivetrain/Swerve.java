@@ -103,6 +103,8 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                 )
         );
 
+        orchestra.play();
+
         AutoBuilder.configure(
                 localizer::getStrategyPose,
                 localizer::setPoses,
@@ -233,11 +235,10 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
             hasAppliedDefaultRotation = true;
         }
 
-        if (DriverStation.isDisabled() && !orchestra.isPlaying()) {
-            orchestra.play();
-        } else if (orchestra.isPlaying()) {
+        if (!DriverStation.isDisabled()) {
             orchestra.stop();
         }
+
         swerveTelemetry.publishValues();
         localizer.periodic();
     }
