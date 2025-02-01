@@ -192,7 +192,7 @@ public final class DefaultConstants {
 
     public final static class IntakeConstants {
         // basic configs
-        public static final int MOTOR_ID = 11;
+        public static final int MOTOR_ID = 41;
         public static final int CORAL_BEAM_ID = 3;
         public static final int ALGAE_BEAM_ID = 4;
         public static final int CURRENT_LIMIT = 40;
