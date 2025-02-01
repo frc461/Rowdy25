@@ -301,12 +301,12 @@ public final class DefaultConstants {
         // TODO TUNE FOR 2025 ROBOT
         private static final Current SLIP_CURRENT = Amps.of(120.0);
 
-        private static final AudioConfigs AUDIO_CONFIGS = new AudioConfigs().withBeepOnBoot(false).withAllowMusicDurDisable(true);
+        public static final AudioConfigs AUDIO_CONFIGS = new AudioConfigs().withAllowMusicDurDisable(true);
 
         // Initial configs for the drive and steer motors and the CANcoder; these cannot be null.
         // Some configs will be overwritten; check the `with*InitialConfigs()` API documentation.
-        public static final TalonFXConfiguration DRIVE_INITIAL_CONFIGS = new TalonFXConfiguration().withAudio(AUDIO_CONFIGS);
-        public static final TalonFXConfiguration STEER_INITIAL_CONFIGS = new TalonFXConfiguration().withAudio(AUDIO_CONFIGS)
+        private static final TalonFXConfiguration DRIVE_INITIAL_CONFIGS = new TalonFXConfiguration();
+        private static final TalonFXConfiguration STEER_INITIAL_CONFIGS = new TalonFXConfiguration()
                 .withCurrentLimits(
                         new CurrentLimitsConfigs()
                                 // Swerve azimuth does not require much torque output, so we can set a relatively low

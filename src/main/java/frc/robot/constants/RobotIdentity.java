@@ -172,13 +172,12 @@ public enum RobotIdentity {
         Constants.SwerveConstants.ANGULAR_OBJECT_DETECTION_D = DefaultConstants.SwerveConstants.ANGULAR_OBJECT_DETECTION_D;
         Constants.SwerveConstants.ANGULAR_MINIMUM_ANGLE = DefaultConstants.SwerveConstants.ANGULAR_MINIMUM_ANGLE;
         Constants.SwerveConstants.ANGULAR_MAXIMUM_ANGLE = DefaultConstants.SwerveConstants.ANGULAR_MAXIMUM_ANGLE;
+        Constants.SwerveConstants.AUDIO_CONFIGS = DefaultConstants.SwerveConstants.AUDIO_CONFIGS;
         Constants.SwerveConstants.SWERVE_DRIVETRAIN_CONSTANTS = DefaultConstants.SwerveConstants.SWERVE_DRIVETRAIN_CONSTANTS;
         Constants.SwerveConstants.FRONT_LEFT = DefaultConstants.SwerveConstants.FrontLeft.FRONT_LEFT;
         Constants.SwerveConstants.FRONT_RIGHT = DefaultConstants.SwerveConstants.FrontRight.FRONT_RIGHT;
         Constants.SwerveConstants.BACK_LEFT = DefaultConstants.SwerveConstants.BackLeft.BACK_LEFT;
         Constants.SwerveConstants.BACK_RIGHT = DefaultConstants.SwerveConstants.BackRight.BACK_RIGHT;
-        Constants.SwerveConstants.DRIVE_INITIAL_CONFIGS = DefaultConstants.SwerveConstants.DRIVE_INITIAL_CONFIGS;
-        Constants.SwerveConstants.STEER_INITIAL_CONFIGS = DefaultConstants.SwerveConstants.STEER_INITIAL_CONFIGS;
     }
 
     private static void setTestConstants() {
