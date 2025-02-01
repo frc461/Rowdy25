@@ -31,6 +31,7 @@ import frc.robot.commands.auto.SearchForAlgaeCommand;
 import frc.robot.constants.Constants;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.DriveToObjectCommand;
+import frc.robot.constants.variants.DefaultConstants;
 import frc.robot.subsystems.vision.Localizer;
 import frc.robot.util.Elastic;
 import frc.robot.util.FieldUtil;
@@ -81,8 +82,13 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
         }
 
         Arrays.stream(this.getModules()).forEach(
-                module ->
-                        orchestra.addInstrument(module.getDriveMotor()));
+                module -> {
+                        module.getDriveMotor().getConfigurator().apply(Constants.SwerveConstants.DRIVE_INITIAL_CONFIGS, 0.050);
+                        module.getSteerMotor().getConfigurator().apply(Constants.SwerveConstants.STEER_INITIAL_CONFIGS, 0.050);
+
+                        orchestra.addInstrument(module.getDriveMotor());
+                        orchestra.addInstrument(module.getSteerMotor());
+                });
 
         StatusCode status = orchestra.loadMusic("sound/mario.chrp");
 

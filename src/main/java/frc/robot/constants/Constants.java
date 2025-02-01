@@ -240,6 +240,9 @@ public final class Constants {
         public static double ANGULAR_MINIMUM_ANGLE;
         public static double ANGULAR_MAXIMUM_ANGLE;
 
+        public static TalonFXConfiguration DRIVE_INITIAL_CONFIGS;
+        public static TalonFXConfiguration STEER_INITIAL_CONFIGS;
+
         public static SwerveDrivetrainConstants SWERVE_DRIVETRAIN_CONSTANTS;
 
         public static SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> FRONT_LEFT;
