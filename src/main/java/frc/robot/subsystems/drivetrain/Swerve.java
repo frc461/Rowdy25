@@ -1,5 +1,6 @@
 package frc.robot.subsystems.drivetrain;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Set;
 import java.util.function.BooleanSupplier;
@@ -11,6 +12,7 @@ import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.configs.AudioConfigs;
 import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.swerve.*;
 
@@ -81,16 +83,26 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
             new SwerveSim(this).startSimThread();
         }
 
-        int i = 0;
+        ArrayList<ParentDevice> motors = new ArrayList<>();
+
+        int[] trackAmounts = new int[] {5, 2, 1};
+
         for (SwerveModule<TalonFX, TalonFX, CANcoder> module : this.getModules()) {
             module.getDriveMotor().getConfigurator().apply(Constants.SwerveConstants.AUDIO_CONFIGS, 0.05);
             module.getSteerMotor().getConfigurator().apply(Constants.SwerveConstants.AUDIO_CONFIGS, 0.05);
 
-            orchestra.addInstrument(module.getDriveMotor(), i);
-            orchestra.addInstrument(module.getSteerMotor(), i);
-            i ++;
+            motors.add(module.getDriveMotor());
+            motors.add(module.getSteerMotor());
         }
-
+        int currentMotor = 0;
+        int trackNumber = 0;
+        for (int numMotors : trackAmounts) {
+            for (int i = 0; i < numMotors; i ++) {
+                orchestra.addInstrument(motors.get(currentMotor), trackNumber);
+                currentMotor ++;
+            }
+            trackNumber ++;
+        }
 
         StatusCode status = orchestra.loadMusic("sound/mario.chrp");
 
