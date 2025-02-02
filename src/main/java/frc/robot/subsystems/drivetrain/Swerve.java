@@ -1,7 +1,6 @@
 package frc.robot.subsystems.drivetrain;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.function.BooleanSupplier;
@@ -12,7 +11,6 @@ import java.util.stream.IntStream;
 import com.ctre.phoenix6.Orchestra;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.Utils;
-import com.ctre.phoenix6.configs.AudioConfigs;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -25,7 +23,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
@@ -35,7 +32,6 @@ import frc.robot.commands.auto.SearchForAlgaeCommand;
 import frc.robot.constants.Constants;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.DriveToObjectCommand;
-import frc.robot.constants.variants.DefaultConstants;
 import frc.robot.subsystems.vision.Localizer;
 import frc.robot.util.Elastic;
 import frc.robot.util.FieldUtil;
@@ -157,11 +153,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                 ));
     }
 
-    public Command moveToObject() {
-        return new DriveToObjectCommand(this, robotCentric);
-    }
-
-    public Command moveToNearestBranch() {
+    public Command pathFindToNearestBranch() {
         return Commands.defer(() -> {
             Pose2d nearestBranchPose = FieldUtil.Reef.getNearestBranchPose(localizer.getStrategyPose());
             return PathManager.pathFindToClosePose(
@@ -175,10 +167,14 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                     Constants.AutoConstants.DISTANCE_TOLERANCE_TO_DRIVE_INTO,
                     2.0
             );
-        }, Set.of(this)).andThen(directAlignToNearestBranch());
+        }, Set.of(this)).andThen(directMoveToNearestBranch());
     }
 
-    public Command directAlignToNearestBranch() {
+    public Command moveToObject() {
+        return new DriveToObjectCommand(this, robotCentric);
+    }
+
+    public Command directMoveToNearestBranch() {
         return new DirectAlignToNearestBranchCommand(this, fieldCentric);
     }
 
