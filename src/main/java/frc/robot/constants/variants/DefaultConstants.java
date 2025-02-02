@@ -88,7 +88,7 @@ public final class DefaultConstants {
         public static final Matrix<N3, N1> ODOM_STD_DEV = VecBuilder.fill(0.01, 0.01, Units.degreesToRadians(0.01));
         public static final Function<Double, Matrix<N3, N1>> VISION_STD_DEV_MULTITAG_FUNCTION =
                 dist -> dist < 2.0
-                        ? VecBuilder.fill(0.1, 0.1, Units.degreesToRadians(1.0))
+                        ? VecBuilder.fill(0.1, 0.1, Units.degreesToRadians(1.0)) // TODO BE LESS STRICT WITH ROTATION
                         : VecBuilder.fill(0.15 * dist, 0.15 * dist, Units.degreesToRadians(180.0) * dist);
         public static final Function<Double, Matrix<N3, N1>> VISION_STD_DEV_FUNCTION =
                 dist -> VecBuilder.fill(0.5 * dist, 0.5 * dist, Units.degreesToRadians(180.0) * dist);
@@ -109,6 +109,7 @@ public final class DefaultConstants {
 
         public static final class PhotonConstants {
             // TODO SET CAMERAS TO CENTER OF ROBOT OFFSETS
+            public static final String BW_TOP_RIGHT_NAME = "ArducamBW";
             public static final double BW_TOP_RIGHT_FORWARD = 0.0;
             public static final double BW_TOP_RIGHT_LEFT = 0.0;
             public static final double BW_TOP_RIGHT_UP = 0.0;
@@ -116,6 +117,7 @@ public final class DefaultConstants {
             public static final double BW_TOP_RIGHT_PITCH = 0.0;
             public static final double BW_TOP_RIGHT_YAW = 0.0;
 
+            public static final String BW_TOP_LEFT_NAME = "ArducamBW2";
             public static final double BW_TOP_LEFT_FORWARD = 0.0;
             public static final double BW_TOP_LEFT_LEFT = 0.0;
             public static final double BW_TOP_LEFT_UP = 0.0;
@@ -123,6 +125,7 @@ public final class DefaultConstants {
             public static final double BW_TOP_LEFT_PITCH = 0.0;
             public static final double BW_TOP_LEFT_YAW = 0.0;
 
+            public static final String BW_BACK_NAME = "ArducamBW3";
             public static final double BW_BACK_FORWARD = 0.0;
             public static final double BW_BACK_LEFT = 0.0;
             public static final double BW_BACK_UP = 0.0;
@@ -156,12 +159,11 @@ public final class DefaultConstants {
 
     // TODO: UPDATE VALUES FOR 2025 + TUNE
     public final static class ElevatorConstants {
-        public static final Function <Double, Boolean> HIGH_ALGAE_PICKUP = angle -> (ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red ? angle % 120 == 60 : angle % 120 == 0);
         // basic configs
         public static final int LEAD_ID = 31;
         public static final int FOLLOWER_ID = 32;
         public static final int LOWER_LIMIT_SWITCH_ID = 2;
-        public static final int CURRENT_LIMIT = 80;
+        public static final int CURRENT_LIMIT = 60;
         public static final InvertedValue ELEVATOR_INVERT = InvertedValue.Clockwise_Positive; // TODO: CHECK ON REAL ROBOT
 
         // pid
@@ -189,7 +191,7 @@ public final class DefaultConstants {
 
     public final static class IntakeConstants {
         // basic configs
-        public static final int MOTOR_ID = 11;
+        public static final int MOTOR_ID = 41;
         public static final int CORAL_BEAM_ID = 3;
         public static final int ALGAE_BEAM_ID = 4;
         public static final int CURRENT_LIMIT = 40;
@@ -200,9 +202,11 @@ public final class DefaultConstants {
         // basic configs
         public static final int LEAD_ID = 51;
         public static final int FOLLOWER_ID = 52;
+        public static final int ENCODER_ID = 53;
+        public static final int RATCHET_ID = 1;
         public static final int LOWER_LIMIT_SWITCH_ID = 0;
         public static final int UPPER_LIMIT_SWITCH_ID = 0;
-        public static final int CURRENT_LIMIT = 0;
+        public static final int CURRENT_LIMIT = 60;
         public static final InvertedValue PIVOT_INVERT = InvertedValue.Clockwise_Positive;
 
         // pid
@@ -221,12 +225,17 @@ public final class DefaultConstants {
         public static final double GROUND_CORAL = 0;
         public static final double SCORE_CORAL = 0;
         public static final double SCORE_ALGAE = 0;
+        public static final double STOW_POSITION = 0;
+        public static final double TOLERANCE = 0;
 
+        public static final double RATCHET_ON = 0;
+        public static final double RATCHET_OFF = 0;
     }
 
     public final static class WristConstants {
         // basic configs
-        public static final int MOTOR_ID = 62;
+        public static final int MOTOR_ID = 61;
+        public static final int ENCODER_ID = 62;
         public static final int LOWER_LIMIT_SWITCH_ID = 6;
         public static final int UPPER_LIMIT_SWITCH_ID = 0;
         public static final int CURRENT_LIMIT = 35;

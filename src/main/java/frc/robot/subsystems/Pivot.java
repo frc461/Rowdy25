@@ -3,25 +3,38 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.configs.*;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
 import frc.robot.util.ExpUtil;
+import frc.robot.util.Lights;
 
 public class Pivot extends SubsystemBase {
     private final TalonFX pivot;
+    private final CANcoder encoder;
     private final MotionMagicExpoVoltage request;
     private final DigitalInput lowerLimitSwitch; // TODO: ABSOLUTE ENCODERS, LIMIT SWITCHES NOT NEEDED
+    private final Servo ratchet;
     private double target, error, accuracy;
+    private boolean ratcheted;
 
     public Pivot() {
         pivot = new TalonFX(Constants.PivotConstants.LEAD_ID);
+        encoder = new CANcoder(Constants.PivotConstants.ENCODER_ID);
+
+        encoder.getConfigurator().apply(new CANcoderConfiguration()
+                .withMagnetSensor(new MagnetSensorConfigs().withSensorDirection(SensorDirectionValue.Clockwise_Positive))); // TODO: CHECK AND POTENTIALLY ADD MORE CONFIGS
 
         pivot.getConfigurator().apply(new TalonFXConfiguration()
                 .withVoltage(new VoltageConfigs().withPeakForwardVoltage(6))
+                .withFeedback(new FeedbackConfigs().withRemoteCANcoder(encoder))
                 .withMotorOutput(new MotorOutputConfigs()
                         .withInverted(Constants.PivotConstants.PIVOT_INVERT)
                         .withNeutralMode(NeutralModeValue.Coast))
@@ -43,12 +56,16 @@ public class Pivot extends SubsystemBase {
                         .withMotionMagicExpo_kA(Constants.PivotConstants.PIVOT_A)));
 
         try (TalonFX pivot2 = new TalonFX(Constants.PivotConstants.FOLLOWER_ID)) {
-            pivot2.setControl(new Follower(Constants.PivotConstants.LEAD_ID, true)); //TODO: CHECK OPPOSE MASTER
+            pivot2.setControl(new Follower(Constants.PivotConstants.LEAD_ID, true));
         }
 
         lowerLimitSwitch = new DigitalInput(Constants.PivotConstants.LOWER_LIMIT_SWITCH_ID);
+        ratchet = new Servo(Constants.PivotConstants.RATCHET_ID);
+        ratchet.set(Constants.PivotConstants.RATCHET_ON);
 
         request = new MotionMagicExpoVoltage(0);
+
+        ratcheted = true;
 
         target = 0.0;
         error = 0.0;
@@ -57,6 +74,14 @@ public class Pivot extends SubsystemBase {
 
     @Override
     public void periodic() {
+        Lights.setLights((Math.abs(getPosition() - Constants.PivotConstants.STOW_POSITION) <= Constants.PivotConstants.TOLERANCE) && DriverStation.isDisabled());
+
+        if (ratcheted) {
+            ratchet.set(Constants.PivotConstants.RATCHET_ON) ;
+        } else {
+            ratchet.set(Constants.PivotConstants.RATCHET_OFF);
+        }
+
         error = Math.abs(target - getPosition());
         accuracy = target > getPosition() ? getPosition() / target : target / getPosition();
     }
@@ -71,6 +96,22 @@ public class Pivot extends SubsystemBase {
 
     public double getError() {
         return error;
+    }
+
+    public boolean isRatcheted() {
+        return ratcheted;
+    }
+
+    public void toggleRatchet() {
+        setRatchet(!ratcheted);
+    }
+
+    public void setRatchet(boolean toggle) {
+        ratcheted = toggle;
+        ratchet.set(ratcheted ?
+                Constants.PivotConstants.RATCHET_ON :
+                Constants.PivotConstants.RATCHET_OFF
+        );
     }
 
     public boolean lowerSwitchTriggered() {

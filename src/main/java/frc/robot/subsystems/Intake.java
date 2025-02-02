@@ -11,14 +11,14 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+import frc.robot.util.Lights;
+
 import frc.robot.constants.Constants;
 
 public class Intake extends SubsystemBase{
     private final TalonFX motor;
     private final DigitalInput coralBeam;
     private final DigitalInput algaeBeam;
-
-    //TODO: ADD LIGHTS?
 
     public Intake() {
         motor = new TalonFX(Constants.IntakeConstants.MOTOR_ID);
@@ -56,7 +56,7 @@ public class Intake extends SubsystemBase{
 
     @Override
     public void periodic() {
-    
+       Lights.setLights(hasCoral() || hasAlgae()); 
     }
     
 }

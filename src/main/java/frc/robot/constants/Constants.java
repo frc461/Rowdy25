@@ -80,6 +80,7 @@ public final class Constants {
         }
 
         public static final class PhotonConstants {
+            public static String BW_TOP_RIGHT_NAME;
             public static double BW_TOP_RIGHT_FORWARD;
             public static double BW_TOP_RIGHT_LEFT;
             public static double BW_TOP_RIGHT_UP;
@@ -87,6 +88,7 @@ public final class Constants {
             public static double BW_TOP_RIGHT_PITCH;
             public static double BW_TOP_RIGHT_YAW;
 
+            public static String BW_TOP_LEFT_NAME;
             public static double BW_TOP_LEFT_FORWARD;
             public static double BW_TOP_LEFT_LEFT;
             public static double BW_TOP_LEFT_UP;
@@ -94,6 +96,7 @@ public final class Constants {
             public static double BW_TOP_LEFT_PITCH;
             public static double BW_TOP_LEFT_YAW;
 
+            public static String BW_BACK_NAME;
             public static double BW_BACK_FORWARD;
             public static double BW_BACK_LEFT;
             public static double BW_BACK_UP;
@@ -125,7 +128,6 @@ public final class Constants {
     }
 
     public final static class ElevatorConstants {
-        public static Function<Double, Boolean> HIGH_ALGAE_PICKUP;
         // basic configs
         public static int LEAD_ID;
         public static int FOLLOWER_ID;
@@ -170,8 +172,10 @@ public final class Constants {
         // basic configs
         public static int LEAD_ID;
         public static int FOLLOWER_ID;
+        public static int ENCODER_ID;
         public static int LOWER_LIMIT_SWITCH_ID;
         public static int UPPER_LIMIT_SWITCH_ID;
+        public static int RATCHET_ID;
         public static int CURRENT_LIMIT;
         public static InvertedValue PIVOT_INVERT;
 
@@ -191,11 +195,17 @@ public final class Constants {
         public static double GROUND_CORAL;
         public static double SCORE_CORAL;
         public static double SCORE_ALGAE;
+        public static double STOW_POSITION;
+        public static double TOLERANCE;
+
+        public static double RATCHET_ON;
+        public static double RATCHET_OFF;
     }
 
     public final static class WristConstants {
         // basic configs
         public static int MOTOR_ID;
+        public static int ENCODER_ID;
         public static int LOWER_LIMIT_SWITCH_ID;
         public static int UPPER_LIMIT_SWITCH_ID;
         public static int CURRENT_LIMIT;

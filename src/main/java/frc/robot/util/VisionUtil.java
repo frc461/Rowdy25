@@ -227,9 +227,9 @@ public class VisionUtil {
                 BACK
             }
 
-            private static final PhotonCamera BW_TOP_RIGHT = new PhotonCamera(Constants.NT_INSTANCE, "ArducamBW2");
-            private static final PhotonCamera BW_TOP_LEFT = new PhotonCamera(Constants.NT_INSTANCE, "ArducamBW");
-            private static final PhotonCamera BW_BACK = new PhotonCamera(Constants.NT_INSTANCE, "ArducamBW3");
+            private static final PhotonCamera BW_TOP_RIGHT = new PhotonCamera(Constants.NT_INSTANCE, Constants.VisionConstants.PhotonConstants.BW_TOP_RIGHT_NAME);
+            private static final PhotonCamera BW_TOP_LEFT = new PhotonCamera(Constants.NT_INSTANCE, Constants.VisionConstants.PhotonConstants.BW_TOP_LEFT_NAME);
+            private static final PhotonCamera BW_BACK = new PhotonCamera(Constants.NT_INSTANCE, Constants.VisionConstants.PhotonConstants.BW_BACK_NAME);
 
             private static PhotonPipelineResult latestResultTopRight = new PhotonPipelineResult();
             private static PhotonPipelineResult latestResultTopLeft = new PhotonPipelineResult();
@@ -345,7 +345,7 @@ public class VisionUtil {
 
             public static EstimatedRobotPose getSingleTagPose(BWCamera camera, Pose2d currentPose) {
                 if (hasTargets(camera)) {
-                    Pose3d tagPose = FieldUtil.TagManager.getTagLocation3d(getBestTagID(camera));
+                    Pose3d tagPose = FieldUtil.AprilTag.getTag(getBestTagID(camera)).pose3d;
                     PhotonPipelineResult result = getLatestResult(camera);
                     Transform3d cameraToTargetBest = result.getBestTarget().getBestCameraToTarget();
                     Transform3d cameraToTargetAlt = result.getBestTarget().getAlternateCameraToTarget();

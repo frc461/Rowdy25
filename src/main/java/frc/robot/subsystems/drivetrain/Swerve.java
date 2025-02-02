@@ -201,7 +201,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
 
     public Command moveToNearestBranch() {
         return Commands.defer(() -> {
-            Pose2d nearestBranchPose = FieldUtil.Coral.getNearestBranchPose(localizer.getStrategyPose());
+            Pose2d nearestBranchPose = FieldUtil.Reef.getNearestBranchPose(localizer.getStrategyPose());
             return PathManager.pathFindToClosePose(
                     localizer.getStrategyPose(),
                     new Pose2d(
