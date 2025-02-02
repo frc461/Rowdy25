@@ -58,12 +58,6 @@ public class Wrist extends SubsystemBase {
         accuracy = 1.0;
     }
 
-    @Override
-    public void periodic() {
-        error = Math.abs(target - getPosition());
-        accuracy = target > getPosition() ? getPosition() / target : target / getPosition();
-    }
-
     public double getPosition() { 
         return wrist.getPosition().getValueAsDouble();
     }
@@ -107,5 +101,11 @@ public class Wrist extends SubsystemBase {
                     : axisValue * ExpUtil.output(getPosition() - Constants.WristConstants.LOWER_LIMIT, 1, 5, 10));
             target = getPosition();
         }
+    }
+
+    @Override
+    public void periodic() {
+        error = Math.abs(target - getPosition());
+        accuracy = target > getPosition() ? getPosition() / target : target / getPosition();
     }
 }

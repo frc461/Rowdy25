@@ -2,10 +2,12 @@ package frc.robot.subsystems.drivetrain;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
+import java.util.stream.IntStream;
 
 import com.ctre.phoenix6.Orchestra;
 import com.ctre.phoenix6.StatusCode;
@@ -83,47 +85,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
             new SwerveSim(this).startSimThread();
         }
 
-        ArrayList<ParentDevice> motors = new ArrayList<>();
-
-        int[] trackAmounts = new int[] {5, 2, 1};
-
-        for (SwerveModule<TalonFX, TalonFX, CANcoder> module : this.getModules()) {
-            module.getDriveMotor().getConfigurator().apply(Constants.SwerveConstants.AUDIO_CONFIGS, 0.05);
-            module.getSteerMotor().getConfigurator().apply(Constants.SwerveConstants.AUDIO_CONFIGS, 0.05);
-
-            motors.add(module.getDriveMotor());
-            motors.add(module.getSteerMotor());
-        }
-        int currentMotor = 0;
-        int trackNumber = 0;
-        for (int numMotors : trackAmounts) {
-            for (int i = 0; i < numMotors; i ++) {
-                orchestra.addInstrument(motors.get(currentMotor), trackNumber);
-                currentMotor ++;
-            }
-            trackNumber ++;
-        }
-
-        StatusCode status = orchestra.loadMusic("sound/mario.chrp");
-
-        Elastic.Notification.NotificationLevel notificationLevel;
-        if (status.isWarning()) {
-            notificationLevel = Elastic.Notification.NotificationLevel.WARNING;
-        } else if (status.isError()) {
-            notificationLevel = Elastic.Notification.NotificationLevel.ERROR;
-        } else {
-            notificationLevel = Elastic.Notification.NotificationLevel.INFO;
-        }
-
-        Elastic.sendNotification(
-                new Elastic.Notification(
-                        notificationLevel,
-                        "Orchestra status",
-                        status.getName() + ": " + status.getDescription()
-                )
-        );
-
-        orchestra.play();
+        configureMusic();
 
         AutoBuilder.configure(
                 localizer::getStrategyPose,
@@ -236,6 +198,47 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                 .withRotationalRate(0.0));
     }
 
+    public void configureMusic() {
+        List<ParentDevice> motors = new ArrayList<>();
+
+        int[] trackWeights = new int[] {5, 2, 1};
+
+        for (SwerveModule<TalonFX, TalonFX, CANcoder> module : this.getModules()) {
+            module.getDriveMotor().getConfigurator().apply(Constants.SwerveConstants.AUDIO_CONFIGS, 0.05);
+            module.getSteerMotor().getConfigurator().apply(Constants.SwerveConstants.AUDIO_CONFIGS, 0.05);
+
+            motors.add(module.getDriveMotor());
+            motors.add(module.getSteerMotor());
+        }
+
+        IntStream.range(0, trackWeights.length).forEach(
+                weightIndex -> IntStream.range(0, trackWeights[weightIndex]).forEach(
+                        i -> orchestra.addInstrument(motors.remove(0), weightIndex)
+                )
+        );
+
+        StatusCode status = orchestra.loadMusic("sound/mario.chrp");
+
+        Elastic.Notification.NotificationLevel notificationLevel;
+        if (status.isWarning()) {
+            notificationLevel = Elastic.Notification.NotificationLevel.WARNING;
+        } else if (status.isError()) {
+            notificationLevel = Elastic.Notification.NotificationLevel.ERROR;
+        } else {
+            notificationLevel = Elastic.Notification.NotificationLevel.INFO;
+        }
+
+        Elastic.sendNotification(
+                new Elastic.Notification(
+                        notificationLevel,
+                        "Orchestra status",
+                        status.getName() + ": " + status.getDescription()
+                )
+        );
+
+        orchestra.play();
+    }
+
     @Override
     public void periodic() {
         /*
@@ -255,7 +258,10 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
             hasAppliedDefaultRotation = true;
         }
 
-        if (!DriverStation.isDisabled()) {
+        if (DriverStation.isDisabled() && !orchestra.isPlaying()) { // TODO: TEST THIS
+            orchestra.play();
+        }
+        if (!DriverStation.isDisabled() && orchestra.isPlaying()) {
             orchestra.stop();
         }
 
