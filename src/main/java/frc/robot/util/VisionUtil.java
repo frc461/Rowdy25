@@ -227,9 +227,9 @@ public class VisionUtil {
                 BACK
             }
 
-            private static final PhotonCamera BW_TOP_RIGHT = new PhotonCamera(Constants.NT_INSTANCE, "ArducamBW2");
-            private static final PhotonCamera BW_TOP_LEFT = new PhotonCamera(Constants.NT_INSTANCE, "ArducamBW");
-            private static final PhotonCamera BW_BACK = new PhotonCamera(Constants.NT_INSTANCE, "ArducamBW3");
+            private static final PhotonCamera BW_TOP_RIGHT = new PhotonCamera(Constants.NT_INSTANCE, Constants.VisionConstants.PhotonConstants.BW_TOP_RIGHT_NAME);
+            private static final PhotonCamera BW_TOP_LEFT = new PhotonCamera(Constants.NT_INSTANCE, Constants.VisionConstants.PhotonConstants.BW_TOP_LEFT_NAME);
+            private static final PhotonCamera BW_BACK = new PhotonCamera(Constants.NT_INSTANCE, Constants.VisionConstants.PhotonConstants.BW_BACK_NAME);
 
             private static PhotonPipelineResult latestResultTopRight = new PhotonPipelineResult();
             private static PhotonPipelineResult latestResultTopLeft = new PhotonPipelineResult();

@@ -79,6 +79,7 @@ public final class Constants {
         }
 
         public static final class PhotonConstants {
+            public static String BW_TOP_RIGHT_NAME;
             public static double BW_TOP_RIGHT_FORWARD;
             public static double BW_TOP_RIGHT_LEFT;
             public static double BW_TOP_RIGHT_UP;
@@ -86,6 +87,7 @@ public final class Constants {
             public static double BW_TOP_RIGHT_PITCH;
             public static double BW_TOP_RIGHT_YAW;
 
+            public static String BW_TOP_LEFT_NAME;
             public static double BW_TOP_LEFT_FORWARD;
             public static double BW_TOP_LEFT_LEFT;
             public static double BW_TOP_LEFT_UP;
@@ -93,6 +95,7 @@ public final class Constants {
             public static double BW_TOP_LEFT_PITCH;
             public static double BW_TOP_LEFT_YAW;
 
+            public static String BW_BACK_NAME;
             public static double BW_BACK_FORWARD;
             public static double BW_BACK_LEFT;
             public static double BW_BACK_UP;

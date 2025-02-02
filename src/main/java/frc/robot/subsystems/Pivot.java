@@ -30,8 +30,7 @@ public class Pivot extends SubsystemBase {
         encoder = new CANcoder(Constants.PivotConstants.ENCODER_ID);
 
         encoder.getConfigurator().apply(new CANcoderConfiguration()
-                .withMagnetSensor(new MagnetSensorConfigs()
-                    .withSensorDirection(SensorDirectionValue.Clockwise_Positive))); // TODO: CHECK AND POTENTIALLY ADD MORE CONFIGS
+                .withMagnetSensor(new MagnetSensorConfigs().withSensorDirection(SensorDirectionValue.Clockwise_Positive))); // TODO: CHECK AND POTENTIALLY ADD MORE CONFIGS
 
         pivot.getConfigurator().apply(new TalonFXConfiguration()
                 .withVoltage(new VoltageConfigs().withPeakForwardVoltage(6))

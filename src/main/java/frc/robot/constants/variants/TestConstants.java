@@ -35,6 +35,7 @@ public final class TestConstants {
     // TODO RETUNE WITH PROPER NAMES (LEFT, UP) AND PROPER ANGLES
     public static final class VisionConstants {
         public static final class PhotonConstants {
+            public static final String BW_TOP_RIGHT_NAME = "ArducamBW2";
             public static final double BW_TOP_RIGHT_FORWARD = Units.inchesToMeters(8.25);
             public static final double BW_TOP_RIGHT_LEFT = Units.inchesToMeters(-9.25);
             public static final double BW_TOP_RIGHT_UP = 0.0;
@@ -42,6 +43,7 @@ public final class TestConstants {
             public static final double BW_TOP_RIGHT_PITCH = -5.0;
             public static final double BW_TOP_RIGHT_YAW = -30.5;
 
+            public static final String BW_TOP_LEFT_NAME = "ArducamBW";
             public static final double BW_TOP_LEFT_FORWARD = Units.inchesToMeters(8.15);
             public static final double BW_TOP_LEFT_LEFT = Units.inchesToMeters(9.25);
             public static final double BW_TOP_LEFT_UP = 0.0;

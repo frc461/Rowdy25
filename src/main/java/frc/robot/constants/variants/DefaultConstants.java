@@ -113,6 +113,7 @@ public final class DefaultConstants {
 
         public static final class PhotonConstants {
             // TODO SET CAMERAS TO CENTER OF ROBOT OFFSETS
+            public static final String BW_TOP_RIGHT_NAME = "ArducamBW";
             public static final double BW_TOP_RIGHT_FORWARD = 0.0;
             public static final double BW_TOP_RIGHT_LEFT = 0.0;
             public static final double BW_TOP_RIGHT_UP = 0.0;
@@ -120,6 +121,7 @@ public final class DefaultConstants {
             public static final double BW_TOP_RIGHT_PITCH = 0.0;
             public static final double BW_TOP_RIGHT_YAW = 0.0;
 
+            public static final String BW_TOP_LEFT_NAME = "ArducamBW2";
             public static final double BW_TOP_LEFT_FORWARD = 0.0;
             public static final double BW_TOP_LEFT_LEFT = 0.0;
             public static final double BW_TOP_LEFT_UP = 0.0;
@@ -127,6 +129,7 @@ public final class DefaultConstants {
             public static final double BW_TOP_LEFT_PITCH = 0.0;
             public static final double BW_TOP_LEFT_YAW = 0.0;
 
+            public static final String BW_BACK_NAME = "ArducamBW3";
             public static final double BW_BACK_FORWARD = 0.0;
             public static final double BW_BACK_LEFT = 0.0;
             public static final double BW_BACK_UP = 0.0;
