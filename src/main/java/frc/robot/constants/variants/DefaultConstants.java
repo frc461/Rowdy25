@@ -203,6 +203,7 @@ public final class DefaultConstants {
         // basic configs
         public static final int LEAD_ID = 51;
         public static final int FOLLOWER_ID = 52;
+        public static final int ENCODER_ID = 53;
         public static final int RATCHET_ID = 1;
         public static final int LOWER_LIMIT_SWITCH_ID = 0;
         public static final int UPPER_LIMIT_SWITCH_ID = 0;
@@ -234,7 +235,8 @@ public final class DefaultConstants {
 
     public final static class WristConstants {
         // basic configs
-        public static final int MOTOR_ID = 62;
+        public static final int MOTOR_ID = 61;
+        public static final int ENCODER_ID = 62;
         public static final int LOWER_LIMIT_SWITCH_ID = 6;
         public static final int UPPER_LIMIT_SWITCH_ID = 0;
         public static final int CURRENT_LIMIT = 35;

@@ -168,6 +168,7 @@ public final class Constants {
         // basic configs
         public static int LEAD_ID;
         public static int FOLLOWER_ID;
+        public static int ENCODER_ID;
         public static int LOWER_LIMIT_SWITCH_ID;
         public static int UPPER_LIMIT_SWITCH_ID;
         public static int RATCHET_ID;
@@ -200,6 +201,7 @@ public final class Constants {
     public final static class WristConstants {
         // basic configs
         public static int MOTOR_ID;
+        public static int ENCODER_ID;
         public static int LOWER_LIMIT_SWITCH_ID;
         public static int UPPER_LIMIT_SWITCH_ID;
         public static int CURRENT_LIMIT;

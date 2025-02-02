@@ -2,8 +2,10 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.*;
 import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -12,15 +14,21 @@ import frc.robot.util.ExpUtil;
 
 public class Wrist extends SubsystemBase {
     private final TalonFX wrist;
+    private final CANcoder encoder;
     private final MotionMagicExpoVoltage request;
     private final DigitalInput lowerLimitSwitch; // TODO: ABSOLUTE ENCODERS, LIMIT SWITCHES NOT NEEDED
     private double target, error, accuracy;
 
     public Wrist() {
         wrist = new TalonFX(Constants.WristConstants.MOTOR_ID);
-
+        encoder = new CANcoder(Constants.WristConstants.ENCODER_ID); //TODO: CHECK IF THIS EXISTS
+        encoder.getConfigurator().apply(new CANcoderConfiguration()
+                .withMagnetSensor(new MagnetSensorConfigs()
+                    .withSensorDirection(SensorDirectionValue.Clockwise_Positive))); // TODO: CHECK AND POTENTIALLY ADD MORE CONFIGS
+            
         wrist.getConfigurator().apply(new TalonFXConfiguration()
                 .withVoltage(new VoltageConfigs().withPeakForwardVoltage(6))
+                .withFeedback(new FeedbackConfigs().withRemoteCANcoder(encoder))
                 .withMotorOutput(new MotorOutputConfigs()
                         .withInverted(Constants.WristConstants.WRIST_INVERT)
                         .withNeutralMode(NeutralModeValue.Coast))

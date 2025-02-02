@@ -3,8 +3,10 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.configs.*;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -16,6 +18,7 @@ import frc.robot.util.Lights;
 
 public class Pivot extends SubsystemBase {
     private final TalonFX pivot;
+    private final CANcoder encoder;
     private final MotionMagicExpoVoltage request;
     private final DigitalInput lowerLimitSwitch; // TODO: ABSOLUTE ENCODERS, LIMIT SWITCHES NOT NEEDED
     private final Servo ratchet;
@@ -24,9 +27,15 @@ public class Pivot extends SubsystemBase {
 
     public Pivot() {
         pivot = new TalonFX(Constants.PivotConstants.LEAD_ID);
+        encoder = new CANcoder(Constants.PivotConstants.ENCODER_ID);
+
+        encoder.getConfigurator().apply(new CANcoderConfiguration()
+                .withMagnetSensor(new MagnetSensorConfigs()
+                    .withSensorDirection(SensorDirectionValue.Clockwise_Positive))); // TODO: CHECK AND POTENTIALLY ADD MORE CONFIGS
 
         pivot.getConfigurator().apply(new TalonFXConfiguration()
                 .withVoltage(new VoltageConfigs().withPeakForwardVoltage(6))
+                .withFeedback(new FeedbackConfigs().withRemoteCANcoder(encoder))
                 .withMotorOutput(new MotorOutputConfigs()
                         .withInverted(Constants.PivotConstants.PIVOT_INVERT)
                         .withNeutralMode(NeutralModeValue.Coast))
