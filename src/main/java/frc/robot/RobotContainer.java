@@ -6,17 +6,10 @@ import com.pathplanner.lib.pathfinding.Pathfinding;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import dev.doglog.DogLog;
-import dev.doglog.DogLogOptions;
-import edu.wpi.first.wpilibj.PowerDistribution;
 import frc.robot.autos.AutoChooser;
 import frc.robot.subsystems.drivetrain.Swerve;
 import frc.robot.util.SysID;
 import frc.robot.util.Lights;
-import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Pivot;
-import frc.robot.subsystems.Wrist;
 
 public class RobotContainer {
     /* Subsystems */
@@ -199,7 +192,7 @@ public class RobotContainer {
 
         driverXbox.povUp().whileTrue(swerve.moveToObject());
 
-        driverXbox.povRight().whileTrue(swerve.moveToNearestBranch());
+        driverXbox.povRight().whileTrue(swerve.pathFindToNearestBranch());
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.

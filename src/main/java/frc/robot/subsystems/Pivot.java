@@ -72,20 +72,6 @@ public class Pivot extends SubsystemBase {
         accuracy = 1.0;
     }
 
-    @Override
-    public void periodic() {
-        Lights.setLights((Math.abs(getPosition() - Constants.PivotConstants.STOW_POSITION) <= Constants.PivotConstants.TOLERANCE) && DriverStation.isDisabled());
-
-        if (ratcheted) {
-            ratchet.set(Constants.PivotConstants.RATCHET_ON) ;
-        } else {
-            ratchet.set(Constants.PivotConstants.RATCHET_OFF);
-        }
-
-        error = Math.abs(target - getPosition());
-        accuracy = target > getPosition() ? getPosition() / target : target / getPosition();
-    }
-
     public double getPosition() { 
         return pivot.getPosition().getValueAsDouble();
     }
@@ -145,5 +131,19 @@ public class Pivot extends SubsystemBase {
                     : axisValue * ExpUtil.output(getPosition() - Constants.PivotConstants.LOWER_LIMIT, 1, 5, 10));
             target = getPosition();
         }
+    }
+
+    @Override
+    public void periodic() {
+        Lights.setLights((Math.abs(getPosition() - Constants.PivotConstants.STOW_POSITION) <= Constants.PivotConstants.TOLERANCE) && DriverStation.isDisabled());
+
+        if (ratcheted) {
+            ratchet.set(Constants.PivotConstants.RATCHET_ON) ;
+        } else {
+            ratchet.set(Constants.PivotConstants.RATCHET_OFF);
+        }
+
+        error = Math.abs(target - getPosition());
+        accuracy = target > getPosition() ? getPosition() / target : target / getPosition();
     }
 }

@@ -56,17 +56,17 @@ public class Elevator extends SubsystemBase {
         accuracy = 1.0;
     }
 
-   @Override
-   public void periodic() {
-        accuracy = target > getPosition() ? getPosition() / target : target / getPosition();
-   }
-
     public double getPosition() {
         return elevator.getPosition().getValueAsDouble();
     }
 
     public double getTarget() {
         return target;
+    }
+
+    public double getAlgaeHeight(Pose2d currentPose) {
+        return FieldUtil.Reef.getAlgaeReefLevelFromTag(FieldUtil.Reef.getNearestReefTag(currentPose)) == FieldUtil.Reef.AlgaeLocation.UPPER
+                ? Constants.ElevatorConstants.HIGH_REEF_ALGAE : Constants.ElevatorConstants.LOW_REEF_ALGAE;
     }
 
     public boolean lowerSwitchTriggered() {
@@ -102,8 +102,8 @@ public class Elevator extends SubsystemBase {
         }
     }
 
-    public double getAlgaeHeight(Pose2d currentPose) {
-        return FieldUtil.Reef.getAlgaeReefLevelFromTag(FieldUtil.Reef.getNearestReefTag(currentPose)) == FieldUtil.Reef.AlgaeLocation.UPPER
-                ? Constants.ElevatorConstants.HIGH_REEF_ALGAE : Constants.ElevatorConstants.LOW_REEF_ALGAE;
+    @Override
+    public void periodic() {
+        accuracy = target > getPosition() ? getPosition() / target : target / getPosition();
     }
 }

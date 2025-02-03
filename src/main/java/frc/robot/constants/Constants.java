@@ -1,6 +1,7 @@
 package frc.robot.constants;
 
 import com.ctre.phoenix6.CANBus;
+import com.ctre.phoenix6.configs.AudioConfigs;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -249,6 +250,8 @@ public final class Constants {
 
         public static double ANGULAR_MINIMUM_ANGLE;
         public static double ANGULAR_MAXIMUM_ANGLE;
+
+        public static AudioConfigs AUDIO_CONFIGS;
 
         public static SwerveDrivetrainConstants SWERVE_DRIVETRAIN_CONSTANTS;
 
