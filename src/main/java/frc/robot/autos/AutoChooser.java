@@ -3,22 +3,37 @@ package frc.robot.autos;
 import java.util.function.Supplier;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.autos.routines.AutoEventLooper;
+import frc.robot.constants.Constants;
 import frc.robot.subsystems.drivetrain.Swerve;
 import frc.robot.util.FieldUtil;
 
 public final class AutoChooser {
+    // TODO: CONFIGURE THESE VALUES, ADD ANOTHER CHOOSER
+    public enum StartPosition {
+        LEFT,
+        CENTER,
+        RIGHT
+    }
+
     public enum SidePriority {
-        ONE,
-        TWO,
-        THREE,
-        FOUR,
-        FIVE,
-        SIX;
+        ONE(Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red ? FieldUtil.AprilTag.ID_7 : FieldUtil.AprilTag.ID_18),
+        TWO(Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red ? FieldUtil.AprilTag.ID_6 : FieldUtil.AprilTag.ID_19),
+        THREE(Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red ? FieldUtil.AprilTag.ID_11 : FieldUtil.AprilTag.ID_20),
+        FOUR(Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red ? FieldUtil.AprilTag.ID_10 : FieldUtil.AprilTag.ID_21),
+        FIVE(Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red ? FieldUtil.AprilTag.ID_9 : FieldUtil.AprilTag.ID_22),
+        SIX(Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red ? FieldUtil.AprilTag.ID_8 : FieldUtil.AprilTag.ID_17),;
+
+        public final FieldUtil.AprilTag tag;
+
+        SidePriority(FieldUtil.AprilTag tag) {
+            this.tag = tag;
+        }
     }
 
     public enum LevelPriority {
@@ -30,7 +45,7 @@ public final class AutoChooser {
 
     public enum Stage {
         SCORE,
-        PICKUP;
+        PICKUP
     }
 
     public SidePriority sidePriority;
@@ -65,14 +80,14 @@ public final class AutoChooser {
         return Commands.none();
     }
 
-    // TODO FIX THIS SHIT
+    // TODO: FIX ALONG WITH PATH MANAGER
     public Command generatePathCommand(Pose2d currentPose, SidePriority sidePriority, LevelPriority levelPriority) {
         Pose2d targetPose;
         if (currentStage.equals(Stage.SCORE)) {
-            targetPose = FieldUtil.Coral.getNearestBranchPose(currentPose);
+            targetPose = FieldUtil.Reef.getNearestBranchPose(currentPose);
         } else {
-            targetPose = FieldUtil.Coral.getNearestCoralStationTagPose(currentPose);
+            targetPose = FieldUtil.CoralStation.getNearestCoralStationTagPose(currentPose);
         }
-        return PathManager.pathFindToPose(targetPose);
+        return PathManager.pathFindToNearestBranchWithSide(currentPose, sidePriority);
     }
 }

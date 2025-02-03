@@ -7,6 +7,7 @@ import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
 public class AutoTrigger {
+    // TODO: EVENT MARKER (FROM PATH FOLLOWING COMMAND) TO OBSERVE BY AUTO CHOOSER EVENT LOOP
     public final String name;
     private final AutoEventLooper auto;
     private final Supplier<Command> triggeredCommand;

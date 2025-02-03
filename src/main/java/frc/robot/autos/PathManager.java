@@ -38,7 +38,7 @@ public final class PathManager {
         STAGE,
         OPPONENT_SOURCE;
 
-        // TODO IMPLEMENT RED SIDE POSES
+        // TODO: IMPLEMENT RED SIDE POSES
         public static Pose2d getScoringPose(ScoringLocations location) {
             return switch (location) {
                 case AMP -> new Pose2d(3.3, 6.35, Rotation2d.fromDegrees(-170));
@@ -66,9 +66,13 @@ public final class PathManager {
         return pathFindToPose(targetPose, 0.0);
     }
 
-    // TODO UPDATE THESE PRESET TARGET POSES (MEANT TO BE USED FOR SCORING OBJECTS)
     public static Command pathFindToNearestScoringLocation(Pose2d currentPose) {
         return pathFindToPose(currentPose.nearest(ScoringLocations.getScoringPoses()));
+    }
+
+    // TODO: PATH FIND TO NEAREST BRANCH
+    public static Command pathFindToNearestBranchWithSide(Pose2d currentPose, AutoChooser.SidePriority priority) {
+        return Commands.none();
     }
 
     public static Command pathFindToClosePose(
