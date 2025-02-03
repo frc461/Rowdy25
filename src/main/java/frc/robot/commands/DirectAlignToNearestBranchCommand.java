@@ -73,7 +73,6 @@ public class DirectAlignToNearestBranchCommand extends Command {
         if (Math.hypot(xError, yError) < Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_ACCEPT
                 && Math.abs(yawError) < Constants.AutoConstants.DEGREE_TOLERANCE_TO_ACCEPT) {
             swerve.forceStop();
-            // TODO: FIX THIS
             swerve.consistentHeading = currentPose.getRotation().getDegrees();
             System.out.println(swerve.consistentHeading);
             end = true;

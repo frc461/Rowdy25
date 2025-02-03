@@ -12,6 +12,8 @@ import frc.robot.constants.Constants;
 import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public final class PathManager {
@@ -44,6 +46,12 @@ public final class PathManager {
                 case OPPONENT_SOURCE -> new Pose2d(2.7, 3.0, Rotation2d.fromDegrees(145));
             };
         }
+
+        public static List<Pose2d> getScoringPoses() {
+            List<Pose2d> poses = new ArrayList<>();
+            Arrays.asList(ScoringLocations.values()).forEach(location -> poses.add(getScoringPose(location)));
+            return poses;
+        }
     }
 
     private static Command pathFindToPose(Pose2d targetPose, double goalEndVelocity) {
@@ -60,19 +68,7 @@ public final class PathManager {
 
     // TODO UPDATE THESE PRESET TARGET POSES (MEANT TO BE USED FOR SCORING OBJECTS)
     public static Command pathFindToNearestScoringLocation(Pose2d currentPose) {
-        Translation2d currentTranslation = currentPose.getTranslation();
-        ScoringLocations nearestLocation = ScoringLocations.STAGE;
-        double nearestDistance = currentTranslation.getDistance(ScoringLocations.getScoringPose(nearestLocation).getTranslation());
-
-        for (ScoringLocations location : ScoringLocations.values()) {
-            double distance = currentTranslation.getDistance(ScoringLocations.getScoringPose(location).getTranslation());
-            if (distance < nearestDistance) {
-                nearestLocation = location;
-                nearestDistance = distance;
-            }
-        }
-
-        return pathFindToPose(ScoringLocations.getScoringPose(nearestLocation));
+        return pathFindToPose(currentPose.nearest(ScoringLocations.getScoringPoses()));
     }
 
     public static Command pathFindToClosePose(

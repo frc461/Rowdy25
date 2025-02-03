@@ -33,7 +33,7 @@ public class Elevator extends SubsystemBase {
                         .withBeepOnBoot(false)
                         .withAllowMusicDurDisable(true))
                 .withSlot0(new Slot0Configs()
-                        .withKS(Constants.ElevatorConstants.ELEVATOR_S) // TODO: NEED G??????
+                        .withKS(Constants.ElevatorConstants.ELEVATOR_S) // TODO SHOP: NEED G??????
                         .withKV(Constants.ElevatorConstants.ELEVATOR_V)
                         .withKA(Constants.ElevatorConstants.ELEVATOR_A)
                         .withKP(Constants.ElevatorConstants.ELEVATOR_P)
@@ -45,7 +45,7 @@ public class Elevator extends SubsystemBase {
                         .withMotionMagicExpo_kA(Constants.ElevatorConstants.ELEVATOR_A)));
 
         try (TalonFX elevator2 = new TalonFX(Constants.ElevatorConstants.FOLLOWER_ID)) {
-            elevator2.setControl(new Follower(Constants.ElevatorConstants.LEAD_ID, true)); //TODO: CHECK OPPOSER MASTER
+            elevator2.setControl(new Follower(Constants.ElevatorConstants.LEAD_ID, true));
         }
 
         lowerSwitch = new DigitalInput(Constants.ElevatorConstants.LOWER_LIMIT_SWITCH_ID);
@@ -91,7 +91,7 @@ public class Elevator extends SubsystemBase {
 
     public void moveElevator(double axisValue) {
         checkLimitSwitch();
-        // TODO TUNE CURBING VALUE
+        // TODO SHOP: TUNE CURBING VALUE
         if (axisValue == 0) {
             holdTarget();
         } else {

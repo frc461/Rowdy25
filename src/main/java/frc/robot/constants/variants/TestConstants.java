@@ -32,9 +32,9 @@ import edu.wpi.first.units.measure.Voltage;
 public final class TestConstants {
     public static final CANBus CAN_BUS = new CANBus("", "./logs/example.hoot");
 
-    // TODO RETUNE WITH PROPER NAMES (LEFT, UP) AND PROPER ANGLES
     public static final class VisionConstants {
         public static final class PhotonConstants {
+            public static final String BW_TOP_RIGHT_NAME = "ArducamBW2";
             public static final double BW_TOP_RIGHT_FORWARD = Units.inchesToMeters(8.25);
             public static final double BW_TOP_RIGHT_LEFT = Units.inchesToMeters(-9.25);
             public static final double BW_TOP_RIGHT_UP = 0.0;
@@ -42,6 +42,7 @@ public final class TestConstants {
             public static final double BW_TOP_RIGHT_PITCH = -5.0;
             public static final double BW_TOP_RIGHT_YAW = -30.5;
 
+            public static final String BW_TOP_LEFT_NAME = "ArducamBW";
             public static final double BW_TOP_LEFT_FORWARD = Units.inchesToMeters(8.15);
             public static final double BW_TOP_LEFT_LEFT = Units.inchesToMeters(9.25);
             public static final double BW_TOP_LEFT_UP = 0.0;
@@ -76,7 +77,6 @@ public final class TestConstants {
         private static final SteerFeedbackType STEER_FEEDBACK_TYPE = SteerFeedbackType.FusedCANcoder;
 
         // The stator current at which the wheels start to slip;
-        // TODO TUNE FOR 2025 ROBOT
         private static final Current SLIP_CURRENT = Amps.of(120.0);
 
         // Initial configs for the drive and steer motors and the CANcoder; these cannot be null.
@@ -95,7 +95,6 @@ public final class TestConstants {
         private static final Pigeon2Configuration PIGEON_CONFIGS = new Pigeon2Configuration();
 
         // Theoretical free speed (m/s) at 12 V applied output;
-        // TODO TUNE FOR 2025 ROBOT
         private static final LinearVelocity SPEED_AT_12_VOLTS = MetersPerSecond.of(5.21);
 
         // Every 1 rotation of the azimuth results in COUPLE_RATIO drive motor turns;
