@@ -90,7 +90,7 @@ public class DriveCommand extends Command {
 
     @Override
     public void execute() {
-        // TODO: FIGURE OUT WHICH SIDE IS THE "FRONT" OF THE ROBOT TO KNOW WHEN TO TURRET WITH THE BACK OF THE ROBOT
+        // TODO SHOP: FIGURE OUT WHICH SIDE IS THE "FRONT" OF THE ROBOT TO KNOW WHEN TO TURRET WITH THE BACK OF THE ROBOT
         Pose2d currentPose = swerve.localizer.getStrategyPose();
         driveMode = branchAlignment.getAsBoolean() ?
                         rot.getAsDouble() < -0.5 ? DriveMode.FAST_ROTATION : DriveMode.BRANCH_ALIGNMENT

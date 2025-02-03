@@ -20,17 +20,17 @@ public class Pivot extends SubsystemBase {
     private final TalonFX pivot;
     private final CANcoder encoder;
     private final MotionMagicExpoVoltage request;
-    private final DigitalInput lowerLimitSwitch; // TODO: ABSOLUTE ENCODERS, LIMIT SWITCHES NOT NEEDED
+    private final DigitalInput lowerLimitSwitch; // TODO SHOP: ABSOLUTE ENCODERS, LIMIT SWITCHES NOT NEEDED
     private final Servo ratchet;
     private double target, error, accuracy;
     private boolean ratcheted;
 
     public Pivot() {
         pivot = new TalonFX(Constants.PivotConstants.LEAD_ID);
-        encoder = new CANcoder(Constants.PivotConstants.ENCODER_ID);
+        encoder = new CANcoder(Constants.PivotConstants.ENCODER_ID); //TODO SHOP: CHECK IF THIS EXISTS
 
         encoder.getConfigurator().apply(new CANcoderConfiguration()
-                .withMagnetSensor(new MagnetSensorConfigs().withSensorDirection(SensorDirectionValue.Clockwise_Positive))); // TODO: CHECK AND POTENTIALLY ADD MORE CONFIGS
+                .withMagnetSensor(new MagnetSensorConfigs().withSensorDirection(SensorDirectionValue.Clockwise_Positive))); // TODO SHOP: CHECK AND POTENTIALLY ADD MORE CONFIGS
 
         pivot.getConfigurator().apply(new TalonFXConfiguration()
                 .withVoltage(new VoltageConfigs().withPeakForwardVoltage(6))
@@ -44,7 +44,7 @@ public class Pivot extends SubsystemBase {
                         .withBeepOnBoot(false)
                         .withAllowMusicDurDisable(true))
                 .withSlot0(new Slot0Configs()
-                        .withKS(Constants.PivotConstants.PIVOT_S) // TODO: NEED G??????
+                        .withKS(Constants.PivotConstants.PIVOT_S) // TODO SHOP: NEED G??????
                         .withKV(Constants.PivotConstants.PIVOT_V)
                         .withKA(Constants.PivotConstants.PIVOT_A)
                         .withKP(Constants.PivotConstants.PIVOT_P)
@@ -136,7 +136,7 @@ public class Pivot extends SubsystemBase {
 
     public void movePivot(double axisValue) {
         checkLimitSwitch();
-        // TODO TUNE CURBING VALUE
+        // TODO SHOP: TUNE CURBING VALUE
         if (axisValue == 0) {
             holdTarget();
         } else {

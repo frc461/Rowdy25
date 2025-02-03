@@ -151,10 +151,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
             Pose2d nearestBranchPose = FieldUtil.Reef.getNearestBranchPose(localizer.getStrategyPose());
             return PathManager.pathFindToClosePose(
                     localizer.getStrategyPose(),
-                    new Pose2d(
-                            nearestBranchPose.getTranslation(),
-                            nearestBranchPose.getRotation().rotateBy(Rotation2d.kPi)
-                    ),
+                    nearestBranchPose, // TODO SHOP: TEST THIS FUNCTION TO SEE IF IT WORKS
                     nearestBranchPose.getRotation().rotateBy(Rotation2d.fromDegrees(-80)),
                     nearestBranchPose.getRotation().rotateBy(Rotation2d.fromDegrees(80)),
                     Constants.AutoConstants.DISTANCE_TOLERANCE_TO_DRIVE_INTO,
@@ -192,7 +189,6 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
          * Otherwise, only check and apply the operator perspective if the DS is disabled.
          * This ensures driving behavior doesn't change until an explicit disable event occurs during testing.
          */
-        // TODO THIS IS A PROBLEM (CAUSES APPLYING STATES ON RED TEAM TO BE BACKWARD)
         if ((!hasAppliedDefaultRotation || DriverStation.isDisabled()) && Constants.ALLIANCE_SUPPLIER.get() != null) {
             setOperatorPerspectiveForward(
                     Constants.ALLIANCE_SUPPLIER.get() == Alliance.Blue

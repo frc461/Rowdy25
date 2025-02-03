@@ -24,7 +24,6 @@ public class LocalizationTelemetry {
         this.localizer = localizer;
     }
 
-    // TODO CONSISTENCY, CONSTANTIZE ALL TABLE STRING NAMES
     private final NetworkTable localizationTelemetryTable = Constants.NT_INSTANCE.getTable("LocalizationTelemetry");
     private final NetworkTable limelightTelemetryTable = Constants.NT_INSTANCE.getTable("LimelightTelemetry");
     private final NetworkTable photonTelemetryTable = Constants.NT_INSTANCE.getTable("PhotonTelemetry");
@@ -39,6 +38,8 @@ public class LocalizationTelemetry {
     private final DoublePublisher nearestTagDistPub = limelightTelemetryTable.getDoubleTopic("Nearest Tag Distance").publish();
     private final BooleanPublisher canAddLLMeasurementsPub = limelightTelemetryTable.getBooleanTopic("Adding Limelight Measurements").publish();
 
+    private final BooleanPublisher photonColorHasAlgaeTargetPub = photonTelemetryTable.getBooleanTopic("Photon Color Has Algae Target").publish();
+    private final BooleanPublisher photonColorHasCoralTargetPub = photonTelemetryTable.getBooleanTopic("Photon Color Has Coral Target").publish();
     private final StringPublisher photonTopRightPosePrettyPub = photonTelemetryTable.getStringTopic("Photon Top Right Pose").publish();
     private final StringPublisher photonTopLeftPosePrettyPub = photonTelemetryTable.getStringTopic("Photon Top Left Pose").publish();
     private final StringPublisher photonBackPosePrettyPub = photonTelemetryTable.getStringTopic("Photon Back Pose").publish();
@@ -81,6 +82,8 @@ public class LocalizationTelemetry {
         nearestTagDistPub.set(VisionUtil.Limelight.getNearestTagDist());
         canAddLLMeasurementsPub.set(VisionUtil.Limelight.isTagClear());
 
+        photonColorHasAlgaeTargetPub.set(VisionUtil.Photon.Color.hasAlgaeTargets());
+        photonColorHasCoralTargetPub.set(VisionUtil.Photon.Color.hasCoralTargets());
         canAddTopRightMeasurementsPub.set(VisionUtil.Photon.BW.isTagClear(VisionUtil.Photon.BW.BWCamera.TOP_RIGHT));
         canAddTopLeftMeasurementsPub.set(VisionUtil.Photon.BW.isTagClear(VisionUtil.Photon.BW.BWCamera.TOP_LEFT));
         canAddBackMeasurementsPub.set(VisionUtil.Photon.BW.isTagClear(VisionUtil.Photon.BW.BWCamera.BACK));

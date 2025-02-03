@@ -33,7 +33,7 @@ public class Elevator extends SubsystemBase {
                         .withBeepOnBoot(false)
                         .withAllowMusicDurDisable(true))
                 .withSlot0(new Slot0Configs()
-                        .withKS(Constants.ElevatorConstants.ELEVATOR_S) // TODO: NEED G??????
+                        .withKS(Constants.ElevatorConstants.ELEVATOR_S) // TODO SHOP: NEED G??????
                         .withKV(Constants.ElevatorConstants.ELEVATOR_V)
                         .withKA(Constants.ElevatorConstants.ELEVATOR_A)
                         .withKP(Constants.ElevatorConstants.ELEVATOR_P)
@@ -91,7 +91,7 @@ public class Elevator extends SubsystemBase {
 
     public void moveElevator(double axisValue) {
         checkLimitSwitch();
-        // TODO TUNE CURBING VALUE
+        // TODO SHOP: TUNE CURBING VALUE
         if (axisValue == 0) {
             holdTarget();
         } else {

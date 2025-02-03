@@ -16,15 +16,15 @@ public class Wrist extends SubsystemBase {
     private final TalonFX wrist;
     private final CANcoder encoder;
     private final MotionMagicExpoVoltage request;
-    private final DigitalInput lowerLimitSwitch; // TODO: ABSOLUTE ENCODERS, LIMIT SWITCHES NOT NEEDED
+    private final DigitalInput lowerLimitSwitch; // TODO SHOP: ABSOLUTE ENCODERS, LIMIT SWITCHES NOT NEEDED
     private double target, error, accuracy;
 
     public Wrist() {
         wrist = new TalonFX(Constants.WristConstants.MOTOR_ID);
-        encoder = new CANcoder(Constants.WristConstants.ENCODER_ID); //TODO: CHECK IF THIS EXISTS
+        encoder = new CANcoder(Constants.WristConstants.ENCODER_ID); //TODO SHOP: CHECK IF THIS EXISTS
         encoder.getConfigurator().apply(new CANcoderConfiguration()
                 .withMagnetSensor(new MagnetSensorConfigs()
-                    .withSensorDirection(SensorDirectionValue.Clockwise_Positive))); // TODO: CHECK AND POTENTIALLY ADD MORE CONFIGS
+                    .withSensorDirection(SensorDirectionValue.Clockwise_Positive))); // TODO SHOP: CHECK AND POTENTIALLY ADD MORE CONFIGS
             
         wrist.getConfigurator().apply(new TalonFXConfiguration()
                 .withVoltage(new VoltageConfigs().withPeakForwardVoltage(6))
@@ -38,7 +38,7 @@ public class Wrist extends SubsystemBase {
                         .withBeepOnBoot(false)
                         .withAllowMusicDurDisable(true))
                 .withSlot0(new Slot0Configs()
-                        .withKS(Constants.WristConstants.WRIST_S) // TODO: NEED G??????
+                        .withKS(Constants.WristConstants.WRIST_S) // TODO SHOP: NEED G??????
                         .withKV(Constants.WristConstants.WRIST_V)
                         .withKA(Constants.WristConstants.WRIST_A)
                         .withKP(Constants.WristConstants.WRIST_P)
@@ -98,7 +98,7 @@ public class Wrist extends SubsystemBase {
 
     public void moveWrist(double axisValue) {
         checkLimitSwitch();
-        // TODO TUNE CURBING VALUE
+        // TODO SHOP: TUNE CURBING VALUE
         if (axisValue == 0) {
             holdTarget();
         } else {

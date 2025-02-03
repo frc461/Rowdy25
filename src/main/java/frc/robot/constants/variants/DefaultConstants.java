@@ -92,27 +92,28 @@ public final class DefaultConstants {
         public static final Matrix<N3, N1> ODOM_STD_DEV = VecBuilder.fill(0.01, 0.01, Units.degreesToRadians(0.01));
         public static final Function<Double, Matrix<N3, N1>> VISION_STD_DEV_MULTITAG_FUNCTION =
                 dist -> dist < 2.0
-                        ? VecBuilder.fill(0.1, 0.1, Units.degreesToRadians(1.0)) // TODO BE LESS STRICT WITH ROTATION
+                        ? VecBuilder.fill(Math.min(0.1, 0.1 * dist), Math.min(0.1, 0.1 * dist), Units.degreesToRadians(1.0))
                         : VecBuilder.fill(0.15 * dist, 0.15 * dist, Units.degreesToRadians(180.0) * dist);
         public static final Function<Double, Matrix<N3, N1>> VISION_STD_DEV_FUNCTION =
-                dist -> VecBuilder.fill(0.5 * dist, 0.5 * dist, Units.degreesToRadians(180.0) * dist);
+                dist -> dist < 2.0
+                        ? VecBuilder.fill(0.15 * dist, 0.15 * dist, Units.degreesToRadians(10.0) * dist)
+                        : VecBuilder.fill(0.5 * dist, 0.5 * dist, Units.degreesToRadians(180.0 * dist)); // TODO SHOP: TEST THIS LESS STRICT STD DEV FUNCTION
 
         public static final class LimelightConstants {
             public static final String LIMELIGHT_NT_NAME = "limelight";
 
-            // TODO SET LL CAMERA TO CENTER OF ROBOT OFFSETS
             public static final double LL_FORWARD = 0.0;
             public static final double LL_RIGHT = 0.0;
-            public static final double LL_UP = Units.inchesToMeters(22.5);
+            public static final double LL_UP = 0.0;
             public static final double LL_ROLL = 0.0;
-            public static final double LL_PITCH = 25.5; // TODO CONSIDER NEGATIVE ROLL & PITCH BECAUSE OF RIGHT HAND RULE & EULER ANGLES
+            public static final double LL_PITCH = 0.0;
             public static final double LL_YAW = 0.0;
 
             public static final double LL_MAX_TAG_CLEAR_DIST = 4.0;
         }
 
         public static final class PhotonConstants {
-            // TODO SET CAMERAS TO CENTER OF ROBOT OFFSETS
+            // TODO SHOP: TEST CAMERAS TO CENTER OF ROBOT OFFSETS
             public static final String BW_TOP_RIGHT_NAME = "ArducamBW";
             public static final double BW_TOP_RIGHT_FORWARD = 0.0;
             public static final double BW_TOP_RIGHT_LEFT = 0.0;
@@ -145,7 +146,7 @@ public final class DefaultConstants {
         public static final class QuestNavConstants {
             public static final String QUESTNAV_NT_NAME = "questnav";
 
-            // TODO SET QUEST TO CENTER OF ROBOT OFFSETS
+            // TODO WAIT (NEXT QUEST NAV UPDATE): SET QUEST TO CENTER OF ROBOT OFFSETS
             public static final double QUEST_FORWARD = Units.inchesToMeters(-2.5);
             public static final double QUEST_LEFT = Units.inchesToMeters(5.25);
             public static final double QUEST_UP = 0.0;
@@ -153,7 +154,7 @@ public final class DefaultConstants {
             public static final double QUEST_PITCH = 0.0;
             public static final double QUEST_YAW = 0.0;
 
-            // The thresholds through which the QuestNav's correctional offset will be recorrected by the error amount.
+            // The error threshold to cross when QuestNav's correctional offset will be re-corrected by the error amount.
             public static final double TRANSLATION_ERROR_TOLERANCE = 0.1;
             public static final double ROTATION_ERROR_TOLERANCE = 3.0;
 
@@ -161,14 +162,14 @@ public final class DefaultConstants {
         }
     }
 
-    // TODO: UPDATE VALUES FOR 2025 + TUNE
+    // TODO SHOP: UPDATE VALUES FOR 2025 + TUNE
     public final static class ElevatorConstants {
         // basic configs
         public static final int LEAD_ID = 31;
         public static final int FOLLOWER_ID = 32;
         public static final int LOWER_LIMIT_SWITCH_ID = 2;
         public static final int CURRENT_LIMIT = 60;
-        public static final InvertedValue ELEVATOR_INVERT = InvertedValue.Clockwise_Positive; // TODO: CHECK ON REAL ROBOT
+        public static final InvertedValue ELEVATOR_INVERT = InvertedValue.Clockwise_Positive; // TODO SHOP: CHECK ON REAL ROBOT
 
         // pid
         public static final double ELEVATOR_S = 0.0;
@@ -199,7 +200,7 @@ public final class DefaultConstants {
         public static final int CORAL_BEAM_ID = 3;
         public static final int ALGAE_BEAM_ID = 4;
         public static final int CURRENT_LIMIT = 40;
-        public static final InvertedValue INVERT = InvertedValue.Clockwise_Positive; // TODO: CHECK ON REAL ROBOT
+        public static final InvertedValue INVERT = InvertedValue.Clockwise_Positive; // TODO SHOP: CHECK ON REAL ROBOT
     }
 
     public final static class PivotConstants {
@@ -211,7 +212,7 @@ public final class DefaultConstants {
         public static final int LOWER_LIMIT_SWITCH_ID = 0;
         public static final int UPPER_LIMIT_SWITCH_ID = 0;
         public static final int CURRENT_LIMIT = 60;
-        public static final InvertedValue PIVOT_INVERT = InvertedValue.Clockwise_Positive;
+        public static final InvertedValue PIVOT_INVERT = InvertedValue.Clockwise_Positive; // TODO SHOP: CHECK ON REAL ROBOT
 
         // pid
         public static final double PIVOT_S = 0.0;
@@ -243,7 +244,7 @@ public final class DefaultConstants {
         public static final int LOWER_LIMIT_SWITCH_ID = 6;
         public static final int UPPER_LIMIT_SWITCH_ID = 0;
         public static final int CURRENT_LIMIT = 35;
-        public static final InvertedValue WRIST_INVERT = InvertedValue.Clockwise_Positive;
+        public static final InvertedValue WRIST_INVERT = InvertedValue.Clockwise_Positive; // TODO SHOP: CHECK ON REAL ROBOT
 
         // pid
         public static final double WRIST_S = 0.0;
@@ -285,7 +286,7 @@ public final class DefaultConstants {
         public static final double ANGULAR_MINIMUM_ANGLE = -180.0;
         public static final double ANGULAR_MAXIMUM_ANGLE = 180.0;
 
-        // TODO TUNE FOR 2025 ROBOT
+        // TODO SHOP: TUNE FOR 2025 ROBOT
 
         // The steer motor uses any SwerveModule.SteerRequestType control request with the
         // output type specified by SwerveModuleConstants.SteerMotorClosedLoopOutput
@@ -311,7 +312,7 @@ public final class DefaultConstants {
         private static final SteerFeedbackType STEER_FEEDBACK_TYPE = SteerFeedbackType.FusedCANcoder;
 
         // The stator current at which the wheels start to slip;
-        // TODO TUNE FOR 2025 ROBOT
+        // TODO SHOP: TUNE FOR 2025 ROBOT
         private static final Current SLIP_CURRENT = Amps.of(120.0);
 
         // Initial configs for the drive and steer motors and the CANcoder; these cannot be null.
@@ -330,7 +331,6 @@ public final class DefaultConstants {
         private static final Pigeon2Configuration PIGEON_CONFIGS = new Pigeon2Configuration();
 
         // Theoretical free speed (m/s) at 12 V applied output;
-        // TODO TUNE FOR 2025 ROBOT
         private static final LinearVelocity SPEED_AT_12_VOLTS = MetersPerSecond.of(5.21);
 
         // Every 1 rotation of the azimuth results in COUPLE_RATIO drive motor turns;
