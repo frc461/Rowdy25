@@ -56,11 +56,11 @@ public class Intake extends SubsystemBase {
     }
  
     public boolean hasCoral() {
-        return canandcolor.getColor().toWpilibColor().equals(Color.kAqua); // TODO SHOP: Set the color to close to the color of coral
+        return canandcolor.getColor().toWpilibColor().equals(Color.kWhiteSmoke); // TODO SHOP: Set the color to close to the color of coral
     }
 
     public boolean hasAlgae() {
-        return canandcolor.getColor().toWpilibColor().equals(Color.kWhiteSmoke); // TODO SHOP: Set the color to close to the color of algae
+        return canandcolor.getColor().toWpilibColor().equals(Color.kAqua); // TODO SHOP: Set the color to close to the color of algae
     }
 
     public Command intake() {
