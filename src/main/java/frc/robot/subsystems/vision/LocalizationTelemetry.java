@@ -108,19 +108,19 @@ public class LocalizationTelemetry {
     }
 
     private void logValues() {
-        // DogLog.log("PoseEstimate", localizer.getEstimatedPose());
-        // DogLog.log("QuestNavPose", localizer.getQuestPose());
-        // DogLog.log("LocalizationStrategy", localizer.getLocalizationStrategy());
-        // DogLog.log("LimelightMegaTagOnePose", VisionUtil.Limelight.getMegaTagOnePose());
-        // DogLog.log("LimelightMegaTagTwoPose", VisionUtil.Limelight.getMegaTagTwoPose());
-        // DogLog.log("LimelightHasTarget", VisionUtil.Limelight.tagExists());
-        // DogLog.log("PhotonTopRightPose", VisionUtil.Photon.BW.getMultiTagPose(VisionUtil.Photon.BW.BWCamera.TOP_RIGHT).estimatedPose().toPose2d());
-        // DogLog.log("PhotonTopLeftPose", VisionUtil.Photon.BW.getMultiTagPose(VisionUtil.Photon.BW.BWCamera.TOP_LEFT).estimatedPose().toPose2d());
-        // DogLog.log("PhotonBackPose", VisionUtil.Photon.BW.getMultiTagPose(VisionUtil.Photon.BW.BWCamera.BACK).estimatedPose().toPose2d());
-        // DogLog.log("PhotonColorHasTarget", VisionUtil.Photon.Color.hasTargets());
-        // DogLog.log("PhotonBWTopRightHasTarget", VisionUtil.Photon.BW.hasTargets(VisionUtil.Photon.BW.BWCamera.TOP_RIGHT));
-        // DogLog.log("PhotonBWTopLeftHasTarget", VisionUtil.Photon.BW.hasTargets(VisionUtil.Photon.BW.BWCamera.TOP_LEFT));
-        // DogLog.log("PhotonBWBackHasTarget", VisionUtil.Photon.BW.hasTargets(VisionUtil.Photon.BW.BWCamera.BACK));
+        DogLog.log("PoseEstimate", localizer.getEstimatedPose());
+        DogLog.log("QuestNavPose", localizer.getQuestPose());
+        DogLog.log("LocalizationStrategy", localizer.getLocalizationStrategy());
+        DogLog.log("LimelightMegaTagOnePose", VisionUtil.Limelight.getMegaTagOnePose());
+        DogLog.log("LimelightMegaTagTwoPose", VisionUtil.Limelight.getMegaTagTwoPose());
+        DogLog.log("LimelightHasTarget", VisionUtil.Limelight.tagExists());
+        DogLog.log("PhotonTopRightPose", VisionUtil.Photon.BW.getMultiTagPose(VisionUtil.Photon.BW.BWCamera.TOP_RIGHT).estimatedPose().toPose2d());
+        DogLog.log("PhotonTopLeftPose", VisionUtil.Photon.BW.getMultiTagPose(VisionUtil.Photon.BW.BWCamera.TOP_LEFT).estimatedPose().toPose2d());
+        DogLog.log("PhotonBackPose", VisionUtil.Photon.BW.getMultiTagPose(VisionUtil.Photon.BW.BWCamera.BACK).estimatedPose().toPose2d());
+        DogLog.log("PhotonColorHasTarget", VisionUtil.Photon.Color.hasTargets());
+        DogLog.log("PhotonBWTopRightHasTarget", VisionUtil.Photon.BW.hasTargets(VisionUtil.Photon.BW.BWCamera.TOP_RIGHT));
+        DogLog.log("PhotonBWTopLeftHasTarget", VisionUtil.Photon.BW.hasTargets(VisionUtil.Photon.BW.BWCamera.TOP_LEFT));
+        DogLog.log("PhotonBWBackHasTarget", VisionUtil.Photon.BW.hasTargets(VisionUtil.Photon.BW.BWCamera.BACK));
 
         if (DriverStation.isEnabled() && questTimestampSub.getLastChange() <= (Timer.getTimestamp() - 2) * Constants.ONE_MILLION && questSendDisconnectMessage) {
             // DogLog.logFault(QuestFault.QUEST_DISCONNECTED);
