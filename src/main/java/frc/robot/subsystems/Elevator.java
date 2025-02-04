@@ -24,6 +24,8 @@ public class Elevator extends SubsystemBase {
 
         elevator.getConfigurator().apply(new TalonFXConfiguration()
                 .withVoltage(new VoltageConfigs().withPeakForwardVoltage(6))
+                .withFeedback(new FeedbackConfigs()
+                        .withSensorToMechanismRatio(Constants.ElevatorConstants.ROTOR_TO_METER_RATIO))
                 .withMotorOutput(new MotorOutputConfigs()
                         .withInverted(Constants.ElevatorConstants.ELEVATOR_INVERT)
                         .withNeutralMode(NeutralModeValue.Coast))
