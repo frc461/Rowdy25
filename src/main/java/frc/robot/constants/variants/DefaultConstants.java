@@ -165,6 +165,7 @@ public final class DefaultConstants {
         public static final int FOLLOWER_ID = 32;
         public static final int LOWER_LIMIT_SWITCH_ID = 2;
         public static final int CURRENT_LIMIT = 60;
+        public static final int ROTOR_TO_METER_RATIO = 1;
         public static final InvertedValue ELEVATOR_INVERT = InvertedValue.Clockwise_Positive; // TODO SHOP: CHECK ON REAL ROBOT
 
         // pid

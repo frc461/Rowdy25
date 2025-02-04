@@ -133,6 +133,7 @@ public final class Constants {
         public static int FOLLOWER_ID;
         public static int LOWER_LIMIT_SWITCH_ID;
         public static int CURRENT_LIMIT;
+        public static int ROTOR_TO_METER_RATIO;
         public static InvertedValue ELEVATOR_INVERT;
 
         // pid
