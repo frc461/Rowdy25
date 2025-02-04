@@ -9,10 +9,9 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.util.Lights;
 
 import frc.robot.constants.Constants;
@@ -20,6 +19,7 @@ import frc.robot.constants.Constants;
 public class Intake extends SubsystemBase {
     private enum States {
         IDLE,
+        HAS_ALGAE,
         INTAKE,
         OUTTAKE
     }
@@ -48,10 +48,6 @@ public class Intake extends SubsystemBase {
         algaeBeam = new DigitalInput(Constants.IntakeConstants.ALGAE_BEAM_ID);
         currentState = States.IDLE;
     }
-
-    public void setIntakeSpeed(double speed) {
-        motor.set(speed);
-    }
  
     public boolean hasCoral() {
         return !coralBeam.get();
@@ -61,18 +57,21 @@ public class Intake extends SubsystemBase {
         return !algaeBeam.get();
     }
 
-    public boolean hasGamePiece() {
-        return hasCoral() || hasAlgae();
+    public Command intake() {
+        return runOnce(() -> setState(States.INTAKE));
     }
 
-    public void intake() {
-        currentState = States.INTAKE;
+    public Command outtake() {
+        return runOnce(() -> setState(States.OUTTAKE));
+    }
+
+    private void setState(States state) {
+        currentState = state;
         stateChanged = true;
     }
 
-    public void outtake() {
-        currentState = States.OUTTAKE;
-        stateChanged = true;
+    private void setIntakeSpeed(double speed) {
+        motor.set(speed);
     }
 
     @Override
@@ -82,14 +81,18 @@ public class Intake extends SubsystemBase {
        if (stateChanged) {
            switch (currentState) {
                case IDLE:
-                   this.getCurrentCommand().cancel();
+                   setIntakeSpeed(0.0);
+               case HAS_ALGAE:
+                   setIntakeSpeed(0.1);
                case INTAKE:
-                   setDefaultCommand(Commands.none());
+                   setIntakeSpeed(0.75);
                case OUTTAKE:
-                   setDefaultCommand(Commands.none());
+                   setIntakeSpeed(-0.5);
            }
            stateChanged = false;
        }
+
+       // TODO: Add logic to get Canandcolor sensor data
     }
     
 }
