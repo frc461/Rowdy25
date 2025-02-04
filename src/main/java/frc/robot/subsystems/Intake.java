@@ -11,7 +11,6 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.reduxrobotics.canand.CanandEventLoop;
 import com.reduxrobotics.sensors.canandcolor.Canandcolor;
 import com.reduxrobotics.sensors.canandcolor.CanandcolorSettings;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -33,6 +32,7 @@ public class Intake extends SubsystemBase {
     private CanandcolorSettings currentCanandcolorSettings;
     private States currentState;
     private boolean stateChanged;
+    private int pulseCounter;
 
     public Intake() {
         motor = new TalonFX(Constants.IntakeConstants.MOTOR_ID);
@@ -52,6 +52,7 @@ public class Intake extends SubsystemBase {
         canandcolor = new Canandcolor(Constants.IntakeConstants.SENSOR_ID);
         currentCanandcolorSettings = canandcolor.getSettings();
         currentState = States.IDLE;
+        pulseCounter = 0;
     }
  
     public boolean hasCoral() {
@@ -79,6 +80,14 @@ public class Intake extends SubsystemBase {
         motor.set(speed);
     }
 
+    private void pulseIntake(double speed) {
+        if (pulseCounter > 10000) { 
+            pulseCounter = 0; 
+        } else if (pulseCounter++ < 5000) { 
+            setIntakeSpeed(speed);
+        }
+    }
+
     @Override
     public void periodic() {
         Lights.setLights(hasCoral() || hasAlgae());
@@ -88,7 +97,7 @@ public class Intake extends SubsystemBase {
                 case IDLE:
                     setIntakeSpeed(0.0);
                 case HAS_ALGAE:
-                    setIntakeSpeed(0.1);
+                    pulseIntake(0.1);
                 case INTAKE:
                     setIntakeSpeed(0.75);
                 case OUTTAKE:
