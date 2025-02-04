@@ -209,6 +209,7 @@ public final class Constants {
         public static int LOWER_LIMIT_SWITCH_ID;
         public static int UPPER_LIMIT_SWITCH_ID;
         public static int CURRENT_LIMIT;
+        public static int SENSOR_TO_DEGREE_RATIO;
         public static InvertedValue WRIST_INVERT;
 
         // pid

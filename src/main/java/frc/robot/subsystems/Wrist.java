@@ -28,7 +28,8 @@ public class Wrist extends SubsystemBase {
             
         wrist.getConfigurator().apply(new TalonFXConfiguration()
                 .withVoltage(new VoltageConfigs().withPeakForwardVoltage(6))
-                .withFeedback(new FeedbackConfigs().withRemoteCANcoder(encoder))
+                .withFeedback(new FeedbackConfigs().withRemoteCANcoder(encoder)
+                        .withSensorToMechanismRatio(Constants.WristConstants.SENSOR_TO_DEGREE_RATIO))
                 .withMotorOutput(new MotorOutputConfigs()
                         .withInverted(Constants.WristConstants.WRIST_INVERT)
                         .withNeutralMode(NeutralModeValue.Coast))
