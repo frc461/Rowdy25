@@ -3,13 +3,8 @@ package frc.robot.subsystems.vision;
 import dev.doglog.DogLog;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.networktables.*;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Timer;
 import frc.robot.constants.Constants;
-import frc.robot.util.Elastic;
 import frc.robot.util.VisionUtil;
-
-import java.util.EnumSet;
 
 public class LocalizationTelemetry {
     public enum QuestFault {
@@ -52,10 +47,6 @@ public class LocalizationTelemetry {
     private final BooleanPublisher questHasCalibratedOnceWhenNear = questNavTelemetryTable.getBooleanTopic("Quest Has Calibrated When Near").publish();
     private final DoubleSubscriber questBatterySub = questNavTelemetryTable.getDoubleTopic("batteryPerent").subscribe(0.0f);
     private final DoubleSubscriber questTimestampSub = questNavTelemetryTable.getDoubleTopic("timestamp").subscribe(0.0f);
-
-    private boolean questSendDisconnectMessage = true;
-    private boolean questSendDiedMessage = true;
-    private boolean questSendBatteryLowMessage = true;
 
     private final NetworkTable robotPoseTable = Constants.NT_INSTANCE.getTable("Pose");
     private final StringPublisher fieldTypePub = robotPoseTable.getStringTopic(".type").publish();
@@ -109,7 +100,6 @@ public class LocalizationTelemetry {
 
     private void logValues() {
         DogLog.log("PoseEstimate", localizer.getEstimatedPose());
-        DogLog.log("QuestNavPose", localizer.getQuestPose());
         DogLog.log("LocalizationStrategy", localizer.getLocalizationStrategy());
         DogLog.log("LimelightMegaTagOnePose", VisionUtil.Limelight.getMegaTagOnePose());
         DogLog.log("LimelightMegaTagTwoPose", VisionUtil.Limelight.getMegaTagTwoPose());
@@ -121,27 +111,6 @@ public class LocalizationTelemetry {
         DogLog.log("PhotonBWTopRightHasTarget", VisionUtil.Photon.BW.hasTargets(VisionUtil.Photon.BW.BWCamera.TOP_RIGHT));
         DogLog.log("PhotonBWTopLeftHasTarget", VisionUtil.Photon.BW.hasTargets(VisionUtil.Photon.BW.BWCamera.TOP_LEFT));
         DogLog.log("PhotonBWBackHasTarget", VisionUtil.Photon.BW.hasTargets(VisionUtil.Photon.BW.BWCamera.BACK));
-
-        if (DriverStation.isEnabled() && questTimestampSub.getLastChange() <= (Timer.getTimestamp() - 2) * Constants.ONE_MILLION && questSendDisconnectMessage) {
-            // DogLog.logFault(QuestFault.QUEST_DISCONNECTED);
-            Elastic.sendNotification(new Elastic.Notification(Elastic.Notification.NotificationLevel.ERROR, "Quest Nav", "Quest has been disconnected! Press B to switch to PoseEstimator.", 7000));
-            questSendDisconnectMessage = false;
-        }
-    }
-
-    public void registerListeners() {
-        Constants.NT_INSTANCE.addListener(questBatterySub, EnumSet.of(NetworkTableEvent.Kind.kValueAll), (event) -> {
-                if (questBatterySub.get() <= 0.5 && questSendDiedMessage) {
-                        // DogLog.logFault(QuestFault.QUEST_DIED);
-                        Elastic.sendNotification(new Elastic.Notification(Elastic.Notification.NotificationLevel.ERROR, "Quest Nav", "Quest ran out of battery! Press B to switch to PoseEstimator.", 7000));
-                        questSendDiedMessage = false;
-                }
-                if (questBatterySub.get() <= 10 && questSendBatteryLowMessage) {
-                        // DogLog.logFault(QuestFault.QUEST_LOW_BATTERY);
-                        Elastic.sendNotification(new Elastic.Notification(Elastic.Notification.NotificationLevel.WARNING, "Quest Nav", "Quest has less than 10% battery left! Current Percent: " + questBatterySub.get(), 7000));
-                        questSendBatteryLowMessage = false;
-                }
-        });
     }
 
     public void publishPose(StructPublisher<Pose2d> structPub, DoubleArrayPublisher arrayPub, StringPublisher prettyPub, Pose2d pose) {
