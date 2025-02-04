@@ -30,7 +30,7 @@ public class Intake extends SubsystemBase {
 
     private final TalonFX motor;
     private final Canandcolor canandcolor; // TODO SHOP: Use https://docs.reduxrobotics.com/alchemist/ to configure IDs
-    private CanandcolorSettings currentCanandcolorSettings;
+    private final CanandcolorSettings currentCanandcolorSettings;
     private States currentState;
     private boolean stateChanged;
     private final Timer pulseTimer = new Timer();
@@ -65,11 +65,11 @@ public class Intake extends SubsystemBase {
     }
 
     public Command intake() {
-        return runOnce(() -> setState(States.INTAKE));
+        return runOnce(() -> setState(currentState == States.INTAKE ? States.IDLE : States.INTAKE));
     }
 
     public Command outtake() {
-        return runOnce(() -> setState(States.OUTTAKE));
+        return runOnce(() -> setState(currentState == States.OUTTAKE ? States.IDLE : States.OUTTAKE));
     }
 
     private void setState(States state) {
