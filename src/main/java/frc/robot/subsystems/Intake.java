@@ -92,38 +92,32 @@ public class Intake extends SubsystemBase {
     public void periodic() {
         Lights.setLights(hasCoral() || hasAlgae());
 
-        if (stateChanged) {
-            switch (currentState) {
-                case IDLE:
-                    setIntakeSpeed(0.0);
-                case HAS_ALGAE:
-                    pulseIntake(0.1);
-                case INTAKE:
+        switch (currentState) {
+            case IDLE:
+                setIntakeSpeed(0.0);
+            case HAS_ALGAE:
+                pulseIntake(0.1);
+            case INTAKE:
+                if (hasAlgae()) {
+                    setState(States.HAS_ALGAE);
+                    canandcolor.setSettings(currentCanandcolorSettings.setLampLEDBrightness(1.0));
+                } else if (hasCoral()) {
+                    setState(States.IDLE);
+                    canandcolor.setSettings(currentCanandcolorSettings.setLampLEDBrightness(1.0));
+                } else  {
                     setIntakeSpeed(0.75);
-                case OUTTAKE:
+                }
+            case OUTTAKE:
+                if (!hasAlgae() && !hasCoral()) {
+                    setState(States.IDLE);
+                    canandcolor.setSettings(currentCanandcolorSettings.setLampLEDBrightness(0.0));
+                } else {
                     setIntakeSpeed(-0.5);
-            }
-            stateChanged = false;
-        } else {
-            switch (currentState) {
-                case INTAKE:
-                    if (hasAlgae()) {
-                        setState(States.HAS_ALGAE);
-                        canandcolor.setSettings(currentCanandcolorSettings.setLampLEDBrightness(1.0));
-                    } else if (hasCoral()) {
-                        setState(States.IDLE);
-                        canandcolor.setSettings(currentCanandcolorSettings.setLampLEDBrightness(1.0));
-                    }
-                case OUTTAKE:
-                    if (!hasAlgae() && !hasCoral()) {
-                        setState(States.IDLE);
-                        canandcolor.setSettings(currentCanandcolorSettings.setLampLEDBrightness(0.0));
-                    }
-            }
+                }
         }
 
         // TODO: Add logic to get Canandcolor sensor data
 
-        }
+    }
     
 }
