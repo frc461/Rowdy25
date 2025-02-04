@@ -9,16 +9,26 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.util.Lights;
 
 import frc.robot.constants.Constants;
 
-public class Intake extends SubsystemBase{
+public class Intake extends SubsystemBase {
+    private enum States {
+        IDLE,
+        INTAKE,
+        OUTTAKE
+    }
+
     private final TalonFX motor;
     private final DigitalInput coralBeam;
     private final DigitalInput algaeBeam;
+    private States currentState;
+    private boolean stateChanged;
 
     public Intake() {
         motor = new TalonFX(Constants.IntakeConstants.MOTOR_ID);
@@ -36,6 +46,7 @@ public class Intake extends SubsystemBase{
 
         coralBeam = new DigitalInput(Constants.IntakeConstants.CORAL_BEAM_ID);
         algaeBeam = new DigitalInput(Constants.IntakeConstants.ALGAE_BEAM_ID);
+        currentState = States.IDLE;
     }
 
     public void setIntakeSpeed(double speed) {
@@ -54,9 +65,31 @@ public class Intake extends SubsystemBase{
         return hasCoral() || hasAlgae();
     }
 
+    public void intake() {
+        currentState = States.INTAKE;
+        stateChanged = true;
+    }
+
+    public void outtake() {
+        currentState = States.OUTTAKE;
+        stateChanged = true;
+    }
+
     @Override
     public void periodic() {
-       Lights.setLights(hasCoral() || hasAlgae()); 
+       Lights.setLights(hasCoral() || hasAlgae());
+
+       if (stateChanged) {
+           switch (currentState) {
+               case IDLE:
+                   this.getCurrentCommand().cancel();
+               case INTAKE:
+                   setDefaultCommand(Commands.none());
+               case OUTTAKE:
+                   setDefaultCommand(Commands.none());
+           }
+           stateChanged = false;
+       }
     }
     
 }
