@@ -129,8 +129,7 @@ public enum RobotIdentity {
         Constants.ElevatorConstants.UPPER_LIMIT = DefaultConstants.ElevatorConstants.UPPER_LIMIT;
 
         Constants.IntakeConstants.MOTOR_ID = DefaultConstants.IntakeConstants.MOTOR_ID;
-        Constants.IntakeConstants.CORAL_BEAM_ID = DefaultConstants.IntakeConstants.CORAL_BEAM_ID;
-        Constants.IntakeConstants.ALGAE_BEAM_ID = DefaultConstants.IntakeConstants.ALGAE_BEAM_ID;
+        Constants.IntakeConstants.SENSOR_ID = DefaultConstants.IntakeConstants.SENSOR_ID;
         Constants.IntakeConstants.CURRENT_LIMIT = DefaultConstants.IntakeConstants.CURRENT_LIMIT;
         Constants.IntakeConstants.INVERT = DefaultConstants.IntakeConstants.INVERT;
 

@@ -8,7 +8,11 @@ import com.ctre.phoenix6.configs.VoltageConfigs;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import com.reduxrobotics.canand.CanandEventLoop;
+import com.reduxrobotics.sensors.canandcolor.Canandcolor;
+import com.reduxrobotics.sensors.canandcolor.CanandcolorSettings;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -25,8 +29,8 @@ public class Intake extends SubsystemBase {
     }
 
     private final TalonFX motor;
-    private final DigitalInput coralBeam;
-    private final DigitalInput algaeBeam;
+    private final Canandcolor canandcolor; // TODO SHOP: Use https://docs.reduxrobotics.com/alchemist/ to configure IDs
+    private CanandcolorSettings currentCanandcolorSettings;
     private States currentState;
     private boolean stateChanged;
 
@@ -44,17 +48,18 @@ public class Intake extends SubsystemBase {
                         .withBeepOnBoot(false)
                         .withAllowMusicDurDisable(true)));
 
-        coralBeam = new DigitalInput(Constants.IntakeConstants.CORAL_BEAM_ID);
-        algaeBeam = new DigitalInput(Constants.IntakeConstants.ALGAE_BEAM_ID);
+        CanandEventLoop.getInstance();
+        canandcolor = new Canandcolor(Constants.IntakeConstants.SENSOR_ID);
+        currentCanandcolorSettings = canandcolor.getSettings();
         currentState = States.IDLE;
     }
  
     public boolean hasCoral() {
-        return !coralBeam.get();
+        return canandcolor.getColor().toWpilibColor().equals(Color.kAqua); // TODO SHOP: Set the color to close to the color of coral
     }
 
     public boolean hasAlgae() {
-        return !algaeBeam.get();
+        return canandcolor.getColor().toWpilibColor().equals(Color.kWhiteSmoke); // TODO SHOP: Set the color to close to the color of algae
     }
 
     public Command intake() {
@@ -76,23 +81,40 @@ public class Intake extends SubsystemBase {
 
     @Override
     public void periodic() {
-       Lights.setLights(hasCoral() || hasAlgae());
+        Lights.setLights(hasCoral() || hasAlgae());
 
-       if (stateChanged) {
-           switch (currentState) {
-               case IDLE:
-                   setIntakeSpeed(0.0);
-               case HAS_ALGAE:
-                   setIntakeSpeed(0.1);
-               case INTAKE:
-                   setIntakeSpeed(0.75);
-               case OUTTAKE:
-                   setIntakeSpeed(-0.5);
-           }
-           stateChanged = false;
-       }
+        if (stateChanged) {
+            switch (currentState) {
+                case IDLE:
+                    setIntakeSpeed(0.0);
+                case HAS_ALGAE:
+                    setIntakeSpeed(0.1);
+                case INTAKE:
+                    setIntakeSpeed(0.75);
+                case OUTTAKE:
+                    setIntakeSpeed(-0.5);
+            }
+            stateChanged = false;
+        } else {
+            switch (currentState) {
+                case INTAKE:
+                    if (hasAlgae()) {
+                        setState(States.HAS_ALGAE);
+                        canandcolor.setSettings(currentCanandcolorSettings.setLampLEDBrightness(1.0));
+                    } else if (hasCoral()) {
+                        setState(States.IDLE);
+                        canandcolor.setSettings(currentCanandcolorSettings.setLampLEDBrightness(1.0));
+                    }
+                case OUTTAKE:
+                    if (!hasAlgae() && !hasCoral()) {
+                        setState(States.IDLE);
+                        canandcolor.setSettings(currentCanandcolorSettings.setLampLEDBrightness(0.0));
+                    }
+            }
+        }
 
-       // TODO: Add logic to get Canandcolor sensor data
-    }
+        // TODO: Add logic to get Canandcolor sensor data
+
+        }
     
 }
