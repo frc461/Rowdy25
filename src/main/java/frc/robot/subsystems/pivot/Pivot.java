@@ -36,7 +36,8 @@ public class Pivot extends SubsystemBase {
 
         pivot.getConfigurator().apply(new TalonFXConfiguration()
                 .withVoltage(new VoltageConfigs().withPeakForwardVoltage(6))
-                .withFeedback(new FeedbackConfigs().withRemoteCANcoder(encoder))
+                .withFeedback(new FeedbackConfigs().withRemoteCANcoder(encoder)
+                        .withSensorToMechanismRatio(Constants.PivotConstants.SENSOR_TO_DEGREE_RATIO))
                 .withMotorOutput(new MotorOutputConfigs()
                         .withInverted(Constants.PivotConstants.PIVOT_INVERT)
                         .withNeutralMode(NeutralModeValue.Coast))
