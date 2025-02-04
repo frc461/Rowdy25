@@ -177,6 +177,7 @@ public final class Constants {
         public static int UPPER_LIMIT_SWITCH_ID;
         public static int RATCHET_ID;
         public static int CURRENT_LIMIT;
+        public static int SENSOR_TO_DEGREE_RATIO;
         public static InvertedValue PIVOT_INVERT;
 
         // pid
