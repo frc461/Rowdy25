@@ -11,6 +11,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.reduxrobotics.canand.CanandEventLoop;
 import com.reduxrobotics.sensors.canandcolor.Canandcolor;
 import com.reduxrobotics.sensors.canandcolor.CanandcolorSettings;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -32,7 +33,7 @@ public class Intake extends SubsystemBase {
     private CanandcolorSettings currentCanandcolorSettings;
     private States currentState;
     private boolean stateChanged;
-    private int pulseCounter;
+    private final Timer pulseTimer = new Timer();
 
     public Intake() {
         motor = new TalonFX(Constants.IntakeConstants.MOTOR_ID);
@@ -52,7 +53,7 @@ public class Intake extends SubsystemBase {
         canandcolor = new Canandcolor(Constants.IntakeConstants.SENSOR_ID);
         currentCanandcolorSettings = canandcolor.getSettings();
         currentState = States.IDLE;
-        pulseCounter = 0;
+        pulseTimer.start();
     }
  
     public boolean hasCoral() {
@@ -80,11 +81,11 @@ public class Intake extends SubsystemBase {
         motor.set(speed);
     }
 
-    private void pulseIntake(double speed) {
-        if (pulseCounter > 10000) { 
-            pulseCounter = 0; 
-        } else if (pulseCounter++ < 5000) { 
-            setIntakeSpeed(speed);
+    private void pulseIntake() {
+        if ((int) pulseTimer.get() % 2 == 0) {
+            setIntakeSpeed(0.1);
+        } else {
+            setIntakeSpeed(0.0);
         }
     }
 
@@ -92,32 +93,34 @@ public class Intake extends SubsystemBase {
     public void periodic() {
         Lights.setLights(hasCoral() || hasAlgae());
 
-        switch (currentState) {
-            case IDLE:
-                setIntakeSpeed(0.0);
-            case HAS_ALGAE:
-                pulseIntake(0.1);
-            case INTAKE:
-                if (hasAlgae()) {
-                    setState(States.HAS_ALGAE);
-                    canandcolor.setSettings(currentCanandcolorSettings.setLampLEDBrightness(1.0));
-                } else if (hasCoral()) {
-                    setState(States.IDLE);
-                    canandcolor.setSettings(currentCanandcolorSettings.setLampLEDBrightness(1.0));
-                } else  {
+        if (stateChanged) {
+            switch (currentState) {
+                case IDLE, HAS_ALGAE:
+                    setIntakeSpeed(0.0);
+                case INTAKE:
                     setIntakeSpeed(0.75);
-                }
-            case OUTTAKE:
-                if (!hasAlgae() && !hasCoral()) {
-                    setState(States.IDLE);
-                    canandcolor.setSettings(currentCanandcolorSettings.setLampLEDBrightness(0.0));
-                } else {
+                case OUTTAKE:
                     setIntakeSpeed(-0.5);
-                }
+            }
+            stateChanged = false;
+        } else {
+            switch (currentState) {
+                case INTAKE:
+                    if (hasAlgae()) {
+                        setState(States.HAS_ALGAE);
+                        canandcolor.setSettings(currentCanandcolorSettings.setLampLEDBrightness(1.0));
+                    } else if (hasCoral()) {
+                        setState(States.IDLE);
+                        canandcolor.setSettings(currentCanandcolorSettings.setLampLEDBrightness(1.0));
+                    }
+                case OUTTAKE:
+                    if (!hasAlgae() && !hasCoral()) {
+                        setState(States.IDLE);
+                        canandcolor.setSettings(currentCanandcolorSettings.setLampLEDBrightness(0.0));
+                    }
+                case HAS_ALGAE:
+                    pulseIntake();
+            }
         }
-
-        // TODO: Add logic to get Canandcolor sensor data
-
     }
-    
 }
