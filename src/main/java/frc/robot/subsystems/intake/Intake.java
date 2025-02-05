@@ -1,4 +1,4 @@
-package frc.robot.subsystems;
+package frc.robot.subsystems.intake;
 
 import com.ctre.phoenix6.configs.AudioConfigs;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
@@ -19,6 +19,8 @@ public class Intake extends SubsystemBase{
     private final TalonFX motor;
     private final DigitalInput coralBeam;
     private final DigitalInput algaeBeam;
+
+    private final IntakeTelemetry intakeTelemetry = new IntakeTelemetry(this);
 
     public Intake() {
         motor = new TalonFX(Constants.IntakeConstants.MOTOR_ID);
@@ -57,6 +59,8 @@ public class Intake extends SubsystemBase{
     @Override
     public void periodic() {
        Lights.setLights(hasCoral() || hasAlgae()); 
+
+       intakeTelemetry.publishValues();
     }
     
 }
