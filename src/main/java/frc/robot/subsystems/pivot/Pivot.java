@@ -20,7 +20,6 @@ public class Pivot extends SubsystemBase {
     private final TalonFX pivot;
     private final CANcoder encoder;
     private final MotionMagicExpoVoltage request;
-    private final DigitalInput lowerLimitSwitch; // TODO SHOP: ABSOLUTE ENCODERS, LIMIT SWITCHES NOT NEEDED
     private final Servo ratchet;
     private double target, error, accuracy;
     private boolean ratcheted;
@@ -32,7 +31,9 @@ public class Pivot extends SubsystemBase {
         encoder = new CANcoder(Constants.PivotConstants.ENCODER_ID); //TODO SHOP: CHECK IF THIS EXISTS
 
         encoder.getConfigurator().apply(new CANcoderConfiguration()
-                .withMagnetSensor(new MagnetSensorConfigs().withSensorDirection(SensorDirectionValue.Clockwise_Positive))); // TODO SHOP: CHECK AND POTENTIALLY ADD MORE CONFIGS
+                .withMagnetSensor(new MagnetSensorConfigs()
+                        .withSensorDirection(SensorDirectionValue.Clockwise_Positive)
+                        .withMagnetOffset(Constants.PivotConstants.ENCODER_ZERO_OFFSET))); // TODO SHOP: CHECK AND POTENTIALLY ADD MORE CONFIGS
 
         pivot.getConfigurator().apply(new TalonFXConfiguration()
                 .withVoltage(new VoltageConfigs().withPeakForwardVoltage(6))
@@ -62,7 +63,6 @@ public class Pivot extends SubsystemBase {
             pivot2.setControl(new Follower(Constants.PivotConstants.LEAD_ID, true));
         }
 
-        lowerLimitSwitch = new DigitalInput(Constants.PivotConstants.LOWER_LIMIT_SWITCH_ID);
         ratchet = new Servo(Constants.PivotConstants.RATCHET_ID);
         ratchet.set(Constants.PivotConstants.RATCHET_ON);
 
@@ -75,7 +75,7 @@ public class Pivot extends SubsystemBase {
         accuracy = 1.0;
     }
 
-    public double getPosition() { 
+    public double getPosition() {
         return pivot.getPosition().getValueAsDouble();
     }
 
@@ -103,18 +103,7 @@ public class Pivot extends SubsystemBase {
         );
     }
 
-    public boolean lowerSwitchTriggered() {
-        return !lowerLimitSwitch.get();
-    }
-
-    public void checkLimitSwitch() {
-       if (lowerSwitchTriggered() || (!lowerSwitchTriggered() && getPosition() <= Constants.PivotConstants.LOWER_LIMIT)) {
-           pivot.setPosition(Constants.PivotConstants.LOWER_LIMIT);
-       }
-    }
-
     public void holdTarget(double height) {
-        checkLimitSwitch();
         target = Math.max(Constants.PivotConstants.LOWER_LIMIT, Math.min(Constants.PivotConstants.UPPER_LIMIT, height));
         pivot.setControl(request.withPosition(target));
     }
@@ -124,7 +113,6 @@ public class Pivot extends SubsystemBase {
     }
 
     public void movePivot(double axisValue) {
-        checkLimitSwitch();
         // TODO SHOP: TUNE CURBING VALUE
         if (axisValue == 0) {
             holdTarget();
