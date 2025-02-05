@@ -57,6 +57,10 @@ public class Intake extends SubsystemBase {
         currentState = States.IDLE;
         pulseTimer.start();
     }
+
+    public double[] getColorReading() {
+        return new double[] {canandcolor.getBlue(), canandcolor.getGreen(), canandcolor.getRed()};
+    }
  
     public boolean hasCoral() {
         return canandcolor.getColor().toWpilibColor().equals(Color.kWhiteSmoke); // TODO SHOP: Set the color to close to the color of coral
