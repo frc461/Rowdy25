@@ -161,7 +161,7 @@ public enum RobotIdentity {
         Constants.PivotConstants.CURRENT_LIMIT = DefaultConstants.PivotConstants.CURRENT_LIMIT;
         Constants.PivotConstants.SENSOR_TO_DEGREE_RATIO = DefaultConstants.PivotConstants.SENSOR_TO_DEGREE_RATIO;
         Constants.PivotConstants.PIVOT_INVERT = DefaultConstants.PivotConstants.PIVOT_INVERT;
-        Constants.PivotConstants.PIVOT_S = DefaultConstants.PivotConstants.PIVOT_S;
+        Constants.PivotConstants.PIVOT_G = DefaultConstants.PivotConstants.PIVOT_G;
         Constants.PivotConstants.PIVOT_V = DefaultConstants.PivotConstants.PIVOT_V;
         Constants.PivotConstants.PIVOT_A = DefaultConstants.PivotConstants.PIVOT_A;
         Constants.PivotConstants.PIVOT_P = DefaultConstants.PivotConstants.PIVOT_P;

@@ -216,14 +216,14 @@ public final class DefaultConstants {
         public static final int RATCHET_ID = 1;
         public static final int LOWER_LIMIT_SWITCH_ID = 0;
         public static final int UPPER_LIMIT_SWITCH_ID = 0;
-        public static final int CURRENT_LIMIT = 60;
+        public static final int CURRENT_LIMIT = 40;
         public static final int SENSOR_TO_DEGREE_RATIO = 1;
         public static final InvertedValue PIVOT_INVERT = InvertedValue.Clockwise_Positive; // TODO SHOP: CHECK ON REAL ROBOT
 
         // pid
-        public static final double PIVOT_S = 0.0;
-        public static final double PIVOT_V = 0.0;
-        public static final double PIVOT_A = 0.0;
+        public static final double PIVOT_G = 0.39; // TODO: FUNCTION TO MULTIPLY BY COSINE OF PIVOT ANGLE (PERIODICALLY)
+        public static final double PIVOT_V = 2.06;
+        public static final double PIVOT_A = 0.03;
         public static final double PIVOT_P = 0;
         public static final double PIVOT_I = 0;
         public static final double PIVOT_D = 0;
