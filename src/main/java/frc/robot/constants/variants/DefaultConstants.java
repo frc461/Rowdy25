@@ -131,7 +131,7 @@ public final class DefaultConstants {
             public static final double BW_BACK_LEFT = 0.266709;
             public static final double BW_BACK_UP = 0.186127;
             public static final double BW_BACK_ROLL = 0.0;
-            public static final double BW_BACK_PITCH = 8.0;
+            public static final double BW_BACK_PITCH = -8.0;
             public static final double BW_BACK_YAW = 180;
 
             public static final double BW_MAX_TAG_CLEAR_DIST = 3;
