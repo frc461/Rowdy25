@@ -19,6 +19,8 @@ public class Wrist extends SubsystemBase {
     private final DigitalInput lowerLimitSwitch; // TODO SHOP: ABSOLUTE ENCODERS, LIMIT SWITCHES NOT NEEDED
     private double target, error, accuracy;
 
+    private final WristTelemetry wristTelemetry = new WristTelemetry(this);
+
     public Wrist() {
         wrist = new TalonFX(Constants.WristConstants.MOTOR_ID);
         encoder = new CANcoder(Constants.WristConstants.ENCODER_ID); //TODO SHOP: CHECK IF THIS EXISTS

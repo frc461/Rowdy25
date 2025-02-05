@@ -19,6 +19,8 @@ public class Elevator extends SubsystemBase {
     private final DigitalInput lowerSwitch;
     private double target, accuracy;
 
+    private final ElevatorTelemetry elevatorTelemetry = new ElevatorTelemetry(this);
+
     public Elevator() {
         elevator = new TalonFX(Constants.ElevatorConstants.LEAD_ID);
 
@@ -105,5 +107,7 @@ public class Elevator extends SubsystemBase {
     @Override
     public void periodic() {
         accuracy = target > getPosition() ? getPosition() / target : target / getPosition();
+
+        elevatorTelemetry.publishValues();
     }
 }

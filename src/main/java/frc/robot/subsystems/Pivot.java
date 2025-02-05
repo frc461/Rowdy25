@@ -25,6 +25,8 @@ public class Pivot extends SubsystemBase {
     private double target, error, accuracy;
     private boolean ratcheted;
 
+    private final PivotTelemetry pivotTelemetry = new PivotTelemetry(this);
+
     public Pivot() {
         pivot = new TalonFX(Constants.PivotConstants.LEAD_ID);
         encoder = new CANcoder(Constants.PivotConstants.ENCODER_ID); //TODO SHOP: CHECK IF THIS EXISTS
@@ -145,5 +147,7 @@ public class Pivot extends SubsystemBase {
 
         error = Math.abs(target - getPosition());
         accuracy = target > getPosition() ? getPosition() / target : target / getPosition();
+
+        pivotTelemetry.publishValues();
     }
 }
