@@ -162,7 +162,7 @@ public enum RobotIdentity {
         Constants.WristConstants.CURRENT_LIMIT = DefaultConstants.WristConstants.CURRENT_LIMIT;
         Constants.WristConstants.SENSOR_TO_DEGREE_RATIO = DefaultConstants.WristConstants.SENSOR_TO_DEGREE_RATIO;
         Constants.WristConstants.WRIST_INVERT = DefaultConstants.WristConstants.WRIST_INVERT;
-        Constants.WristConstants.WRIST_S = DefaultConstants.WristConstants.WRIST_S;
+        Constants.WristConstants.WRIST_G = DefaultConstants.WristConstants.WRIST_G;
         Constants.WristConstants.WRIST_V = DefaultConstants.WristConstants.WRIST_V;
         Constants.WristConstants.WRIST_A = DefaultConstants.WristConstants.WRIST_A;
         Constants.WristConstants.WRIST_P = DefaultConstants.WristConstants.WRIST_P;

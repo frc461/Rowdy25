@@ -239,14 +239,14 @@ public final class DefaultConstants {
         public static final int ENCODER_ID = 62;
         public static final int LOWER_LIMIT_SWITCH_ID = 6;
         public static final int UPPER_LIMIT_SWITCH_ID = 0;
-        public static final int CURRENT_LIMIT = 35;
+        public static final int CURRENT_LIMIT = 40;
         public static final int SENSOR_TO_DEGREE_RATIO = 1;
         public static final InvertedValue WRIST_INVERT = InvertedValue.Clockwise_Positive; // TODO SHOP: CHECK ON REAL ROBOT
 
         // pid
-        public static final double WRIST_S = 0.0;
-        public static final double WRIST_V = 0.0;
-        public static final double WRIST_A = 0.0;
+        public static final double WRIST_G = 0.21; // TODO: FUNCTION TO MULTIPLY BY COSINE OF PIVOT ANGLE (PERIODICALLY)
+        public static final double WRIST_V = 0.87;
+        public static final double WRIST_A = 0.01;
         public static final double WRIST_P = 0.0;
         public static final double WRIST_I = 0.0;
         public static final double WRIST_D = 0.0;

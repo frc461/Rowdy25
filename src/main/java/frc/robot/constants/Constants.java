@@ -213,7 +213,7 @@ public final class Constants {
         public static InvertedValue WRIST_INVERT;
 
         // pid
-        public static double WRIST_S;
+        public static double WRIST_G;
         public static double WRIST_V;
         public static double WRIST_A;
         public static double WRIST_P;

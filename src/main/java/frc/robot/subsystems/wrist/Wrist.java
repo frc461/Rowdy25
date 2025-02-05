@@ -41,7 +41,7 @@ public class Wrist extends SubsystemBase {
                         .withBeepOnBoot(false)
                         .withAllowMusicDurDisable(true))
                 .withSlot0(new Slot0Configs()
-                        .withKS(Constants.WristConstants.WRIST_S) // TODO SHOP: NEED G??????
+                        .withKG(Constants.WristConstants.WRIST_G) // TODO SHOP: NEED S??????
                         .withKV(Constants.WristConstants.WRIST_V)
                         .withKA(Constants.WristConstants.WRIST_A)
                         .withKP(Constants.WristConstants.WRIST_P)
