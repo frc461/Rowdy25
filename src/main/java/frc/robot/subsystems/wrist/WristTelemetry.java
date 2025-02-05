@@ -13,17 +13,15 @@ public class WristTelemetry {
         this.wrist = wrist;
     }
 
-    private NetworkTable wristTelemetryTable = Constants.NT_INSTANCE.getTable("WristTelemetry");
-    private DoublePublisher wristPosePub = wristTelemetryTable.getDoubleTopic("Wrist Pose").publish();
-    private DoublePublisher wristTargetPub = wristTelemetryTable.getDoubleTopic("Wrist Target").publish();
-    private DoublePublisher wristErrorPub = wristTelemetryTable.getDoubleTopic("Wrist Error").publish();
-    private BooleanPublisher wristLowerSwitchTriggered = wristTelemetryTable.getBooleanTopic("Wrist Switch Triggered").publish();
+    private final NetworkTable wristTelemetryTable = Constants.NT_INSTANCE.getTable("WristTelemetry");
+    private final DoublePublisher wristPosePub = wristTelemetryTable.getDoubleTopic("Wrist Pose").publish();
+    private final DoublePublisher wristTargetPub = wristTelemetryTable.getDoubleTopic("Wrist Target").publish();
+    private final DoublePublisher wristErrorPub = wristTelemetryTable.getDoubleTopic("Wrist Error").publish();
 
     public void publishValues() {
         wristPosePub.set(wrist.getPosition());
         wristTargetPub.set(wrist.getTarget());
         wristErrorPub.set(wrist.getError());
-        wristLowerSwitchTriggered.set(wrist.lowerSwitchTriggered());
 
         logValues();
     }
@@ -32,6 +30,5 @@ public class WristTelemetry {
         DogLog.log("WristPose", wrist.getPosition());
         DogLog.log("WristTarget", wrist.getTarget());
         DogLog.log("WristError", wrist.getError());
-        DogLog.log("WristLowerSwitchTriggered", wrist.lowerSwitchTriggered());
     }
 }

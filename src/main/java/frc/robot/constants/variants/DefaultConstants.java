@@ -237,10 +237,9 @@ public final class DefaultConstants {
         // basic configs
         public static final int MOTOR_ID = 61;
         public static final int ENCODER_ID = 62;
-        public static final int LOWER_LIMIT_SWITCH_ID = 6;
-        public static final int UPPER_LIMIT_SWITCH_ID = 0;
         public static final int CURRENT_LIMIT = 40;
         public static final int SENSOR_TO_DEGREE_RATIO = 1;
+        public static final double ENCODER_ZERO_OFFSET = 0;
         public static final InvertedValue WRIST_INVERT = InvertedValue.Clockwise_Positive; // TODO SHOP: CHECK ON REAL ROBOT
 
         // pid

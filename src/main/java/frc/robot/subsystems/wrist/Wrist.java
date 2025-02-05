@@ -16,7 +16,6 @@ public class Wrist extends SubsystemBase {
     private final TalonFX wrist;
     private final CANcoder encoder;
     private final MotionMagicExpoVoltage request;
-    private final DigitalInput lowerLimitSwitch; // TODO SHOP: ABSOLUTE ENCODERS, LIMIT SWITCHES NOT NEEDED
     private double target, error, accuracy;
 
     private final WristTelemetry wristTelemetry = new WristTelemetry(this);
@@ -26,7 +25,8 @@ public class Wrist extends SubsystemBase {
         encoder = new CANcoder(Constants.WristConstants.ENCODER_ID); //TODO SHOP: CHECK IF THIS EXISTS
         encoder.getConfigurator().apply(new CANcoderConfiguration()
                 .withMagnetSensor(new MagnetSensorConfigs()
-                    .withSensorDirection(SensorDirectionValue.Clockwise_Positive))); // TODO SHOP: CHECK AND POTENTIALLY ADD MORE CONFIGS
+                        .withSensorDirection(SensorDirectionValue.Clockwise_Positive)
+                        .withMagnetOffset(Constants.WristConstants.ENCODER_ZERO_OFFSET))); // TODO SHOP: CHECK AND POTENTIALLY ADD MORE CONFIGS
             
         wrist.getConfigurator().apply(new TalonFXConfiguration()
                 .withVoltage(new VoltageConfigs().withPeakForwardVoltage(6))
@@ -52,8 +52,6 @@ public class Wrist extends SubsystemBase {
                         .withMotionMagicExpo_kV(Constants.WristConstants.WRIST_V)
                         .withMotionMagicExpo_kA(Constants.WristConstants.WRIST_A)));
 
-        lowerLimitSwitch = new DigitalInput(Constants.WristConstants.LOWER_LIMIT_SWITCH_ID);
-
         request = new MotionMagicExpoVoltage(0);
 
         target = 0.0;
@@ -73,18 +71,7 @@ public class Wrist extends SubsystemBase {
         return error;
     }
 
-    public boolean lowerSwitchTriggered() {
-        return !lowerLimitSwitch.get();
-    }
-
-    public void checkLimitSwitch() {
-       if (lowerSwitchTriggered() || (!lowerSwitchTriggered() && getPosition() <= Constants.WristConstants.LOWER_LIMIT)) {
-           wrist.setPosition(Constants.WristConstants.LOWER_LIMIT);
-       }
-    }
-
     public void holdTarget(double height) {
-        checkLimitSwitch();
         target = Math.max(Constants.WristConstants.LOWER_LIMIT, Math.min(Constants.WristConstants.UPPER_LIMIT, height));
         wrist.setControl(request.withPosition(target));
     }
@@ -94,7 +81,6 @@ public class Wrist extends SubsystemBase {
     }
 
     public void moveWrist(double axisValue) {
-        checkLimitSwitch();
         // TODO SHOP: TUNE CURBING VALUE
         if (axisValue == 0) {
             holdTarget();
@@ -108,6 +94,8 @@ public class Wrist extends SubsystemBase {
 
     @Override
     public void periodic() {
+        wristTelemetry.publishValues();
+
         error = Math.abs(target - getPosition());
         accuracy = target > getPosition() ? getPosition() / target : target / getPosition();
     }
