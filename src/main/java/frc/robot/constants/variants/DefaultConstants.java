@@ -195,7 +195,7 @@ public final class DefaultConstants {
         public static final int MOTOR_ID = 41;
         public static final int SENSOR_ID = 42;
         public static final int CURRENT_LIMIT = 40;
-        public static final InvertedValue INVERT = InvertedValue.Clockwise_Positive; // TODO SHOP: CHECK ON REAL ROBOT
+        public static final InvertedValue INVERT = InvertedValue.CounterClockwise_Positive; // TODO SHOP: CHECK ON REAL ROBOT
     }
 
     public final static class PivotConstants {

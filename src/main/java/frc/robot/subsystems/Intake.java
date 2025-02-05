@@ -119,7 +119,16 @@ public class Intake extends SubsystemBase {
                         canandcolor.setSettings(currentCanandcolorSettings.setLampLEDBrightness(0.0));
                     }
                 case HAS_ALGAE:
+                    if (!hasAlgae()) {
+                        setState(States.IDLE);
+                        canandcolor.setSettings(currentCanandcolorSettings.setLampLEDBrightness(0.0));
+                    }
                     pulseIntake();
+                case IDLE:
+                    if (hasCoral() || hasAlgae()) {
+                        setState(hasAlgae() ? States.HAS_ALGAE : States.IDLE);
+                        canandcolor.setSettings(currentCanandcolorSettings.setLampLEDBrightness(1.0));
+                    }
             }
         }
     }
