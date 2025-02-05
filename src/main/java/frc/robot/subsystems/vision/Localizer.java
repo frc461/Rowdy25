@@ -33,8 +33,6 @@ public class Localizer {
     public Localizer(Swerve swerve) {
         this.swerve = swerve;
 
-        localizationTelemetry.registerListeners();
-
         localizationChooser.setDefaultOption("Pose Estimator", LocalizationStrategy.POSE_ESTIMATOR);
         localizationChooser.addOption("Quest Nav", LocalizationStrategy.QUEST_NAV);
         SmartDashboard.putData("Localization Strategy Chooser", localizationChooser);

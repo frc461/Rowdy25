@@ -1,4 +1,4 @@
-package frc.robot.subsystems;
+package frc.robot.subsystems.pivot;
 
 import com.ctre.phoenix6.configs.*;
 import com.ctre.phoenix6.controls.Follower;
@@ -24,6 +24,8 @@ public class Pivot extends SubsystemBase {
     private final Servo ratchet;
     private double target, error, accuracy;
     private boolean ratcheted;
+
+    private final PivotTelemetry pivotTelemetry = new PivotTelemetry(this);
 
     public Pivot() {
         pivot = new TalonFX(Constants.PivotConstants.LEAD_ID);
@@ -145,5 +147,7 @@ public class Pivot extends SubsystemBase {
 
         error = Math.abs(target - getPosition());
         accuracy = target > getPosition() ? getPosition() / target : target / getPosition();
+
+        pivotTelemetry.publishValues();
     }
 }
