@@ -181,7 +181,7 @@ public final class Constants {
         public static InvertedValue PIVOT_INVERT;
 
         // pid
-        public static double PIVOT_S;
+        public static double PIVOT_G;
         public static double PIVOT_V;
         public static double PIVOT_A;
         public static double PIVOT_P;

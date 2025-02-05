@@ -47,7 +47,7 @@ public class Pivot extends SubsystemBase {
                         .withBeepOnBoot(false)
                         .withAllowMusicDurDisable(true))
                 .withSlot0(new Slot0Configs()
-                        .withKS(Constants.PivotConstants.PIVOT_S) // TODO SHOP: NEED G??????
+                        .withKG(Constants.PivotConstants.PIVOT_G) // TODO SHOP: NEED S??????
                         .withKV(Constants.PivotConstants.PIVOT_V)
                         .withKA(Constants.PivotConstants.PIVOT_A)
                         .withKP(Constants.PivotConstants.PIVOT_P)
