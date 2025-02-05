@@ -1,4 +1,4 @@
-package frc.robot.subsystems;
+package frc.robot.subsystems.wrist;
 
 import dev.doglog.DogLog;
 import edu.wpi.first.networktables.BooleanPublisher;
