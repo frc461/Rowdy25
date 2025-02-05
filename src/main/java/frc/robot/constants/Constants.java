@@ -137,7 +137,7 @@ public final class Constants {
         public static InvertedValue ELEVATOR_INVERT;
 
         // pid
-        public static double ELEVATOR_S;
+        public static double ELEVATOR_G;
         public static double ELEVATOR_V;
         public static double ELEVATOR_A;
         public static double ELEVATOR_P;

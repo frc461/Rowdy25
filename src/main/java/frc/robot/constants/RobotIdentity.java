@@ -120,7 +120,7 @@ public enum RobotIdentity {
         Constants.ElevatorConstants.CURRENT_LIMIT = DefaultConstants.ElevatorConstants.CURRENT_LIMIT;
         Constants.ElevatorConstants.ROTOR_TO_METER_RATIO = DefaultConstants.ElevatorConstants.ROTOR_TO_METER_RATIO;
         Constants.ElevatorConstants.ELEVATOR_INVERT = DefaultConstants.ElevatorConstants.ELEVATOR_INVERT;
-        Constants.ElevatorConstants.ELEVATOR_S = DefaultConstants.ElevatorConstants.ELEVATOR_S;
+        Constants.ElevatorConstants.ELEVATOR_G = DefaultConstants.ElevatorConstants.ELEVATOR_G;
         Constants.ElevatorConstants.ELEVATOR_V = DefaultConstants.ElevatorConstants.ELEVATOR_V;
         Constants.ElevatorConstants.ELEVATOR_A = DefaultConstants.ElevatorConstants.ELEVATOR_A;
         Constants.ElevatorConstants.ELEVATOR_P = DefaultConstants.ElevatorConstants.ELEVATOR_P;
