@@ -59,7 +59,7 @@ public class Intake extends SubsystemBase {
     }
 
     public double[] getColorReading() {
-        return new double[] {canandcolor.getBlue(), canandcolor.getGreen(), canandcolor.getRed()};
+        return new double[] { canandcolor.getBlue(), canandcolor.getGreen(), canandcolor.getRed() };
     }
  
     public boolean hasCoral() {
@@ -140,5 +140,4 @@ public class Intake extends SubsystemBase {
             }
         }
     }
-    
 }
