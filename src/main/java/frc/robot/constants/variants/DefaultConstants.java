@@ -111,28 +111,28 @@ public final class DefaultConstants {
         public static final class PhotonConstants {
             // TODO SHOP: TEST CAMERAS TO CENTER OF ROBOT OFFSETS
             public static final String BW_TOP_RIGHT_NAME = "ArducamBW";
-            public static final double BW_TOP_RIGHT_FORWARD = 0.0;
-            public static final double BW_TOP_RIGHT_LEFT = 0.0;
-            public static final double BW_TOP_RIGHT_UP = 0.0;
+            public static final double BW_TOP_RIGHT_FORWARD = 0.404;
+            public static final double BW_TOP_RIGHT_LEFT = -0.291321;
+            public static final double BW_TOP_RIGHT_UP = 0.279631;
             public static final double BW_TOP_RIGHT_ROLL = 0.0;
-            public static final double BW_TOP_RIGHT_PITCH = 0.0;
-            public static final double BW_TOP_RIGHT_YAW = 0.0;
+            public static final double BW_TOP_RIGHT_PITCH = -5.0;
+            public static final double BW_TOP_RIGHT_YAW = -30.0;
 
             public static final String BW_TOP_LEFT_NAME = "ArducamBW2";
-            public static final double BW_TOP_LEFT_FORWARD = 0.0;
-            public static final double BW_TOP_LEFT_LEFT = 0.0;
-            public static final double BW_TOP_LEFT_UP = 0.0;
+            public static final double BW_TOP_LEFT_FORWARD = 0.404;
+            public static final double BW_TOP_LEFT_LEFT = 0.291321;
+            public static final double BW_TOP_LEFT_UP = 0.279631;
             public static final double BW_TOP_LEFT_ROLL = 0.0;
-            public static final double BW_TOP_LEFT_PITCH = 0.0;
-            public static final double BW_TOP_LEFT_YAW = 0.0;
+            public static final double BW_TOP_LEFT_PITCH = -5.0;
+            public static final double BW_TOP_LEFT_YAW = 30.0;
 
             public static final String BW_BACK_NAME = "ArducamBW3";
-            public static final double BW_BACK_FORWARD = 0.0;
-            public static final double BW_BACK_LEFT = 0.0;
-            public static final double BW_BACK_UP = 0.0;
+            public static final double BW_BACK_FORWARD = -0.315691;
+            public static final double BW_BACK_LEFT = 0.266709;
+            public static final double BW_BACK_UP = 0.186127;
             public static final double BW_BACK_ROLL = 0.0;
-            public static final double BW_BACK_PITCH = 0.0;
-            public static final double BW_BACK_YAW = 0.0;
+            public static final double BW_BACK_PITCH = 8.0;
+            public static final double BW_BACK_YAW = 180;
 
             public static final double BW_MAX_TAG_CLEAR_DIST = 3;
 
