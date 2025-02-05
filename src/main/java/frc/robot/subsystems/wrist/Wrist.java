@@ -1,4 +1,4 @@
-package frc.robot.subsystems;
+package frc.robot.subsystems.wrist;
 
 import com.ctre.phoenix6.configs.*;
 import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
@@ -18,6 +18,8 @@ public class Wrist extends SubsystemBase {
     private final MotionMagicExpoVoltage request;
     private final DigitalInput lowerLimitSwitch; // TODO SHOP: ABSOLUTE ENCODERS, LIMIT SWITCHES NOT NEEDED
     private double target, error, accuracy;
+
+    private final WristTelemetry wristTelemetry = new WristTelemetry(this);
 
     public Wrist() {
         wrist = new TalonFX(Constants.WristConstants.MOTOR_ID);

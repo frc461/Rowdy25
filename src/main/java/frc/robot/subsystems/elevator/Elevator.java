@@ -1,4 +1,4 @@
-package frc.robot.subsystems;
+package frc.robot.subsystems.elevator;
 
 import com.ctre.phoenix6.configs.*;
 import com.ctre.phoenix6.controls.Follower;
@@ -18,6 +18,8 @@ public class Elevator extends SubsystemBase {
     private final MotionMagicExpoVoltage request;
     private final DigitalInput lowerSwitch;
     private double target, accuracy;
+
+    private final ElevatorTelemetry elevatorTelemetry = new ElevatorTelemetry(this);
 
     public Elevator() {
         elevator = new TalonFX(Constants.ElevatorConstants.LEAD_ID);
@@ -105,5 +107,7 @@ public class Elevator extends SubsystemBase {
     @Override
     public void periodic() {
         accuracy = target > getPosition() ? getPosition() / target : target / getPosition();
+
+        elevatorTelemetry.publishValues();
     }
 }
