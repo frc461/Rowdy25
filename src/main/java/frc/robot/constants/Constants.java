@@ -182,11 +182,10 @@ public final class Constants {
         public static int LEAD_ID;
         public static int FOLLOWER_ID;
         public static int ENCODER_ID;
-        public static int LOWER_LIMIT_SWITCH_ID;
-        public static int UPPER_LIMIT_SWITCH_ID;
         public static int RATCHET_ID;
         public static int CURRENT_LIMIT;
         public static int SENSOR_TO_DEGREE_RATIO;
+        public static double ENCODER_ZERO_OFFSET;
         public static InvertedValue PIVOT_INVERT;
 
         // pid
