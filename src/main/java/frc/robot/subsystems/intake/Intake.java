@@ -53,7 +53,7 @@ public class Intake extends SubsystemBase {
 
         CanandEventLoop.getInstance();
         canandcolor = new Canandcolor(Constants.IntakeConstants.SENSOR_ID);
-        currentCanandcolorSettings = canandcolor.getSettings();
+        currentCanandcolorSettings = canandcolor.getSettings().setLampLEDBrightness(0.0);
         currentState = States.IDLE;
         pulseTimer.start();
     }
@@ -63,7 +63,7 @@ public class Intake extends SubsystemBase {
     }
  
     public boolean hasCoral() {
-        return canandcolor.getColor().toWpilibColor().equals(Color.kWhiteSmoke); // TODO SHOP: Set the color to close to the color of coral
+        return getColorReading()[0] > 0.5 && getColorReading()[1] > 0.5 && getColorReading()[2] > 0.5; // TODO SHOP: Set the color to close to the color of coral
     }
 
     public boolean hasAlgae() {
