@@ -34,8 +34,8 @@ public class Intake extends SubsystemBase {
     private final TalonFX motor;
     private final Canandcolor canandcolor; // TODO SHOP: Use https://docs.reduxrobotics.com/alchemist/ to configure IDs
     private final CanandcolorSettings currentCanandcolorSettings;
-    private States currentState;
     private final Timer pulseTimer = new Timer();
+    private States currentState;
 
     private final IntakeTelemetry intakeTelemetry = new IntakeTelemetry(this);
 
@@ -43,10 +43,10 @@ public class Intake extends SubsystemBase {
         motor = new TalonFX(Constants.IntakeConstants.MOTOR_ID);
 
         motor.getConfigurator().apply(new TalonFXConfiguration()
-                .withVoltage(new VoltageConfigs().withPeakForwardVoltage(6))
+                .withVoltage(new VoltageConfigs().withPeakForwardVoltage(Constants.IntakeConstants.PEAK_VOLTAGE))
                 .withMotorOutput(new MotorOutputConfigs()
                         .withInverted(Constants.IntakeConstants.INVERT)
-                        .withNeutralMode(NeutralModeValue.Coast))
+                        .withNeutralMode(Constants.IntakeConstants.NEUTRAL_MODE))
                 .withCurrentLimits(new CurrentLimitsConfigs()
                         .withSupplyCurrentLimit(Constants.IntakeConstants.CURRENT_LIMIT))
                 .withAudio(new AudioConfigs().withBeepOnConfig(false)

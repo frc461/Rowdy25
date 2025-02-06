@@ -5,6 +5,7 @@ import com.ctre.phoenix6.configs.AudioConfigs;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 
@@ -163,8 +164,10 @@ public final class Constants {
         // basic configs
         public static int MOTOR_ID;
         public static int SENSOR_ID;
-        public static int CURRENT_LIMIT;
+        public static double CURRENT_LIMIT;
+        public static double PEAK_VOLTAGE;
         public static InvertedValue INVERT;
+        public static NeutralModeValue NEUTRAL_MODE;
     }
 
     public final static class PivotConstants {

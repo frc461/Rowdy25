@@ -5,6 +5,7 @@ import static edu.wpi.first.units.Units.*;
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.*;
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
@@ -194,8 +195,10 @@ public final class DefaultConstants {
         // basic configs
         public static final int MOTOR_ID = 41;
         public static final int SENSOR_ID = 42;
-        public static final int CURRENT_LIMIT = 40;
-        public static final InvertedValue INVERT = InvertedValue.CounterClockwise_Positive; // TODO SHOP: CHECK ON REAL ROBOT
+        public static final double CURRENT_LIMIT = 40;
+        public static final double PEAK_VOLTAGE = 6;
+        public static final InvertedValue INVERT = InvertedValue.CounterClockwise_Positive;
+        public static final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Coast;
     }
 
     public final static class PivotConstants {
