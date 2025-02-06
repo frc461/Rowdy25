@@ -125,6 +125,6 @@ public class Elevator extends SubsystemBase {
 
         elevatorTelemetry.publishValues();
 
-        elevator.getConfigurator().apply(closedLoopConfig.withKG(Constants.ElevatorConstants.G.apply(pivot.getPosition()))); // TODO SHOP: THIS IS REALLY SUS
+        elevator.getConfigurator().refresh(closedLoopConfig.withKG(Constants.ElevatorConstants.G.apply(pivot.getPosition())), 0.0); // TODO SHOP: THIS IS REALLY SUS
     }
 }
