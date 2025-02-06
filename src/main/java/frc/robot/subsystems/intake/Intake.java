@@ -24,7 +24,7 @@ import frc.robot.constants.Constants;
 import java.util.Set;
 
 public class Intake extends SubsystemBase {
-    private enum States {
+    public enum States {
         IDLE,
         HAS_ALGAE,
         INTAKE,
@@ -59,6 +59,10 @@ public class Intake extends SubsystemBase {
         currentCanandcolorSettings = canandcolor.getSettings().setLampLEDBrightness(0.0);
         currentState = States.IDLE;
         pulseTimer.start();
+    }
+
+    public States getCurrentState() {
+        return currentState;
     }
 
     public double[] getColorReading() {

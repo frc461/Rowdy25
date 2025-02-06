@@ -4,6 +4,7 @@ import dev.doglog.DogLog;
 import edu.wpi.first.networktables.BooleanPublisher;
 import edu.wpi.first.networktables.DoubleArrayPublisher;
 import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.StringPublisher;
 import frc.robot.constants.Constants;
 
 public class IntakeTelemetry {
@@ -17,11 +18,13 @@ public class IntakeTelemetry {
     private final DoubleArrayPublisher rgbPub = IntakeTelemetryTable.getDoubleArrayTopic("RGB Canandcolor Detection").publish();
     private final BooleanPublisher hasCoralPub = IntakeTelemetryTable.getBooleanTopic("Intake Has Coral").publish();
     private final BooleanPublisher hasAlgaePub = IntakeTelemetryTable.getBooleanTopic("Intake Has Algae").publish();
+    private final StringPublisher currentStatePub = IntakeTelemetryTable.getStringTopic("Intake State").publish();
 
     public void publishValues() {
         rgbPub.set(intake.getColorReading());
         hasCoralPub.set(intake.hasCoral());
         hasAlgaePub.set(intake.hasAlgae());
+        currentStatePub.set(intake.getCurrentState().toString());
 
         logValues();
     }
