@@ -216,7 +216,8 @@ public final class DefaultConstants {
         public static final int RATCHET_ID = 1;
         public static final double CURRENT_LIMIT = 40;
         public static final double PEAK_VOLTAGE = 6;
-        public static final double SENSOR_TO_DEGREE_RATIO = 1;
+        public static final double SENSOR_TO_DEGREE_RATIO = 1 / 360.0; // TODO SHOP: TEST THIS VALUE
+        public static final double ROTOR_TO_MECHANISM_RATIO = 107.6923;
         public static final InvertedValue PIVOT_INVERT = InvertedValue.Clockwise_Positive; // TODO SHOP: CHECK ON REAL ROBOT
         public static final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Coast;
 
@@ -226,9 +227,9 @@ public final class DefaultConstants {
         public static final SensorDirectionValue ENCODER_INVERT = SensorDirectionValue.Clockwise_Positive;
 
         // pid
-        public static final double G = 0.39; // TODO: FUNCTION TO MULTIPLY BY COSINE OF PIVOT ANGLE (PERIODICALLY)
-        public static final double V = 2.06;
-        public static final double A = 0.03;
+        public static final double G = 0.39; // TODO SHOP: TEST THESE VALUES
+        public static final double V = 12.92 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps) -> V / (rotor rps)
+        public static final double A = 0.17 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps^2) -> V / (rotor rps^2)
         public static final double P = 0;
         public static final double I = 0;
         public static final double D = 0;
