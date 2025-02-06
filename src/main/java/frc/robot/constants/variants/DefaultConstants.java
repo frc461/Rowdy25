@@ -243,7 +243,7 @@ public final class DefaultConstants {
         public static final InvertedValue WRIST_INVERT = InvertedValue.Clockwise_Positive; // TODO SHOP: CHECK ON REAL ROBOT
 
         // pid
-        public static final double WRIST_G = 0.21; // TODO: FUNCTION TO MULTIPLY BY COSINE OF PIVOT ANGLE (PERIODICALLY)
+        public static final double WRIST_G = 0.21; // TODO: FUNCTION TO MULTIPLY BY COSINE OF WRIST ANGLE (PERIODICALLY)
         public static final double WRIST_V = 0.87;
         public static final double WRIST_A = 0.01;
         public static final double WRIST_P = 0.0;
