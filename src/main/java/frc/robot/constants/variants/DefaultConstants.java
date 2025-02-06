@@ -5,6 +5,7 @@ import static edu.wpi.first.units.Units.*;
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.*;
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
@@ -164,17 +165,19 @@ public final class DefaultConstants {
         public static final int LEAD_ID = 31;
         public static final int FOLLOWER_ID = 32;
         public static final int LOWER_LIMIT_SWITCH_ID = 2;
-        public static final int CURRENT_LIMIT = 40;
-        public static final int ROTOR_TO_METER_RATIO = 1;
-        public static final InvertedValue ELEVATOR_INVERT = InvertedValue.Clockwise_Positive; // TODO SHOP: CHECK ON REAL ROBOT
+        public static final double CURRENT_LIMIT = 40;
+        public static final double PEAK_VOLTAGE = 6;
+        public static final double ROTOR_TO_METER_RATIO = 1;
+        public static final InvertedValue MOTOR_INVERT = InvertedValue.Clockwise_Positive; // TODO SHOP: CHECK ON REAL ROBOT
+        public static final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Coast;
 
         // pid
-        public static final double ELEVATOR_G = 0.15; // TODO: FUNCTION TO MULTIPLY BY SINE OF PIVOT ANGLE (PERIODICALLY)
-        public static final double ELEVATOR_V = 8.19;
-        public static final double ELEVATOR_A = 0.02;
-        public static final double ELEVATOR_P = 0.0;
-        public static final double ELEVATOR_I = 0.0;
-        public static final double ELEVATOR_D = 0.0;
+        public static final double G = 0.15; // TODO: FUNCTION TO MULTIPLY BY SINE OF PIVOT ANGLE (PERIODICALLY)
+        public static final double V = 8.19;
+        public static final double A = 0.02;
+        public static final double P = 0.0;
+        public static final double I = 0.0;
+        public static final double D = 0.0;
 
         // presets
         public static final double LOWER_LIMIT = 0;

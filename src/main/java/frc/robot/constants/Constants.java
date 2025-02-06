@@ -5,6 +5,7 @@ import com.ctre.phoenix6.configs.AudioConfigs;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 
@@ -132,17 +133,19 @@ public final class Constants {
         public static int LEAD_ID;
         public static int FOLLOWER_ID;
         public static int LOWER_LIMIT_SWITCH_ID;
-        public static int CURRENT_LIMIT;
-        public static int ROTOR_TO_METER_RATIO;
-        public static InvertedValue ELEVATOR_INVERT;
+        public static double CURRENT_LIMIT;
+        public static double PEAK_VOLTAGE;
+        public static double ROTOR_TO_METER_RATIO;
+        public static InvertedValue MOTOR_INVERT;
+        public static NeutralModeValue NEUTRAL_MODE;
 
         // pid
-        public static double ELEVATOR_G;
-        public static double ELEVATOR_V;
-        public static double ELEVATOR_A;
-        public static double ELEVATOR_P;
-        public static double ELEVATOR_I;
-        public static double ELEVATOR_D;
+        public static double G;
+        public static double V;
+        public static double A;
+        public static double P;
+        public static double I;
+        public static double D;
 
         // presets
         public static double LOWER_LIMIT;

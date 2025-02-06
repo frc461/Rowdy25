@@ -29,7 +29,7 @@ public class Elevator extends SubsystemBase {
                 .withFeedback(new FeedbackConfigs()
                         .withSensorToMechanismRatio(Constants.ElevatorConstants.ROTOR_TO_METER_RATIO))
                 .withMotorOutput(new MotorOutputConfigs()
-                        .withInverted(Constants.ElevatorConstants.ELEVATOR_INVERT)
+                        .withInverted(Constants.ElevatorConstants.MOTOR_INVERT)
                         .withNeutralMode(NeutralModeValue.Coast))
                 .withCurrentLimits(new CurrentLimitsConfigs()
                         .withSupplyCurrentLimit(Constants.ElevatorConstants.CURRENT_LIMIT))
@@ -37,16 +37,16 @@ public class Elevator extends SubsystemBase {
                         .withBeepOnBoot(false)
                         .withAllowMusicDurDisable(true))
                 .withSlot0(new Slot0Configs()
-                        .withKG(Constants.ElevatorConstants.ELEVATOR_G) // TODO SHOP: NEED S??????
-                        .withKV(Constants.ElevatorConstants.ELEVATOR_V)
-                        .withKA(Constants.ElevatorConstants.ELEVATOR_A)
-                        .withKP(Constants.ElevatorConstants.ELEVATOR_P)
-                        .withKI(Constants.ElevatorConstants.ELEVATOR_I)
-                        .withKD(Constants.ElevatorConstants.ELEVATOR_D))
+                        .withKG(Constants.ElevatorConstants.G) // TODO SHOP: NEED S??????
+                        .withKV(Constants.ElevatorConstants.V)
+                        .withKA(Constants.ElevatorConstants.A)
+                        .withKP(Constants.ElevatorConstants.P)
+                        .withKI(Constants.ElevatorConstants.I)
+                        .withKD(Constants.ElevatorConstants.D))
                 .withMotionMagic(new MotionMagicConfigs()
                         .withMotionMagicCruiseVelocity(0)
-                        .withMotionMagicExpo_kV(Constants.ElevatorConstants.ELEVATOR_V)
-                        .withMotionMagicExpo_kA(Constants.ElevatorConstants.ELEVATOR_A)));
+                        .withMotionMagicExpo_kV(Constants.ElevatorConstants.V)
+                        .withMotionMagicExpo_kA(Constants.ElevatorConstants.A)));
 
         try (TalonFX elevator2 = new TalonFX(Constants.ElevatorConstants.FOLLOWER_ID)) {
             elevator2.setControl(new Follower(Constants.ElevatorConstants.LEAD_ID, true));

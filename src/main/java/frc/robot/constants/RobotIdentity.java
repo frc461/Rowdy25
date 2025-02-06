@@ -118,14 +118,16 @@ public enum RobotIdentity {
         Constants.ElevatorConstants.FOLLOWER_ID = DefaultConstants.ElevatorConstants.FOLLOWER_ID;
         Constants.ElevatorConstants.LOWER_LIMIT_SWITCH_ID = DefaultConstants.ElevatorConstants.LOWER_LIMIT_SWITCH_ID;
         Constants.ElevatorConstants.CURRENT_LIMIT = DefaultConstants.ElevatorConstants.CURRENT_LIMIT;
+        Constants.ElevatorConstants.PEAK_VOLTAGE = DefaultConstants.ElevatorConstants.PEAK_VOLTAGE;
         Constants.ElevatorConstants.ROTOR_TO_METER_RATIO = DefaultConstants.ElevatorConstants.ROTOR_TO_METER_RATIO;
-        Constants.ElevatorConstants.ELEVATOR_INVERT = DefaultConstants.ElevatorConstants.ELEVATOR_INVERT;
-        Constants.ElevatorConstants.ELEVATOR_G = DefaultConstants.ElevatorConstants.ELEVATOR_G;
-        Constants.ElevatorConstants.ELEVATOR_V = DefaultConstants.ElevatorConstants.ELEVATOR_V;
-        Constants.ElevatorConstants.ELEVATOR_A = DefaultConstants.ElevatorConstants.ELEVATOR_A;
-        Constants.ElevatorConstants.ELEVATOR_P = DefaultConstants.ElevatorConstants.ELEVATOR_P;
-        Constants.ElevatorConstants.ELEVATOR_I = DefaultConstants.ElevatorConstants.ELEVATOR_I;
-        Constants.ElevatorConstants.ELEVATOR_D = DefaultConstants.ElevatorConstants.ELEVATOR_D;
+        Constants.ElevatorConstants.MOTOR_INVERT = DefaultConstants.ElevatorConstants.MOTOR_INVERT;
+        Constants.ElevatorConstants.NEUTRAL_MODE = DefaultConstants.ElevatorConstants.NEUTRAL_MODE;
+        Constants.ElevatorConstants.G = DefaultConstants.ElevatorConstants.G;
+        Constants.ElevatorConstants.V = DefaultConstants.ElevatorConstants.V;
+        Constants.ElevatorConstants.A = DefaultConstants.ElevatorConstants.A;
+        Constants.ElevatorConstants.P = DefaultConstants.ElevatorConstants.P;
+        Constants.ElevatorConstants.I = DefaultConstants.ElevatorConstants.I;
+        Constants.ElevatorConstants.D = DefaultConstants.ElevatorConstants.D;
         Constants.ElevatorConstants.LOWER_LIMIT = DefaultConstants.ElevatorConstants.LOWER_LIMIT;
         Constants.ElevatorConstants.UPPER_LIMIT = DefaultConstants.ElevatorConstants.UPPER_LIMIT;
 
