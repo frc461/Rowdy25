@@ -41,7 +41,7 @@ public class Intake extends SubsystemBase {
         motor.getConfigurator().apply(new TalonFXConfiguration()
                 .withVoltage(new VoltageConfigs().withPeakForwardVoltage(Constants.IntakeConstants.PEAK_VOLTAGE))
                 .withMotorOutput(new MotorOutputConfigs()
-                        .withInverted(Constants.IntakeConstants.INVERT)
+                        .withInverted(Constants.IntakeConstants.MOTOR_INVERT)
                         .withNeutralMode(Constants.IntakeConstants.NEUTRAL_MODE))
                 .withCurrentLimits(new CurrentLimitsConfigs()
                         .withSupplyCurrentLimit(Constants.IntakeConstants.CURRENT_LIMIT))

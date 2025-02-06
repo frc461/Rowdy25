@@ -166,7 +166,7 @@ public final class Constants {
         public static int SENSOR_ID;
         public static double CURRENT_LIMIT;
         public static double PEAK_VOLTAGE;
-        public static InvertedValue INVERT;
+        public static InvertedValue MOTOR_INVERT;
         public static NeutralModeValue NEUTRAL_MODE;
     }
 

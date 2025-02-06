@@ -132,7 +132,7 @@ public enum RobotIdentity {
         Constants.IntakeConstants.SENSOR_ID = DefaultConstants.IntakeConstants.SENSOR_ID;
         Constants.IntakeConstants.CURRENT_LIMIT = DefaultConstants.IntakeConstants.CURRENT_LIMIT;
         Constants.IntakeConstants.PEAK_VOLTAGE = DefaultConstants.IntakeConstants.PEAK_VOLTAGE;
-        Constants.IntakeConstants.INVERT = DefaultConstants.IntakeConstants.INVERT;
+        Constants.IntakeConstants.MOTOR_INVERT = DefaultConstants.IntakeConstants.MOTOR_INVERT;
         Constants.IntakeConstants.NEUTRAL_MODE = DefaultConstants.IntakeConstants.NEUTRAL_MODE;
 
         Constants.PivotConstants.LEAD_ID = DefaultConstants.PivotConstants.LEAD_ID;
