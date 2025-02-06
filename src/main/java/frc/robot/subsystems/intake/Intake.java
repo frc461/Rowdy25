@@ -86,15 +86,15 @@ public class Intake extends SubsystemBase {
 //        return Commands.defer(() -> runOnce(() -> setState(currentState == States.OUTTAKE ? States.IDLE : States.OUTTAKE)), Set.of(this));
     }
 
-    private void setState(States state) {
+    public void setState(States state) {
         currentState = state;
     }
 
-    private void setIntakeSpeed(double speed) {
+    public void setIntakeSpeed(double speed) {
         motor.set(speed);
     }
 
-    private void pulseIntake() {
+    public void pulseIntake() {
         if ((int) pulseTimer.get() % 2 == 0) {
             setIntakeSpeed(0.1);
         } else {
@@ -106,36 +106,12 @@ public class Intake extends SubsystemBase {
     public void periodic() {
         intakeTelemetry.publishValues();
 
-        Lights.setLights(hasCoral() || hasAlgae());
-        switch (currentState) {
-            case INTAKE:
-                if (hasAlgae()) {
-                    setState(States.HAS_ALGAE);
-                    canandcolor.setSettings(currentCanandcolorSettings.setLampLEDBrightness(1.0));
-                } else if (hasCoral()) {
-                    System.out.println("HAS CORAL!!!!!!!");
-                    setState(States.IDLE);
-                    canandcolor.setSettings(currentCanandcolorSettings.setLampLEDBrightness(1.0));
-                }
-                setIntakeSpeed(0.75);
-            case OUTTAKE:
-                if (!hasAlgae() && !hasCoral()) {
-                    setState(States.IDLE);
-                    canandcolor.setSettings(currentCanandcolorSettings.setLampLEDBrightness(0.0));
-                }
-                setIntakeSpeed(-0.5);
-            case HAS_ALGAE:
-                if (!hasAlgae()) {
-                    setState(States.IDLE);
-                    canandcolor.setSettings(currentCanandcolorSettings.setLampLEDBrightness(0.0));
-                }
-                pulseIntake();
-            case IDLE:
-                if (hasCoral() || hasAlgae()) {
-                    setState(hasAlgae() ? States.HAS_ALGAE : States.IDLE);
-                    canandcolor.setSettings(currentCanandcolorSettings.setLampLEDBrightness(1.0));
-                }
-                setIntakeSpeed(0.0);
+        if (hasCoral() || hasAlgae()) {
+            Lights.setLights(true);
+            canandcolor.setSettings(currentCanandcolorSettings.setLampLEDBrightness(1.0));
+        } else {
+            Lights.setLights(false);
+            canandcolor.setSettings(currentCanandcolorSettings.setLampLEDBrightness(0.0));
         }
     }
 }
