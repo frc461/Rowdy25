@@ -5,6 +5,7 @@ import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
@@ -51,7 +52,8 @@ public class Pivot extends SubsystemBase {
                         .withKA(Constants.PivotConstants.A)
                         .withKP(Constants.PivotConstants.P)
                         .withKI(Constants.PivotConstants.I)
-                        .withKD(Constants.PivotConstants.D))
+                        .withKD(Constants.PivotConstants.D)
+                        .withGravityType(GravityTypeValue.Arm_Cosine))
                 .withMotionMagic(new MotionMagicConfigs()
                         .withMotionMagicCruiseVelocity(0)
                         .withMotionMagicExpo_kV(Constants.PivotConstants.V)
