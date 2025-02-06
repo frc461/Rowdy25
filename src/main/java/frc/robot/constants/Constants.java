@@ -5,6 +5,8 @@ import com.ctre.phoenix6.configs.AudioConfigs;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 
@@ -203,21 +205,26 @@ public final class Constants {
     }
 
     public final static class WristConstants {
-        // basic configs
+        // motor configs
         public static int MOTOR_ID;
+        public static double CURRENT_LIMIT;
+        public static double PEAK_VOLTAGE;
+        public static double SENSOR_TO_DEGREE_RATIO;
+        public static InvertedValue MOTOR_INVERT;
+        public static NeutralModeValue NEUTRAL_MODE;
+
+        // encoder configs
         public static int ENCODER_ID;
-        public static int CURRENT_LIMIT;
-        public static int SENSOR_TO_DEGREE_RATIO;
-        public static double ENCODER_ZERO_OFFSET;
-        public static InvertedValue WRIST_INVERT;
+        public static double ENCODER_ABSOLUTE_OFFSET;
+        public static SensorDirectionValue ENCODER_INVERT;
 
         // pid
-        public static double WRIST_G;
-        public static double WRIST_V;
-        public static double WRIST_A;
-        public static double WRIST_P;
-        public static double WRIST_I;
-        public static double WRIST_D;
+        public static double G;
+        public static double V;
+        public static double A;
+        public static double P;
+        public static double I;
+        public static double D;
 
         // presets
         public static double LOWER_LIMIT;

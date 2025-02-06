@@ -5,6 +5,8 @@ import static edu.wpi.first.units.Units.*;
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.*;
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
@@ -234,21 +236,26 @@ public final class DefaultConstants {
     }
 
     public final static class WristConstants {
-        // basic configs
+        // motor configs
         public static final int MOTOR_ID = 61;
+        public static final double CURRENT_LIMIT = 40;
+        public static final double PEAK_VOLTAGE = 6;
+        public static final double SENSOR_TO_DEGREE_RATIO = 1.0;
+        public static final InvertedValue MOTOR_INVERT = InvertedValue.Clockwise_Positive; // TODO SHOP: CHECK ON REAL
+        public static final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Coast;
+
+        // encoder configs
         public static final int ENCODER_ID = 62;
-        public static final int CURRENT_LIMIT = 40;
-        public static final int SENSOR_TO_DEGREE_RATIO = 1;
-        public static final double ENCODER_ZERO_OFFSET = 0;
-        public static final InvertedValue WRIST_INVERT = InvertedValue.Clockwise_Positive; // TODO SHOP: CHECK ON REAL ROBOT
+        public static final double ENCODER_ABSOLUTE_OFFSET = 0;
+        public static final SensorDirectionValue ENCODER_INVERT = SensorDirectionValue.Clockwise_Positive;
 
         // pid
-        public static final double WRIST_G = 0.21; // TODO: FUNCTION TO MULTIPLY BY COSINE OF WRIST ANGLE (PERIODICALLY)
-        public static final double WRIST_V = 0.87;
-        public static final double WRIST_A = 0.01;
-        public static final double WRIST_P = 0.0;
-        public static final double WRIST_I = 0.0;
-        public static final double WRIST_D = 0.0;
+        public static final double G = 0.21; // TODO: FUNCTION TO MULTIPLY BY COSINE OF WRIST ANGLE (PERIODICALLY)
+        public static final double V = 0.87;
+        public static final double A = 0.01;
+        public static final double P = 0.0;
+        public static final double I = 0.0;
+        public static final double D = 0.0;
 
         // presets
         public static final double LOWER_LIMIT = 0;
