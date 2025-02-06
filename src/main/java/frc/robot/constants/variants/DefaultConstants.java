@@ -213,7 +213,7 @@ public final class DefaultConstants {
         // motor configs
         public static final int LEAD_ID = 51;
         public static final int FOLLOWER_ID = 52;
-        public static final int RATCHET_ID = 1;
+        public static final int RATCHET_ID = 0;
         public static final double CURRENT_LIMIT = 40;
         public static final double PEAK_VOLTAGE = 6;
         public static final double SENSOR_TO_DEGREE_RATIO = 1 / 360.0; // TODO SHOP: TEST THIS VALUE
