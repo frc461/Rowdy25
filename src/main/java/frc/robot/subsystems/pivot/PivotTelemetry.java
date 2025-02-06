@@ -29,9 +29,9 @@ public class PivotTelemetry {
     }
 
     private void logValues() {
-        DogLog.log("PivotPose", pivot.getPosition());
-        DogLog.log("PivotTarget", pivot.getTarget());
-        DogLog.log("PivotError", pivot.getError());
-        DogLog.log("PivotIsRatcheted", pivot.isRatcheted());
+        //DogLog.log("PivotPose", pivot.getPosition());
+        //DogLog.log("PivotTarget", pivot.getTarget());
+        //DogLog.log("PivotError", pivot.getError());
+        //DogLog.log("PivotIsRatcheted", pivot.isRatcheted());
     }
 }
