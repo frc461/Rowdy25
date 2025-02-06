@@ -18,7 +18,6 @@ import frc.robot.util.Lights;
 
 public class Pivot extends SubsystemBase {
     private final TalonFX pivot;
-    private final CANcoder encoder;
     private final MotionMagicExpoVoltage request;
     private final Servo ratchet;
     private double target, error, accuracy;
@@ -27,7 +26,7 @@ public class Pivot extends SubsystemBase {
     private final PivotTelemetry pivotTelemetry = new PivotTelemetry(this);
 
     public Pivot() {
-        encoder = new CANcoder(Constants.PivotConstants.ENCODER_ID); //TODO SHOP: CHECK IF THIS EXISTS
+        CANcoder encoder = new CANcoder(Constants.PivotConstants.ENCODER_ID); //TODO SHOP: CHECK IF THIS EXISTS
         encoder.getConfigurator().apply(new CANcoderConfiguration()
                 .withMagnetSensor(new MagnetSensorConfigs()
                         .withSensorDirection(Constants.PivotConstants.ENCODER_INVERT)
