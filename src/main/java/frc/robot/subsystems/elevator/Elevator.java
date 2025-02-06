@@ -10,24 +10,29 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
+import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.util.ExpUtil;
 import frc.robot.util.FieldUtil;
 
 public class Elevator extends SubsystemBase {
+    private final Pivot pivot;
     private final TalonFX elevator;
+    private final Slot0Configs closedLoopConfig;
     private final MotionMagicExpoVoltage request;
     private final DigitalInput lowerSwitch;
     private double target, accuracy;
 
     private final ElevatorTelemetry elevatorTelemetry = new ElevatorTelemetry(this);
 
-    public Elevator() {
+    public Elevator(Pivot pivot) {
+        this.pivot = pivot;
+
         elevator = new TalonFX(Constants.ElevatorConstants.LEAD_ID);
 
         elevator.getConfigurator().apply(new TalonFXConfiguration()
                 .withVoltage(new VoltageConfigs().withPeakForwardVoltage(6))
                 .withFeedback(new FeedbackConfigs()
-                        .withSensorToMechanismRatio(Constants.ElevatorConstants.ROTOR_TO_METER_RATIO))
+                        .withSensorToMechanismRatio(Constants.ElevatorConstants.ROTOR_TO_PULLEY_RATIO))
                 .withMotorOutput(new MotorOutputConfigs()
                         .withInverted(Constants.ElevatorConstants.MOTOR_INVERT)
                         .withNeutralMode(NeutralModeValue.Coast))
@@ -37,7 +42,7 @@ public class Elevator extends SubsystemBase {
                         .withBeepOnBoot(false)
                         .withAllowMusicDurDisable(true))
                 .withSlot0(new Slot0Configs()
-                        .withKG(Constants.ElevatorConstants.G) // TODO SHOP: NEED S??????
+                        .withKG(Constants.ElevatorConstants.G.apply(pivot.getPosition())) // TODO SHOP: NEED S??????
                         .withKV(Constants.ElevatorConstants.V)
                         .withKA(Constants.ElevatorConstants.A)
                         .withKP(Constants.ElevatorConstants.P)
@@ -51,6 +56,14 @@ public class Elevator extends SubsystemBase {
         try (TalonFX elevator2 = new TalonFX(Constants.ElevatorConstants.FOLLOWER_ID)) {
             elevator2.setControl(new Follower(Constants.ElevatorConstants.LEAD_ID, true));
         }
+
+        closedLoopConfig = new Slot0Configs()
+                .withKG(Constants.ElevatorConstants.G.apply(pivot.getPosition())) // TODO SHOP: NEED S??????
+                .withKV(Constants.ElevatorConstants.V)
+                .withKA(Constants.ElevatorConstants.A)
+                .withKP(Constants.ElevatorConstants.P)
+                .withKI(Constants.ElevatorConstants.I)
+                .withKD(Constants.ElevatorConstants.D);
 
         lowerSwitch = new DigitalInput(Constants.ElevatorConstants.LOWER_LIMIT_SWITCH_ID);
 
@@ -111,5 +124,7 @@ public class Elevator extends SubsystemBase {
         accuracy = target > getPosition() ? getPosition() / target : target / getPosition();
 
         elevatorTelemetry.publishValues();
+
+        elevator.getConfigurator().apply(closedLoopConfig.withKG(Constants.ElevatorConstants.G.apply(pivot.getPosition()))); // TODO SHOP: THIS IS REALLY SUS
     }
 }

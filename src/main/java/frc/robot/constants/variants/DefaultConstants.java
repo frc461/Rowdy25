@@ -167,14 +167,15 @@ public final class DefaultConstants {
         public static final int LOWER_LIMIT_SWITCH_ID = 2;
         public static final double CURRENT_LIMIT = 40;
         public static final double PEAK_VOLTAGE = 6;
-        public static final double ROTOR_TO_METER_RATIO = 1;
+        public static final double ROTOR_TO_PULLEY_RATIO = 11.57;
+        public static final double PULLEY_CIRCUMFERENCE = Units.inchesToMeters(7.065);
         public static final InvertedValue MOTOR_INVERT = InvertedValue.Clockwise_Positive; // TODO SHOP: CHECK ON REAL ROBOT
         public static final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Coast;
 
         // pid
-        public static final double G = 0.15; // TODO: FUNCTION TO MULTIPLY BY SINE OF PIVOT ANGLE (PERIODICALLY)
-        public static final double V = 8.19;
-        public static final double A = 0.02;
+        public static final Function<Double, Double> G = (deg) -> 0.15 * Math.sin(Math.toRadians(deg)); // TODO SHOP: TEST THESE VALUES
+        public static final double V = 8.19 * PULLEY_CIRCUMFERENCE / ROTOR_TO_PULLEY_RATIO; // 1V / (m/s) -> 1V / (rotor rps)
+        public static final double A = 0.02 * PULLEY_CIRCUMFERENCE / ROTOR_TO_PULLEY_RATIO; // 1V / (m/s^2) -> 1V / (rotor rps^2)
         public static final double P = 0.0;
         public static final double I = 0.0;
         public static final double D = 0.0;
