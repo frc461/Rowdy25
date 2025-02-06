@@ -20,6 +20,7 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -219,7 +220,7 @@ public final class Constants {
         public static SensorDirectionValue ENCODER_INVERT;
 
         // pid
-        public static double G;
+        public static BiFunction<Double, Double, Double> G;
         public static double V;
         public static double A;
         public static double P;

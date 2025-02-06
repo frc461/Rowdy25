@@ -8,16 +8,21 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
+import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.util.ExpUtil;
 
 public class Wrist extends SubsystemBase {
+    private final Pivot pivot;
     private final TalonFX wrist;
+    private final Slot0Configs closedLoopConfig;
     private final MotionMagicExpoVoltage request;
     private double target, error, accuracy;
 
     private final WristTelemetry wristTelemetry = new WristTelemetry(this);
 
-    public Wrist() {
+    public Wrist(Pivot pivot) {
+        this.pivot = pivot;
+
         CANcoder encoder = new CANcoder(Constants.WristConstants.ENCODER_ID);
         encoder.getConfigurator().apply(new CANcoderConfiguration()
                 .withMagnetSensor(new MagnetSensorConfigs()
@@ -38,17 +43,24 @@ public class Wrist extends SubsystemBase {
                         .withBeepOnBoot(false)
                         .withAllowMusicDurDisable(true))
                 .withSlot0(new Slot0Configs()
-                        .withKG(Constants.WristConstants.G) // TODO SHOP: NEED S??????
+                        .withKG(Constants.WristConstants.G.apply(getPosition(), pivot.getPosition())) // TODO SHOP: NEED S??????
                         .withKV(Constants.WristConstants.V)
                         .withKA(Constants.WristConstants.A)
                         .withKP(Constants.WristConstants.P)
                         .withKI(Constants.WristConstants.I)
-                        .withKD(Constants.WristConstants.D)
-                        .withGravityType(GravityTypeValue.Arm_Cosine))
+                        .withKD(Constants.WristConstants.D))
                 .withMotionMagic(new MotionMagicConfigs()
                         .withMotionMagicCruiseVelocity(0)
                         .withMotionMagicExpo_kV(Constants.WristConstants.V)
                         .withMotionMagicExpo_kA(Constants.WristConstants.A)));
+
+        closedLoopConfig = new Slot0Configs()
+                .withKG(Constants.WristConstants.G.apply(getPosition(), pivot.getPosition()))
+                .withKV(Constants.WristConstants.V)
+                .withKA(Constants.WristConstants.A)
+                .withKP(Constants.WristConstants.P)
+                .withKI(Constants.WristConstants.I)
+                .withKD(Constants.WristConstants.D);
 
         request = new MotionMagicExpoVoltage(0);
 
@@ -96,5 +108,7 @@ public class Wrist extends SubsystemBase {
 
         error = Math.abs(target - getPosition());
         accuracy = target > getPosition() ? getPosition() / target : target / getPosition();
+
+        wrist.getConfigurator().refresh(closedLoopConfig.withKG(Constants.WristConstants.G.apply(getPosition(), pivot.getPosition()))); // TODO SHOP: THIS IS REALLY SUS
     }
 }

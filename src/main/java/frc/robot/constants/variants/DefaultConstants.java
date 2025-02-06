@@ -30,6 +30,7 @@ import frc.robot.util.ExpUtil;
 import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -251,7 +252,7 @@ public final class DefaultConstants {
         public static final SensorDirectionValue ENCODER_INVERT = SensorDirectionValue.Clockwise_Positive;
 
         // pid
-        public static final double G = 0.21; // TODO SHOP: TEST THESE VALUES
+        public static final BiFunction<Double, Double, Double> G = (wristDeg, pivotDeg) -> 0.21 * Math.cos(Math.toRadians(wristDeg - (90 - pivotDeg))); // TODO SHOP: TEST THESE VALUES
         public static final double V = 5.44 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps) -> V / (rotor rps)
         public static final double A = 0.04 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps^2) -> V / (rotor rps^2)
         public static final double P = 0.0;
@@ -259,7 +260,7 @@ public final class DefaultConstants {
         public static final double D = 0.0;
 
         // presets
-        public static final double LOWER_LIMIT = 0;
+        public static final double LOWER_LIMIT = 0;  // TODO: WHAT SHOULD WE SET ZERO AS??
         public static final double UPPER_LIMIT = 20;
         public static final double GROUND_CORAL = 0;
         public static final double GROUND_ALGAE = 0;
