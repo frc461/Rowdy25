@@ -35,7 +35,6 @@ public class Intake extends SubsystemBase {
     private final Canandcolor canandcolor; // TODO SHOP: Use https://docs.reduxrobotics.com/alchemist/ to configure IDs
     private final CanandcolorSettings currentCanandcolorSettings;
     private States currentState;
-    private boolean stateChanged;
     private final Timer pulseTimer = new Timer();
 
     private final IntakeTelemetry intakeTelemetry = new IntakeTelemetry(this);
@@ -87,7 +86,6 @@ public class Intake extends SubsystemBase {
 
     private void setState(States state) {
         currentState = state;
-        stateChanged = true;
     }
 
     private void setIntakeSpeed(double speed) {
@@ -107,44 +105,34 @@ public class Intake extends SubsystemBase {
         intakeTelemetry.publishValues();
 
         Lights.setLights(hasCoral() || hasAlgae());
-
-        if (stateChanged) {
-            switch (currentState) {
-                case IDLE, HAS_ALGAE:
-                    setIntakeSpeed(0.0);
-                case INTAKE:
-                    setIntakeSpeed(0.75);
-                case OUTTAKE:
-                    setIntakeSpeed(-0.5);
-            }
-            stateChanged = false;
-        } else {
-            switch (currentState) {
-                case INTAKE:
-                    if (hasAlgae()) {
-                        setState(States.HAS_ALGAE);
-                        canandcolor.setSettings(currentCanandcolorSettings.setLampLEDBrightness(1.0));
-                    } else if (hasCoral()) {
-                        setState(States.IDLE);
-                        canandcolor.setSettings(currentCanandcolorSettings.setLampLEDBrightness(1.0));
-                    }
-                case OUTTAKE:
-                    if (!hasAlgae() && !hasCoral()) {
-                        setState(States.IDLE);
-                        canandcolor.setSettings(currentCanandcolorSettings.setLampLEDBrightness(0.0));
-                    }
-                case HAS_ALGAE:
-                    if (!hasAlgae()) {
-                        setState(States.IDLE);
-                        canandcolor.setSettings(currentCanandcolorSettings.setLampLEDBrightness(0.0));
-                    }
-                    pulseIntake();
-                case IDLE:
-                    if (hasCoral() || hasAlgae()) {
-                        setState(hasAlgae() ? States.HAS_ALGAE : States.IDLE);
-                        canandcolor.setSettings(currentCanandcolorSettings.setLampLEDBrightness(1.0));
-                    }
-            }
+        switch (currentState) {
+            case INTAKE:
+                if (hasAlgae()) {
+                    setState(States.HAS_ALGAE);
+                    canandcolor.setSettings(currentCanandcolorSettings.setLampLEDBrightness(1.0));
+                } else if (hasCoral()) {
+                    setState(States.IDLE);
+                    canandcolor.setSettings(currentCanandcolorSettings.setLampLEDBrightness(1.0));
+                }
+                setIntakeSpeed(0.75);
+            case OUTTAKE:
+                if (!hasAlgae() && !hasCoral()) {
+                    setState(States.IDLE);
+                    canandcolor.setSettings(currentCanandcolorSettings.setLampLEDBrightness(0.0));
+                }
+                setIntakeSpeed(-0.5);
+            case HAS_ALGAE:
+                if (!hasAlgae()) {
+                    setState(States.IDLE);
+                    canandcolor.setSettings(currentCanandcolorSettings.setLampLEDBrightness(0.0));
+                }
+                pulseIntake();
+            case IDLE:
+                if (hasCoral() || hasAlgae()) {
+                    setState(hasAlgae() ? States.HAS_ALGAE : States.IDLE);
+                    canandcolor.setSettings(currentCanandcolorSettings.setLampLEDBrightness(1.0));
+                }
+                setIntakeSpeed(0.0);
         }
     }
 }
