@@ -63,7 +63,7 @@ public class Pivot extends SubsystemBase {
         }
 
         ratchet = new Servo(Constants.PivotConstants.RATCHET_ID);
-        ratchet.set(Constants.PivotConstants.RATCHET_ON);
+//        ratchet.set(Constants.PivotConstants.RATCHET_ON);
 
         request = new MotionMagicExpoVoltage(0);
 
@@ -84,6 +84,10 @@ public class Pivot extends SubsystemBase {
 
     public double getError() {
         return error;
+    }
+
+    public double getRatchetValue() {
+        return ratchet.get();
     }
 
     public boolean isRatcheted() {
@@ -125,6 +129,8 @@ public class Pivot extends SubsystemBase {
 
     @Override
     public void periodic() {
+        pivotTelemetry.publishValues();
+
         Lights.setLights((Math.abs(getPosition() - Constants.PivotConstants.STOW_POSITION) <= Constants.PivotConstants.TOLERANCE) && DriverStation.isDisabled());
 
         if (ratcheted) {
@@ -135,7 +141,5 @@ public class Pivot extends SubsystemBase {
 
         error = Math.abs(target - getPosition());
         accuracy = target > getPosition() ? getPosition() / target : target / getPosition();
-
-        pivotTelemetry.publishValues();
     }
 }
