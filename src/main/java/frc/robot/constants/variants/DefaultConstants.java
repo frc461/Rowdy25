@@ -164,7 +164,7 @@ public final class DefaultConstants {
         // basic configs
         public static final int LEAD_ID = 31;
         public static final int FOLLOWER_ID = 32;
-        public static final int LOWER_LIMIT_SWITCH_ID = 2;
+        public static final int LOWER_LIMIT_SWITCH_ID = 0;
         public static final double CURRENT_LIMIT = 40;
         public static final double PEAK_VOLTAGE = 6;
         public static final double ROTOR_TO_PULLEY_RATIO = 11.57;
