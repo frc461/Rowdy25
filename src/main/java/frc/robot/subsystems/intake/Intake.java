@@ -14,11 +14,14 @@ import com.reduxrobotics.sensors.canandcolor.CanandcolorSettings;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.util.Lights;
 
 import frc.robot.constants.Constants;
+
+import java.util.Set;
 
 public class Intake extends SubsystemBase {
     private enum States {
@@ -71,11 +74,11 @@ public class Intake extends SubsystemBase {
     }
 
     public Command intake() {
-        return runOnce(() -> setState(currentState == States.INTAKE ? States.IDLE : States.INTAKE));
+        return Commands.defer(() -> runOnce(() -> setState(currentState == States.INTAKE ? States.IDLE : States.INTAKE)), Set.of(this));
     }
 
     public Command outtake() {
-        return runOnce(() -> setState(currentState == States.OUTTAKE ? States.IDLE : States.OUTTAKE));
+        return Commands.defer(() -> runOnce(() -> setState(currentState == States.OUTTAKE ? States.IDLE : States.OUTTAKE)), Set.of(this));
     }
 
     private void setState(States state) {
