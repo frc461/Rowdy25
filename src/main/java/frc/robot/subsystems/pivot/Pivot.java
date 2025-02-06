@@ -8,7 +8,6 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -27,37 +26,36 @@ public class Pivot extends SubsystemBase {
     private final PivotTelemetry pivotTelemetry = new PivotTelemetry(this);
 
     public Pivot() {
-        pivot = new TalonFX(Constants.PivotConstants.LEAD_ID);
         encoder = new CANcoder(Constants.PivotConstants.ENCODER_ID); //TODO SHOP: CHECK IF THIS EXISTS
-
         encoder.getConfigurator().apply(new CANcoderConfiguration()
                 .withMagnetSensor(new MagnetSensorConfigs()
-                        .withSensorDirection(SensorDirectionValue.Clockwise_Positive)
-                        .withMagnetOffset(Constants.PivotConstants.ENCODER_ZERO_OFFSET))); // TODO SHOP: CHECK AND POTENTIALLY ADD MORE CONFIGS
+                        .withSensorDirection(Constants.PivotConstants.ENCODER_INVERT)
+                        .withMagnetOffset(Constants.PivotConstants.ENCODER_ABSOLUTE_OFFSET))); // TODO SHOP: CHECK AND POTENTIALLY ADD MORE CONFIGS
 
+        pivot = new TalonFX(Constants.PivotConstants.LEAD_ID);
         pivot.getConfigurator().apply(new TalonFXConfiguration()
-                .withVoltage(new VoltageConfigs().withPeakForwardVoltage(6))
+                .withVoltage(new VoltageConfigs().withPeakForwardVoltage(Constants.PivotConstants.PEAK_VOLTAGE))
                 .withFeedback(new FeedbackConfigs().withRemoteCANcoder(encoder)
                         .withSensorToMechanismRatio(Constants.PivotConstants.SENSOR_TO_DEGREE_RATIO))
                 .withMotorOutput(new MotorOutputConfigs()
                         .withInverted(Constants.PivotConstants.PIVOT_INVERT)
-                        .withNeutralMode(NeutralModeValue.Coast))
+                        .withNeutralMode(Constants.PivotConstants.NEUTRAL_MODE))
                 .withCurrentLimits(new CurrentLimitsConfigs()
                         .withSupplyCurrentLimit(Constants.PivotConstants.CURRENT_LIMIT))
                 .withAudio(new AudioConfigs().withBeepOnConfig(false)
                         .withBeepOnBoot(false)
                         .withAllowMusicDurDisable(true))
                 .withSlot0(new Slot0Configs()
-                        .withKG(Constants.PivotConstants.PIVOT_G) // TODO SHOP: NEED S??????
-                        .withKV(Constants.PivotConstants.PIVOT_V)
-                        .withKA(Constants.PivotConstants.PIVOT_A)
-                        .withKP(Constants.PivotConstants.PIVOT_P)
-                        .withKI(Constants.PivotConstants.PIVOT_I)
-                        .withKD(Constants.PivotConstants.PIVOT_D))
+                        .withKG(Constants.PivotConstants.G) // TODO SHOP: NEED S??????
+                        .withKV(Constants.PivotConstants.V)
+                        .withKA(Constants.PivotConstants.A)
+                        .withKP(Constants.PivotConstants.P)
+                        .withKI(Constants.PivotConstants.I)
+                        .withKD(Constants.PivotConstants.D))
                 .withMotionMagic(new MotionMagicConfigs()
                         .withMotionMagicCruiseVelocity(0)
-                        .withMotionMagicExpo_kV(Constants.PivotConstants.PIVOT_V)
-                        .withMotionMagicExpo_kA(Constants.PivotConstants.PIVOT_A)));
+                        .withMotionMagicExpo_kV(Constants.PivotConstants.V)
+                        .withMotionMagicExpo_kA(Constants.PivotConstants.A)));
 
         try (TalonFX pivot2 = new TalonFX(Constants.PivotConstants.FOLLOWER_ID)) {
             pivot2.setControl(new Follower(Constants.PivotConstants.LEAD_ID, true));

@@ -6,6 +6,7 @@ import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 
@@ -178,23 +179,28 @@ public final class Constants {
     }
 
     public final static class PivotConstants {
-        // basic configs
+        // motor configs
         public static int LEAD_ID;
         public static int FOLLOWER_ID;
-        public static int ENCODER_ID;
         public static int RATCHET_ID;
-        public static int CURRENT_LIMIT;
-        public static int SENSOR_TO_DEGREE_RATIO;
-        public static double ENCODER_ZERO_OFFSET;
+        public static double CURRENT_LIMIT;
+        public static double PEAK_VOLTAGE;
+        public static double SENSOR_TO_DEGREE_RATIO;
         public static InvertedValue PIVOT_INVERT;
+        public static NeutralModeValue NEUTRAL_MODE;
+
+        // encoder configs
+        public static int ENCODER_ID;
+        public static double ENCODER_ABSOLUTE_OFFSET;
+        public static SensorDirectionValue ENCODER_INVERT;
 
         // pid
-        public static double PIVOT_G;
-        public static double PIVOT_V;
-        public static double PIVOT_A;
-        public static double PIVOT_P;
-        public static double PIVOT_I;
-        public static double PIVOT_D;
+        public static double G;
+        public static double V;
+        public static double A;
+        public static double P;
+        public static double I;
+        public static double D;
 
         // presets
         public static double LOWER_LIMIT;

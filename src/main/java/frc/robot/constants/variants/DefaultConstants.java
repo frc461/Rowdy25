@@ -6,6 +6,7 @@ import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.*;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
@@ -209,23 +210,28 @@ public final class DefaultConstants {
     }
 
     public final static class PivotConstants {
-        // basic configs
+        // motor configs
         public static final int LEAD_ID = 51;
         public static final int FOLLOWER_ID = 52;
-        public static final int ENCODER_ID = 53;
         public static final int RATCHET_ID = 1;
-        public static final int CURRENT_LIMIT = 40;
-        public static final int SENSOR_TO_DEGREE_RATIO = 1;
-        public static final double ENCODER_ZERO_OFFSET = 0;
+        public static final double CURRENT_LIMIT = 40;
+        public static final double PEAK_VOLTAGE = 6;
+        public static final double SENSOR_TO_DEGREE_RATIO = 1;
         public static final InvertedValue PIVOT_INVERT = InvertedValue.Clockwise_Positive; // TODO SHOP: CHECK ON REAL ROBOT
+        public static final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Coast;
+
+        // encoder configs
+        public static final int ENCODER_ID = 53;
+        public static final double ENCODER_ABSOLUTE_OFFSET = 0;
+        public static final SensorDirectionValue ENCODER_INVERT = SensorDirectionValue.Clockwise_Positive;
 
         // pid
-        public static final double PIVOT_G = 0.39; // TODO: FUNCTION TO MULTIPLY BY COSINE OF PIVOT ANGLE (PERIODICALLY)
-        public static final double PIVOT_V = 2.06;
-        public static final double PIVOT_A = 0.03;
-        public static final double PIVOT_P = 0;
-        public static final double PIVOT_I = 0;
-        public static final double PIVOT_D = 0;
+        public static final double G = 0.39; // TODO: FUNCTION TO MULTIPLY BY COSINE OF PIVOT ANGLE (PERIODICALLY)
+        public static final double V = 2.06;
+        public static final double A = 0.03;
+        public static final double P = 0;
+        public static final double I = 0;
+        public static final double D = 0;
 
         // presets
         public static final double LOWER_LIMIT = 0;
