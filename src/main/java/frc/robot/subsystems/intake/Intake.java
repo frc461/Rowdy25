@@ -77,11 +77,13 @@ public class Intake extends SubsystemBase {
     }
 
     public Command intake() {
-        return Commands.defer(() -> runOnce(() -> setState(currentState == States.INTAKE ? States.IDLE : States.INTAKE)), Set.of(this));
+        return runOnce(() -> setState(currentState == States.INTAKE ? States.IDLE : States.INTAKE));
+//        return Commands.defer(() -> runOnce(() -> setState(currentState == States.INTAKE ? States.IDLE : States.INTAKE)), Set.of(this));
     }
 
     public Command outtake() {
-        return Commands.defer(() -> runOnce(() -> setState(currentState == States.OUTTAKE ? States.IDLE : States.OUTTAKE)), Set.of(this));
+        return runOnce(() -> setState(currentState == States.OUTTAKE ? States.IDLE : States.OUTTAKE));
+//        return Commands.defer(() -> runOnce(() -> setState(currentState == States.OUTTAKE ? States.IDLE : States.OUTTAKE)), Set.of(this));
     }
 
     private void setState(States state) {
@@ -111,6 +113,7 @@ public class Intake extends SubsystemBase {
                     setState(States.HAS_ALGAE);
                     canandcolor.setSettings(currentCanandcolorSettings.setLampLEDBrightness(1.0));
                 } else if (hasCoral()) {
+                    System.out.println("HAS CORAL!!!!!!!");
                     setState(States.IDLE);
                     canandcolor.setSettings(currentCanandcolorSettings.setLampLEDBrightness(1.0));
                 }
