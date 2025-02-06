@@ -17,7 +17,6 @@ import frc.robot.util.FieldUtil;
 public class Elevator extends SubsystemBase {
     private final Pivot pivot;
     private final TalonFX elevator;
-    private final Slot0Configs closedLoopConfig;
     private final MotionMagicExpoVoltage request;
     private final DigitalInput lowerSwitch;
     private double target, accuracy;
@@ -42,8 +41,7 @@ public class Elevator extends SubsystemBase {
                         .withBeepOnBoot(false)
                         .withAllowMusicDurDisable(true))
                 .withSlot0(new Slot0Configs()
-                        .withKG(Constants.ElevatorConstants.G.apply(pivot.getPosition())) // TODO SHOP: NEED S??????
-                        .withKV(Constants.ElevatorConstants.V)
+                        .withKV(Constants.ElevatorConstants.V) // TODO SHOP: NEED S??????
                         .withKA(Constants.ElevatorConstants.A)
                         .withKP(Constants.ElevatorConstants.P)
                         .withKI(Constants.ElevatorConstants.I)
@@ -56,14 +54,6 @@ public class Elevator extends SubsystemBase {
         try (TalonFX elevator2 = new TalonFX(Constants.ElevatorConstants.FOLLOWER_ID)) {
             elevator2.setControl(new Follower(Constants.ElevatorConstants.LEAD_ID, true));
         }
-
-        closedLoopConfig = new Slot0Configs()
-                .withKG(Constants.ElevatorConstants.G.apply(pivot.getPosition())) // TODO SHOP: NEED S??????
-                .withKV(Constants.ElevatorConstants.V)
-                .withKA(Constants.ElevatorConstants.A)
-                .withKP(Constants.ElevatorConstants.P)
-                .withKI(Constants.ElevatorConstants.I)
-                .withKD(Constants.ElevatorConstants.D);
 
         lowerSwitch = new DigitalInput(Constants.ElevatorConstants.LOWER_LIMIT_SWITCH_ID);
 
@@ -99,7 +89,7 @@ public class Elevator extends SubsystemBase {
     public void holdTarget(double height) {
         checkLimitSwitch();
         target = Math.max(Constants.ElevatorConstants.LOWER_LIMIT, Math.min(Constants.ElevatorConstants.UPPER_LIMIT, height));
-        elevator.setControl(request.withPosition(target));
+        elevator.setControl(request.withPosition(target).withFeedForward(Constants.ElevatorConstants.G.apply(pivot.getPosition())));
     }
 
     public void holdTarget() {
@@ -124,7 +114,5 @@ public class Elevator extends SubsystemBase {
         accuracy = target > getPosition() ? getPosition() / target : target / getPosition();
 
         elevatorTelemetry.publishValues();
-
-        elevator.getConfigurator().refresh(closedLoopConfig.withKG(Constants.ElevatorConstants.G.apply(pivot.getPosition())), 0.0); // TODO SHOP: THIS IS REALLY SUS
     }
 }
