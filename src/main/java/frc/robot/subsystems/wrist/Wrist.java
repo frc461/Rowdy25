@@ -14,7 +14,6 @@ import frc.robot.util.ExpUtil;
 public class Wrist extends SubsystemBase {
     private final Pivot pivot;
     private final TalonFX wrist;
-    private final Slot0Configs closedLoopConfig;
     private final MotionMagicExpoVoltage request;
     private double target, error, accuracy;
 
@@ -43,8 +42,7 @@ public class Wrist extends SubsystemBase {
                         .withBeepOnBoot(false)
                         .withAllowMusicDurDisable(true))
                 .withSlot0(new Slot0Configs()
-                        .withKG(Constants.WristConstants.G.apply(getPosition(), pivot.getPosition())) // TODO SHOP: NEED S??????
-                        .withKV(Constants.WristConstants.V)
+                        .withKV(Constants.WristConstants.V) // TODO SHOP: NEED S??????
                         .withKA(Constants.WristConstants.A)
                         .withKP(Constants.WristConstants.P)
                         .withKI(Constants.WristConstants.I)
@@ -53,14 +51,6 @@ public class Wrist extends SubsystemBase {
                         .withMotionMagicCruiseVelocity(0)
                         .withMotionMagicExpo_kV(Constants.WristConstants.V)
                         .withMotionMagicExpo_kA(Constants.WristConstants.A)));
-
-        closedLoopConfig = new Slot0Configs()
-                .withKG(Constants.WristConstants.G.apply(getPosition(), pivot.getPosition()))
-                .withKV(Constants.WristConstants.V)
-                .withKA(Constants.WristConstants.A)
-                .withKP(Constants.WristConstants.P)
-                .withKI(Constants.WristConstants.I)
-                .withKD(Constants.WristConstants.D);
 
         request = new MotionMagicExpoVoltage(0);
 
@@ -83,7 +73,7 @@ public class Wrist extends SubsystemBase {
 
     public void holdTarget(double height) {
         target = Math.max(Constants.WristConstants.LOWER_LIMIT, Math.min(Constants.WristConstants.UPPER_LIMIT, height));
-        wrist.setControl(request.withPosition(target));
+        wrist.setControl(request.withPosition(target).withFeedForward(Constants.WristConstants.G.apply(getPosition(), pivot.getPosition())));
     }
 
     public void holdTarget() {
@@ -108,7 +98,5 @@ public class Wrist extends SubsystemBase {
 
         error = Math.abs(target - getPosition());
         accuracy = target > getPosition() ? getPosition() / target : target / getPosition();
-
-        wrist.getConfigurator().refresh(closedLoopConfig.withKG(Constants.WristConstants.G.apply(getPosition(), pivot.getPosition()))); // TODO SHOP: THIS IS REALLY SUS
     }
 }
