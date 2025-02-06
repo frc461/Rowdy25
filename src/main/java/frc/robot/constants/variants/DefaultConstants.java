@@ -240,7 +240,8 @@ public final class DefaultConstants {
         public static final int MOTOR_ID = 61;
         public static final double CURRENT_LIMIT = 40;
         public static final double PEAK_VOLTAGE = 6;
-        public static final double SENSOR_TO_DEGREE_RATIO = 1.0;
+        public static final double SENSOR_TO_DEGREE_RATIO = 1 / 360.0; // TODO SHOP: TEST THIS VALUE
+        public static final double ROTOR_TO_MECHANISM_RATIO = 11.57;
         public static final InvertedValue MOTOR_INVERT = InvertedValue.Clockwise_Positive; // TODO SHOP: CHECK ON REAL
         public static final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Coast;
 
@@ -250,9 +251,9 @@ public final class DefaultConstants {
         public static final SensorDirectionValue ENCODER_INVERT = SensorDirectionValue.Clockwise_Positive;
 
         // pid
-        public static final double G = 0.21; // TODO: FUNCTION TO MULTIPLY BY COSINE OF WRIST ANGLE (PERIODICALLY)
-        public static final double V = 0.87;
-        public static final double A = 0.01;
+        public static final double G = 0.21; // TODO SHOP: TEST THESE VALUES
+        public static final double V = 5.44 / ROTOR_TO_MECHANISM_RATIO; // 1V / (mech rps) -> 1V / (rotor rps)
+        public static final double A = 0.04 / ROTOR_TO_MECHANISM_RATIO; // 1V / (mech rps^2) -> 1V / (rotor rps^2)
         public static final double P = 0.0;
         public static final double I = 0.0;
         public static final double D = 0.0;

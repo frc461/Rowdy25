@@ -5,20 +5,20 @@ import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 
+import com.ctre.phoenix6.signals.GravityTypeValue;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
 import frc.robot.util.ExpUtil;
 
 public class Wrist extends SubsystemBase {
     private final TalonFX wrist;
-    private final CANcoder encoder;
     private final MotionMagicExpoVoltage request;
     private double target, error, accuracy;
 
     private final WristTelemetry wristTelemetry = new WristTelemetry(this);
 
     public Wrist() {
-        encoder = new CANcoder(Constants.WristConstants.ENCODER_ID); //TODO SHOP: CHECK IF THIS EXISTS
+        CANcoder encoder = new CANcoder(Constants.WristConstants.ENCODER_ID);
         encoder.getConfigurator().apply(new CANcoderConfiguration()
                 .withMagnetSensor(new MagnetSensorConfigs()
                         .withSensorDirection(Constants.WristConstants.ENCODER_INVERT)
@@ -43,7 +43,8 @@ public class Wrist extends SubsystemBase {
                         .withKA(Constants.WristConstants.A)
                         .withKP(Constants.WristConstants.P)
                         .withKI(Constants.WristConstants.I)
-                        .withKD(Constants.WristConstants.D))
+                        .withKD(Constants.WristConstants.D)
+                        .withGravityType(GravityTypeValue.Arm_Cosine))
                 .withMotionMagic(new MotionMagicConfigs()
                         .withMotionMagicCruiseVelocity(0)
                         .withMotionMagicExpo_kV(Constants.WristConstants.V)
