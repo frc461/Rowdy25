@@ -20,23 +20,27 @@ public class IntakeCommand extends Command {
                 } else if (intake.hasCoral()) {
                     System.out.println("HAS CORAL!!!!!!!");
                     intake.setState(Intake.States.IDLE);
+                } else {
+                    intake.setIntakeSpeed(0.75);
                 }
-                intake.setIntakeSpeed(0.75);
             case OUTTAKE:
                 if (!intake.hasAlgae() && !intake.hasCoral()) {
                     intake.setState(Intake.States.IDLE);
+                } else {
+                    intake.setIntakeSpeed(-0.5);
                 }
-                intake.setIntakeSpeed(-0.5);
             case HAS_ALGAE:
                 if (!intake.hasAlgae()) {
                     intake.setState(Intake.States.IDLE);
+                } else {
+                    intake.pulseIntake();
                 }
-                intake.pulseIntake();
             case IDLE:
                 if (intake.hasCoral() || intake.hasAlgae()) {
                     intake.setState(intake.hasAlgae() ? Intake.States.HAS_ALGAE : Intake.States.IDLE);
+                } else {
+                    intake.setIntakeSpeed(0.0);
                 }
-                intake.setIntakeSpeed(0.0);
         }
     }
 }
