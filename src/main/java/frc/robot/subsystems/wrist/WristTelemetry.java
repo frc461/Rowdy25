@@ -27,8 +27,9 @@ public class WristTelemetry {
     }
 
     private void logValues() {
-        DogLog.log("WristPose", wrist.getPosition());
-        DogLog.log("WristTarget", wrist.getTarget());
-        DogLog.log("WristError", wrist.getError());
+        //DogLog.log("WristPose", wrist.getPosition());
+        //DogLog.log("WristTarget", wrist.getTarget());
+        //DogLog.log("WristError", wrist.getError());
+        //DogLog.log("WristLowerSwitchTriggered", wrist.lowerSwitchTriggered());
     }
 }
