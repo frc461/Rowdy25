@@ -243,21 +243,23 @@ public final class DefaultConstants {
         public static final double PEAK_VOLTAGE = 6;
         public static final double SENSOR_TO_DEGREE_RATIO = 1 / 360.0; // TODO SHOP: TEST THIS VALUE
         public static final double ROTOR_TO_MECHANISM_RATIO = 45.3704;
-        public static final InvertedValue MOTOR_INVERT = InvertedValue.Clockwise_Positive; // TODO SHOP: CHECK ON REAL
+        public static final InvertedValue MOTOR_INVERT = InvertedValue.Clockwise_Positive;
         public static final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Coast;
 
         // encoder configs
         public static final int ENCODER_ID = 62;
         public static final double ENCODER_ABSOLUTE_OFFSET = 0;
-        public static final SensorDirectionValue ENCODER_INVERT = SensorDirectionValue.Clockwise_Positive;
+        public static final SensorDirectionValue ENCODER_INVERT = SensorDirectionValue.Clockwise_Positive; // TODO SHOP: CHECK ON REAL
 
         // pid
-        public static final BiFunction<Double, Double, Double> G = (wristDeg, pivotDeg) -> 0.21 * Math.sin(Math.toRadians(wristDeg - (90 - pivotDeg))); // TODO SHOP: TEST THESE VALUES
-        public static final double V = 5.44 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps) -> V / (rotor rps)
-        public static final double A = 0.04 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps^2) -> V / (rotor rps^2)
+        public static final BiFunction<Double, Double, Double> G = (wristDeg, pivotDeg) -> 0.2188 * Math.sin(Math.toRadians(wristDeg - (90 - pivotDeg))); // TODO SHOP: TEST THESE VALUES
+        public static final double V = 5.4444 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps) -> V / (rotor rps)
+        public static final double A = 0.0365 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps^2) -> V / (rotor rps^2)
         public static final double P = 0.0;
         public static final double I = 0.0;
         public static final double D = 0.0;
+        public static final double EXPO_V = V / 0.8; // 80% of the actual max velocity, as it will allocate 1 / 0.8 = 1.25 times the voltage to 1 rps
+        public static final double EXPO_A = A / 0.8; // 80% of the actual max accel
 
         // presets
         public static final double LOWER_LIMIT = 0;  // TODO: WHAT SHOULD WE SET ZERO AS??

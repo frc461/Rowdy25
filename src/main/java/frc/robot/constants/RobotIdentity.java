@@ -170,6 +170,8 @@ public enum RobotIdentity {
         Constants.WristConstants.P = DefaultConstants.WristConstants.P;
         Constants.WristConstants.I = DefaultConstants.WristConstants.I;
         Constants.WristConstants.D = DefaultConstants.WristConstants.D;
+        Constants.WristConstants.EXPO_V = DefaultConstants.WristConstants.EXPO_V;
+        Constants.WristConstants.EXPO_A = DefaultConstants.WristConstants.EXPO_A;
         Constants.WristConstants.LOWER_LIMIT = DefaultConstants.WristConstants.LOWER_LIMIT;
         Constants.WristConstants.UPPER_LIMIT = DefaultConstants.WristConstants.UPPER_LIMIT;
 

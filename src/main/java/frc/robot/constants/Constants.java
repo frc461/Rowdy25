@@ -226,6 +226,8 @@ public final class Constants {
         public static double P;
         public static double I;
         public static double D;
+        public static double EXPO_V;
+        public static double EXPO_A;
 
         // presets
         public static double LOWER_LIMIT;

@@ -19,6 +19,8 @@ public class Wrist extends SubsystemBase {
 
     private final WristTelemetry wristTelemetry = new WristTelemetry(this);
 
+    // TODO: STATES & COMMAND & VOID STATE CHANGERS
+
     public Wrist(Pivot pivot) {
         this.pivot = pivot;
 
@@ -30,7 +32,7 @@ public class Wrist extends SubsystemBase {
 
         wrist = new TalonFX(Constants.WristConstants.MOTOR_ID);
         wrist.getConfigurator().apply(new TalonFXConfiguration()
-                .withVoltage(new VoltageConfigs().withPeakForwardVoltage(Constants.WristConstants.PEAK_VOLTAGE))
+                .withVoltage(new VoltageConfigs().withPeakForwardVoltage(Constants.WristConstants.PEAK_VOLTAGE)) // TODO: DETERMINE VOLTAGE
                 .withFeedback(new FeedbackConfigs().withRemoteCANcoder(encoder)
                         .withSensorToMechanismRatio(Constants.WristConstants.SENSOR_TO_DEGREE_RATIO))
                 .withMotorOutput(new MotorOutputConfigs()
@@ -49,8 +51,8 @@ public class Wrist extends SubsystemBase {
                         .withKD(Constants.WristConstants.D))
                 .withMotionMagic(new MotionMagicConfigs()
                         .withMotionMagicCruiseVelocity(0)
-                        .withMotionMagicExpo_kV(Constants.WristConstants.V)
-                        .withMotionMagicExpo_kA(Constants.WristConstants.A)));
+                        .withMotionMagicExpo_kV(Constants.WristConstants.EXPO_V)
+                        .withMotionMagicExpo_kA(Constants.WristConstants.EXPO_A)));
 
         request = new MotionMagicExpoVoltage(0);
 
