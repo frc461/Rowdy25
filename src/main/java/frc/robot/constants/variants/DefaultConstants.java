@@ -173,12 +173,14 @@ public final class DefaultConstants {
         public static final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Coast;
 
         // pid
-        public static final Function<Double, Double> G = (deg) -> 0.15 * Math.sin(Math.toRadians(deg)); // TODO SHOP: TEST THESE VALUES
-        public static final double V = 8.19 * PULLEY_CIRCUMFERENCE / ROTOR_TO_PULLEY_RATIO; // 1V / (m/s) -> 1V / (rotor rps)
-        public static final double A = 0.02 * PULLEY_CIRCUMFERENCE / ROTOR_TO_PULLEY_RATIO; // 1V / (m/s^2) -> 1V / (rotor rps^2)
+        public static final Function<Double, Double> G = (deg) -> 0.1528 * Math.sin(Math.toRadians(deg)); // TODO SHOP: TEST THESE VALUES
+        public static final double V = 8.1875 * PULLEY_CIRCUMFERENCE / ROTOR_TO_PULLEY_RATIO; // 1V / (m/s) -> 1V / (rotor rps)
+        public static final double A = 0.0206 * PULLEY_CIRCUMFERENCE / ROTOR_TO_PULLEY_RATIO; // 1V / (m/s^2) -> 1V / (rotor rps^2)
         public static final double P = 0.0;
         public static final double I = 0.0;
         public static final double D = 0.0;
+        public static final double EXPO_V = V / 0.8; // 80% of the actual max velocity, as it will allocate 1 / 0.8 = 1.25 times the voltage to 1 rps
+        public static final double EXPO_A = A / 0.8; // 80% of the actual max accel
 
         // presets
         public static final double LOWER_LIMIT = 0;

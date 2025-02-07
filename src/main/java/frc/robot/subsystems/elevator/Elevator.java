@@ -23,13 +23,15 @@ public class Elevator extends SubsystemBase {
 
     private final ElevatorTelemetry elevatorTelemetry = new ElevatorTelemetry(this);
 
+    // TODO: STATES & COMMAND & VOID STATE CHANGERS
+
     public Elevator(Pivot pivot) {
         this.pivot = pivot;
 
         elevator = new TalonFX(Constants.ElevatorConstants.LEAD_ID);
 
         elevator.getConfigurator().apply(new TalonFXConfiguration()
-                .withVoltage(new VoltageConfigs().withPeakForwardVoltage(6))
+                .withVoltage(new VoltageConfigs().withPeakForwardVoltage(Constants.ElevatorConstants.PEAK_VOLTAGE)) // TODO: DETERMINE VOLTAGE
                 .withFeedback(new FeedbackConfigs()
                         .withSensorToMechanismRatio(Constants.ElevatorConstants.ROTOR_TO_PULLEY_RATIO))
                 .withMotorOutput(new MotorOutputConfigs()
@@ -48,8 +50,8 @@ public class Elevator extends SubsystemBase {
                         .withKD(Constants.ElevatorConstants.D))
                 .withMotionMagic(new MotionMagicConfigs()
                         .withMotionMagicCruiseVelocity(0)
-                        .withMotionMagicExpo_kV(Constants.ElevatorConstants.V)
-                        .withMotionMagicExpo_kA(Constants.ElevatorConstants.A)));
+                        .withMotionMagicExpo_kV(Constants.ElevatorConstants.EXPO_V)
+                        .withMotionMagicExpo_kA(Constants.ElevatorConstants.EXPO_A)));
 
         try (TalonFX elevator2 = new TalonFX(Constants.ElevatorConstants.FOLLOWER_ID)) {
             elevator2.setControl(new Follower(Constants.ElevatorConstants.LEAD_ID, true));

@@ -129,6 +129,8 @@ public enum RobotIdentity {
         Constants.ElevatorConstants.P = DefaultConstants.ElevatorConstants.P;
         Constants.ElevatorConstants.I = DefaultConstants.ElevatorConstants.I;
         Constants.ElevatorConstants.D = DefaultConstants.ElevatorConstants.D;
+        Constants.ElevatorConstants.EXPO_V = DefaultConstants.ElevatorConstants.EXPO_V;
+        Constants.ElevatorConstants.EXPO_A = DefaultConstants.ElevatorConstants.EXPO_A;
         Constants.ElevatorConstants.LOWER_LIMIT = DefaultConstants.ElevatorConstants.LOWER_LIMIT;
         Constants.ElevatorConstants.UPPER_LIMIT = DefaultConstants.ElevatorConstants.UPPER_LIMIT;
 
