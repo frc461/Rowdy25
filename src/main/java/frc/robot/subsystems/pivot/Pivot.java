@@ -22,7 +22,6 @@ import frc.robot.util.Lights;
 public class Pivot extends SubsystemBase {
     private final TalonFX pivot;
     private final MotionMagicExpoVoltage request;
-    private final ServoHub servoHub;
     private final ServoChannel ratchet;
     private double target, error, accuracy;
     private boolean ratcheted;
@@ -30,11 +29,11 @@ public class Pivot extends SubsystemBase {
     private final PivotTelemetry pivotTelemetry = new PivotTelemetry(this);
 
     public Pivot() {
-        CANcoder encoder = new CANcoder(Constants.PivotConstants.ENCODER_ID); //TODO SHOP: CHECK IF THIS EXISTS
+        CANcoder encoder = new CANcoder(Constants.PivotConstants.ENCODER_ID);
         encoder.getConfigurator().apply(new CANcoderConfiguration()
                 .withMagnetSensor(new MagnetSensorConfigs()
                         .withSensorDirection(Constants.PivotConstants.ENCODER_INVERT)
-                        .withMagnetOffset(Constants.PivotConstants.ENCODER_ABSOLUTE_OFFSET))); // TODO SHOP: CHECK AND POTENTIALLY ADD MORE CONFIGS
+                        .withMagnetOffset(Constants.PivotConstants.ENCODER_ABSOLUTE_OFFSET)));
 
         pivot = new TalonFX(Constants.PivotConstants.LEAD_ID);
         pivot.getConfigurator().apply(new TalonFXConfiguration()
@@ -50,7 +49,7 @@ public class Pivot extends SubsystemBase {
                         .withBeepOnBoot(false)
                         .withAllowMusicDurDisable(true))
                 .withSlot0(new Slot0Configs()
-                        .withKG(Constants.PivotConstants.G) // TODO SHOP: NEED S??????
+                        .withKG(Constants.PivotConstants.G)
                         .withKV(Constants.PivotConstants.V)
                         .withKA(Constants.PivotConstants.A)
                         .withKP(Constants.PivotConstants.P)
@@ -59,16 +58,14 @@ public class Pivot extends SubsystemBase {
                         .withGravityType(GravityTypeValue.Arm_Cosine))
                 .withMotionMagic(new MotionMagicConfigs()
                         .withMotionMagicCruiseVelocity(0)
-                        .withMotionMagicExpo_kV(Constants.PivotConstants.V)
-                        .withMotionMagicExpo_kA(Constants.PivotConstants.A)));
+                        .withMotionMagicExpo_kV(Constants.PivotConstants.EXPO_V)
+                        .withMotionMagicExpo_kA(Constants.PivotConstants.EXPO_A)));
 
         try (TalonFX pivot2 = new TalonFX(Constants.PivotConstants.FOLLOWER_ID)) {
             pivot2.setControl(new Follower(Constants.PivotConstants.LEAD_ID, true));
         }
 
-        servoHub = new ServoHub(Constants.PivotConstants.SERVO_HUB_ID);
-
-        ratchet = servoHub.getServoChannel(ServoChannel.ChannelId.kChannelId0);
+        ratchet = new ServoHub(Constants.PivotConstants.SERVO_HUB_ID).getServoChannel(ServoChannel.ChannelId.kChannelId0);
         ratchet.setEnabled(true);
         ratchet.setPowered(true);
 
