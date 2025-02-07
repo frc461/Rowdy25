@@ -28,6 +28,8 @@ public class Pivot extends SubsystemBase {
 
     private final PivotTelemetry pivotTelemetry = new PivotTelemetry(this);
 
+    // TODO: STATES & COMMAND & VOID STATE CHANGERS
+
     public Pivot() {
         CANcoder encoder = new CANcoder(Constants.PivotConstants.ENCODER_ID);
         encoder.getConfigurator().apply(new CANcoderConfiguration()
@@ -37,7 +39,7 @@ public class Pivot extends SubsystemBase {
 
         pivot = new TalonFX(Constants.PivotConstants.LEAD_ID);
         pivot.getConfigurator().apply(new TalonFXConfiguration()
-                .withVoltage(new VoltageConfigs().withPeakForwardVoltage(Constants.PivotConstants.PEAK_VOLTAGE))
+                .withVoltage(new VoltageConfigs().withPeakForwardVoltage(Constants.PivotConstants.PEAK_VOLTAGE)) // TODO: DETERMINE VOLTAGE
                 .withFeedback(new FeedbackConfigs().withRemoteCANcoder(encoder)
                         .withSensorToMechanismRatio(Constants.PivotConstants.SENSOR_TO_DEGREE_RATIO))
                 .withMotorOutput(new MotorOutputConfigs()
@@ -49,7 +51,7 @@ public class Pivot extends SubsystemBase {
                         .withBeepOnBoot(false)
                         .withAllowMusicDurDisable(true))
                 .withSlot0(new Slot0Configs()
-                        .withKG(Constants.PivotConstants.G)
+                        .withKG(Constants.PivotConstants.G) // TODO SHOP: NEED S??????
                         .withKV(Constants.PivotConstants.V)
                         .withKA(Constants.PivotConstants.A)
                         .withKP(Constants.PivotConstants.P)
