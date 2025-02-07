@@ -182,6 +182,7 @@ public final class Constants {
         // motor configs
         public static int LEAD_ID;
         public static int FOLLOWER_ID;
+        public static int SERVO_HUB_ID;
         public static int RATCHET_ID;
         public static double CURRENT_LIMIT;
         public static double PEAK_VOLTAGE;
@@ -213,8 +214,8 @@ public final class Constants {
         public static double STOW_POSITION;
         public static double TOLERANCE;
 
-        public static double RATCHET_ON;
-        public static double RATCHET_OFF;
+        public static int RATCHET_ON;
+        public static int RATCHET_OFF;
     }
 
     public final static class WristConstants {

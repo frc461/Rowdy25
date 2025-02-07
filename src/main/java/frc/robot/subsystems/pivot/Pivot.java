@@ -9,8 +9,11 @@ import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
+import com.revrobotics.servohub.ServoChannel;
+import com.revrobotics.servohub.ServoHub;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Servo;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
 import frc.robot.util.ExpUtil;
@@ -19,7 +22,8 @@ import frc.robot.util.Lights;
 public class Pivot extends SubsystemBase {
     private final TalonFX pivot;
     private final MotionMagicExpoVoltage request;
-    private final Servo ratchet;
+    private final ServoHub servoHub;
+    private final ServoChannel ratchet;
     private double target, error, accuracy;
     private boolean ratcheted;
 
@@ -62,8 +66,11 @@ public class Pivot extends SubsystemBase {
             pivot2.setControl(new Follower(Constants.PivotConstants.LEAD_ID, true));
         }
 
-        ratchet = new Servo(Constants.PivotConstants.RATCHET_ID);
-//        ratchet.set(Constants.PivotConstants.RATCHET_ON);
+        servoHub = new ServoHub(Constants.PivotConstants.SERVO_HUB_ID);
+
+        ratchet = servoHub.getServoChannel(ServoChannel.ChannelId.kChannelId0);
+        ratchet.setEnabled(true);
+        ratchet.setPowered(true);
 
         request = new MotionMagicExpoVoltage(0);
 
@@ -87,7 +94,7 @@ public class Pivot extends SubsystemBase {
     }
 
     public double getRatchetValue() {
-        return ratchet.get();
+        return ratchet.getPulseWidth();
     }
 
     public boolean isRatcheted() {
@@ -100,7 +107,7 @@ public class Pivot extends SubsystemBase {
 
     public void setRatchet(boolean toggle) {
         ratcheted = toggle;
-        ratchet.set(ratcheted ?
+        ratchet.setPulseWidth(ratcheted ?
                 Constants.PivotConstants.RATCHET_ON :
                 Constants.PivotConstants.RATCHET_OFF
         );
@@ -134,9 +141,9 @@ public class Pivot extends SubsystemBase {
         Lights.setLights((Math.abs(getPosition() - Constants.PivotConstants.STOW_POSITION) <= Constants.PivotConstants.TOLERANCE) && DriverStation.isDisabled());
 
         if (ratcheted) {
-            ratchet.set(Constants.PivotConstants.RATCHET_ON) ;
+            ratchet.setPulseWidth(Constants.PivotConstants.RATCHET_ON) ;
         } else {
-            ratchet.set(Constants.PivotConstants.RATCHET_OFF);
+            ratchet.setPulseWidth(Constants.PivotConstants.RATCHET_OFF);
         }
 
         error = Math.abs(target - getPosition());
