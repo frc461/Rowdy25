@@ -77,14 +77,12 @@ public class Intake extends SubsystemBase {
         return new IntakeCommand(this);
     }
 
-    public Command toggleIntakeState() {
-        return runOnce(() -> setState(currentState == States.INTAKE ? States.IDLE : States.INTAKE));
-//        return Commands.defer(() -> runOnce(() -> setState(currentState == States.INTAKE ? States.IDLE : States.INTAKE)), Set.of(this));
+    public void toggleIntakeState() {
+        setState(currentState == States.INTAKE ? States.IDLE : States.INTAKE);
     }
 
-    public Command toggleOuttakeState() {
-        return runOnce(() -> setState(currentState == States.OUTTAKE ? States.IDLE : States.OUTTAKE));
-//        return Commands.defer(() -> runOnce(() -> setState(currentState == States.OUTTAKE ? States.IDLE : States.OUTTAKE)), Set.of(this));
+    public void toggleOuttakeState() {
+        setState(currentState == States.OUTTAKE ? States.IDLE : States.OUTTAKE);
     }
 
     public void setState(States state) {
