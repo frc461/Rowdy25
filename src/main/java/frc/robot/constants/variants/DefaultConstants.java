@@ -217,15 +217,15 @@ public final class DefaultConstants {
         public static final int RATCHET_CHANNEL = 0;
         public static final double CURRENT_LIMIT = 40;
         public static final double PEAK_VOLTAGE = 6;
-        public static final double SENSOR_TO_DEGREE_RATIO = 1 / 360.0; // TODO SHOP: TEST THIS VALUE
+        public static final double SENSOR_TO_DEGREE_RATIO = 1 / 360.0;
         public static final double ROTOR_TO_MECHANISM_RATIO = 107.6923;
         public static final InvertedValue PIVOT_INVERT = InvertedValue.Clockwise_Positive; // TODO SHOP: CHECK ON REAL ROBOT
         public static final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Coast;
 
         // encoder configs
         public static final int ENCODER_ID = 53;
-        public static final double ENCODER_ABSOLUTE_OFFSET = 0;
-        public static final SensorDirectionValue ENCODER_INVERT = SensorDirectionValue.Clockwise_Positive;
+        public static final double ENCODER_ABSOLUTE_OFFSET = 0.07861328125;
+        public static final SensorDirectionValue ENCODER_INVERT = SensorDirectionValue.CounterClockwise_Positive;
 
         // pid
         public static final double G = 0.39; // TODO SHOP: TEST THESE VALUES
