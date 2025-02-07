@@ -205,7 +205,8 @@ public final class DefaultConstants {
         // motor configs
         public static final int LEAD_ID = 51;
         public static final int FOLLOWER_ID = 52;
-        public static final int RATCHET_ID = 0;
+        public static final int SERVO_HUB_ID = 54;
+        public static final int RATCHET_CHANNEL = 0;
         public static final double CURRENT_LIMIT = 40;
         public static final double PEAK_VOLTAGE = 6;
         public static final double SENSOR_TO_DEGREE_RATIO = 1 / 360.0; // TODO SHOP: TEST THIS VALUE
@@ -237,8 +238,8 @@ public final class DefaultConstants {
         public static final double STOW_POSITION = 0;
         public static final double TOLERANCE = 0;
 
-        public static final double RATCHET_ON = 0;
-        public static final double RATCHET_OFF = 0;
+        public static final int RATCHET_ON = 1050;
+        public static final int RATCHET_OFF = 1200;
     }
 
     public final static class WristConstants {
