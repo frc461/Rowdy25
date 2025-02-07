@@ -29,6 +29,10 @@ public class Pivot extends SubsystemBase {
     private final PivotTelemetry pivotTelemetry = new PivotTelemetry(this);
 
     // TODO: STATES & COMMAND & VOID STATE CHANGERS
+    // We want states for all pickup and scoring locations
+    // Use the constants we have already created in default constants as the positions the pivot should go to for now (they are all 0)`
+    // We need a default command (in the commands folder) that can change states while also accepting joystick inputs for manual control
+    // State changers should go back to stow position if a button is pressed twice (just like the intake)
 
     public Pivot() {
         CANcoder encoder = new CANcoder(Constants.PivotConstants.ENCODER_ID);
