@@ -170,6 +170,8 @@ public enum RobotIdentity {
         Constants.PivotConstants.P = DefaultConstants.PivotConstants.P;
         Constants.PivotConstants.I = DefaultConstants.PivotConstants.I;
         Constants.PivotConstants.D = DefaultConstants.PivotConstants.D;
+        Constants.PivotConstants.EXPO_V = DefaultConstants.PivotConstants.EXPO_V;
+        Constants.PivotConstants.EXPO_A = DefaultConstants.PivotConstants.EXPO_A;
         Constants.PivotConstants.LOWER_LIMIT = DefaultConstants.PivotConstants.LOWER_LIMIT;
         Constants.PivotConstants.UPPER_LIMIT = DefaultConstants.PivotConstants.UPPER_LIMIT;
         Constants.PivotConstants.STOW_POSITION = DefaultConstants.PivotConstants.STOW_POSITION;
