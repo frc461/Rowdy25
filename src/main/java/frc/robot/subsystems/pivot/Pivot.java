@@ -5,89 +5,136 @@ import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.ctre.phoenix6.signals.SensorDirectionValue;
+import com.ctre.phoenix6.signals.GravityTypeValue;
 
-import edu.wpi.first.wpilibj.DigitalInput;
+import com.revrobotics.servohub.ServoChannel;
+import com.revrobotics.servohub.ServoHub;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
 import frc.robot.util.ExpUtil;
 import frc.robot.util.Lights;
 
 public class Pivot extends SubsystemBase {
+    public enum State {
+        MANUAL(0.0),
+        STOW(Constants.PivotConstants.STOW_POSITION),
+        SCORE_CORAL(Constants.PivotConstants.SCORE_CORAL),
+        SCORE_ALGAE(Constants.PivotConstants.SCORE_ALGAE),
+        GROUND_CORAL(Constants.PivotConstants.GROUND_CORAL),
+        GROUND_ALGAE(Constants.PivotConstants.GROUND_ALGAE),
+        CORAL_STATION(Constants.PivotConstants.CORAL_STATION);
+
+        private final double position;
+
+        State(double position) {
+            this.position = position;
+        }
+    };
+
     private final TalonFX pivot;
-    private final CANcoder encoder;
+    private State currentState;
     private final MotionMagicExpoVoltage request;
-    private final DigitalInput lowerLimitSwitch; // TODO SHOP: ABSOLUTE ENCODERS, LIMIT SWITCHES NOT NEEDED
-    private final Servo ratchet;
-    private double target, error, accuracy;
+    private final ServoChannel ratchet;
+    private double error, accuracy;
     private boolean ratcheted;
 
     private final PivotTelemetry pivotTelemetry = new PivotTelemetry(this);
 
+    // TODO: STATES & COMMAND & VOID STATE CHANGERS
+    // We want states for all pickup and scoring locations
+    // Use the constants we have already created in default constants as the positions the pivot should go to for now (they are all 0)`
+    // We need a default command (in the commands folder) that can change states while also accepting joystick inputs for manual control
+    // State changers should go back to stow position if a button is pressed twice (just like the intake)
+
     public Pivot() {
-        pivot = new TalonFX(Constants.PivotConstants.LEAD_ID);
-        encoder = new CANcoder(Constants.PivotConstants.ENCODER_ID); //TODO SHOP: CHECK IF THIS EXISTS
-
+        CANcoder encoder = new CANcoder(Constants.PivotConstants.ENCODER_ID);
         encoder.getConfigurator().apply(new CANcoderConfiguration()
-                .withMagnetSensor(new MagnetSensorConfigs().withSensorDirection(SensorDirectionValue.Clockwise_Positive))); // TODO SHOP: CHECK AND POTENTIALLY ADD MORE CONFIGS
+                .withMagnetSensor(new MagnetSensorConfigs()
+                        .withSensorDirection(Constants.PivotConstants.ENCODER_INVERT)
+                        .withMagnetOffset(Constants.PivotConstants.ENCODER_ABSOLUTE_OFFSET)));
 
+        pivot = new TalonFX(Constants.PivotConstants.LEAD_ID);
         pivot.getConfigurator().apply(new TalonFXConfiguration()
-                .withVoltage(new VoltageConfigs().withPeakForwardVoltage(6))
-                .withFeedback(new FeedbackConfigs().withRemoteCANcoder(encoder))
+                .withFeedback(new FeedbackConfigs().withRemoteCANcoder(encoder)
+                        .withSensorToMechanismRatio(Constants.PivotConstants.SENSOR_TO_DEGREE_RATIO))
                 .withMotorOutput(new MotorOutputConfigs()
                         .withInverted(Constants.PivotConstants.PIVOT_INVERT)
-                        .withNeutralMode(NeutralModeValue.Coast))
+                        .withNeutralMode(Constants.PivotConstants.NEUTRAL_MODE))
                 .withCurrentLimits(new CurrentLimitsConfigs()
                         .withSupplyCurrentLimit(Constants.PivotConstants.CURRENT_LIMIT))
                 .withAudio(new AudioConfigs().withBeepOnConfig(false)
                         .withBeepOnBoot(false)
                         .withAllowMusicDurDisable(true))
                 .withSlot0(new Slot0Configs()
-                        .withKS(Constants.PivotConstants.PIVOT_S) // TODO SHOP: NEED G??????
-                        .withKV(Constants.PivotConstants.PIVOT_V)
-                        .withKA(Constants.PivotConstants.PIVOT_A)
-                        .withKP(Constants.PivotConstants.PIVOT_P)
-                        .withKI(Constants.PivotConstants.PIVOT_I)
-                        .withKD(Constants.PivotConstants.PIVOT_D))
+                        .withKG(Constants.PivotConstants.G)
+                        .withKV(Constants.PivotConstants.V) // TODO SHOP: NEED S??????
+                        .withKA(Constants.PivotConstants.A)
+                        .withKP(Constants.PivotConstants.P)
+                        .withKI(Constants.PivotConstants.I)
+                        .withKD(Constants.PivotConstants.D)
+                        .withGravityType(GravityTypeValue.Arm_Cosine))
                 .withMotionMagic(new MotionMagicConfigs()
                         .withMotionMagicCruiseVelocity(0)
-                        .withMotionMagicExpo_kV(Constants.PivotConstants.PIVOT_V)
-                        .withMotionMagicExpo_kA(Constants.PivotConstants.PIVOT_A)));
+                        .withMotionMagicExpo_kV(Constants.PivotConstants.EXPO_V)
+                        .withMotionMagicExpo_kA(Constants.PivotConstants.EXPO_A)));
 
         try (TalonFX pivot2 = new TalonFX(Constants.PivotConstants.FOLLOWER_ID)) {
             pivot2.setControl(new Follower(Constants.PivotConstants.LEAD_ID, true));
         }
 
-        lowerLimitSwitch = new DigitalInput(Constants.PivotConstants.LOWER_LIMIT_SWITCH_ID);
-        ratchet = new Servo(Constants.PivotConstants.RATCHET_ID);
-        ratchet.set(Constants.PivotConstants.RATCHET_ON);
+        currentState = State.STOW;
+
+        ratchet = new ServoHub(Constants.PivotConstants.SERVO_HUB_ID).getServoChannel(ServoChannel.ChannelId.kChannelId0);
+        ratchet.setEnabled(true);
+        ratchet.setPowered(true);
 
         request = new MotionMagicExpoVoltage(0);
 
         ratcheted = true;
 
-        target = 0.0;
         error = 0.0;
         accuracy = 1.0;
     }
 
-    public double getPosition() { 
+    public State getState() {
+        return currentState;
+    }
+
+    public double getPosition() {
         return pivot.getPosition().getValueAsDouble();
     }
 
     public double getTarget() {
-        return target;
+        return getState() == State.MANUAL ? getPosition() : getState().position;
     }
 
     public double getError() {
         return error;
     }
 
+    public double getRatchetValue() {
+        return ratchet.getPulseWidth();
+    }
+
     public boolean isRatcheted() {
         return ratcheted;
+    }
+
+    public void setManualState() {
+        setState(State.MANUAL);
+    }
+
+    public void toggleScoreCoralState() {
+        setState(currentState == State.SCORE_CORAL ? State.STOW : State.SCORE_CORAL);
+    }
+
+    public void toggleScoreAlgaeState() {
+        setState(currentState == State.SCORE_ALGAE ? State.STOW : State.SCORE_ALGAE);
+    }
+
+    private void setState(State currentState) {
+        this.currentState = currentState;
     }
 
     public void toggleRatchet() {
@@ -96,34 +143,18 @@ public class Pivot extends SubsystemBase {
 
     public void setRatchet(boolean toggle) {
         ratcheted = toggle;
-        ratchet.set(ratcheted ?
+        ratchet.setPulseWidth(ratcheted ?
                 Constants.PivotConstants.RATCHET_ON :
                 Constants.PivotConstants.RATCHET_OFF
         );
     }
 
-    public boolean lowerSwitchTriggered() {
-        return !lowerLimitSwitch.get();
-    }
-
-    public void checkLimitSwitch() {
-       if (lowerSwitchTriggered() || (!lowerSwitchTriggered() && getPosition() <= Constants.PivotConstants.LOWER_LIMIT)) {
-           pivot.setPosition(Constants.PivotConstants.LOWER_LIMIT);
-       }
-    }
-
-    public void holdTarget(double height) {
-        checkLimitSwitch();
-        target = Math.max(Constants.PivotConstants.LOWER_LIMIT, Math.min(Constants.PivotConstants.UPPER_LIMIT, height));
-        pivot.setControl(request.withPosition(target));
-    }
-
     public void holdTarget() {
-        holdTarget(target);
+        pivot.setControl(request.withPosition(getTarget()));;
     }
+
 
     public void movePivot(double axisValue) {
-        checkLimitSwitch();
         // TODO SHOP: TUNE CURBING VALUE
         if (axisValue == 0) {
             holdTarget();
@@ -131,23 +162,22 @@ public class Pivot extends SubsystemBase {
             pivot.set(axisValue > 0
                     ? axisValue * ExpUtil.output(Constants.PivotConstants.UPPER_LIMIT - getPosition(), 1, 5, 10)
                     : axisValue * ExpUtil.output(getPosition() - Constants.PivotConstants.LOWER_LIMIT, 1, 5, 10));
-            target = getPosition();
         }
     }
 
     @Override
     public void periodic() {
+        pivotTelemetry.publishValues();
+
         Lights.setLights((Math.abs(getPosition() - Constants.PivotConstants.STOW_POSITION) <= Constants.PivotConstants.TOLERANCE) && DriverStation.isDisabled());
 
         if (ratcheted) {
-            ratchet.set(Constants.PivotConstants.RATCHET_ON) ;
+            ratchet.setPulseWidth(Constants.PivotConstants.RATCHET_ON) ;
         } else {
-            ratchet.set(Constants.PivotConstants.RATCHET_OFF);
+            ratchet.setPulseWidth(Constants.PivotConstants.RATCHET_OFF);
         }
 
-        error = Math.abs(target - getPosition());
-        accuracy = target > getPosition() ? getPosition() / target : target / getPosition();
-
-        pivotTelemetry.publishValues();
+        error = Math.abs(getTarget() - getPosition());
+        accuracy = getTarget() > getPosition() ? getPosition() / getTarget() : getTarget() / getPosition();
     }
 }
