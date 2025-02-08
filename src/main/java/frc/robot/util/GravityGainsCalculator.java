@@ -3,7 +3,7 @@ package frc.robot.util;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 
-public class GravityGainsCalculator {
+public class GravityGainsCalculator { // TODO: IMPLEMENT FOR PIVOT GRAVITY GAINS
     public static void main(String[] args) {
 
         Translation2d pivotAxisPosition = new Translation2d(-9.417377, 9.257139); // CONSTANT

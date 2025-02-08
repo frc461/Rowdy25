@@ -229,13 +229,13 @@ public final class DefaultConstants {
 
         // pid
         public static final double G = 0.2269 / 2; // TODO SHOP: TEST THESE VALUES
-        public static final double V = 12.9231 / 2 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps) -> V / (rotor rps)
+        public static final double V = 7.75 / 2 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps) -> V / (rotor rps)
         public static final double A = 0.0474 / 2 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps^2) -> V / (rotor rps^2)
         public static final double P = 0.25;
         public static final double I = 0;
-        public static final double D = 0;
-        public static final double EXPO_V = V / 0.5; // 50% of the actual max velocity, as it will allocate 1 / 0.8 = 1.25 times the voltage to 1 rps
-        public static final double EXPO_A = A / 0.5; // 80% of the actual max acceleration
+        public static final double D = 0.01;
+        public static final double EXPO_V = V / 0.6; // 50% of the actual max velocity, as it will allocate 1 / 0.8 = 1.25 times the voltage to 1 rps
+        public static final double EXPO_A = A / 0.6; // 50% of the actual max acceleration
 
         // presets
         public static final double LOWER_LIMIT = 0;
