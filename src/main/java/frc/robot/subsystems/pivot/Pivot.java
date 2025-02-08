@@ -65,7 +65,6 @@ public class Pivot extends SubsystemBase {
 
         pivot = new TalonFX(Constants.PivotConstants.LEAD_ID);
         pivot.getConfigurator().apply(new TalonFXConfiguration()
-                .withVoltage(new VoltageConfigs().withPeakForwardVoltage(Constants.PivotConstants.PEAK_VOLTAGE)) // TODO: DETERMINE VOLTAGE
                 .withFeedback(new FeedbackConfigs().withRemoteCANcoder(encoder)
                         .withSensorToMechanismRatio(Constants.PivotConstants.SENSOR_TO_DEGREE_RATIO))
                 .withMotorOutput(new MotorOutputConfigs()
