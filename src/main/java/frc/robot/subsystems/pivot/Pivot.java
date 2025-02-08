@@ -134,6 +134,10 @@ public class Pivot extends SubsystemBase {
         setState(state == State.SCORE_CORAL ? State.STOW : State.SCORE_CORAL);
     }
 
+    public void toggleScoreAlgaeState() {
+        setState(state == State.SCORE_ALGAE ? State.STOW : State.SCORE_ALGAE);
+    }
+
     private void setState(State state) {
         this.state = state;
     }
@@ -158,6 +162,7 @@ public class Pivot extends SubsystemBase {
     public void holdTarget() {
         holdTarget(target);
     }
+
 
     public void movePivot(double axisValue) {
         // TODO SHOP: TUNE CURBING VALUE
