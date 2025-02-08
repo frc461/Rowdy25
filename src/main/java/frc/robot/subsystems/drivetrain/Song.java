@@ -19,7 +19,7 @@ public class Song {
     public static final Song[] startupSongs = new Song[] {
             new Song("mario.chrp", new int[] {5, 2, 1}),
             new Song("underground-2.chrp", new int[] {8}),
-            new Song("your phone linging.chrp", new int[] {4, 4}),
+            new Song("your phone linging.chrp", new int[] {2, 2, 2, 2}),
     };
 
     public static final Song[] disableSongs = new Song[] {
