@@ -30,6 +30,7 @@ import frc.robot.util.ExpUtil;
 import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -113,28 +114,28 @@ public final class DefaultConstants {
         public static final class PhotonConstants {
             // TODO SHOP: TEST CAMERAS TO CENTER OF ROBOT OFFSETS
             public static final String BW_TOP_RIGHT_NAME = "ArducamBW";
-            public static final double BW_TOP_RIGHT_FORWARD = 0.0;
-            public static final double BW_TOP_RIGHT_LEFT = 0.0;
-            public static final double BW_TOP_RIGHT_UP = 0.0;
+            public static final double BW_TOP_RIGHT_FORWARD = 0.404;
+            public static final double BW_TOP_RIGHT_LEFT = -0.291321;
+            public static final double BW_TOP_RIGHT_UP = 0.279631;
             public static final double BW_TOP_RIGHT_ROLL = 0.0;
-            public static final double BW_TOP_RIGHT_PITCH = 0.0;
-            public static final double BW_TOP_RIGHT_YAW = 0.0;
+            public static final double BW_TOP_RIGHT_PITCH = -5.0;
+            public static final double BW_TOP_RIGHT_YAW = -30.0;
 
             public static final String BW_TOP_LEFT_NAME = "ArducamBW2";
-            public static final double BW_TOP_LEFT_FORWARD = 0.0;
-            public static final double BW_TOP_LEFT_LEFT = 0.0;
-            public static final double BW_TOP_LEFT_UP = 0.0;
+            public static final double BW_TOP_LEFT_FORWARD = 0.404;
+            public static final double BW_TOP_LEFT_LEFT = 0.291321;
+            public static final double BW_TOP_LEFT_UP = 0.279631;
             public static final double BW_TOP_LEFT_ROLL = 0.0;
-            public static final double BW_TOP_LEFT_PITCH = 0.0;
-            public static final double BW_TOP_LEFT_YAW = 0.0;
+            public static final double BW_TOP_LEFT_PITCH = -5.0;
+            public static final double BW_TOP_LEFT_YAW = 30.0;
 
             public static final String BW_BACK_NAME = "ArducamBW3";
-            public static final double BW_BACK_FORWARD = 0.0;
-            public static final double BW_BACK_LEFT = 0.0;
-            public static final double BW_BACK_UP = 0.0;
+            public static final double BW_BACK_FORWARD = -0.315691;
+            public static final double BW_BACK_LEFT = 0.266709;
+            public static final double BW_BACK_UP = 0.186127;
             public static final double BW_BACK_ROLL = 0.0;
-            public static final double BW_BACK_PITCH = 0.0;
-            public static final double BW_BACK_YAW = 0.0;
+            public static final double BW_BACK_PITCH = -8.0;
+            public static final double BW_BACK_YAW = 180;
 
             public static final double BW_MAX_TAG_CLEAR_DIST = 3;
 
@@ -227,8 +228,8 @@ public final class DefaultConstants {
         public static final double P = 0.15;
         public static final double I = 0;
         public static final double D = 0.01;
-        public static final double EXPO_V = V / 0.75; // 50% of the actual max velocity, as it will allocate 1 / 0.8 = 1.25 times the voltage to 1 rps
-        public static final double EXPO_A = A / 0.005; // 50% of the actual max acceleration
+        public static final double EXPO_V = V / 0.75; // 75% of the actual max velocity, as it will allocate 1 / 0.8 = 1.25 times the voltage to 1 rps
+        public static final double EXPO_A = A / 0.005; // 0.5% of the actual max acceleration
 
         // presets
         public static final double LOWER_LIMIT = 0;
@@ -246,26 +247,34 @@ public final class DefaultConstants {
     }
 
     public final static class WristConstants {
-        // basic configs
+        // motor configs
         public static final int MOTOR_ID = 61;
+        public static final double CURRENT_LIMIT = 40;
+        public static final double PEAK_VOLTAGE = 6;
+        public static final double SENSOR_TO_DEGREE_RATIO = 1 / 360.0; // TODO SHOP: TEST THIS VALUE
+        public static final double ROTOR_TO_MECHANISM_RATIO = 45.3704;
+        public static final InvertedValue MOTOR_INVERT = InvertedValue.Clockwise_Positive;
+        public static final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Coast;
+
+        // encoder configs
         public static final int ENCODER_ID = 62;
-        public static final int LOWER_LIMIT_SWITCH_ID = 6;
-        public static final int UPPER_LIMIT_SWITCH_ID = 0;
-        public static final int CURRENT_LIMIT = 35;
-        public static final InvertedValue WRIST_INVERT = InvertedValue.Clockwise_Positive; // TODO SHOP: CHECK ON REAL ROBOT
+        public static final double ENCODER_ABSOLUTE_OFFSET = -0.33154229058;
+        public static final SensorDirectionValue ENCODER_INVERT = SensorDirectionValue.Clockwise_Positive; // TODO SHOP: CHECK ON REAL
 
         // pid
-        public static final double WRIST_S = 0.0;
-        public static final double WRIST_V = 0.0;
-        public static final double WRIST_A = 0.0;
-        public static final double WRIST_P = 0.0;
-        public static final double WRIST_I = 0.0;
-        public static final double WRIST_D = 0.0;
+        public static final BiFunction<Double, Double, Double> G = (wristDeg, pivotDeg) -> 0.2188 * Math.sin(Math.toRadians(wristDeg - (90 - pivotDeg))); // TODO SHOP: TEST THESE VALUES
+        public static final double V = 0.75 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps) -> V / (rotor rps)
+        public static final double A = 0.025 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps^2) -> V / (rotor rps^2)
+        public static final double P = 0.1;
+        public static final double I = 0.0;
+        public static final double D = 0.0;
+        public static final double EXPO_V = V / 0.8; // 30% of the actual max velocity, as it will allocate 1 / 0.8 = 1.25 times the voltage to 1 rps
+        public static final double EXPO_A = A / 0.05; // 0.5% of the actual max accel
 
         // presets
-        public static final double LOWER_LIMIT = 0;
+        public static final double LOWER_LIMIT = 0;  // TODO: WHAT SHOULD WE SET ZERO AS??
         public static final double UPPER_LIMIT = 20;
-        public static final double GROUND_CORAL = 0;
+        public static final double GROUND_CORAL = 90;
         public static final double GROUND_ALGAE = 0;
         public static final double L1_CORAL = 0;
         public static final double L2_L3_CORAL = 0;
@@ -273,6 +282,7 @@ public final class DefaultConstants {
         public static final double REEF_ALGAE = 0;
         public static final double PROCESSOR = 0;
         public static final double NET = 0;
+        public static final double STOW_POSITION = 45;
 
     }
 
@@ -284,7 +294,6 @@ public final class DefaultConstants {
         public static final double TRANSLATION_ALIGNMENT_CONTROLLER_D = 0.002;
 
         public static final Function<Double, Double> PATH_MANUAL_TRANSLATION_CONTROLLER = x -> ExpUtil.output(x, 4.0, 0.8, 6);
-
         public static final double ANGULAR_POSITION_P = 0.035;
         public static final double ANGULAR_POSITION_D = 0.0012;
 
