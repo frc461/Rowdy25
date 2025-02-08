@@ -17,32 +17,26 @@ import frc.robot.util.Lights;
 
 public class Pivot extends SubsystemBase {
     public enum State {
-        MANUAL,
-        STOW,
-        SCORE_CORAL,
-        SCORE_ALGAE,
-        GROUND_CORAL,
-        GROUND_ALGAE,
-        CORAL_STATION;
+        MANUAL(0.0),
+        STOW(Constants.PivotConstants.STOW_POSITION),
+        SCORE_CORAL(Constants.PivotConstants.SCORE_CORAL),
+        SCORE_ALGAE(Constants.PivotConstants.SCORE_ALGAE),
+        GROUND_CORAL(Constants.PivotConstants.GROUND_CORAL),
+        GROUND_ALGAE(Constants.PivotConstants.GROUND_ALGAE),
+        CORAL_STATION(Constants.PivotConstants.CORAL_STATION);
 
-        public double getPosition() {
-            return switch (this) {
-                case SCORE_CORAL -> Constants.PivotConstants.SCORE_CORAL;
-                case SCORE_ALGAE -> Constants.PivotConstants.SCORE_ALGAE;
-                case GROUND_CORAL -> Constants.PivotConstants.GROUND_CORAL;
-                case GROUND_ALGAE -> Constants.PivotConstants.GROUND_ALGAE;
-                case CORAL_STATION -> Constants.PivotConstants.CORAL_STATION;
-                default -> Constants.PivotConstants.STOW_POSITION;
-            };
+        private final double position;
+
+        State(double position) {
+            this.position = position;
         }
-    }
-
-    private State state;
+    };
 
     private final TalonFX pivot;
+    private State currentState;
     private final MotionMagicExpoVoltage request;
     private final ServoChannel ratchet;
-    private double target, error, accuracy;
+    private double error, accuracy;
     private boolean ratcheted;
 
     private final PivotTelemetry pivotTelemetry = new PivotTelemetry(this);
@@ -73,8 +67,8 @@ public class Pivot extends SubsystemBase {
                         .withBeepOnBoot(false)
                         .withAllowMusicDurDisable(true))
                 .withSlot0(new Slot0Configs()
-                        .withKG(Constants.PivotConstants.G) // TODO SHOP: NEED S??????
-                        .withKV(Constants.PivotConstants.V)
+                        .withKG(Constants.PivotConstants.G)
+                        .withKV(Constants.PivotConstants.V) // TODO SHOP: NEED S??????
                         .withKA(Constants.PivotConstants.A)
                         .withKP(Constants.PivotConstants.P)
                         .withKI(Constants.PivotConstants.I)
@@ -89,6 +83,8 @@ public class Pivot extends SubsystemBase {
             pivot2.setControl(new Follower(Constants.PivotConstants.LEAD_ID, true));
         }
 
+        currentState = State.STOW;
+
         ratchet = new ServoHub(Constants.PivotConstants.SERVO_HUB_ID).getServoChannel(ServoChannel.ChannelId.kChannelId0);
         ratchet.setEnabled(true);
         ratchet.setPowered(true);
@@ -97,13 +93,12 @@ public class Pivot extends SubsystemBase {
 
         ratcheted = true;
 
-        target = 0.0;
         error = 0.0;
         accuracy = 1.0;
     }
 
     public State getState() {
-        return state;
+        return currentState;
     }
 
     public double getPosition() {
@@ -111,7 +106,7 @@ public class Pivot extends SubsystemBase {
     }
 
     public double getTarget() {
-        return target;
+        return getState() == State.MANUAL ? getPosition() : getState().position;
     }
 
     public double getError() {
@@ -126,20 +121,20 @@ public class Pivot extends SubsystemBase {
         return ratcheted;
     }
 
-    public void toggleManualState() {
-        setState(state == State.MANUAL ? State.STOW : State.MANUAL);
+    public void setManualState() {
+        setState(State.MANUAL);
     }
 
     public void toggleScoreCoralState() {
-        setState(state == State.SCORE_CORAL ? State.STOW : State.SCORE_CORAL);
+        setState(currentState == State.SCORE_CORAL ? State.STOW : State.SCORE_CORAL);
     }
 
     public void toggleScoreAlgaeState() {
-        setState(state == State.SCORE_ALGAE ? State.STOW : State.SCORE_ALGAE);
+        setState(currentState == State.SCORE_ALGAE ? State.STOW : State.SCORE_ALGAE);
     }
 
-    private void setState(State state) {
-        this.state = state;
+    private void setState(State currentState) {
+        this.currentState = currentState;
     }
 
     public void toggleRatchet() {
@@ -160,7 +155,7 @@ public class Pivot extends SubsystemBase {
     }
 
     public void holdTarget() {
-        holdTarget(target);
+        pivot.setControl(request.withPosition(getTarget()));;
     }
 
 
@@ -172,7 +167,6 @@ public class Pivot extends SubsystemBase {
             pivot.set(axisValue > 0
                     ? axisValue * ExpUtil.output(Constants.PivotConstants.UPPER_LIMIT - getPosition(), 1, 5, 10)
                     : axisValue * ExpUtil.output(getPosition() - Constants.PivotConstants.LOWER_LIMIT, 1, 5, 10));
-            target = getPosition();
         }
     }
 
@@ -188,7 +182,7 @@ public class Pivot extends SubsystemBase {
             ratchet.setPulseWidth(Constants.PivotConstants.RATCHET_OFF);
         }
 
-        error = Math.abs(target - getPosition());
-        accuracy = target > getPosition() ? getPosition() / target : target / getPosition();
+        error = Math.abs(getTarget() - getPosition());
+        accuracy = getTarget() > getPosition() ? getPosition() / getTarget() : getTarget() / getPosition();
     }
 }

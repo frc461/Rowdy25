@@ -187,6 +187,7 @@ public final class Constants {
         public static double CURRENT_LIMIT;
         public static double PEAK_VOLTAGE;
         public static double SENSOR_TO_DEGREE_RATIO;
+        public static double ROTOR_TO_MECHANISM_RATIO;
         public static InvertedValue PIVOT_INVERT;
         public static NeutralModeValue NEUTRAL_MODE;
 
