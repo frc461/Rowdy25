@@ -168,19 +168,19 @@ public class RobotContainer {
 
         // intake.setDefaultCommand(new IntakeCommand(intake));
 
-//        elevator.setDefaultCommand(
-//                new ElevatorCommand(
-//                        elevator, () -> opXbox.getRightTriggerAxis() - opXbox.getLeftTriggerAxis()
-//                )
+        elevator.setDefaultCommand(
+                new ElevatorCommand(
+                        elevator, () -> opXbox.getRightTriggerAxis() - opXbox.getLeftTriggerAxis()
+                )
+        );
+
+//        pivot.setDefaultCommand(
+//                new PivotCommand(pivot, () -> -opXbox.getLeftY())
 //        );
-
-        pivot.setDefaultCommand(
-                new PivotCommand(pivot, () -> -opXbox.getLeftY())
-        );
-
-        wrist.setDefaultCommand(
-                new WristCommand(wrist, opXbox::getRightY)
-        );
+//
+//        wrist.setDefaultCommand(
+//                new WristCommand(wrist, opXbox::getRightY)
+//        );
     }
 
     private void configureBindings() {

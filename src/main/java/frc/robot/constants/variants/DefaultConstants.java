@@ -171,27 +171,29 @@ public final class DefaultConstants {
         public static final double PEAK_VOLTAGE = 6;
         public static final double ROTOR_TO_PULLEY_RATIO = 11.57;
         public static final double PULLEY_CIRCUMFERENCE = Units.inchesToMeters(7.065);
+        public static final double ROTOR_TO_METER_RATIO = ROTOR_TO_PULLEY_RATIO / PULLEY_CIRCUMFERENCE;
+        public static final double SECOND_AND_THIRD_STAGE_MASS = Units.lbsToKilograms(28.44);
         public static final InvertedValue MOTOR_INVERT = InvertedValue.Clockwise_Positive; // TODO SHOP: CHECK ON REAL ROBOT
         public static final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Coast;
 
         // pid
-        public static final Function<Double, Double> G = (deg) -> 0.1528 * Math.sin(Math.toRadians(deg)); // TODO SHOP: TEST THESE VALUES
-        public static final double V = 8.1875 * PULLEY_CIRCUMFERENCE / ROTOR_TO_PULLEY_RATIO; // 1V / (m/s) -> 1V / (rotor rps)
-        public static final double A = 0.0206 * PULLEY_CIRCUMFERENCE / ROTOR_TO_PULLEY_RATIO; // 1V / (m/s^2) -> 1V / (rotor rps^2)
+        public static final Function<Double, Double> G = (pivotDeg) -> 0.2175 * Math.sin(Math.toRadians(pivotDeg)); // TODO SHOP: TEST THESE VALUES
+        public static final double V = 8.188125 / ROTOR_TO_METER_RATIO; // 1V / (m/s) -> 1V / (rotor rps)
+        public static final double A = 0.029375 / ROTOR_TO_METER_RATIO; // 1V / (m/s^2) -> 1V / (rotor rps^2)
         public static final double P = 0.0;
         public static final double I = 0.0;
         public static final double D = 0.0;
-        public static final double EXPO_V = V / 0.8; // 80% of the actual max velocity, as it will allocate 1 / 0.8 = 1.25 times the voltage to 1 rps
-        public static final double EXPO_A = A / 0.8; // 80% of the actual max accel
+        public static final double EXPO_V = V / 0.3; // 80% of the actual max velocity, as it will allocate 1 / 0.8 = 1.25 times the voltage to 1 rps
+        public static final double EXPO_A = A / 0.005; // 80% of the actual max accel
 
         // presets
         public static final double LOWER_LIMIT = 0;
-        public static final double UPPER_LIMIT = 37;
+        public static final double UPPER_LIMIT = Units.inchesToMeters(45);
         public static final double CORAL_STATION = 0;
         public static final double GROUND_CORAL = 0;
         public static final double GROUND_ALGAE = 0;
         public static final double L1_CORAL = 0;
-        public static final double L2_CORAL = 0;
+        public static final double L2_CORAL = Units.inchesToMeters(8);
         public static final double L3_CORAL = 0;
         public static final double L4_CORAL = 0;
         public static final double LOW_REEF_ALGAE = 0;

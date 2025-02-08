@@ -1,6 +1,6 @@
 package frc.robot.subsystems.elevator;
 
-import dev.doglog.DogLog;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTable;
 import frc.robot.constants.Constants;
@@ -13,11 +13,13 @@ public class ElevatorTelemetry {
     }
 
     private final NetworkTable elevatorTelemetryTable = Constants.NT_INSTANCE.getTable("ElevatorTelemetry");
-    private final DoublePublisher elevatorPosePub = elevatorTelemetryTable.getDoubleTopic("Elevator Pose").publish();
+    private final DoublePublisher elevatorPositionPub = elevatorTelemetryTable.getDoubleTopic("Elevator Position (m)").publish();
+    private final DoublePublisher elevatorPositionInchesPub = elevatorTelemetryTable.getDoubleTopic("Elevator Position (in)").publish();
     private final DoublePublisher elevatorTargetPub = elevatorTelemetryTable.getDoubleTopic("Elevator Target").publish();
 
     public void publishValues() {
-        elevatorPosePub.set(elevator.getPosition());
+        elevatorPositionPub.set(elevator.getPosition());
+        elevatorPositionInchesPub.set(Units.metersToInches(elevator.getPosition()));
         elevatorTargetPub.set(elevator.getTarget());
 
         logValues();

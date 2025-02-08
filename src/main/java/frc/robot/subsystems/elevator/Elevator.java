@@ -17,6 +17,7 @@ import frc.robot.util.FieldUtil;
 public class Elevator extends SubsystemBase {
     public enum State {
         MANUAL(0.0),
+        STOW(Constants.ElevatorConstants.LOWER_LIMIT),
         CORAL_STATION(Constants.ElevatorConstants.CORAL_STATION),
         GROUND_ALGAE(Constants.ElevatorConstants.GROUND_ALGAE),
         GROUND_CORAL(Constants.ElevatorConstants.GROUND_CORAL),
@@ -40,7 +41,7 @@ public class Elevator extends SubsystemBase {
     private final TalonFX elevator;
     private final MotionMagicExpoVoltage request;
     private final DigitalInput lowerSwitch;
-    private double target, accuracy;
+    private double accuracy;
     private State currentState;
 
 	private final ElevatorTelemetry elevatorTelemetry = new ElevatorTelemetry(this);
@@ -83,10 +84,14 @@ public class Elevator extends SubsystemBase {
 
         request = new MotionMagicExpoVoltage(0);
 
-        target = 0.0;
+        elevator.setPosition(0.0);
         accuracy = 1.0;
-        currentState = State.MANUAL;
+        currentState = State.L2_CORAL;
     }
+
+	public State getState() {
+		return currentState;
+	}
 
     public double getPosition() {
         return elevator.getPosition().getValueAsDouble();
@@ -96,26 +101,27 @@ public class Elevator extends SubsystemBase {
         return getState() == State.MANUAL ? getPosition() : getState().position;
     }
 
-    public void setManualState() {
-        setState(State.MANUAL);
-    }
-
-	public State getState() {
-		return currentState;
-	}
-
-	public void setState(State state) {
-		currentState = state;
-	}
-
     public double getAlgaeHeight(Pose2d currentPose) {
         return FieldUtil.Reef.getAlgaeReefLevelFromTag(FieldUtil.Reef.getNearestReefTag(currentPose)) == FieldUtil.Reef.AlgaeLocation.UPPER
                 ? Constants.ElevatorConstants.HIGH_REEF_ALGAE : Constants.ElevatorConstants.LOW_REEF_ALGAE;
     }
 
     public boolean lowerSwitchTriggered() {
-        return !lowerSwitch.get();
+        return false;
+//        return !lowerSwitch.get();
     }
+
+    public void setManualState() {
+        setState(State.MANUAL);
+    }
+
+    public void toggleL2CoralState() {
+        setState(getState() == State.L2_CORAL ? State.MANUAL : State.L2_CORAL);
+    }
+
+	public void setState(State state) {
+		currentState = state;
+	}
 
     public void checkLimitSwitch() {
         if (lowerSwitchTriggered() || (!lowerSwitchTriggered() && getPosition() <= Constants.ElevatorConstants.LOWER_LIMIT)) {
@@ -123,14 +129,9 @@ public class Elevator extends SubsystemBase {
         }
     }
 
-    public void holdTarget(double height) {
-        checkLimitSwitch();
-        target = Math.max(Constants.ElevatorConstants.LOWER_LIMIT, Math.min(Constants.ElevatorConstants.UPPER_LIMIT, height));
-        elevator.setControl(request.withPosition(target).withFeedForward(Constants.ElevatorConstants.G.apply(pivot.getPosition())));
-    }
-
     public void holdTarget() {
-        holdTarget(target);
+        checkLimitSwitch();
+        elevator.setControl(request.withPosition(getTarget()).withFeedForward(Constants.ElevatorConstants.G.apply(pivot.getPosition())));
     }
 
     public void moveElevator(double axisValue) {
@@ -142,13 +143,12 @@ public class Elevator extends SubsystemBase {
             elevator.set(axisValue > 0
                     ? axisValue * ExpUtil.output(Constants.ElevatorConstants.UPPER_LIMIT - getPosition(), 1, 5, 10)
                     : axisValue * ExpUtil.output(getPosition() - Constants.ElevatorConstants.LOWER_LIMIT, 1, 5, 10));
-            target = getPosition();
         }
     }
 
     @Override
     public void periodic() {
-        accuracy = target > getPosition() ? getPosition() / target : target / getPosition();
+        accuracy = getTarget() > getPosition() ? getPosition() / getTarget() : getTarget() / getPosition();
 
         elevatorTelemetry.publishValues();
     }
