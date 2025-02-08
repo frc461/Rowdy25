@@ -10,9 +10,11 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.autos.AutoChooser;
 import frc.robot.commands.PivotCommand;
 import frc.robot.commands.IntakeCommand;
+import frc.robot.commands.WristCommand;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.drivetrain.Swerve;
 import frc.robot.subsystems.pivot.Pivot;
+import frc.robot.subsystems.wrist.Wrist;
 import frc.robot.util.SysID;
 import frc.robot.util.Lights;
 
@@ -22,7 +24,7 @@ public class RobotContainer {
     // private final Elevator elevator = new Elevator();
     private final Intake intake = new Intake();
      private final Pivot pivot = new Pivot();
-    // private final Wrist wrist = new Wrist();
+     private final Wrist wrist = new Wrist(pivot);
     
     private final AutoChooser autoChooser = new AutoChooser(swerve);
 
@@ -172,16 +174,13 @@ public class RobotContainer {
 //                )
 //        );
 //
-        pivot.setDefaultCommand(
-                new PivotCommand(pivot, opXbox::getLeftY)
-        );
-//
-//        wrist.setDefaultCommand(
-//                new RunCommand(
-//                        () -> wrist.moveWrist(MathUtil.applyDeadband(opXbox.getRightTriggerAxis() - opXbox.getLeftTriggerAxis(), Constants.DEADBAND)),
-//                        wrist
-//                )
+//        pivot.setDefaultCommand(
+//                new PivotCommand(pivot, opXbox::getLeftY)
 //        );
+
+        wrist.setDefaultCommand(
+                new WristCommand(wrist, opXbox::getRightY)
+        );
     }
 
     private void configureBindings() {
@@ -199,7 +198,7 @@ public class RobotContainer {
         driverXbox.povRight().whileTrue(swerve.pathFindToNearestBranch());
 
         //driverXbox.leftBumper().onTrue(new InstantCommand(intake::toggleOuttakeState));
-        driverXbox.povLeft().onTrue(new InstantCommand(pivot::toggleScoreCoralState));
+        driverXbox.povLeft().onTrue(new InstantCommand(wrist::toggleGroundCoral));
 
         driverXbox.povDown().onTrue(new InstantCommand(pivot::toggleRatchet));
 

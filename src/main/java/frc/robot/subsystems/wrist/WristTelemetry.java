@@ -12,12 +12,12 @@ public class WristTelemetry {
     }
 
     private final NetworkTable wristTelemetryTable = Constants.NT_INSTANCE.getTable("WristTelemetry");
-    private final DoublePublisher wristPosePub = wristTelemetryTable.getDoubleTopic("Wrist Pose").publish();
+    private final DoublePublisher wristPositionPub = wristTelemetryTable.getDoubleTopic("Wrist Position").publish();
     private final DoublePublisher wristTargetPub = wristTelemetryTable.getDoubleTopic("Wrist Target").publish();
     private final DoublePublisher wristErrorPub = wristTelemetryTable.getDoubleTopic("Wrist Error").publish();
 
     public void publishValues() {
-        wristPosePub.set(wrist.getPosition());
+        wristPositionPub.set(wrist.getPosition());
         wristTargetPub.set(wrist.getTarget());
         wristErrorPub.set(wrist.getError());
 

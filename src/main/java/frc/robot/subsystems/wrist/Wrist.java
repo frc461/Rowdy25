@@ -87,7 +87,6 @@ public class Wrist extends SubsystemBase {
         return wrist.getPosition().getValueAsDouble();
     }
 
-
     public double getTarget() {
         return getState() == State.MANUAL ? getPosition() : getState().position;
     }

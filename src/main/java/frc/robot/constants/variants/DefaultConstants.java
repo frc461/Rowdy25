@@ -228,8 +228,8 @@ public final class DefaultConstants {
         public static final double P = 0.15;
         public static final double I = 0;
         public static final double D = 0.01;
-        public static final double EXPO_V = V / 0.75; // 50% of the actual max velocity, as it will allocate 1 / 0.8 = 1.25 times the voltage to 1 rps
-        public static final double EXPO_A = A / 0.005; // 50% of the actual max acceleration
+        public static final double EXPO_V = V / 0.75; // 75% of the actual max velocity, as it will allocate 1 / 0.8 = 1.25 times the voltage to 1 rps
+        public static final double EXPO_A = A / 0.005; // 0.5% of the actual max acceleration
 
         // presets
         public static final double LOWER_LIMIT = 0;
@@ -258,23 +258,23 @@ public final class DefaultConstants {
 
         // encoder configs
         public static final int ENCODER_ID = 62;
-        public static final double ENCODER_ABSOLUTE_OFFSET = 0;
+        public static final double ENCODER_ABSOLUTE_OFFSET = -0.33154229058;
         public static final SensorDirectionValue ENCODER_INVERT = SensorDirectionValue.Clockwise_Positive; // TODO SHOP: CHECK ON REAL
 
         // pid
         public static final BiFunction<Double, Double, Double> G = (wristDeg, pivotDeg) -> 0.2188 * Math.sin(Math.toRadians(wristDeg - (90 - pivotDeg))); // TODO SHOP: TEST THESE VALUES
-        public static final double V = 5.4444 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps) -> V / (rotor rps)
-        public static final double A = 0.0365 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps^2) -> V / (rotor rps^2)
-        public static final double P = 0.0;
+        public static final double V = 0.75 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps) -> V / (rotor rps)
+        public static final double A = 0.025 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps^2) -> V / (rotor rps^2)
+        public static final double P = 0.1;
         public static final double I = 0.0;
         public static final double D = 0.0;
-        public static final double EXPO_V = V / 0.8; // 80% of the actual max velocity, as it will allocate 1 / 0.8 = 1.25 times the voltage to 1 rps
-        public static final double EXPO_A = A / 0.8; // 80% of the actual max accel
+        public static final double EXPO_V = V / 0.8; // 30% of the actual max velocity, as it will allocate 1 / 0.8 = 1.25 times the voltage to 1 rps
+        public static final double EXPO_A = A / 0.05; // 0.5% of the actual max accel
 
         // presets
         public static final double LOWER_LIMIT = 0;  // TODO: WHAT SHOULD WE SET ZERO AS??
         public static final double UPPER_LIMIT = 20;
-        public static final double GROUND_CORAL = 0;
+        public static final double GROUND_CORAL = 90;
         public static final double GROUND_ALGAE = 0;
         public static final double L1_CORAL = 0;
         public static final double L2_L3_CORAL = 0;
@@ -282,7 +282,7 @@ public final class DefaultConstants {
         public static final double REEF_ALGAE = 0;
         public static final double PROCESSOR = 0;
         public static final double NET = 0;
-        public static final double STOW_POSITION = 0;
+        public static final double STOW_POSITION = 45;
 
     }
 
@@ -294,7 +294,6 @@ public final class DefaultConstants {
         public static final double TRANSLATION_ALIGNMENT_CONTROLLER_D = 0.002;
 
         public static final Function<Double, Double> PATH_MANUAL_TRANSLATION_CONTROLLER = x -> ExpUtil.output(x, 4.0, 0.8, 6);
-
         public static final double ANGULAR_POSITION_P = 0.035;
         public static final double ANGULAR_POSITION_D = 0.0012;
 
