@@ -36,7 +36,7 @@ public class Song {
         if (swerve.random.nextDouble() < 0.05) {
             song = nggyu;
         } else {
-            song = songs[swerve.random.nextInt(Song.startupSongs.length)];
+            song = songs[swerve.random.nextInt(songs.length)];
         }
 
         song.play(swerve);
