@@ -142,6 +142,7 @@ public enum RobotIdentity {
         Constants.PivotConstants.CURRENT_LIMIT = DefaultConstants.PivotConstants.CURRENT_LIMIT;
         Constants.PivotConstants.PEAK_VOLTAGE = DefaultConstants.PivotConstants.PEAK_VOLTAGE;
         Constants.PivotConstants.SENSOR_TO_DEGREE_RATIO = DefaultConstants.PivotConstants.SENSOR_TO_DEGREE_RATIO;
+        Constants.PivotConstants.ROTOR_TO_MECHANISM_RATIO = DefaultConstants.PivotConstants.ROTOR_TO_MECHANISM_RATIO;
         Constants.PivotConstants.PIVOT_INVERT = DefaultConstants.PivotConstants.PIVOT_INVERT;
         Constants.PivotConstants.NEUTRAL_MODE = DefaultConstants.PivotConstants.NEUTRAL_MODE;
         Constants.PivotConstants.ENCODER_ID = DefaultConstants.PivotConstants.ENCODER_ID;
@@ -157,6 +158,11 @@ public enum RobotIdentity {
         Constants.PivotConstants.EXPO_A = DefaultConstants.PivotConstants.EXPO_A;
         Constants.PivotConstants.LOWER_LIMIT = DefaultConstants.PivotConstants.LOWER_LIMIT;
         Constants.PivotConstants.UPPER_LIMIT = DefaultConstants.PivotConstants.UPPER_LIMIT;
+        Constants.PivotConstants.CORAL_STATION = DefaultConstants.PivotConstants.CORAL_STATION;
+        Constants.PivotConstants.GROUND_ALGAE = DefaultConstants.PivotConstants.GROUND_ALGAE;
+        Constants.PivotConstants.GROUND_CORAL = DefaultConstants.PivotConstants.GROUND_CORAL;
+        Constants.PivotConstants.SCORE_CORAL = DefaultConstants.PivotConstants.SCORE_CORAL;
+        Constants.PivotConstants.SCORE_ALGAE = DefaultConstants.PivotConstants.SCORE_ALGAE;
         Constants.PivotConstants.STOW_POSITION = DefaultConstants.PivotConstants.STOW_POSITION;
         Constants.PivotConstants.TOLERANCE = DefaultConstants.PivotConstants.TOLERANCE;
         Constants.PivotConstants.RATCHET_ON = DefaultConstants.PivotConstants.RATCHET_ON;

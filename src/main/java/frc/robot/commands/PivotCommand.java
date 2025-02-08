@@ -21,11 +21,11 @@ public class PivotCommand extends Command {
     public void execute() {
         double val = MathUtil.applyDeadband(controllerValue.getAsDouble(), Constants.DEADBAND);
         if (val != 0.0) {
-            pivot.toggleManualState();
+            pivot.setManualState();
             pivot.movePivot(val);
         }
         if (pivot.getState() != Pivot.State.MANUAL) {
-            pivot.holdTarget(pivot.getState().getPosition());
+            pivot.holdTarget();
         }
     }
 }
