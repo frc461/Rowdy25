@@ -216,7 +216,7 @@ public final class DefaultConstants {
         public static final int SERVO_HUB_ID = 54;
         public static final int RATCHET_CHANNEL = 0;
         public static final double CURRENT_LIMIT = 40;
-        public static final double PEAK_VOLTAGE = 6;
+        public static final double PEAK_VOLTAGE = 6; // TODO SHOP: TEST WITHOUT PEAK VOLTAGE AND WITH 12 V PEAK VOLTAGE
         public static final double SENSOR_TO_DEGREE_RATIO = 1 / 360.0;
         public static final double ROTOR_TO_MECHANISM_RATIO = 107.6923;
         public static final InvertedValue PIVOT_INVERT = InvertedValue.Clockwise_Positive;
