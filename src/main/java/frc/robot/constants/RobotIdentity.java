@@ -133,6 +133,17 @@ public enum RobotIdentity {
         Constants.ElevatorConstants.EXPO_A = DefaultConstants.ElevatorConstants.EXPO_A;
         Constants.ElevatorConstants.LOWER_LIMIT = DefaultConstants.ElevatorConstants.LOWER_LIMIT;
         Constants.ElevatorConstants.UPPER_LIMIT = DefaultConstants.ElevatorConstants.UPPER_LIMIT;
+        Constants.ElevatorConstants.CORAL_STATION = DefaultConstants.ElevatorConstants.CORAL_STATION;
+        Constants.ElevatorConstants.GROUND_ALGAE = DefaultConstants.ElevatorConstants.GROUND_ALGAE;
+        Constants.ElevatorConstants.GROUND_CORAL = DefaultConstants.ElevatorConstants.GROUND_CORAL;
+        Constants.ElevatorConstants.L1_CORAL = DefaultConstants.ElevatorConstants.L1_CORAL;
+        Constants.ElevatorConstants.L2_CORAL = DefaultConstants.ElevatorConstants.L2_CORAL;
+        Constants.ElevatorConstants.L3_CORAL = DefaultConstants.ElevatorConstants.L3_CORAL;
+        Constants.ElevatorConstants.L3_CORAL = DefaultConstants.ElevatorConstants.L4_CORAL;
+        Constants.ElevatorConstants.LOW_REEF_ALGAE = DefaultConstants.ElevatorConstants.LOW_REEF_ALGAE;
+        Constants.ElevatorConstants.HIGH_REEF_ALGAE = DefaultConstants.ElevatorConstants.HIGH_REEF_ALGAE;
+        Constants.ElevatorConstants.PROCESSOR = DefaultConstants.ElevatorConstants.PROCESSOR;
+        Constants.ElevatorConstants.NET = DefaultConstants.ElevatorConstants.NET;
 
         Constants.IntakeConstants.MOTOR_ID = DefaultConstants.IntakeConstants.MOTOR_ID;
         Constants.IntakeConstants.SENSOR_ID = DefaultConstants.IntakeConstants.SENSOR_ID;

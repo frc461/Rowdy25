@@ -153,6 +153,7 @@ public final class Constants {
         // presets
         public static double LOWER_LIMIT;
         public static double UPPER_LIMIT;
+        public static double CORAL_STATION;
         public static double GROUND_CORAL;
         public static double GROUND_ALGAE;
         public static double L1_CORAL;
