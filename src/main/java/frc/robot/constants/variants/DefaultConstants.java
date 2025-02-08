@@ -6,6 +6,7 @@ import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.*;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
@@ -202,23 +203,32 @@ public final class DefaultConstants {
     }
 
     public final static class PivotConstants {
-        // basic configs
+        // motor configs
         public static final int LEAD_ID = 51;
         public static final int FOLLOWER_ID = 52;
+        public static final int SERVO_HUB_ID = 54;
+        public static final int RATCHET_CHANNEL = 0;
+        public static final double CURRENT_LIMIT = 40;
+        public static final double PEAK_VOLTAGE = 6; // TODO SHOP: TEST WITHOUT PEAK VOLTAGE AND WITH 12 V PEAK VOLTAGE
+        public static final double SENSOR_TO_DEGREE_RATIO = 1 / 360.0;
+        public static final double ROTOR_TO_MECHANISM_RATIO = 107.6923;
+        public static final InvertedValue PIVOT_INVERT = InvertedValue.Clockwise_Positive;
+        public static final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Coast;
+
+        // encoder configs
         public static final int ENCODER_ID = 53;
-        public static final int RATCHET_ID = 1;
-        public static final int LOWER_LIMIT_SWITCH_ID = 0;
-        public static final int UPPER_LIMIT_SWITCH_ID = 0;
-        public static final int CURRENT_LIMIT = 60;
-        public static final InvertedValue PIVOT_INVERT = InvertedValue.Clockwise_Positive; // TODO SHOP: CHECK ON REAL ROBOT
+        public static final double ENCODER_ABSOLUTE_OFFSET = 0.06909247503;
+        public static final SensorDirectionValue ENCODER_INVERT = SensorDirectionValue.CounterClockwise_Positive;
 
         // pid
-        public static final double PIVOT_S = 0.0;
-        public static final double PIVOT_V = 0.0;
-        public static final double PIVOT_A = 0.0;
-        public static final double PIVOT_P = 0;
-        public static final double PIVOT_I = 0;
-        public static final double PIVOT_D = 0;
+        public static final double G = 0.2269 / 2; // TODO SHOP: TEST THESE VALUES
+        public static final double V = 7.75 / 2 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps) -> V / (rotor rps)
+        public static final double A = 0.025 / 2 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps^2) -> V / (rotor rps^2)
+        public static final double P = 0.15;
+        public static final double I = 0;
+        public static final double D = 0.01;
+        public static final double EXPO_V = V / 0.75; // 50% of the actual max velocity, as it will allocate 1 / 0.8 = 1.25 times the voltage to 1 rps
+        public static final double EXPO_A = A / 0.005; // 50% of the actual max acceleration
 
         // presets
         public static final double LOWER_LIMIT = 0;
@@ -226,13 +236,13 @@ public final class DefaultConstants {
         public static final double CORAL_STATION = 0;
         public static final double GROUND_ALGAE = 0;
         public static final double GROUND_CORAL = 0;
-        public static final double SCORE_CORAL = 0;
+        public static final double SCORE_CORAL = 90;
         public static final double SCORE_ALGAE = 0;
-        public static final double STOW_POSITION = 0;
+        public static final double STOW_POSITION = 45;
         public static final double TOLERANCE = 0;
 
-        public static final double RATCHET_ON = 0;
-        public static final double RATCHET_OFF = 0;
+        public static final int RATCHET_ON = 1050;
+        public static final int RATCHET_OFF = 1200;
     }
 
     public final static class WristConstants {
