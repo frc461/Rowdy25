@@ -10,9 +10,11 @@ import frc.robot.util.Elastic;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.IntStream;
 
 public class Song {
+    private static final Random random = new Random();
     public final int[] trackWeights;
     private final String filename;
 
@@ -34,10 +36,10 @@ public class Song {
 
     public static void playRandom(Swerve swerve, Song[] songs) {
         Song song;
-        if (swerve.random.nextDouble() < 0.05) {
+        if (random.nextDouble() < 0.05) {
             song = nggyu;
         } else {
-            song = songs[swerve.random.nextInt(songs.length)];
+            song = songs[random.nextInt(songs.length)];
         }
 
         song.play(swerve);

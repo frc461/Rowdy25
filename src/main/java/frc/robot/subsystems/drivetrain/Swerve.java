@@ -43,18 +43,14 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
 
     public final Orchestra orchestra = new Orchestra();
 
-
-    public final Random random = new Random();
-
     /* Swerve Command Requests */
     private final SwerveRequest.FieldCentric fieldCentric = new SwerveRequest.FieldCentric();
     private final SwerveRequest.RobotCentric robotCentric = new SwerveRequest.RobotCentric();
     private final SwerveRequest.SwerveDriveBrake xMode = new SwerveRequest.SwerveDriveBrake();
 
-    /* Keep track if we've ever applied the operator perspective before or not */
-    private boolean hasAppliedDefaultRotation = false;
 
-    public double consistentHeading = 0.0;
+    private boolean hasAppliedDefaultRotation = false; // Keep track if we've ever applied the operator perspective before or not
+    public double consistentHeading = 0.0; // Heading to keep while translating without rotating
 
     /**
      * Constructs a CTRE SwerveDrivetrain using the specified constants.
@@ -213,8 +209,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
 
         if (DriverStation.isDisabled() && !orchestra.isPlaying()) { // TODO: TEST THIS
             Song.playRandom(this, Song.disableSongs);
-        }
-        if (!DriverStation.isDisabled() && orchestra.isPlaying()) {
+        } if (!DriverStation.isDisabled() && orchestra.isPlaying()) {
             orchestra.stop();
         }
 
