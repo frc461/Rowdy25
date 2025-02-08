@@ -198,7 +198,10 @@ public class RobotContainer {
 
         driverXbox.povRight().whileTrue(swerve.pathFindToNearestBranch());
 
-        driverXbox.leftBumper().onTrue(new InstantCommand(intake::toggleOuttakeState));
+        //driverXbox.leftBumper().onTrue(new InstantCommand(intake::toggleOuttakeState));
+        driverXbox.leftBumper().onTrue(new InstantCommand(pivot::toggleScoreCoralState));
+
+        driverXbox.povUp().onTrue(new InstantCommand(pivot::toggleScoreAlgaeState));
 
         driverXbox.rightBumper().onTrue(new InstantCommand(pivot::toggleRatchet));
 
