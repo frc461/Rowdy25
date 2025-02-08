@@ -33,8 +33,10 @@ public class IntakeTelemetry {
     }
 
     private void logValues() {
-        //DogLog.log("IntakeRGBReading", intake.getColorReading());
-        //DogLog.log("IntakeHasCoral", intake.hasCoral());
-        //DogLog.log("IntakeHasAlgae", intake.hasAlgae());
+        DogLog.log("IntakeRGBReading", intake.getColorReading());
+        DogLog.log("IntakeHasCoral", intake.hasCoral());
+        DogLog.log("IntakeHasAlgae", intake.hasAlgae());
+        DogLog.log("IntakeState", intake.getCurrentState());
+        DogLog.log("IntakeCanandcolorProximity", intake.getProximity());
     }
 }

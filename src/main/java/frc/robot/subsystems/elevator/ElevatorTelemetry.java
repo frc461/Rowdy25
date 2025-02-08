@@ -13,18 +13,18 @@ public class ElevatorTelemetry {
     }
 
     private final NetworkTable elevatorTelemetryTable = Constants.NT_INSTANCE.getTable("ElevatorTelemetry");
-    private final DoublePublisher elevatorPosePub = elevatorTelemetryTable.getDoubleTopic("Elevator Pose").publish();
+    private final DoublePublisher elevatorPositionPub = elevatorTelemetryTable.getDoubleTopic("Elevator Position").publish();
     private final DoublePublisher elevatorTargetPub = elevatorTelemetryTable.getDoubleTopic("Elevator Target").publish();
 
     public void publishValues() {
-        elevatorPosePub.set(elevator.getPosition());
+        elevatorPositionPub.set(elevator.getPosition());
         elevatorTargetPub.set(elevator.getTarget());
 
         logValues();
     }
 
     private void logValues() {
-        //DogLog.log("ElevatorPose", elevator.getPosition());
-        //DogLog.log("ElevatorTarget", elevator.getTarget());
+        DogLog.log("ElevatorPosition", elevator.getPosition());
+        DogLog.log("ElevatorTarget", elevator.getTarget());
     }
 }
