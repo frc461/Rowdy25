@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.autos.AutoChooser;
+import frc.robot.commands.PivotCommand;
 import frc.robot.subsystems.drivetrain.Swerve;
 import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.util.SysID;
@@ -170,12 +171,9 @@ public class RobotContainer {
 //                )
 //        );
 //
-//        pivot.setDefaultCommand(
-//                new RunCommand(
-//                        () -> pivot.movePivot(MathUtil.applyDeadband(-opXbox.getRightY(), Constants.DEADBAND)),
-//                        pivot
-//                )
-//        );
+        pivot.setDefaultCommand(
+                new PivotCommand(pivot, opXbox::getLeftY)
+        );
 //
 //        wrist.setDefaultCommand(
 //                new RunCommand(

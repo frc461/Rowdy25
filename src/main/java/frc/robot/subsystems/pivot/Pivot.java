@@ -6,20 +6,42 @@ import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.GravityTypeValue;
-import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.ctre.phoenix6.signals.SensorDirectionValue;
 
 import com.revrobotics.servohub.ServoChannel;
 import com.revrobotics.servohub.ServoHub;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.commands.PivotCommand;
 import frc.robot.constants.Constants;
 import frc.robot.util.ExpUtil;
 import frc.robot.util.Lights;
 
 public class Pivot extends SubsystemBase {
+    public enum State {
+        MANUAL,
+        STOW,
+        SCORE_CORAL,
+        SCORE_ALGAE,
+        GROUND_CORAL,
+        GROUND_ALGAE,
+        CORAL_STATION;
+
+        public double getPosition() {
+            return switch (this) {
+                case SCORE_CORAL -> Constants.PivotConstants.SCORE_CORAL;
+                case SCORE_ALGAE -> Constants.PivotConstants.SCORE_ALGAE;
+                case GROUND_CORAL -> Constants.PivotConstants.GROUND_CORAL;
+                case GROUND_ALGAE -> Constants.PivotConstants.GROUND_ALGAE;
+                case CORAL_STATION -> Constants.PivotConstants.CORAL_STATION;
+                default -> Constants.PivotConstants.STOW_POSITION;
+            };
+        }
+    }
+
+    private State state;
+
     private final TalonFX pivot;
     private final MotionMagicExpoVoltage request;
     private final ServoChannel ratchet;
@@ -106,6 +128,14 @@ public class Pivot extends SubsystemBase {
 
     public void toggleRatchet() {
         setRatchet(!ratcheted);
+    }
+
+    public void setState(State state) {
+        this.state = state;
+    }
+
+    public State getState() {
+        return state;
     }
 
     public void setRatchet(boolean toggle) {
