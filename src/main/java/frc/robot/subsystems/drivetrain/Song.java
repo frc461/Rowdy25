@@ -1,6 +1,5 @@
 package frc.robot.subsystems.drivetrain;
 
-import com.ctre.phoenix6.Orchestra;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.ParentDevice;
@@ -19,14 +18,26 @@ public class Song {
 
     public static final Song[] startupSongs = new Song[] {
             new Song("mario.chrp", new int[] {5, 2, 1}),
+            new Song("underground-2.chrp", new int[] {8}),
     };
 
     public static final Song[] disableSongs = new Song[] {
-            new Song("mario_death.chrp", new int[] {3, 3, 2}),
+            new Song("mario-death.chrp", new int[] {3, 3, 2}),
+            new Song("castle-complete.chrp", new int[] {2, 2, 1, 1, 1, 1}),
+            new Song("level-complete.chrp", new int[] {3, 3, 2}),
+            new Song("mario.chrp", new int[] {5, 2, 1}),
+            new Song("underground-2.chrp", new int[] {8}),
     };
 
+    public static final Song nggyu = new Song("nggyu.chrp", new int[] {6, 2});
+
     public static void playRandom(Swerve swerve, Song[] songs) {
-        Song song = songs[swerve.random.nextInt(Song.startupSongs.length)];
+        Song song;
+        if (swerve.random.nextDouble() < 0.05) {
+            song = nggyu;
+        } else {
+            song = songs[swerve.random.nextInt(Song.startupSongs.length)];
+        }
 
         song.play(swerve);
     }
