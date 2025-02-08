@@ -19,12 +19,12 @@ public class PivotCommand extends Command {
 
     @Override
     public void execute() {
-        double val = MathUtil.applyDeadband(controllerValue.getAsDouble(), Constants.DEADBAND);
+        double val = MathUtil.applyDeadband(controllerValue.getAsDouble(), Constants.DEADBAND, 0.3);
+        System.out.println(val);
         if (val != 0.0) {
             pivot.setManualState();
             pivot.movePivot(val);
-        }
-        if (pivot.getState() != Pivot.State.MANUAL) {
+        } else {
             pivot.holdTarget();
         }
     }

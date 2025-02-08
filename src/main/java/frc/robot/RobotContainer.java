@@ -8,9 +8,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.autos.AutoChooser;
-import frc.robot.commands.PivotCommand;
-import frc.robot.commands.IntakeCommand;
-import frc.robot.commands.WristCommand;
+import frc.robot.commands.*;
+import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.commands.PivotCommand;
 import frc.robot.subsystems.drivetrain.Swerve;
@@ -23,10 +22,10 @@ import frc.robot.util.Lights;
 public class RobotContainer {
     /* Subsystems */
     private final Swerve swerve = new Swerve();
-    // private final Elevator elevator = new Elevator();
     private final Intake intake = new Intake();
-     private final Pivot pivot = new Pivot();
-     private final Wrist wrist = new Wrist(pivot);
+    private final Pivot pivot = new Pivot();
+    private final Elevator elevator = new Elevator(pivot);
+    private final Wrist wrist = new Wrist(pivot);
     
     private final AutoChooser autoChooser = new AutoChooser(swerve);
 
@@ -170,14 +169,13 @@ public class RobotContainer {
         // intake.setDefaultCommand(new IntakeCommand(intake));
 
 //        elevator.setDefaultCommand(
-//                new RunCommand(
-//                        () -> elevator.moveElevator(MathUtil.applyDeadband(-opXbox.getLeftY(), Constants.DEADBAND)),
-//                        elevator
+//                new ElevatorCommand(
+//                        elevator, () -> opXbox.getRightTriggerAxis() - opXbox.getLeftTriggerAxis()
 //                )
 //        );
-//
+
         pivot.setDefaultCommand(
-                new PivotCommand(pivot, opXbox::getLeftY)
+                new PivotCommand(pivot, () -> -opXbox.getLeftY())
         );
 
         wrist.setDefaultCommand(
@@ -189,15 +187,14 @@ public class RobotContainer {
 
         driverXbox.a().onTrue(swerve.runOnce(swerve.localizer::configureQuestOffset));
 
-        // toggle between robot choosing quest nav pose and pose estimation with cameras
-        driverXbox.b().onTrue(swerve.runOnce(swerve.localizer::toggleLocalizationStrategy));
+        driverXbox.b().onTrue(new InstantCommand(elevator::toggleL2CoralState));
 
         // reset the field-centric heading on y press
         driverXbox.leftStick().onTrue(swerve.resetGyro());
 
         driverXbox.povUp().whileTrue(swerve.moveToObject());
 
-        driverXbox.povRight().whileTrue(swerve.pathFindToNearestBranch());
+        driverXbox.povRight().onTrue(new InstantCommand(pivot::toggleScoreCoralState));
 
         //driverXbox.leftBumper().onTrue(new InstantCommand(intake::toggleOuttakeState));
         driverXbox.povLeft().onTrue(new InstantCommand(wrist::toggleGroundCoral));
