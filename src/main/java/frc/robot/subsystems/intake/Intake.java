@@ -12,16 +12,14 @@ import com.reduxrobotics.sensors.canandcolor.Canandcolor;
 import com.reduxrobotics.sensors.canandcolor.CanandcolorSettings;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.util.Color;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-import frc.robot.commands.IntakeCommand;
 import frc.robot.util.Lights;
 
 import frc.robot.constants.Constants;
 
 public class Intake extends SubsystemBase {
-    public enum States {
+    public enum State {
         IDLE,
         HAS_ALGAE,
         INTAKE,
@@ -30,9 +28,8 @@ public class Intake extends SubsystemBase {
 
     private final TalonFX motor;
     private final Canandcolor canandcolor; // TODO SHOP: Use https://docs.reduxrobotics.com/alchemist/ to configure IDs
-    private final CanandcolorSettings currentCanandcolorSettings;
     private final Timer pulseTimer = new Timer();
-    private States currentState;
+    private State currentState;
 
     private final IntakeTelemetry intakeTelemetry = new IntakeTelemetry(this);
 
@@ -52,40 +49,40 @@ public class Intake extends SubsystemBase {
 
         CanandEventLoop.getInstance();
         canandcolor = new Canandcolor(Constants.IntakeConstants.SENSOR_ID);
-        currentCanandcolorSettings = canandcolor.getSettings().setLampLEDBrightness(0.0);
-        currentState = States.IDLE;
+        canandcolor.setLampLEDBrightness(1.0);
+        currentState = State.IDLE;
         pulseTimer.start();
     }
 
-    public States getCurrentState() {
+    public State getCurrentState() {
         return currentState;
     }
 
     public double[] getColorReading() {
         return new double[] { canandcolor.getBlue(), canandcolor.getGreen(), canandcolor.getRed() };
     }
+
+    public double getProximity() {
+        return canandcolor.getProximity();
+    }
  
     public boolean hasCoral() {
-        return getColorReading()[0] > 0.5 && getColorReading()[1] > 0.5 && getColorReading()[2] > 0.5; // TODO SHOP: Set the color to close to the color of coral
+        return getProximity() < 0.1; // TODO SHOP: Set the color to close to the color of coral
     }
 
     public boolean hasAlgae() {
         return canandcolor.getColor().toWpilibColor().equals(Color.kAqua); // TODO SHOP: Set the color to close to the color of algae
     }
 
-    public Command intakeCommand() {
-        return new IntakeCommand(this);
-    }
-
     public void toggleIntakeState() {
-        setState(currentState == States.INTAKE ? States.IDLE : States.INTAKE);
+        setState(currentState == State.INTAKE ? State.IDLE : State.INTAKE);
     }
 
     public void toggleOuttakeState() {
-        setState(currentState == States.OUTTAKE ? States.IDLE : States.OUTTAKE);
+        setState(currentState == State.OUTTAKE ? State.IDLE : State.OUTTAKE);
     }
 
-    public void setState(States state) {
+    public void setState(State state) {
         currentState = state;
     }
 
@@ -107,10 +104,41 @@ public class Intake extends SubsystemBase {
 
         if (hasCoral() || hasAlgae()) {
             Lights.setLights(true);
-            canandcolor.setSettings(currentCanandcolorSettings.setLampLEDBrightness(1.0));
         } else {
             Lights.setLights(false);
-            canandcolor.setSettings(currentCanandcolorSettings.setLampLEDBrightness(0.0));
+        }
+
+        switch (getCurrentState()) {
+            case INTAKE:
+                if (hasAlgae()) {
+                    setState(Intake.State.HAS_ALGAE);
+                } else if (hasCoral()) {
+                    setState(Intake.State.IDLE);
+                } else {
+                    setIntakeSpeed(0.5);
+                }
+                break;
+            case OUTTAKE:
+                if (!hasAlgae() && !hasCoral()) {
+                    setState(Intake.State.IDLE);
+                } else {
+                    setIntakeSpeed(-0.5);
+                }
+                break;
+            case HAS_ALGAE:
+                if (!hasAlgae()) {
+                    setState(Intake.State.IDLE);
+                } else {
+                    pulseIntake();
+                }
+                break;
+            case IDLE:
+                if (hasCoral() || hasAlgae()) {
+                    setState(hasAlgae() ? Intake.State.HAS_ALGAE : Intake.State.IDLE);
+                } else {
+                    setIntakeSpeed(0.0);
+                }
+                break;
         }
     }
 }

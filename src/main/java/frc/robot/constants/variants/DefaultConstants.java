@@ -197,7 +197,7 @@ public final class DefaultConstants {
         public static final int SENSOR_ID = 42;
         public static final double CURRENT_LIMIT = 40;
         public static final double PEAK_VOLTAGE = 6;
-        public static final InvertedValue MOTOR_INVERT = InvertedValue.CounterClockwise_Positive;
+        public static final InvertedValue MOTOR_INVERT = InvertedValue.Clockwise_Positive;
         public static final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Coast;
     }
 

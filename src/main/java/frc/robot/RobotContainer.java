@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.autos.AutoChooser;
+import frc.robot.commands.IntakeCommand;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.drivetrain.Swerve;
 import frc.robot.util.SysID;
@@ -160,7 +161,7 @@ public class RobotContainer {
                 )
         );
 
-        intake.setDefaultCommand(intake.intakeCommand());
+        // intake.setDefaultCommand(new IntakeCommand(intake));
 
 //        elevator.setDefaultCommand(
 //                new RunCommand(
