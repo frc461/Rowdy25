@@ -22,7 +22,7 @@ public class Song {
     };
 
     public static final Song[] disableSongs = new Song[] {
-            new Song("mario_death.chrp", new int[] {5, 2, 1}),
+            new Song("mario_death.chrp", new int[] {3, 3, 2}),
     };
 
     public static void playRandom(Swerve swerve, Song[] songs) {
