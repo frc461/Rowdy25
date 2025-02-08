@@ -5,6 +5,8 @@ import com.ctre.phoenix6.configs.AudioConfigs;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 
@@ -18,6 +20,7 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -162,30 +165,40 @@ public final class Constants {
     public final static class IntakeConstants {
         // basic configs
         public static int MOTOR_ID;
-        public static int CORAL_BEAM_ID;
-        public static int ALGAE_BEAM_ID;
-        public static int CURRENT_LIMIT;
-        public static InvertedValue INVERT;
+        public static int SENSOR_ID;
+        public static double CURRENT_LIMIT;
+        public static double PEAK_VOLTAGE;
+        public static InvertedValue MOTOR_INVERT;
+        public static NeutralModeValue NEUTRAL_MODE;
     }
 
     public final static class PivotConstants {
-        // basic configs
+        // motor configs
         public static int LEAD_ID;
         public static int FOLLOWER_ID;
-        public static int ENCODER_ID;
-        public static int LOWER_LIMIT_SWITCH_ID;
-        public static int UPPER_LIMIT_SWITCH_ID;
+        public static int SERVO_HUB_ID;
         public static int RATCHET_ID;
-        public static int CURRENT_LIMIT;
+        public static double CURRENT_LIMIT;
+        public static double PEAK_VOLTAGE;
+        public static double SENSOR_TO_DEGREE_RATIO;
+        public static double ROTOR_TO_MECHANISM_RATIO;
         public static InvertedValue PIVOT_INVERT;
+        public static NeutralModeValue NEUTRAL_MODE;
+
+        // encoder configs
+        public static int ENCODER_ID;
+        public static double ENCODER_ABSOLUTE_OFFSET;
+        public static SensorDirectionValue ENCODER_INVERT;
 
         // pid
-        public static double PIVOT_S;
-        public static double PIVOT_V;
-        public static double PIVOT_A;
-        public static double PIVOT_P;
-        public static double PIVOT_I;
-        public static double PIVOT_D;
+        public static double G;
+        public static double V;
+        public static double A;
+        public static double P;
+        public static double I;
+        public static double D;
+        public static double EXPO_V;
+        public static double EXPO_A;
 
         // presets
         public static double LOWER_LIMIT;
@@ -198,26 +211,33 @@ public final class Constants {
         public static double STOW_POSITION;
         public static double TOLERANCE;
 
-        public static double RATCHET_ON;
-        public static double RATCHET_OFF;
+        public static int RATCHET_ON;
+        public static int RATCHET_OFF;
     }
 
     public final static class WristConstants {
-        // basic configs
+        // motor configs
         public static int MOTOR_ID;
+        public static double CURRENT_LIMIT;
+        public static double PEAK_VOLTAGE;
+        public static double SENSOR_TO_DEGREE_RATIO;
+        public static InvertedValue MOTOR_INVERT;
+        public static NeutralModeValue NEUTRAL_MODE;
+
+        // encoder configs
         public static int ENCODER_ID;
-        public static int LOWER_LIMIT_SWITCH_ID;
-        public static int UPPER_LIMIT_SWITCH_ID;
-        public static int CURRENT_LIMIT;
-        public static InvertedValue WRIST_INVERT;
+        public static double ENCODER_ABSOLUTE_OFFSET;
+        public static SensorDirectionValue ENCODER_INVERT;
 
         // pid
-        public static double WRIST_S;
-        public static double WRIST_V;
-        public static double WRIST_A;
-        public static double WRIST_P;
-        public static double WRIST_I;
-        public static double WRIST_D;
+        public static BiFunction<Double, Double, Double> G;
+        public static double V;
+        public static double A;
+        public static double P;
+        public static double I;
+        public static double D;
+        public static double EXPO_V;
+        public static double EXPO_A;
 
         // presets
         public static double LOWER_LIMIT;
@@ -230,6 +250,7 @@ public final class Constants {
         public static double REEF_ALGAE;
         public static double PROCESSOR;
         public static double NET;
+        public static double STOW_POSITION;
 
     }
 
