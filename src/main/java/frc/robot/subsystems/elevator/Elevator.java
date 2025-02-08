@@ -15,6 +15,18 @@ import frc.robot.util.ExpUtil;
 import frc.robot.util.FieldUtil;
 
 public class Elevator extends SubsystemBase {
+    public enum State {
+        L1,
+        L2,
+        L3,
+        L4,
+        CORAL_STATION,
+        GROUND_ALGAE,
+        GROUND_CORAL,
+        NET,
+        PROCESSOR,
+    }
+
     private final Pivot pivot;
     private final TalonFX elevator;
     private final MotionMagicExpoVoltage request;
