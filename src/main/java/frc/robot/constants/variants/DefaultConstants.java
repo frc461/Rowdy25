@@ -228,9 +228,9 @@ public final class DefaultConstants {
         public static final SensorDirectionValue ENCODER_INVERT = SensorDirectionValue.CounterClockwise_Positive;
 
         // pid
-        public static final double G = 0.2394; // TODO SHOP: TEST THESE VALUES
+        public static final double G = 0.2269; // TODO SHOP: TEST THESE VALUES
         public static final double V = 12.9231 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps) -> V / (rotor rps)
-        public static final double A = 0.0522 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps^2) -> V / (rotor rps^2)
+        public static final double A = 0.0474 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps^2) -> V / (rotor rps^2)
         public static final double P = 0;
         public static final double I = 0;
         public static final double D = 0;
