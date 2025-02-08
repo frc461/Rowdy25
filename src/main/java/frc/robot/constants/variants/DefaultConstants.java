@@ -272,6 +272,7 @@ public final class DefaultConstants {
         public static final double REEF_ALGAE = 0;
         public static final double PROCESSOR = 0;
         public static final double NET = 0;
+        public static final double STOW_POSITION = 0;
 
     }
 

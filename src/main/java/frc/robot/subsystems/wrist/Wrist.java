@@ -5,17 +5,38 @@ import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 
-import com.ctre.phoenix6.signals.GravityTypeValue;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.util.ExpUtil;
 
 public class Wrist extends SubsystemBase {
+    public enum State {
+        MANUAL(0.0),
+        GROUND_CORAL(Constants.WristConstants.GROUND_CORAL),
+        GROUND_ALGAE(Constants.WristConstants.GROUND_ALGAE),
+        L1_CORAL(Constants.WristConstants.L1_CORAL),
+        L2_L3_CORAL(Constants.WristConstants.L2_L3_CORAL),
+        L4_CORAL(Constants.WristConstants.L4_CORAL),
+        REEF_ALGAE(Constants.WristConstants.REEF_ALGAE),
+        PROCESSOR(Constants.WristConstants.PROCESSOR),
+        NET(Constants.WristConstants.NET),
+        STOW(Constants.WristConstants.STOW_POSITION);
+
+        private final double position;
+
+        State(double position) {
+            this.position = position;
+        }
+    }
+
+
+    private State state;
+
     private final Pivot pivot;
     private final TalonFX wrist;
     private final MotionMagicExpoVoltage request;
-    private double target, error, accuracy;
+    private double error, accuracy;
 
     private final WristTelemetry wristTelemetry = new WristTelemetry(this);
 
@@ -56,30 +77,27 @@ public class Wrist extends SubsystemBase {
 
         request = new MotionMagicExpoVoltage(0);
 
-        target = 0.0;
         error = 0.0;
         accuracy = 1.0;
+
+        state = State.STOW;
     }
 
     public double getPosition() { 
         return wrist.getPosition().getValueAsDouble();
     }
 
+
     public double getTarget() {
-        return target;
+        return getState() == State.MANUAL ? getPosition() : getState().position;
     }
 
     public double getError() {
         return error;
     }
 
-    public void holdTarget(double height) {
-        target = Math.max(Constants.WristConstants.LOWER_LIMIT, Math.min(Constants.WristConstants.UPPER_LIMIT, height));
-        wrist.setControl(request.withPosition(target).withFeedForward(Constants.WristConstants.G.apply(getPosition(), pivot.getPosition())));
-    }
-
     public void holdTarget() {
-        holdTarget(target);
+        wrist.setControl(request.withPosition(getTarget()).withFeedForward(Constants.WristConstants.G.apply(getPosition(), pivot.getPosition())));
     }
 
     public void moveWrist(double axisValue) {
@@ -90,15 +108,36 @@ public class Wrist extends SubsystemBase {
             wrist.set(axisValue > 0
                     ? axisValue * ExpUtil.output(Constants.WristConstants.UPPER_LIMIT - getPosition(), 1, 5, 10)
                     : axisValue * ExpUtil.output(getPosition() - Constants.WristConstants.LOWER_LIMIT, 1, 5, 10));
-            target = getPosition();
         }
+    }
+
+    public void setManualState() {
+        setState(State.MANUAL);
+    }
+
+    public void toggleGroundCoral() {
+        setState(state == State.GROUND_CORAL ? State.STOW : State.GROUND_CORAL);
+    }
+
+    public void toggleGroundAlgae() {
+        setState(state == State.GROUND_ALGAE ? State.STOW : State.GROUND_ALGAE);
+    }
+
+    private void setState(State state) {
+        this.state = state;
+    }
+
+    public State getState() {
+        return state;
     }
 
     @Override
     public void periodic() {
         wristTelemetry.publishValues();
 
-        error = Math.abs(target - getPosition());
-        accuracy = target > getPosition() ? getPosition() / target : target / getPosition();
+        error = Math.abs(getTarget() - getPosition());
+        accuracy = getTarget() > getPosition()
+                    ? getPosition() / getTarget()
+                    : getTarget() / getPosition();
     }
 }

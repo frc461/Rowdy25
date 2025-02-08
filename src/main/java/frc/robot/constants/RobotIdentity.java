@@ -174,6 +174,15 @@ public enum RobotIdentity {
         Constants.WristConstants.EXPO_A = DefaultConstants.WristConstants.EXPO_A;
         Constants.WristConstants.LOWER_LIMIT = DefaultConstants.WristConstants.LOWER_LIMIT;
         Constants.WristConstants.UPPER_LIMIT = DefaultConstants.WristConstants.UPPER_LIMIT;
+        Constants.WristConstants.GROUND_CORAL = DefaultConstants.WristConstants.GROUND_CORAL;
+        Constants.WristConstants.GROUND_ALGAE = DefaultConstants.WristConstants.GROUND_ALGAE;
+        Constants.WristConstants.L1_CORAL = DefaultConstants.WristConstants.L1_CORAL;
+        Constants.WristConstants.L2_L3_CORAL = DefaultConstants.WristConstants.L2_L3_CORAL;
+        Constants.WristConstants.L4_CORAL = DefaultConstants.WristConstants.L4_CORAL;
+        Constants.WristConstants.REEF_ALGAE = DefaultConstants.WristConstants.REEF_ALGAE;
+        Constants.WristConstants.PROCESSOR = DefaultConstants.WristConstants.PROCESSOR;
+        Constants.WristConstants.NET = DefaultConstants.WristConstants.NET;
+        Constants.WristConstants.STOW_POSITION = DefaultConstants.WristConstants.STOW_POSITION;
 
         Constants.SwerveConstants.PATH_TRANSLATION_CONTROLLER_P = DefaultConstants.SwerveConstants.PATH_TRANSLATION_CONTROLLER_P;
         Constants.SwerveConstants.PATH_ROTATION_CONTROLLER_P = DefaultConstants.SwerveConstants.PATH_ROTATION_CONTROLLER_P;

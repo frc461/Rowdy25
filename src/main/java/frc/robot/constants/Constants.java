@@ -240,6 +240,7 @@ public final class Constants {
         public static double REEF_ALGAE;
         public static double PROCESSOR;
         public static double NET;
+        public static double STOW_POSITION;
 
     }
 

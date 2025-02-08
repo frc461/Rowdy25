@@ -1,13 +1,11 @@
 package frc.robot.subsystems.wrist;
 
-import dev.doglog.DogLog;
-import edu.wpi.first.networktables.BooleanPublisher;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTable;
 import frc.robot.constants.Constants;
 
 public class WristTelemetry {
-    private Wrist wrist;
+    private final Wrist wrist;
 
     public WristTelemetry(Wrist wrist) {
         this.wrist = wrist;
