@@ -217,18 +217,18 @@ public final class DefaultConstants {
 
         // encoder configs
         public static final int ENCODER_ID = 53;
-        public static final double ENCODER_ABSOLUTE_OFFSET = 0.08325195312;
+        public static final double ENCODER_ABSOLUTE_OFFSET = 0.06909247503;
         public static final SensorDirectionValue ENCODER_INVERT = SensorDirectionValue.CounterClockwise_Positive;
 
         // pid
         public static final double G = 0.2269 / 2; // TODO SHOP: TEST THESE VALUES
         public static final double V = 7.75 / 2 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps) -> V / (rotor rps)
-        public static final double A = 0.0474 / 2 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps^2) -> V / (rotor rps^2)
-        public static final double P = 0.25;
+        public static final double A = 0.025 / 2 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps^2) -> V / (rotor rps^2)
+        public static final double P = 0.15;
         public static final double I = 0;
         public static final double D = 0.01;
         public static final double EXPO_V = V / 0.75; // 50% of the actual max velocity, as it will allocate 1 / 0.8 = 1.25 times the voltage to 1 rps
-        public static final double EXPO_A = A / 0.75; // 50% of the actual max acceleration
+        public static final double EXPO_A = A / 0.005; // 50% of the actual max acceleration
 
         // presets
         public static final double LOWER_LIMIT = 0;
@@ -238,7 +238,7 @@ public final class DefaultConstants {
         public static final double GROUND_CORAL = 0;
         public static final double SCORE_CORAL = 90;
         public static final double SCORE_ALGAE = 0;
-        public static final double STOW_POSITION = 60;
+        public static final double STOW_POSITION = 45;
         public static final double TOLERANCE = 0;
 
         public static final int RATCHET_ON = 1050;
