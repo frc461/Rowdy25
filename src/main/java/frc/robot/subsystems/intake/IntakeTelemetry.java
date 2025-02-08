@@ -2,7 +2,10 @@ package frc.robot.subsystems.intake;
 
 import dev.doglog.DogLog;
 import edu.wpi.first.networktables.BooleanPublisher;
+import edu.wpi.first.networktables.DoubleArrayPublisher;
+import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.StringPublisher;
 import frc.robot.constants.Constants;
 
 public class IntakeTelemetry {
@@ -12,15 +15,19 @@ public class IntakeTelemetry {
         this.intake = intake;
     }
 
-    private final NetworkTable IntakeTelemetryTable = Constants.NT_INSTANCE.getTable("IntakeTelemetry");
-    private final BooleanPublisher hasCoralPub = IntakeTelemetryTable.getBooleanTopic("Intake Has Coral").publish();
-    private final BooleanPublisher hasAlgaePub = IntakeTelemetryTable.getBooleanTopic("Intake Has Algae").publish();
-    private final BooleanPublisher hasGamePiecePub = IntakeTelemetryTable.getBooleanTopic("Intake Has Game Piece").publish();
+    private final NetworkTable intakeTelemetryTable = Constants.NT_INSTANCE.getTable("IntakeTelemetry");
+    private final DoubleArrayPublisher rgbPub = intakeTelemetryTable.getDoubleArrayTopic("RGB Canandcolor Detection").publish();
+    private final BooleanPublisher hasCoralPub = intakeTelemetryTable.getBooleanTopic("Intake Has Coral").publish();
+    private final BooleanPublisher hasAlgaePub = intakeTelemetryTable.getBooleanTopic("Intake Has Algae").publish();
+    private final StringPublisher currentStatePub = intakeTelemetryTable.getStringTopic("Intake State").publish();
+    private final DoublePublisher proximityPub = intakeTelemetryTable.getDoubleTopic("Canandcolor Proximity").publish();
 
     public void publishValues() {
+        rgbPub.set(intake.getColorReading());
         hasCoralPub.set(intake.hasCoral());
         hasAlgaePub.set(intake.hasAlgae());
-        hasGamePiecePub.set(intake.hasGamePiece());
+        currentStatePub.set(intake.getCurrentState().toString());
+        proximityPub.set(intake.getProximity());
 
         logValues();
     }
