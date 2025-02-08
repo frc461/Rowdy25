@@ -10,10 +10,7 @@ import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.revrobotics.servohub.ServoChannel;
 import com.revrobotics.servohub.ServoHub;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.commands.PivotCommand;
 import frc.robot.constants.Constants;
 import frc.robot.util.ExpUtil;
 import frc.robot.util.Lights;
@@ -105,6 +102,10 @@ public class Pivot extends SubsystemBase {
         accuracy = 1.0;
     }
 
+    public State getState() {
+        return state;
+    }
+
     public double getPosition() {
         return pivot.getPosition().getValueAsDouble();
     }
@@ -125,16 +126,20 @@ public class Pivot extends SubsystemBase {
         return ratcheted;
     }
 
-    public void toggleRatchet() {
-        setRatchet(!ratcheted);
+    public void toggleManualState() {
+        setState(state == State.MANUAL ? State.STOW : State.MANUAL);
     }
 
-    public void setState(State state) {
+    public void toggleScoreCoralState() {
+        setState(state == State.SCORE_CORAL ? State.STOW : State.SCORE_CORAL);
+    }
+
+    private void setState(State state) {
         this.state = state;
     }
 
-    public State getState() {
-        return state;
+    public void toggleRatchet() {
+        setRatchet(!ratcheted);
     }
 
     public void setRatchet(boolean toggle) {
