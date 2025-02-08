@@ -10,21 +10,31 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
+import frc.robot.subsystems.intake.Intake.State;
 import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.util.ExpUtil;
 import frc.robot.util.FieldUtil;
 
 public class Elevator extends SubsystemBase {
     public enum State {
-        L1,
-        L2,
-        L3,
-        L4,
-        CORAL_STATION,
-        GROUND_ALGAE,
-        GROUND_CORAL,
-        NET,
-        PROCESSOR,
+        IDLE(0.0),
+        CORAL_STATION(Constants.ElevatorConstants.CORAL_STATION),
+        GROUND_ALGAE(Constants.ElevatorConstants.GROUND_ALGAE),
+        GROUND_CORAL(Constants.ElevatorConstants.GROUND_CORAL),
+        HIGH_REEF_ALGAE(Constants.ElevatorConstants.HIGH_REEF_ALGAE),
+        L1_CORAL(Constants.ElevatorConstants.L1_CORAL),
+        L2_CORAL(Constants.ElevatorConstants.L2_CORAL),
+        L3_CORAL(Constants.ElevatorConstants.L3_CORAL),
+        L4_CORAL(Constants.ElevatorConstants.L4_CORAL),
+        LOW_REEF_ALGAE(Constants.ElevatorConstants.LOW_REEF_ALGAE),
+        NET(Constants.ElevatorConstants.NET),
+        PROCESSOR(Constants.ElevatorConstants.PROCESSOR);
+
+        private final double position;
+
+        State(double position) {
+            this.position = position;
+        }
     }
 
     private final Pivot pivot;
@@ -32,8 +42,9 @@ public class Elevator extends SubsystemBase {
     private final MotionMagicExpoVoltage request;
     private final DigitalInput lowerSwitch;
     private double target, accuracy;
+    private State currentState;
 
-    private final ElevatorTelemetry elevatorTelemetry = new ElevatorTelemetry(this);
+	private final ElevatorTelemetry elevatorTelemetry = new ElevatorTelemetry(this);
 
     // TODO: STATES & COMMAND & VOID STATE CHANGERS
 
@@ -75,6 +86,7 @@ public class Elevator extends SubsystemBase {
 
         target = 0.0;
         accuracy = 1.0;
+        currentState = State.IDLE;
     }
 
     public double getPosition() {
@@ -84,6 +96,14 @@ public class Elevator extends SubsystemBase {
     public double getTarget() {
         return target;
     }
+
+	public State getState() {
+		return currentState;
+	}
+
+	public void setState(State state) {
+		currentState = state;
+	}
 
     public double getAlgaeHeight(Pose2d currentPose) {
         return FieldUtil.Reef.getAlgaeReefLevelFromTag(FieldUtil.Reef.getNearestReefTag(currentPose)) == FieldUtil.Reef.AlgaeLocation.UPPER
