@@ -149,11 +149,6 @@ public class Pivot extends SubsystemBase {
         );
     }
 
-    public void holdTarget(double height) {
-        target = Math.max(Constants.PivotConstants.LOWER_LIMIT, Math.min(Constants.PivotConstants.UPPER_LIMIT, height));
-        pivot.setControl(request.withPosition(target));
-    }
-
     public void holdTarget() {
         pivot.setControl(request.withPosition(getTarget()));;
     }
