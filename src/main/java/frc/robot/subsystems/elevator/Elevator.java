@@ -10,14 +10,13 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
-import frc.robot.subsystems.intake.Intake.State;
 import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.util.ExpUtil;
 import frc.robot.util.FieldUtil;
 
 public class Elevator extends SubsystemBase {
     public enum State {
-        IDLE(0.0),
+        MANUAL(0.0),
         CORAL_STATION(Constants.ElevatorConstants.CORAL_STATION),
         GROUND_ALGAE(Constants.ElevatorConstants.GROUND_ALGAE),
         GROUND_CORAL(Constants.ElevatorConstants.GROUND_CORAL),
@@ -86,7 +85,7 @@ public class Elevator extends SubsystemBase {
 
         target = 0.0;
         accuracy = 1.0;
-        currentState = State.IDLE;
+        currentState = State.MANUAL;
     }
 
     public double getPosition() {
@@ -94,7 +93,11 @@ public class Elevator extends SubsystemBase {
     }
 
     public double getTarget() {
-        return target;
+        return getState() == State.MANUAL ? getPosition() : getState().position;
+    }
+
+    public void setManualState() {
+        setState(State.MANUAL);
     }
 
 	public State getState() {
