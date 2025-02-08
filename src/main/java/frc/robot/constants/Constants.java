@@ -169,10 +169,11 @@ public final class Constants {
     public final static class IntakeConstants {
         // basic configs
         public static int MOTOR_ID;
-        public static int CORAL_BEAM_ID;
-        public static int ALGAE_BEAM_ID;
-        public static int CURRENT_LIMIT;
-        public static InvertedValue INVERT;
+        public static int SENSOR_ID;
+        public static double CURRENT_LIMIT;
+        public static double PEAK_VOLTAGE;
+        public static InvertedValue MOTOR_INVERT;
+        public static NeutralModeValue NEUTRAL_MODE;
     }
 
     public final static class PivotConstants {

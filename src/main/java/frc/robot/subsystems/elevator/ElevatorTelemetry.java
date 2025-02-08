@@ -24,7 +24,7 @@ public class ElevatorTelemetry {
     }
 
     private void logValues() {
-        DogLog.log("ElevatorPose", elevator.getPosition());
-        DogLog.log("ElevatorTarget", elevator.getTarget());
+        //DogLog.log("ElevatorPose", elevator.getPosition());
+        //DogLog.log("ElevatorTarget", elevator.getTarget());
     }
 }
