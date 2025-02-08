@@ -20,6 +20,7 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -222,21 +223,28 @@ public final class Constants {
     }
 
     public final static class WristConstants {
-        // basic configs
+        // motor configs
         public static int MOTOR_ID;
+        public static double CURRENT_LIMIT;
+        public static double PEAK_VOLTAGE;
+        public static double SENSOR_TO_DEGREE_RATIO;
+        public static InvertedValue MOTOR_INVERT;
+        public static NeutralModeValue NEUTRAL_MODE;
+
+        // encoder configs
         public static int ENCODER_ID;
-        public static int LOWER_LIMIT_SWITCH_ID;
-        public static int UPPER_LIMIT_SWITCH_ID;
-        public static int CURRENT_LIMIT;
-        public static InvertedValue WRIST_INVERT;
+        public static double ENCODER_ABSOLUTE_OFFSET;
+        public static SensorDirectionValue ENCODER_INVERT;
 
         // pid
-        public static double WRIST_S;
-        public static double WRIST_V;
-        public static double WRIST_A;
-        public static double WRIST_P;
-        public static double WRIST_I;
-        public static double WRIST_D;
+        public static BiFunction<Double, Double, Double> G;
+        public static double V;
+        public static double A;
+        public static double P;
+        public static double I;
+        public static double D;
+        public static double EXPO_V;
+        public static double EXPO_A;
 
         // presets
         public static double LOWER_LIMIT;
@@ -249,6 +257,7 @@ public final class Constants {
         public static double REEF_ALGAE;
         public static double PROCESSOR;
         public static double NET;
+        public static double STOW_POSITION;
 
     }
 

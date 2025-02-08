@@ -1,18 +1,14 @@
 package frc.robot.subsystems.drivetrain;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Random;
 import java.util.Set;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
-import java.util.stream.IntStream;
 
 import com.ctre.phoenix6.Orchestra;
-import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.hardware.CANcoder;
-import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.swerve.*;
 
@@ -33,7 +29,6 @@ import frc.robot.constants.Constants;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.DriveToObjectCommand;
 import frc.robot.subsystems.vision.Localizer;
-import frc.robot.util.Elastic;
 import frc.robot.util.FieldUtil;
 
 /**
@@ -47,6 +42,9 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
     private final SwerveTelemetry swerveTelemetry = new SwerveTelemetry(this);
 
     public final Orchestra orchestra = new Orchestra();
+
+
+    public final Random random = new Random();
 
     /* Swerve Command Requests */
     private final SwerveRequest.FieldCentric fieldCentric = new SwerveRequest.FieldCentric();
@@ -192,44 +190,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
     }
 
     public void configureMusic() {
-        List<ParentDevice> motors = new ArrayList<>();
-
-        int[] trackWeights = new int[] {5, 2, 1};
-
-        for (SwerveModule<TalonFX, TalonFX, CANcoder> module : this.getModules()) {
-            module.getDriveMotor().getConfigurator().apply(Constants.SwerveConstants.AUDIO_CONFIGS, 0.05);
-            module.getSteerMotor().getConfigurator().apply(Constants.SwerveConstants.AUDIO_CONFIGS, 0.05);
-
-            motors.add(module.getDriveMotor());
-            motors.add(module.getSteerMotor());
-        }
-
-        IntStream.range(0, trackWeights.length).forEach(
-                weightIndex -> IntStream.range(0, trackWeights[weightIndex]).forEach(
-                        i -> orchestra.addInstrument(motors.remove(0), weightIndex)
-                )
-        );
-
-        StatusCode status = orchestra.loadMusic("sound/mario.chrp");
-
-        Elastic.Notification.NotificationLevel notificationLevel;
-        if (status.isWarning()) {
-            notificationLevel = Elastic.Notification.NotificationLevel.WARNING;
-        } else if (status.isError()) {
-            notificationLevel = Elastic.Notification.NotificationLevel.ERROR;
-        } else {
-            notificationLevel = Elastic.Notification.NotificationLevel.INFO;
-        }
-
-        Elastic.sendNotification(
-                new Elastic.Notification(
-                        notificationLevel,
-                        "Orchestra status",
-                        status.getName() + ": " + status.getDescription()
-                )
-        );
-
-        orchestra.play();
+        Song.playRandom(this, Song.startupSongs);
     }
 
     @Override
@@ -251,7 +212,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
         }
 
         if (DriverStation.isDisabled() && !orchestra.isPlaying()) { // TODO: TEST THIS
-            orchestra.play();
+            Song.playRandom(this, Song.disableSongs);
         }
         if (!DriverStation.isDisabled() && orchestra.isPlaying()) {
             orchestra.stop();
