@@ -8,9 +8,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.autos.AutoChooser;
+import frc.robot.commands.PivotCommand;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.drivetrain.Swerve;
+import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.util.SysID;
 import frc.robot.util.Lights;
 
@@ -19,7 +21,7 @@ public class RobotContainer {
     private final Swerve swerve = new Swerve();
     // private final Elevator elevator = new Elevator();
     private final Intake intake = new Intake();
-    // private final Pivot pivot = new Pivot();
+     private final Pivot pivot = new Pivot();
     // private final Wrist wrist = new Wrist();
     
     private final AutoChooser autoChooser = new AutoChooser(swerve);
@@ -170,12 +172,9 @@ public class RobotContainer {
 //                )
 //        );
 //
-//        pivot.setDefaultCommand(
-//                new RunCommand(
-//                        () -> pivot.movePivot(MathUtil.applyDeadband(-opXbox.getRightY(), Constants.DEADBAND)),
-//                        pivot
-//                )
-//        );
+        pivot.setDefaultCommand(
+                new PivotCommand(pivot, opXbox::getLeftY)
+        );
 //
 //        wrist.setDefaultCommand(
 //                new RunCommand(
@@ -199,9 +198,10 @@ public class RobotContainer {
 
         driverXbox.povRight().whileTrue(swerve.pathFindToNearestBranch());
 
-        driverXbox.rightBumper().onTrue(new InstantCommand(intake::toggleIntakeState));
+        //driverXbox.leftBumper().onTrue(new InstantCommand(intake::toggleOuttakeState));
+        driverXbox.povLeft().onTrue(new InstantCommand(pivot::toggleScoreCoralState));
 
-        driverXbox.leftBumper().onTrue(new InstantCommand(intake::toggleOuttakeState));
+        driverXbox.povDown().onTrue(new InstantCommand(pivot::toggleRatchet));
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
