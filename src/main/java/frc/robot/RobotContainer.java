@@ -4,6 +4,9 @@ import com.pathplanner.lib.commands.PathfindingCommand;
 import com.pathplanner.lib.pathfinding.LocalADStar;
 import com.pathplanner.lib.pathfinding.Pathfinding;
 
+import dev.doglog.DogLog;
+import dev.doglog.DogLogOptions;
+import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -137,8 +140,8 @@ public class RobotContainer {
         Lights.configureLights();
 
         // DogLogOptions(BooleanSupplier ntPublish, boolean captureNt, boolean captureDs, boolean logExtras, boolean captureConsole, int logEntryQueueCapacity)
-        //DogLog.setOptions(new DogLogOptions(() -> false, false, true, true, false, 5000));
-        //DogLog.setPdh(new PowerDistribution());
+        DogLog.setOptions(new DogLogOptions(() -> false, false, true, true, false, 5000));
+        DogLog.setPdh(new PowerDistribution());
         
         Pathfinding.setPathfinder(new LocalADStar());
         PathfindingCommand.warmupCommand().schedule();
