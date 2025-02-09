@@ -55,7 +55,7 @@ public class Pivot extends SubsystemBase {
     private final TalonFX pivot;
     private final ServoChannel ratchet;
     private final MotionMagicExpoVoltage request;
-    private double error, accuracy;
+    private double error;
 
     private final PivotTelemetry pivotTelemetry = new PivotTelemetry(this);
 
@@ -103,7 +103,6 @@ public class Pivot extends SubsystemBase {
         request = new MotionMagicExpoVoltage(getTarget());
 
         error = 0.0;
-        accuracy = 1.0;
     }
 
     public State getState() {
@@ -212,9 +211,6 @@ public class Pivot extends SubsystemBase {
         pivotTelemetry.publishValues();
 
         error = Math.abs(getTarget() - getPosition());
-        accuracy = getTarget() > getPosition()
-                ? getPosition() / getTarget()
-                : getTarget() / getPosition();
 
         Lights.setLights((validStartPosition()) && DriverStation.isDisabled());
 

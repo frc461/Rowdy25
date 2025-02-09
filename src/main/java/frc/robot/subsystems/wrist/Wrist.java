@@ -37,7 +37,7 @@ public class Wrist extends SubsystemBase {
 
     private final TalonFX wrist;
     private final MotionMagicExpoVoltage request;
-    private double error, accuracy;
+    private double error;
 
     private final WristTelemetry wristTelemetry = new WristTelemetry(this);
 
@@ -76,7 +76,6 @@ public class Wrist extends SubsystemBase {
         request = new MotionMagicExpoVoltage(0);
 
         error = 0.0;
-        accuracy = 1.0;
     }
 
     public State getState() {
@@ -167,8 +166,5 @@ public class Wrist extends SubsystemBase {
         wristTelemetry.publishValues();
 
         error = Math.abs(getTarget() - getPosition());
-        accuracy = getTarget() > getPosition()
-                ? getPosition() / getTarget()
-                : getTarget() / getPosition();
     }
 }

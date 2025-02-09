@@ -20,7 +20,7 @@ public class IntakeCommand extends Command { // TODO SHOP: TEST THIS
                 } else if (intake.hasCoral()) {
                     intake.setIdleState();
                 } else {
-                    intake.setIntakeSpeed(0.5);
+                    intake.setIntakeSpeed(0.3);
                 }
                 break;
             case OUTTAKE:

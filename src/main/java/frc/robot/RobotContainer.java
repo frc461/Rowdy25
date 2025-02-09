@@ -167,13 +167,13 @@ public class RobotContainer {
         intake.setDefaultCommand(new IntakeCommand(intake));
 
         // TODO SHOP: TEST AXES
-//        elevator.setDefaultCommand(
-//                new ElevatorCommand(
-//                        elevator,
-//                        () -> opXbox.getRightTriggerAxis() - opXbox.getLeftTriggerAxis(),
-//                        pivot::getPosition
-//                )
-//        );
+        elevator.setDefaultCommand(
+                new ElevatorCommand(
+                        elevator,
+                        () -> opXbox.getRightTriggerAxis() - opXbox.getLeftTriggerAxis(),
+                        pivot::getPosition
+                )
+        );
 
 //        pivot.setDefaultCommand(
 //                new PivotCommand(pivot, () -> -opXbox.getLeftY())
@@ -193,14 +193,19 @@ public class RobotContainer {
         // reset the field-centric heading on y press
         driverXbox.leftStick().onTrue(swerve.resetGyro());
 
-        driverXbox.povUp().whileTrue(swerve.moveToObject());
+//        driverXbox.povUp().whileTrue(swerve.moveToObject());
+        driverXbox.povUp().onTrue(new InstantCommand(elevator::toggleL4CoralState));
 
         driverXbox.povRight().onTrue(new InstantCommand(pivot::toggleL2CoralState));
 
-        //driverXbox.leftBumper().onTrue(new InstantCommand(intake::toggleOuttakeState));
-        driverXbox.povLeft().onTrue(new InstantCommand(wrist::toggleGroundCoralState));
+//        driverXbox.rightBumper().onTrue(new InstantCommand(intake::toggleIntakeState));
+//        driverXbox.povLeft().onTrue(new InstantCommand(wrist::toggleGroundCoralState));
+//        driverXbox.povLeft().onTrue(new InstantCommand(intake::toggleOuttakeState));
+        driverXbox.povLeft().onTrue(new InstantCommand(elevator::toggleL3CoralState));
+        driverXbox.povRight().onTrue(new InstantCommand(elevator::setStowState));
 
-        driverXbox.povDown().onTrue(new InstantCommand(pivot::toggleRatchet));
+//        driverXbox.povDown().onTrue(new InstantCommand(pivot::toggleRatchet));
+        driverXbox.povDown().onTrue(new InstantCommand(elevator::toggleL2CoralState));
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.

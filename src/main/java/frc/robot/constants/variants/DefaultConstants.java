@@ -184,14 +184,14 @@ public final class DefaultConstants {
         public static final Translation2d ZERO_UPRIGHT_COM = new Translation2d(-11.347053, 15.125012);
 
         // pid & tolerance
-        public static final Function<Double, Double> G = (pivotDeg) -> 0.2175 * Math.sin(Math.toRadians(pivotDeg)); // TODO SHOP: TEST THESE VALUES
-        public static final double V = 0.208125 / ROTOR_TO_INCH_RATIO; // 1V / (in/s) -> 1V / (rotor rps)
-        public static final double A = 0.000743 / ROTOR_TO_INCH_RATIO; // 1V / (in/s^2) -> 1V / (rotor rps^2)
-        public static final double P = 0.0;
+        public static final Function<Double, Double> G = (pivotDeg) -> 0.2175 * Math.sin(Math.toRadians(pivotDeg));
+        public static final double V = 0.31 / ROTOR_TO_INCH_RATIO; // 1V / (in/s) -> 1V / (rotor rps)
+        public static final double A = 0.001 / ROTOR_TO_INCH_RATIO; // 1V / (in/s^2) -> 1V / (rotor rps^2)
+        public static final double P = 0.25;
         public static final double I = 0.0;
-        public static final double D = 0.0;
-        public static final double EXPO_V = V / 0.3; // 80% of the actual max velocity, as it will allocate 1 / 0.8 = 1.25 times the voltage to 1 rps
-        public static final double EXPO_A = A / 0.005; // 80% of the actual max accel
+        public static final double D = 0.025;
+        public static final double EXPO_V = V / 0.95; // 60% of the actual max velocity, as it will allocate 1 / 0.8 = 1.25 times the voltage to 1 rps
+        public static final double EXPO_A = A / 0.04; // 1% of the actual max accel
         public static final double TOLERANCE = 2.5;
 
         // presets
@@ -300,8 +300,8 @@ public final class DefaultConstants {
         public static final double P = 0.1;
         public static final double I = 0.0;
         public static final double D = 0.0;
-        public static final double EXPO_V = V / 0.8; // 30% of the actual max velocity, as it will allocate 1 / 0.8 = 1.25 times the voltage to 1 rps
-        public static final double EXPO_A = A / 0.05; // 0.5% of the actual max accel
+        public static final double EXPO_V = V / 0.8; // 80% of the actual max velocity, as it will allocate 1 / 0.8 = 1.25 times the voltage to 1 rps
+        public static final double EXPO_A = A / 0.05; // 5% of the actual max accel
         public static final double TOLERANCE = 2.5;
 
         // presets

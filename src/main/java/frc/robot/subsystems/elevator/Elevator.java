@@ -10,7 +10,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
-import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.util.ExpUtil;
 import frc.robot.util.FieldUtil;
 
@@ -42,15 +41,15 @@ public class Elevator extends SubsystemBase {
     private final TalonFX elevator;
     private final DigitalInput lowerSwitch;
     private final MotionMagicExpoVoltage request;
-    private double accuracy;
+    private double error;
 
 	private final ElevatorTelemetry elevatorTelemetry = new ElevatorTelemetry(this);
 
     public Elevator() {
-        currentState = State.L2_CORAL; // TODO SHOP: TEST
+        currentState = State.STOW;
 
         elevator = new TalonFX(Constants.ElevatorConstants.LEAD_ID);
-        elevator.getConfigurator().apply(new TalonFXConfiguration() // TODO SHOP: TEST WITHOUT VOLTAGE CONSTRAINT
+        elevator.getConfigurator().apply(new TalonFXConfiguration()
                 .withFeedback(new FeedbackConfigs()
                         .withSensorToMechanismRatio(Constants.ElevatorConstants.ROTOR_TO_INCH_RATIO))
                 .withMotorOutput(new MotorOutputConfigs()
@@ -62,7 +61,7 @@ public class Elevator extends SubsystemBase {
                         .withBeepOnBoot(false)
                         .withAllowMusicDurDisable(true))
                 .withSlot0(new Slot0Configs()
-                        .withKV(Constants.ElevatorConstants.V) // TODO SHOP: NEED S??????
+                        .withKV(Constants.ElevatorConstants.V)
                         .withKA(Constants.ElevatorConstants.A)
                         .withKP(Constants.ElevatorConstants.P)
                         .withKI(Constants.ElevatorConstants.I)
@@ -81,7 +80,7 @@ public class Elevator extends SubsystemBase {
         request = new MotionMagicExpoVoltage(0);
 
         elevator.setPosition(0.0); // TODO WAIT (LIMIT SWITCH IS AVAILABLE): REMOVE THIS
-        accuracy = 1.0;
+        error = 0.0;
     }
 
 	public State getState() {
@@ -184,6 +183,6 @@ public class Elevator extends SubsystemBase {
     public void periodic() {
         elevatorTelemetry.publishValues();
 
-        accuracy = getTarget() > getPosition() ? getPosition() / getTarget() : getTarget() / getPosition();
+        error = Math.abs(getPosition() - getTarget());
     }
 }
