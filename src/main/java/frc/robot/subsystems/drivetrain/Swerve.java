@@ -152,7 +152,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
             Pose2d nearestBranchPose = FieldUtil.Reef.getNearestBranchPose(localizer.getStrategyPose());
             return PathManager.pathFindToClosePose(
                     localizer.getStrategyPose(),
-                    nearestBranchPose, // TODO SHOP: TEST THIS FUNCTION TO SEE IF IT WORKS
+                    nearestBranchPose,
                     nearestBranchPose.getRotation().rotateBy(Rotation2d.fromDegrees(-80)),
                     nearestBranchPose.getRotation().rotateBy(Rotation2d.fromDegrees(80)),
                     Constants.AutoConstants.DISTANCE_TOLERANCE_TO_DRIVE_INTO,
@@ -207,7 +207,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
             hasAppliedDefaultRotation = true;
         }
 
-        if (DriverStation.isDisabled() && !orchestra.isPlaying()) { // TODO: TEST THIS
+        if (DriverStation.isDisabled() && !orchestra.isPlaying()) {
             Song.playRandom(this, Song.disableSongs);
         } if (!DriverStation.isDisabled() && orchestra.isPlaying()) {
             orchestra.stop();

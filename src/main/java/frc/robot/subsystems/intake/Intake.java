@@ -65,11 +65,19 @@ public class Intake extends SubsystemBase {
     }
  
     public boolean hasCoral() {
-        return getProximity() < 0.1; // TODO SHOP: Tune this
+        return getProximity() < 0.1; // TODO SHOP: TUNE THIS
     }
 
     public boolean hasAlgae() {
-        return canandcolor.getColor().toWpilibColor().equals(Color.kAqua); // TODO SHOP: Tune this
+        return canandcolor.getColor().toWpilibColor().equals(Color.kAqua); // TODO SHOP: TUNE THIS
+    }
+
+    public void setIdleState() {
+        setState(State.IDLE);
+    }
+
+    public void toggleHasAlgaeState() {
+        setState(currentState == State.HAS_ALGAE ? State.IDLE : State.HAS_ALGAE);
     }
 
     public void toggleIntakeState() {
@@ -79,6 +87,7 @@ public class Intake extends SubsystemBase {
     public void toggleOuttakeState() {
         setState(currentState == State.OUTTAKE ? State.IDLE : State.OUTTAKE);
     }
+
 
     private void setState(State newState) {
         currentState = newState;
@@ -101,38 +110,5 @@ public class Intake extends SubsystemBase {
         intakeTelemetry.publishValues();
 
         Lights.setLights(hasCoral() || hasAlgae());
-
-        switch (getState()) { // TODO: Command this
-            case INTAKE:
-                if (hasAlgae()) {
-                    setState(Intake.State.HAS_ALGAE);
-                } else if (hasCoral()) {
-                    setState(Intake.State.IDLE);
-                } else {
-                    setIntakeSpeed(0.5);
-                }
-                break;
-            case OUTTAKE:
-                if (!hasAlgae() && !hasCoral()) {
-                    setState(Intake.State.IDLE);
-                } else {
-                    setIntakeSpeed(-0.5);
-                }
-                break;
-            case HAS_ALGAE:
-                if (!hasAlgae()) {
-                    setState(Intake.State.IDLE);
-                } else {
-                    pulseIntake();
-                }
-                break;
-            case IDLE:
-                if (hasCoral() || hasAlgae()) {
-                    setState(hasAlgae() ? Intake.State.HAS_ALGAE : Intake.State.IDLE);
-                } else {
-                    setIntakeSpeed(0.0);
-                }
-                break;
-        }
     }
 }

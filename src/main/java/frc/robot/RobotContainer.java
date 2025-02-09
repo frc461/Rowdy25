@@ -166,7 +166,7 @@ public class RobotContainer {
                 )
         );
 
-        // intake.setDefaultCommand(new IntakeCommand(intake));
+        intake.setDefaultCommand(new IntakeCommand(intake));
 
         elevator.setDefaultCommand(
                 new ElevatorCommand(
