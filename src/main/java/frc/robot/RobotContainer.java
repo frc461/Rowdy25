@@ -201,9 +201,13 @@ public class RobotContainer {
 
 //        driverXbox.povUp().whileTrue(swerve.moveToObject());
 //        driverXbox.povUp().onTrue(new InstantCommand(elevator::toggleL4CoralState));
-        driverXbox.povUp().onTrue(new InstantCommand(pivot::toggleL3CoralState));
+//        driverXbox.povUp().onTrue(new InstantCommand(pivot::toggleL3CoralState));
+        driverXbox.povDown().onTrue(new InstantCommand(wrist::setStowState));
+        driverXbox.povLeft().onTrue(new InstantCommand(wrist::toggleL1CoralState));
+        driverXbox.povUp().onTrue(new InstantCommand(wrist::toggleL2CoralState));
+        driverXbox.povRight().onTrue(new InstantCommand(wrist::toggleL3CoralState));
 
-        driverXbox.povRight().onTrue(new InstantCommand(pivot::setStowState));
+//        driverXbox.povRight().onTrue(new InstantCommand(pivot::setStowState));
 //        driverXbox.povRight().onTrue(new InstantCommand(elevator::setStowState));
 
 //        driverXbox.povDown().onTrue(new InstantCommand(pivot::toggleRatchet));
