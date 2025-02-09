@@ -121,6 +121,7 @@ public enum RobotIdentity {
         Constants.ElevatorConstants.PEAK_VOLTAGE = DefaultConstants.ElevatorConstants.PEAK_VOLTAGE;
         Constants.ElevatorConstants.ROTOR_TO_PULLEY_RATIO = DefaultConstants.ElevatorConstants.ROTOR_TO_PULLEY_RATIO;
         Constants.ElevatorConstants.PULLEY_CIRCUMFERENCE = DefaultConstants.ElevatorConstants.PULLEY_CIRCUMFERENCE;
+        Constants.ElevatorConstants.ROTOR_TO_METER_RATIO = DefaultConstants.ElevatorConstants.ROTOR_TO_METER_RATIO;
         Constants.ElevatorConstants.MOTOR_INVERT = DefaultConstants.ElevatorConstants.MOTOR_INVERT;
         Constants.ElevatorConstants.NEUTRAL_MODE = DefaultConstants.ElevatorConstants.NEUTRAL_MODE;
         Constants.ElevatorConstants.G = DefaultConstants.ElevatorConstants.G;
@@ -131,6 +132,7 @@ public enum RobotIdentity {
         Constants.ElevatorConstants.D = DefaultConstants.ElevatorConstants.D;
         Constants.ElevatorConstants.EXPO_V = DefaultConstants.ElevatorConstants.EXPO_V;
         Constants.ElevatorConstants.EXPO_A = DefaultConstants.ElevatorConstants.EXPO_A;
+        Constants.ElevatorConstants.TOLERANCE = DefaultConstants.ElevatorConstants.TOLERANCE;
         Constants.ElevatorConstants.LOWER_LIMIT = DefaultConstants.ElevatorConstants.LOWER_LIMIT;
         Constants.ElevatorConstants.UPPER_LIMIT = DefaultConstants.ElevatorConstants.UPPER_LIMIT;
         Constants.ElevatorConstants.CORAL_STATION = DefaultConstants.ElevatorConstants.CORAL_STATION;
@@ -139,7 +141,7 @@ public enum RobotIdentity {
         Constants.ElevatorConstants.L1_CORAL = DefaultConstants.ElevatorConstants.L1_CORAL;
         Constants.ElevatorConstants.L2_CORAL = DefaultConstants.ElevatorConstants.L2_CORAL;
         Constants.ElevatorConstants.L3_CORAL = DefaultConstants.ElevatorConstants.L3_CORAL;
-        Constants.ElevatorConstants.L3_CORAL = DefaultConstants.ElevatorConstants.L4_CORAL;
+        Constants.ElevatorConstants.L4_CORAL = DefaultConstants.ElevatorConstants.L4_CORAL;
         Constants.ElevatorConstants.LOW_REEF_ALGAE = DefaultConstants.ElevatorConstants.LOW_REEF_ALGAE;
         Constants.ElevatorConstants.HIGH_REEF_ALGAE = DefaultConstants.ElevatorConstants.HIGH_REEF_ALGAE;
         Constants.ElevatorConstants.PROCESSOR = DefaultConstants.ElevatorConstants.PROCESSOR;
@@ -155,7 +157,6 @@ public enum RobotIdentity {
         Constants.PivotConstants.LEAD_ID = DefaultConstants.PivotConstants.LEAD_ID;
         Constants.PivotConstants.FOLLOWER_ID = DefaultConstants.PivotConstants.FOLLOWER_ID;
         Constants.PivotConstants.SERVO_HUB_ID = DefaultConstants.PivotConstants.SERVO_HUB_ID;
-        Constants.PivotConstants.RATCHET_ID = DefaultConstants.PivotConstants.RATCHET_CHANNEL;
         Constants.PivotConstants.CURRENT_LIMIT = DefaultConstants.PivotConstants.CURRENT_LIMIT;
         Constants.PivotConstants.PEAK_VOLTAGE = DefaultConstants.PivotConstants.PEAK_VOLTAGE;
         Constants.PivotConstants.SENSOR_TO_DEGREE_RATIO = DefaultConstants.PivotConstants.SENSOR_TO_DEGREE_RATIO;
@@ -165,6 +166,9 @@ public enum RobotIdentity {
         Constants.PivotConstants.ENCODER_ID = DefaultConstants.PivotConstants.ENCODER_ID;
         Constants.PivotConstants.ENCODER_ABSOLUTE_OFFSET = DefaultConstants.PivotConstants.ENCODER_ABSOLUTE_OFFSET;
         Constants.PivotConstants.ENCODER_INVERT = DefaultConstants.PivotConstants.ENCODER_INVERT;
+        Constants.PivotConstants.RATCHET_ID = DefaultConstants.PivotConstants.RATCHET_CHANNEL;
+        Constants.PivotConstants.RATCHET_ON = DefaultConstants.PivotConstants.RATCHET_ON;
+        Constants.PivotConstants.RATCHET_OFF = DefaultConstants.PivotConstants.RATCHET_OFF;
         Constants.PivotConstants.G = DefaultConstants.PivotConstants.G;
         Constants.PivotConstants.V = DefaultConstants.PivotConstants.V;
         Constants.PivotConstants.A = DefaultConstants.PivotConstants.A;
@@ -173,17 +177,15 @@ public enum RobotIdentity {
         Constants.PivotConstants.D = DefaultConstants.PivotConstants.D;
         Constants.PivotConstants.EXPO_V = DefaultConstants.PivotConstants.EXPO_V;
         Constants.PivotConstants.EXPO_A = DefaultConstants.PivotConstants.EXPO_A;
+        Constants.PivotConstants.TOLERANCE = DefaultConstants.PivotConstants.TOLERANCE;
         Constants.PivotConstants.LOWER_LIMIT = DefaultConstants.PivotConstants.LOWER_LIMIT;
         Constants.PivotConstants.UPPER_LIMIT = DefaultConstants.PivotConstants.UPPER_LIMIT;
         Constants.PivotConstants.CORAL_STATION = DefaultConstants.PivotConstants.CORAL_STATION;
-        Constants.PivotConstants.GROUND_ALGAE = DefaultConstants.PivotConstants.GROUND_ALGAE;
         Constants.PivotConstants.GROUND_CORAL = DefaultConstants.PivotConstants.GROUND_CORAL;
+        Constants.PivotConstants.GROUND_ALGAE = DefaultConstants.PivotConstants.GROUND_ALGAE;
         Constants.PivotConstants.SCORE_CORAL = DefaultConstants.PivotConstants.SCORE_CORAL;
         Constants.PivotConstants.SCORE_ALGAE = DefaultConstants.PivotConstants.SCORE_ALGAE;
         Constants.PivotConstants.STOW_POSITION = DefaultConstants.PivotConstants.STOW_POSITION;
-        Constants.PivotConstants.TOLERANCE = DefaultConstants.PivotConstants.TOLERANCE;
-        Constants.PivotConstants.RATCHET_ON = DefaultConstants.PivotConstants.RATCHET_ON;
-        Constants.PivotConstants.RATCHET_OFF = DefaultConstants.PivotConstants.RATCHET_OFF;
 
         Constants.WristConstants.MOTOR_ID = DefaultConstants.WristConstants.MOTOR_ID;
         Constants.WristConstants.CURRENT_LIMIT = DefaultConstants.WristConstants.CURRENT_LIMIT;
@@ -202,6 +204,7 @@ public enum RobotIdentity {
         Constants.WristConstants.D = DefaultConstants.WristConstants.D;
         Constants.WristConstants.EXPO_V = DefaultConstants.WristConstants.EXPO_V;
         Constants.WristConstants.EXPO_A = DefaultConstants.WristConstants.EXPO_A;
+        Constants.WristConstants.TOLERANCE = DefaultConstants.WristConstants.TOLERANCE;
         Constants.WristConstants.LOWER_LIMIT = DefaultConstants.WristConstants.LOWER_LIMIT;
         Constants.WristConstants.UPPER_LIMIT = DefaultConstants.WristConstants.UPPER_LIMIT;
         Constants.WristConstants.GROUND_CORAL = DefaultConstants.WristConstants.GROUND_CORAL;

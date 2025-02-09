@@ -161,22 +161,21 @@ public final class DefaultConstants {
         }
     }
 
-    // TODO SHOP: UPDATE VALUES FOR 2025 + TUNE
     public final static class ElevatorConstants {
-        // basic configs
+        // motor config
         public static final int LEAD_ID = 31;
         public static final int FOLLOWER_ID = 32;
         public static final int LOWER_LIMIT_SWITCH_ID = 0;
         public static final double CURRENT_LIMIT = 40;
-        public static final double PEAK_VOLTAGE = 6;
+        public static final double PEAK_VOLTAGE = 6; // TODO SHOP: REMOVE IF NEEDED
         public static final double ROTOR_TO_PULLEY_RATIO = 11.57;
-        public static final double PULLEY_CIRCUMFERENCE = Units.inchesToMeters(7.065);
+        public static final double PULLEY_CIRCUMFERENCE = Units.inchesToMeters(7.065); // TODO: CHANGE TO METER
         public static final double ROTOR_TO_METER_RATIO = ROTOR_TO_PULLEY_RATIO / PULLEY_CIRCUMFERENCE;
-        public static final double SECOND_AND_THIRD_STAGE_MASS = Units.lbsToKilograms(28.44);
-        public static final InvertedValue MOTOR_INVERT = InvertedValue.Clockwise_Positive; // TODO SHOP: CHECK ON REAL ROBOT
+        private static final double SECOND_AND_THIRD_STAGE_MASS = Units.lbsToKilograms(28.44);
+        public static final InvertedValue MOTOR_INVERT = InvertedValue.Clockwise_Positive;
         public static final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Coast;
 
-        // pid
+        // pid & tolerance
         public static final Function<Double, Double> G = (pivotDeg) -> 0.2175 * Math.sin(Math.toRadians(pivotDeg)); // TODO SHOP: TEST THESE VALUES
         public static final double V = 8.188125 / ROTOR_TO_METER_RATIO; // 1V / (m/s) -> 1V / (rotor rps)
         public static final double A = 0.029375 / ROTOR_TO_METER_RATIO; // 1V / (m/s^2) -> 1V / (rotor rps^2)
@@ -185,9 +184,10 @@ public final class DefaultConstants {
         public static final double D = 0.0;
         public static final double EXPO_V = V / 0.3; // 80% of the actual max velocity, as it will allocate 1 / 0.8 = 1.25 times the voltage to 1 rps
         public static final double EXPO_A = A / 0.005; // 80% of the actual max accel
+        public static final double TOLERANCE = Units.inchesToMeters(2.5);
 
         // presets
-        public static final double LOWER_LIMIT = 0;
+        public static final double LOWER_LIMIT = 0; // TODO: SET PRESETS
         public static final double UPPER_LIMIT = Units.inchesToMeters(45);
         public static final double CORAL_STATION = 0;
         public static final double GROUND_CORAL = 0;
@@ -203,7 +203,6 @@ public final class DefaultConstants {
     }
 
     public final static class IntakeConstants {
-        // basic configs
         public static final int MOTOR_ID = 41;
         public static final int SENSOR_ID = 42;
         public static final double CURRENT_LIMIT = 40;
@@ -213,25 +212,29 @@ public final class DefaultConstants {
     }
 
     public final static class PivotConstants {
-        // motor configs
+        // motor config
         public static final int LEAD_ID = 51;
         public static final int FOLLOWER_ID = 52;
         public static final int SERVO_HUB_ID = 54;
-        public static final int RATCHET_CHANNEL = 0;
         public static final double CURRENT_LIMIT = 40;
-        public static final double PEAK_VOLTAGE = 6; // TODO SHOP: TEST WITHOUT PEAK VOLTAGE AND WITH 12 V PEAK VOLTAGE
+        public static final double PEAK_VOLTAGE = 6; // TODO SHOP: REMOVE IF NEEDED
         public static final double SENSOR_TO_DEGREE_RATIO = 1 / 360.0;
         public static final double ROTOR_TO_MECHANISM_RATIO = 107.6923;
         public static final InvertedValue PIVOT_INVERT = InvertedValue.Clockwise_Positive;
         public static final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Coast;
 
-        // encoder configs
+        // encoder config
         public static final int ENCODER_ID = 53;
         public static final double ENCODER_ABSOLUTE_OFFSET = 0.06909247503;
         public static final SensorDirectionValue ENCODER_INVERT = SensorDirectionValue.CounterClockwise_Positive;
 
-        // pid
-        public static final double G = 0.2269 / 2; // TODO SHOP: TEST THESE VALUES
+        // ratchet config
+        public static final int RATCHET_CHANNEL = 0;
+        public static final int RATCHET_ON = 1050;
+        public static final int RATCHET_OFF = 1200;
+
+        // pid & tolerance
+        public static final double G = 0.2269 / 2;
         public static final double V = 7.75 / 2 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps) -> V / (rotor rps)
         public static final double A = 0.025 / 2 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps^2) -> V / (rotor rps^2)
         public static final double P = 0.15;
@@ -239,39 +242,36 @@ public final class DefaultConstants {
         public static final double D = 0.01;
         public static final double EXPO_V = V / 0.75; // 75% of the actual max velocity, as it will allocate 1 / 0.8 = 1.25 times the voltage to 1 rps
         public static final double EXPO_A = A / 0.005; // 0.5% of the actual max acceleration
+        public static final double TOLERANCE = 2.5;
 
         // presets
-        public static final double LOWER_LIMIT = 0;
+        public static final double LOWER_LIMIT = 0; // TODO: SET PRESETS
         public static final double UPPER_LIMIT = 0;
         public static final double CORAL_STATION = 0;
-        public static final double GROUND_ALGAE = 0;
         public static final double GROUND_CORAL = 0;
+        public static final double GROUND_ALGAE = 0;
         public static final double SCORE_CORAL = 90;
         public static final double SCORE_ALGAE = 0;
         public static final double STOW_POSITION = 45;
-        public static final double TOLERANCE = 0;
-
-        public static final int RATCHET_ON = 1050;
-        public static final int RATCHET_OFF = 1200;
     }
 
     public final static class WristConstants {
-        // motor configs
+        // motor config
         public static final int MOTOR_ID = 61;
         public static final double CURRENT_LIMIT = 40;
-        public static final double PEAK_VOLTAGE = 6;
-        public static final double SENSOR_TO_DEGREE_RATIO = 1 / 360.0; // TODO SHOP: TEST THIS VALUE
+        public static final double PEAK_VOLTAGE = 6; // TODO SHOP: REMOVE IF NEEDED
+        public static final double SENSOR_TO_DEGREE_RATIO = 1 / 360.0;
         public static final double ROTOR_TO_MECHANISM_RATIO = 45.3704;
         public static final InvertedValue MOTOR_INVERT = InvertedValue.Clockwise_Positive;
         public static final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Coast;
 
-        // encoder configs
+        // encoder config
         public static final int ENCODER_ID = 62;
         public static final double ENCODER_ABSOLUTE_OFFSET = -0.33154229058;
-        public static final SensorDirectionValue ENCODER_INVERT = SensorDirectionValue.Clockwise_Positive; // TODO SHOP: CHECK ON REAL
+        public static final SensorDirectionValue ENCODER_INVERT = SensorDirectionValue.Clockwise_Positive;
 
-        // pid
-        public static final BiFunction<Double, Double, Double> G = (wristDeg, pivotDeg) -> 0.2188 * Math.sin(Math.toRadians(wristDeg - (90 - pivotDeg))); // TODO SHOP: TEST THESE VALUES
+        // pid & tolerance
+        public static final BiFunction<Double, Double, Double> G = (wristDeg, pivotDeg) -> 0.2188 * Math.sin(Math.toRadians(wristDeg - (90 - pivotDeg)));
         public static final double V = 0.75 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps) -> V / (rotor rps)
         public static final double A = 0.025 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps^2) -> V / (rotor rps^2)
         public static final double P = 0.1;
@@ -279,9 +279,10 @@ public final class DefaultConstants {
         public static final double D = 0.0;
         public static final double EXPO_V = V / 0.8; // 30% of the actual max velocity, as it will allocate 1 / 0.8 = 1.25 times the voltage to 1 rps
         public static final double EXPO_A = A / 0.05; // 0.5% of the actual max accel
+        public static final double TOLERANCE = 2.5;
 
         // presets
-        public static final double LOWER_LIMIT = 0;  // TODO: WHAT SHOULD WE SET ZERO AS??
+        public static final double LOWER_LIMIT = 0; // TODO: SET PRESETS
         public static final double UPPER_LIMIT = 20;
         public static final double GROUND_CORAL = 90;
         public static final double GROUND_ALGAE = 0;

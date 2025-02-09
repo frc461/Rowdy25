@@ -31,29 +31,26 @@ public class Wrist extends SubsystemBase {
     }
 
 
-    private State state;
+    private State currentState;
 
-    private final Pivot pivot;
     private final TalonFX wrist;
+    private final Pivot pivot;
     private final MotionMagicExpoVoltage request;
     private double error, accuracy;
 
     private final WristTelemetry wristTelemetry = new WristTelemetry(this);
 
-    // TODO: STATES & COMMAND & VOID STATE CHANGERS
-
     public Wrist(Pivot pivot) {
-        this.pivot = pivot;
+        currentState = State.STOW;
 
         CANcoder encoder = new CANcoder(Constants.WristConstants.ENCODER_ID);
         encoder.getConfigurator().apply(new CANcoderConfiguration()
                 .withMagnetSensor(new MagnetSensorConfigs()
                         .withSensorDirection(Constants.WristConstants.ENCODER_INVERT)
-                        .withMagnetOffset(Constants.WristConstants.ENCODER_ABSOLUTE_OFFSET))); // TODO SHOP: CHECK AND POTENTIALLY ADD MORE CONFIGS
+                        .withMagnetOffset(Constants.WristConstants.ENCODER_ABSOLUTE_OFFSET)));
 
         wrist = new TalonFX(Constants.WristConstants.MOTOR_ID);
-        wrist.getConfigurator().apply(new TalonFXConfiguration()
-                .withVoltage(new VoltageConfigs().withPeakForwardVoltage(Constants.WristConstants.PEAK_VOLTAGE)) // TODO: DETERMINE VOLTAGE
+        wrist.getConfigurator().apply(new TalonFXConfiguration() // TODO SHOP: TEST WITHOUT VOLTAGE CONSTRAINT
                 .withFeedback(new FeedbackConfigs().withRemoteCANcoder(encoder)
                         .withSensorToMechanismRatio(Constants.WristConstants.SENSOR_TO_DEGREE_RATIO))
                 .withMotorOutput(new MotorOutputConfigs()
@@ -75,12 +72,16 @@ public class Wrist extends SubsystemBase {
                         .withMotionMagicExpo_kV(Constants.WristConstants.EXPO_V)
                         .withMotionMagicExpo_kA(Constants.WristConstants.EXPO_A)));
 
+        this.pivot = pivot;
+
         request = new MotionMagicExpoVoltage(0);
 
         error = 0.0;
         accuracy = 1.0;
+    }
 
-        state = State.STOW;
+    public State getState() {
+        return currentState;
     }
 
     public double getPosition() { 
@@ -93,6 +94,22 @@ public class Wrist extends SubsystemBase {
 
     public double getError() {
         return error;
+    }
+
+    private void setState(State newState) {
+        currentState = newState;
+    }
+
+    public void setManualState() {
+        setState(State.MANUAL);
+    }
+
+    public void toggleGroundCoral() {
+        setState(currentState == State.GROUND_CORAL ? State.STOW : State.GROUND_CORAL);
+    }
+
+    public void toggleGroundAlgae() {
+        setState(currentState == State.GROUND_ALGAE ? State.STOW : State.GROUND_ALGAE);
     }
 
     public void holdTarget() {
@@ -110,33 +127,13 @@ public class Wrist extends SubsystemBase {
         }
     }
 
-    public void setManualState() {
-        setState(State.MANUAL);
-    }
-
-    public void toggleGroundCoral() {
-        setState(state == State.GROUND_CORAL ? State.STOW : State.GROUND_CORAL);
-    }
-
-    public void toggleGroundAlgae() {
-        setState(state == State.GROUND_ALGAE ? State.STOW : State.GROUND_ALGAE);
-    }
-
-    private void setState(State state) {
-        this.state = state;
-    }
-
-    public State getState() {
-        return state;
-    }
-
     @Override
     public void periodic() {
         wristTelemetry.publishValues();
 
         error = Math.abs(getTarget() - getPosition());
         accuracy = getTarget() > getPosition()
-                    ? getPosition() / getTarget()
-                    : getTarget() / getPosition();
+                ? getPosition() / getTarget()
+                : getTarget() / getPosition();
     }
 }

@@ -30,24 +30,33 @@ public class Pivot extends SubsystemBase {
         State(double position) {
             this.position = position;
         }
-    };
+    }
+
+    public enum RatchetState {
+        ON(Constants.PivotConstants.RATCHET_ON), // Pivot can move
+        OFF(Constants.PivotConstants.RATCHET_OFF); // Pivot cannot move
+
+        private final int pulseWidth;
+
+        RatchetState(int pulseWidth) {
+            this.pulseWidth = pulseWidth;
+        }
+    }
+
+    private State currentState;
+    private RatchetState currentRatchetState;
 
     private final TalonFX pivot;
-    private State currentState;
-    private final MotionMagicExpoVoltage request;
     private final ServoChannel ratchet;
+    private final MotionMagicExpoVoltage request;
     private double error, accuracy;
-    private boolean ratcheted;
 
     private final PivotTelemetry pivotTelemetry = new PivotTelemetry(this);
 
-    // TODO: STATES & COMMAND & VOID STATE CHANGERS
-    // We want states for all pickup and scoring locations
-    // Use the constants we have already created in default constants as the positions the pivot should go to for now (they are all 0)`
-    // We need a default command (in the commands folder) that can change states while also accepting joystick inputs for manual control
-    // State changers should go back to stow position if a button is pressed twice (just like the intake)
-
     public Pivot() {
+        currentState = State.STOW;
+        currentRatchetState = RatchetState.ON;
+
         CANcoder encoder = new CANcoder(Constants.PivotConstants.ENCODER_ID);
         encoder.getConfigurator().apply(new CANcoderConfiguration()
                 .withMagnetSensor(new MagnetSensorConfigs()
@@ -83,15 +92,11 @@ public class Pivot extends SubsystemBase {
             pivot2.setControl(new Follower(Constants.PivotConstants.LEAD_ID, true));
         }
 
-        currentState = State.STOW;
-
         ratchet = new ServoHub(Constants.PivotConstants.SERVO_HUB_ID).getServoChannel(ServoChannel.ChannelId.kChannelId0);
         ratchet.setEnabled(true);
         ratchet.setPowered(true);
 
-        request = new MotionMagicExpoVoltage(0);
-
-        ratcheted = true;
+        request = new MotionMagicExpoVoltage(getTarget());
 
         error = 0.0;
         accuracy = 1.0;
@@ -99,6 +104,10 @@ public class Pivot extends SubsystemBase {
 
     public State getState() {
         return currentState;
+    }
+
+    public RatchetState getRatchetState() {
+        return currentRatchetState;
     }
 
     public double getPosition() {
@@ -109,16 +118,25 @@ public class Pivot extends SubsystemBase {
         return getState() == State.MANUAL ? getPosition() : getState().position;
     }
 
+    public boolean validStartPosition() {
+        return Math.abs(getPosition() - Constants.PivotConstants.STOW_POSITION) <= Constants.PivotConstants.TOLERANCE;
+    }
+
     public double getError() {
         return error;
     }
 
-    public double getRatchetValue() {
+    public double getRatchetStateValue() {
         return ratchet.getPulseWidth();
     }
 
-    public boolean isRatcheted() {
-        return ratcheted;
+    public void toggleRatchet() {
+        currentRatchetState = currentRatchetState == RatchetState.ON ? RatchetState.OFF : RatchetState.ON;
+        ratchet.setPulseWidth(currentRatchetState.pulseWidth);
+    }
+
+    private void setState(State newState) {
+        currentState = newState;
     }
 
     public void setManualState() {
@@ -131,22 +149,6 @@ public class Pivot extends SubsystemBase {
 
     public void toggleScoreAlgaeState() {
         setState(currentState == State.SCORE_ALGAE ? State.STOW : State.SCORE_ALGAE);
-    }
-
-    private void setState(State currentState) {
-        this.currentState = currentState;
-    }
-
-    public void toggleRatchet() {
-        setRatchet(!ratcheted);
-    }
-
-    public void setRatchet(boolean toggle) {
-        ratcheted = toggle;
-        ratchet.setPulseWidth(ratcheted ?
-                Constants.PivotConstants.RATCHET_ON :
-                Constants.PivotConstants.RATCHET_OFF
-        );
     }
 
     public void holdTarget() {
@@ -169,15 +171,13 @@ public class Pivot extends SubsystemBase {
     public void periodic() {
         pivotTelemetry.publishValues();
 
-        Lights.setLights((Math.abs(getPosition() - Constants.PivotConstants.STOW_POSITION) <= Constants.PivotConstants.TOLERANCE) && DriverStation.isDisabled());
-
-        if (ratcheted) {
-            ratchet.setPulseWidth(Constants.PivotConstants.RATCHET_ON) ;
-        } else {
-            ratchet.setPulseWidth(Constants.PivotConstants.RATCHET_OFF);
-        }
-
         error = Math.abs(getTarget() - getPosition());
-        accuracy = getTarget() > getPosition() ? getPosition() / getTarget() : getTarget() / getPosition();
+        accuracy = getTarget() > getPosition()
+                ? getPosition() / getTarget()
+                : getTarget() / getPosition();
+
+        Lights.setLights((validStartPosition()) && DriverStation.isDisabled());
+
+        ratchet.setPulseWidth(currentRatchetState.pulseWidth);
     }
 }

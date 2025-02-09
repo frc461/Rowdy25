@@ -131,7 +131,7 @@ public final class Constants {
     }
 
     public final static class ElevatorConstants {
-        // basic configs
+        // motor config
         public static int LEAD_ID;
         public static int FOLLOWER_ID;
         public static int LOWER_LIMIT_SWITCH_ID;
@@ -139,10 +139,11 @@ public final class Constants {
         public static double PEAK_VOLTAGE;
         public static double ROTOR_TO_PULLEY_RATIO;
         public static double PULLEY_CIRCUMFERENCE;
+        public static double ROTOR_TO_METER_RATIO;
         public static InvertedValue MOTOR_INVERT;
         public static NeutralModeValue NEUTRAL_MODE;
 
-        // pid
+        // pid & tolerance
         public static Function<Double, Double> G;
         public static double V;
         public static double A;
@@ -151,6 +152,7 @@ public final class Constants {
         public static double D;
         public static double EXPO_V;
         public static double EXPO_A;
+        public static double TOLERANCE;
 
         // presets
         public static double LOWER_LIMIT;
@@ -180,11 +182,10 @@ public final class Constants {
     }
 
     public final static class PivotConstants {
-        // motor configs
+        // motor config
         public static int LEAD_ID;
         public static int FOLLOWER_ID;
         public static int SERVO_HUB_ID;
-        public static int RATCHET_ID;
         public static double CURRENT_LIMIT;
         public static double PEAK_VOLTAGE;
         public static double SENSOR_TO_DEGREE_RATIO;
@@ -192,12 +193,17 @@ public final class Constants {
         public static InvertedValue PIVOT_INVERT;
         public static NeutralModeValue NEUTRAL_MODE;
 
-        // encoder configs
+        // encoder config
         public static int ENCODER_ID;
         public static double ENCODER_ABSOLUTE_OFFSET;
         public static SensorDirectionValue ENCODER_INVERT;
 
-        // pid
+        // ratchet config
+        public static int RATCHET_ID;
+        public static int RATCHET_ON;
+        public static int RATCHET_OFF;
+
+        // pid & tolerance
         public static double G;
         public static double V;
         public static double A;
@@ -206,24 +212,22 @@ public final class Constants {
         public static double D;
         public static double EXPO_V;
         public static double EXPO_A;
+        public static double TOLERANCE;
 
         // presets
         public static double LOWER_LIMIT;
         public static double UPPER_LIMIT;
         public static double CORAL_STATION;
-        public static double GROUND_ALGAE;
         public static double GROUND_CORAL;
+        public static double GROUND_ALGAE;
         public static double SCORE_CORAL;
         public static double SCORE_ALGAE;
         public static double STOW_POSITION;
-        public static double TOLERANCE;
 
-        public static int RATCHET_ON;
-        public static int RATCHET_OFF;
     }
 
     public final static class WristConstants {
-        // motor configs
+        // motor config
         public static int MOTOR_ID;
         public static double CURRENT_LIMIT;
         public static double PEAK_VOLTAGE;
@@ -231,12 +235,12 @@ public final class Constants {
         public static InvertedValue MOTOR_INVERT;
         public static NeutralModeValue NEUTRAL_MODE;
 
-        // encoder configs
+        // encoder config
         public static int ENCODER_ID;
         public static double ENCODER_ABSOLUTE_OFFSET;
         public static SensorDirectionValue ENCODER_INVERT;
 
-        // pid
+        // pid & tolerance
         public static BiFunction<Double, Double, Double> G;
         public static double V;
         public static double A;
@@ -245,6 +249,7 @@ public final class Constants {
         public static double D;
         public static double EXPO_V;
         public static double EXPO_A;
+        public static double TOLERANCE;
 
         // presets
         public static double LOWER_LIMIT;

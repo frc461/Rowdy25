@@ -37,26 +37,23 @@ public class Elevator extends SubsystemBase {
         }
     }
 
-    private final Pivot pivot;
-    private final TalonFX elevator;
-    private final MotionMagicExpoVoltage request;
-    private final DigitalInput lowerSwitch;
-    private double accuracy;
     private State currentState;
+
+    private final TalonFX elevator;
+    private final Pivot pivot;
+    private final DigitalInput lowerSwitch;
+    private final MotionMagicExpoVoltage request;
+    private double accuracy;
 
 	private final ElevatorTelemetry elevatorTelemetry = new ElevatorTelemetry(this);
 
-    // TODO: STATES & COMMAND & VOID STATE CHANGERS
-
     public Elevator(Pivot pivot) {
-        this.pivot = pivot;
+        currentState = State.L2_CORAL; // TODO SHOP: TEST
 
         elevator = new TalonFX(Constants.ElevatorConstants.LEAD_ID);
-
-        elevator.getConfigurator().apply(new TalonFXConfiguration()
-                .withVoltage(new VoltageConfigs().withPeakForwardVoltage(Constants.ElevatorConstants.PEAK_VOLTAGE)) // TODO: DETERMINE VOLTAGE
+        elevator.getConfigurator().apply(new TalonFXConfiguration() // TODO SHOP: TEST WITHOUT VOLTAGE
                 .withFeedback(new FeedbackConfigs()
-                        .withSensorToMechanismRatio(Constants.ElevatorConstants.ROTOR_TO_PULLEY_RATIO))
+                        .withSensorToMechanismRatio(Constants.ElevatorConstants.ROTOR_TO_PULLEY_RATIO)) // TODO: FIX THIS
                 .withMotorOutput(new MotorOutputConfigs()
                         .withInverted(Constants.ElevatorConstants.MOTOR_INVERT)
                         .withNeutralMode(NeutralModeValue.Coast))
@@ -80,13 +77,14 @@ public class Elevator extends SubsystemBase {
             elevator2.setControl(new Follower(Constants.ElevatorConstants.LEAD_ID, true));
         }
 
+        this.pivot = pivot;
+
         lowerSwitch = new DigitalInput(Constants.ElevatorConstants.LOWER_LIMIT_SWITCH_ID);
 
         request = new MotionMagicExpoVoltage(0);
 
-        elevator.setPosition(0.0);
+        elevator.setPosition(0.0); // TODO WAIT (LIMIT SWITCH IS AVAILABLE): REMOVE THIS
         accuracy = 1.0;
-        currentState = State.L2_CORAL;
     }
 
 	public State getState() {
@@ -107,8 +105,7 @@ public class Elevator extends SubsystemBase {
     }
 
     public boolean lowerSwitchTriggered() {
-        return false;
-//        return !lowerSwitch.get();
+        return false; // TODO WAIT (LIMIT SWITCH IS AVAILABLE): return !lowerSwitch.get();
     }
 
     public void setManualState() {
@@ -148,8 +145,8 @@ public class Elevator extends SubsystemBase {
 
     @Override
     public void periodic() {
-        accuracy = getTarget() > getPosition() ? getPosition() / getTarget() : getTarget() / getPosition();
-
         elevatorTelemetry.publishValues();
+
+        accuracy = getTarget() > getPosition() ? getPosition() / getTarget() : getTarget() / getPosition();
     }
 }

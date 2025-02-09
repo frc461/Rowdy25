@@ -1,6 +1,5 @@
 package frc.robot.subsystems.intake;
 
-import dev.doglog.DogLog;
 import edu.wpi.first.networktables.BooleanPublisher;
 import edu.wpi.first.networktables.DoubleArrayPublisher;
 import edu.wpi.first.networktables.DoublePublisher;
@@ -26,7 +25,7 @@ public class IntakeTelemetry {
         rgbPub.set(intake.getColorReading());
         hasCoralPub.set(intake.hasCoral());
         hasAlgaePub.set(intake.hasAlgae());
-        currentStatePub.set(intake.getCurrentState().toString());
+        currentStatePub.set(intake.getState().toString());
         proximityPub.set(intake.getProximity());
 
         logValues();
