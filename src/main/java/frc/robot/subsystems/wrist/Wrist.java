@@ -7,7 +7,6 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
-import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.util.ExpUtil;
 
 public class Wrist extends SubsystemBase {
@@ -37,13 +36,12 @@ public class Wrist extends SubsystemBase {
     private State currentState;
 
     private final TalonFX wrist;
-    private final Pivot pivot;
     private final MotionMagicExpoVoltage request;
     private double error, accuracy;
 
     private final WristTelemetry wristTelemetry = new WristTelemetry(this);
 
-    public Wrist(Pivot pivot) {
+    public Wrist() {
         currentState = State.STOW;
 
         CANcoder encoder = new CANcoder(Constants.WristConstants.ENCODER_ID);
@@ -74,8 +72,6 @@ public class Wrist extends SubsystemBase {
                         .withMotionMagicCruiseVelocity(0)
                         .withMotionMagicExpo_kV(Constants.WristConstants.EXPO_V)
                         .withMotionMagicExpo_kA(Constants.WristConstants.EXPO_A)));
-
-        this.pivot = pivot;
 
         request = new MotionMagicExpoVoltage(0);
 
@@ -155,19 +151,15 @@ public class Wrist extends SubsystemBase {
         setState(currentState == State.NET ? State.STOW : State.NET);
     }
 
-    public void holdTarget() {
-        wrist.setControl(request.withPosition(getTarget()).withFeedForward(Constants.WristConstants.G.apply(getPosition(), pivot.getPosition())));
+    public void holdTarget(double pivotPosition) {
+        wrist.setControl(request.withPosition(getTarget()).withFeedForward(Constants.WristConstants.G.apply(getPosition(), pivotPosition)));
     }
 
     public void moveWrist(double axisValue) {
         // TODO SHOP: TUNE CURBING VALUE
-        if (axisValue == 0) {
-            holdTarget();
-        } else {
-            wrist.set(axisValue > 0
-                    ? axisValue * ExpUtil.output(Constants.WristConstants.UPPER_LIMIT - getPosition(), 1, 5, 10)
-                    : axisValue * ExpUtil.output(getPosition() - Constants.WristConstants.LOWER_LIMIT, 1, 5, 10));
-        }
+        wrist.set(axisValue > 0
+                ? axisValue * ExpUtil.output(Constants.WristConstants.UPPER_LIMIT - getPosition(), 1, 5, 10)
+                : axisValue * ExpUtil.output(getPosition() - Constants.WristConstants.LOWER_LIMIT, 1, 5, 10));
     }
 
     @Override

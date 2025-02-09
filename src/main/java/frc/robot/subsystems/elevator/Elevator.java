@@ -40,14 +40,13 @@ public class Elevator extends SubsystemBase {
     private State currentState;
 
     private final TalonFX elevator;
-    private final Pivot pivot;
     private final DigitalInput lowerSwitch;
     private final MotionMagicExpoVoltage request;
     private double accuracy;
 
 	private final ElevatorTelemetry elevatorTelemetry = new ElevatorTelemetry(this);
 
-    public Elevator(Pivot pivot) { // TODO: FIGURE OUT HOW TO OBTAIN G CONSTANT WITHOUT PIVOT INSIDE SUBSYSTEM
+    public Elevator() { // TODO: FIGURE OUT HOW TO OBTAIN G CONSTANT WITHOUT PIVOT INSIDE SUBSYSTEM
         currentState = State.L2_CORAL; // TODO SHOP: TEST
 
         elevator = new TalonFX(Constants.ElevatorConstants.LEAD_ID);
@@ -77,8 +76,6 @@ public class Elevator extends SubsystemBase {
             elevator2.setControl(new Follower(Constants.ElevatorConstants.LEAD_ID, true));
         }
 
-        this.pivot = pivot;
-
         lowerSwitch = new DigitalInput(Constants.ElevatorConstants.LOWER_LIMIT_SWITCH_ID);
 
         request = new MotionMagicExpoVoltage(0);
@@ -99,7 +96,7 @@ public class Elevator extends SubsystemBase {
         return getState() == State.MANUAL ? getPosition() : getState().position;
     }
 
-    public double getAlgaeHeight(Pose2d currentPose) {
+    public double getAlgaeHeight(Pose2d currentPose) { // TODO: CHANGE STATE BASED ON CLOSEST ALGAE HEIGHT
         return FieldUtil.Reef.getAlgaeReefLevelFromTag(FieldUtil.Reef.getNearestReefTag(currentPose)) == FieldUtil.Reef.AlgaeLocation.UPPER
                 ? Constants.ElevatorConstants.HIGH_REEF_ALGAE : Constants.ElevatorConstants.LOW_REEF_ALGAE;
     }
@@ -170,21 +167,17 @@ public class Elevator extends SubsystemBase {
         }
     }
 
-    public void holdTarget() {
+    public void holdTarget(double pivotPosition) {
         checkLimitSwitch();
-        elevator.setControl(request.withPosition(getTarget()).withFeedForward(Constants.ElevatorConstants.G.apply(pivot.getPosition())));
+        elevator.setControl(request.withPosition(getTarget()).withFeedForward(Constants.ElevatorConstants.G.apply(pivotPosition)));
     }
 
     public void moveElevator(double axisValue) {
         checkLimitSwitch();
         // TODO SHOP: TUNE CURBING VALUE
-        if (axisValue == 0) {
-            holdTarget();
-        } else {
-            elevator.set(axisValue > 0
-                    ? axisValue * ExpUtil.output(Constants.ElevatorConstants.UPPER_LIMIT - getPosition(), 1, 5, 10)
-                    : axisValue * ExpUtil.output(getPosition() - Constants.ElevatorConstants.LOWER_LIMIT, 1, 5, 10));
-        }
+        elevator.set(axisValue > 0
+                ? axisValue * ExpUtil.output(Constants.ElevatorConstants.UPPER_LIMIT - getPosition(), 1, 5, 10)
+                : axisValue * ExpUtil.output(getPosition() - Constants.ElevatorConstants.LOWER_LIMIT, 1, 5, 10));
     }
 
     @Override

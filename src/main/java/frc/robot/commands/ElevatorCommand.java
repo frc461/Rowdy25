@@ -9,23 +9,24 @@ import frc.robot.subsystems.elevator.Elevator;
 
 public class ElevatorCommand extends Command {
     private final Elevator elevator;
-    private final DoubleSupplier controllerValue;
+    private final DoubleSupplier manualAxisValue;
+    private final DoubleSupplier pivotPosition;
 
-    public ElevatorCommand(Elevator elevator, DoubleSupplier controllerValue) {
+    public ElevatorCommand(Elevator elevator, DoubleSupplier manualAxisValue, DoubleSupplier pivotPosition) {
         this.elevator = elevator;
-        this.controllerValue = controllerValue;
+        this.manualAxisValue = manualAxisValue;
+        this.pivotPosition = pivotPosition;
         addRequirements(elevator);
     }
 
     @Override
     public void execute() {
-        double val = MathUtil.applyDeadband(controllerValue.getAsDouble(), Constants.DEADBAND); // TODO: FIX THIS (AND ALL OTHER MANUALS)
-        if (val != 0.0) {
+        double axisValue = MathUtil.applyDeadband(manualAxisValue.getAsDouble(), Constants.DEADBAND) * 0.5; // TODO: FIX THIS (AND ALL OTHER MANUALS)
+        if (axisValue != 0.0) {
             elevator.setManualState();
-            elevator.moveElevator(val);
-        }
-        if (elevator.getState() != Elevator.State.MANUAL) {
-            elevator.holdTarget();
+            elevator.moveElevator(axisValue);
+        } else {
+            elevator.holdTarget(pivotPosition.getAsDouble());
         }
     }
 }

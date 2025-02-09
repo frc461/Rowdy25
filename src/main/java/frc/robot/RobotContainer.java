@@ -22,8 +22,8 @@ public class RobotContainer {
     private final Swerve swerve = new Swerve();
     private final Intake intake = new Intake();
     private final Pivot pivot = new Pivot();
-    private final Elevator elevator = new Elevator(pivot);
-    private final Wrist wrist = new Wrist(pivot);
+    private final Elevator elevator = new Elevator();
+    private final Wrist wrist = new Wrist();
     
     private final AutoChooser autoChooser = new AutoChooser(swerve);
 
@@ -168,7 +168,9 @@ public class RobotContainer {
 
         elevator.setDefaultCommand(
                 new ElevatorCommand(
-                        elevator, () -> opXbox.getRightTriggerAxis() - opXbox.getLeftTriggerAxis()
+                        elevator,
+                        () -> opXbox.getRightTriggerAxis() - opXbox.getLeftTriggerAxis(), // TODO SHOP: TEST THIS
+                        pivot::getPosition
                 )
         );
 

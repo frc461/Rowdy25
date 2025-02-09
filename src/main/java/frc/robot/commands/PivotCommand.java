@@ -9,21 +9,20 @@ import java.util.function.DoubleSupplier;
 
 public class PivotCommand extends Command {
     private final Pivot pivot;
-    private final DoubleSupplier controllerValue;
+    private final DoubleSupplier manualAxisValue;
 
-    public PivotCommand(Pivot pivot, DoubleSupplier controllerValue) {
+    public PivotCommand(Pivot pivot, DoubleSupplier manualAxisValue) {
         this.pivot = pivot;
-        this.controllerValue = controllerValue;
+        this.manualAxisValue = manualAxisValue;
         addRequirements(pivot);
     }
 
     @Override
     public void execute() {
-        double val = MathUtil.applyDeadband(controllerValue.getAsDouble(), Constants.DEADBAND, 0.3);
-        System.out.println(val);
-        if (val != 0.0) {
+        double axisValue = MathUtil.applyDeadband(manualAxisValue.getAsDouble(), Constants.DEADBAND) * 0.3;
+        if (axisValue != 0.0) {
             pivot.setManualState();
-            pivot.movePivot(val);
+            pivot.movePivot(axisValue);
         } else {
             pivot.holdTarget();
         }
