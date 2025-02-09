@@ -46,7 +46,7 @@ public class Elevator extends SubsystemBase {
 
 	private final ElevatorTelemetry elevatorTelemetry = new ElevatorTelemetry(this);
 
-    public Elevator() { // TODO: FIGURE OUT HOW TO OBTAIN G CONSTANT WITHOUT PIVOT INSIDE SUBSYSTEM
+    public Elevator() {
         currentState = State.L2_CORAL; // TODO SHOP: TEST
 
         elevator = new TalonFX(Constants.ElevatorConstants.LEAD_ID);

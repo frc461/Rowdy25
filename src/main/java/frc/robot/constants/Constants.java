@@ -15,6 +15,7 @@ import com.pathplanner.lib.path.PathConstraints;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -137,9 +138,16 @@ public final class Constants {
         public static int LOWER_LIMIT_SWITCH_ID;
         public static double CURRENT_LIMIT;
         public static double PEAK_VOLTAGE;
-        public static double ROTOR_TO_INCH_RATIO;
         public static InvertedValue MOTOR_INVERT;
         public static NeutralModeValue NEUTRAL_MODE;
+
+        // mechanism characterization
+        public static double ROTOR_TO_INCH_RATIO;
+        public static double MASS_LBS;
+        public static double COM_TO_STAGE_2_RATIO;
+        public static double STAGE_2_LIMIT;
+        public static double COM_TO_STAGE_3_RATIO;
+        public static Translation2d ZERO_UPRIGHT_COM;
 
         // pid & tolerance
         public static Function<Double, Double> G;
@@ -187,10 +195,12 @@ public final class Constants {
         public static int SERVO_HUB_ID;
         public static double CURRENT_LIMIT;
         public static double PEAK_VOLTAGE;
-        public static double SENSOR_TO_DEGREE_RATIO;
-        public static double ROTOR_TO_MECHANISM_RATIO;
         public static InvertedValue PIVOT_INVERT;
         public static NeutralModeValue NEUTRAL_MODE;
+
+        // mechanism characterization
+        public static double SENSOR_TO_DEGREE_RATIO;
+        public static Translation2d AXIS_POSITION;
 
         // encoder config
         public static int ENCODER_ID;
@@ -236,9 +246,14 @@ public final class Constants {
         public static int MOTOR_ID;
         public static double CURRENT_LIMIT;
         public static double PEAK_VOLTAGE;
-        public static double SENSOR_TO_DEGREE_RATIO;
         public static InvertedValue MOTOR_INVERT;
         public static NeutralModeValue NEUTRAL_MODE;
+
+        // mechanism characterization
+        public static double SENSOR_TO_DEGREE_RATIO;
+        public static double MASS_LBS;
+        public static Translation2d AXIS_POSITION;
+        public static Translation2d AXIS_TO_ZERO_COM;
 
         // encoder config
         public static int ENCODER_ID;

@@ -82,13 +82,11 @@ public class Pivot extends SubsystemBase {
                         .withBeepOnBoot(false)
                         .withAllowMusicDurDisable(true))
                 .withSlot0(new Slot0Configs()
-                        .withKG(Constants.PivotConstants.G)
                         .withKV(Constants.PivotConstants.V) // TODO SHOP: NEED S??????
                         .withKA(Constants.PivotConstants.A)
                         .withKP(Constants.PivotConstants.P)
                         .withKI(Constants.PivotConstants.I)
-                        .withKD(Constants.PivotConstants.D)
-                        .withGravityType(GravityTypeValue.Arm_Cosine))
+                        .withKD(Constants.PivotConstants.D))
                 .withMotionMagic(new MotionMagicConfigs()
                         .withMotionMagicCruiseVelocity(0)
                         .withMotionMagicExpo_kV(Constants.PivotConstants.EXPO_V)
@@ -197,20 +195,16 @@ public class Pivot extends SubsystemBase {
         setState(currentState == State.NET ? State.STOW : State.NET);
     }
 
-    public void holdTarget() {
-        pivot.setControl(request.withPosition(getTarget()));;
+    public void holdTarget(double gravityGainsToApply) {
+        pivot.setControl(request.withPosition(getTarget()).withFeedForward(gravityGainsToApply));
     }
 
 
     public void movePivot(double axisValue) {
         // TODO SHOP: TUNE CURBING VALUE
-        if (axisValue == 0) {
-            holdTarget();
-        } else {
-            pivot.set(axisValue > 0
-                    ? axisValue * ExpUtil.output(Constants.PivotConstants.UPPER_LIMIT - getPosition(), 1, 10, 10)
-                    : axisValue * ExpUtil.output(getPosition() - Constants.PivotConstants.LOWER_LIMIT, 1, 10, 10));
-        }
+        pivot.set(axisValue > 0
+                ? axisValue * ExpUtil.output(Constants.PivotConstants.UPPER_LIMIT - getPosition(), 1, 10, 10)
+                : axisValue * ExpUtil.output(getPosition() - Constants.PivotConstants.LOWER_LIMIT, 1, 10, 10));
     }
 
     @Override

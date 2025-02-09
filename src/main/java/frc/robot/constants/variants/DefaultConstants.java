@@ -20,6 +20,7 @@ import com.pathplanner.lib.path.PathConstraints;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
@@ -175,7 +176,12 @@ public final class DefaultConstants {
         private static final double ROTOR_TO_PULLEY_RATIO = 11.57;
         private static final double PULLEY_CIRCUMFERENCE = 7.065;
         public static final double ROTOR_TO_INCH_RATIO = ROTOR_TO_PULLEY_RATIO / PULLEY_CIRCUMFERENCE;
-        private static final double SECOND_AND_THIRD_STAGE_MASS_LBS = 28.44;
+        private static final double STAGE_2_LOAD_LBS = 28.44;
+        public static final double MASS_LBS = 23.0132625;
+        public static final double COM_TO_STAGE_2_RATIO = 0.509767;
+        public static final double STAGE_2_LIMIT = 24;
+        public static final double COM_TO_STAGE_3_RATIO = 0.3345002;
+        public static final Translation2d ZERO_UPRIGHT_COM = new Translation2d(-11.347053, 15.125012);
 
         // pid & tolerance
         public static final Function<Double, Double> G = (pivotDeg) -> 0.2175 * Math.sin(Math.toRadians(pivotDeg)); // TODO SHOP: TEST THESE VALUES
@@ -225,8 +231,9 @@ public final class DefaultConstants {
         public static final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Coast;
 
         // mechanism characterization
+        private static final double ROTOR_TO_MECHANISM_RATIO = 107.6923;
         public static final double SENSOR_TO_DEGREE_RATIO = 1 / 360.0;
-        public static final double ROTOR_TO_MECHANISM_RATIO = 107.6923;
+        public static final Translation2d AXIS_POSITION = new Translation2d(-9.417377, 9.257139);
 
         // encoder config
         public static final int ENCODER_ID = 53;
@@ -275,8 +282,11 @@ public final class DefaultConstants {
         public static final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Coast;
 
         // mechanism characterization
+        private static final double ROTOR_TO_MECHANISM_RATIO = 45.3704;
         public static final double SENSOR_TO_DEGREE_RATIO = 1 / 360.0;
-        public static final double ROTOR_TO_MECHANISM_RATIO = 45.3704;
+        public static final double MASS_LBS = 7.1301147;
+        public static final Translation2d AXIS_POSITION = new Translation2d(-11.767377, 38.007139);
+        public static final Translation2d AXIS_TO_ZERO_COM = new Translation2d(0, -7.453525);
 
         // encoder config
         public static final int ENCODER_ID = 62;
