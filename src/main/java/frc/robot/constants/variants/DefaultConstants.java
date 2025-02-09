@@ -114,7 +114,7 @@ public final class DefaultConstants {
 
         public static final class PhotonConstants {
             // TODO SHOP: TEST CAMERAS TO CENTER OF ROBOT OFFSETS
-            public static final String BW_TOP_RIGHT_NAME = "ArducamBW";
+            public static final String BW_TOP_RIGHT_NAME = "ArducamBW2";
             public static final double BW_TOP_RIGHT_FORWARD = 0.404;
             public static final double BW_TOP_RIGHT_LEFT = -0.291321;
             public static final double BW_TOP_RIGHT_UP = 0.279631;
@@ -122,7 +122,7 @@ public final class DefaultConstants {
             public static final double BW_TOP_RIGHT_PITCH = -5.0;
             public static final double BW_TOP_RIGHT_YAW = -30.0;
 
-            public static final String BW_TOP_LEFT_NAME = "ArducamBW2";
+            public static final String BW_TOP_LEFT_NAME = "ArducamBW";
             public static final double BW_TOP_LEFT_FORWARD = 0.404;
             public static final double BW_TOP_LEFT_LEFT = 0.291321;
             public static final double BW_TOP_LEFT_UP = 0.279631;
@@ -339,7 +339,6 @@ public final class DefaultConstants {
         public static final double ANGULAR_MINIMUM_ANGLE = -180.0;
         public static final double ANGULAR_MAXIMUM_ANGLE = 180.0;
 
-        // TODO SHOP: SETUP CONSTANTS & TUNE FOR 2025 ROBOT
         // The steer motor uses any SwerveModule.SteerRequestType control request with the
         // output type specified by SwerveModuleConstants.SteerMotorClosedLoopOutput
         private static final Slot0Configs STEER_GAINS = new Slot0Configs()
@@ -369,7 +368,7 @@ public final class DefaultConstants {
         private static final SteerFeedbackType STEER_FEEDBACK_TYPE = SteerFeedbackType.FusedCANcoder;
 
         // The stator current at which the wheels start to slip;
-        private static final Current SLIP_CURRENT = Amps.of(120.0); // TODO SHOP: RUN AGAINST WALL AND CHECK CURRENT WHEN WHEELS ARE SLIPPING
+        private static final Current SLIP_CURRENT = Amps.of(70.0);
 
         public static final AudioConfigs AUDIO_CONFIGS = new AudioConfigs().withAllowMusicDurDisable(true);
 
