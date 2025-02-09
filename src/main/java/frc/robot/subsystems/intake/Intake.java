@@ -65,7 +65,7 @@ public class Intake extends SubsystemBase {
     }
  
     public boolean hasCoral() {
-        return getProximity() < 0.1; // TODO SHOP: TUNE THIS
+        return getProximity() < 0.2; // TODO SHOP: TUNE THIS
     }
 
     public boolean hasAlgae() {
