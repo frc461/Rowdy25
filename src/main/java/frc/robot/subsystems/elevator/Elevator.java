@@ -104,6 +104,10 @@ public class Elevator extends SubsystemBase {
         return false; // TODO WAIT (LIMIT SWITCH IS AVAILABLE): return !lowerSwitch.get();
     }
 
+    public boolean isAtTarget() {
+        return error < Constants.ElevatorConstants.TOLERANCE;
+    }
+
 	private void setState(State state) {
 		currentState = state;
 	}
