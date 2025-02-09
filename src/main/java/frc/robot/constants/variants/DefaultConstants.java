@@ -319,8 +319,7 @@ public final class DefaultConstants {
         public static final double ANGULAR_MINIMUM_ANGLE = -180.0;
         public static final double ANGULAR_MAXIMUM_ANGLE = 180.0;
 
-        // TODO SHOP: TUNE FOR 2025 ROBOT
-
+        // TODO SHOP: SETUP CONSTANTS & TUNE FOR 2025 ROBOT
         // The steer motor uses any SwerveModule.SteerRequestType control request with the
         // output type specified by SwerveModuleConstants.SteerMotorClosedLoopOutput
         private static final Slot0Configs STEER_GAINS = new Slot0Configs()
@@ -345,8 +344,7 @@ public final class DefaultConstants {
         private static final SteerFeedbackType STEER_FEEDBACK_TYPE = SteerFeedbackType.FusedCANcoder;
 
         // The stator current at which the wheels start to slip;
-        // TODO SHOP: TUNE FOR 2025 ROBOT
-        private static final Current SLIP_CURRENT = Amps.of(120.0);
+        private static final Current SLIP_CURRENT = Amps.of(120.0); // TODO SHOP: RUN AGAINST WALL AND CHECK CURRENT WHEN WHEELS ARE SLIPPING
 
         public static final AudioConfigs AUDIO_CONFIGS = new AudioConfigs().withAllowMusicDurDisable(true);
 
@@ -420,7 +418,7 @@ public final class DefaultConstants {
             private static final int DRIVE_MOTOR_ID = 1;
             private static final int STEER_MOTOR_ID = 11;
             private static final int ENCODER_ID = 21;
-            private static final Angle ENCODER_OFFSET = Rotations.of(0.466552734375);
+            private static final Angle ENCODER_OFFSET = Rotations.of(-0.19921875);
             private static final boolean STEER_MOTOR_INVERTED = true;
             private static final boolean CANCODER_INVERTED = false;
 
@@ -438,7 +436,7 @@ public final class DefaultConstants {
             private static final int DRIVE_MOTOR_ID = 2;
             private static final int STEER_MOTOR_ID = 12;
             private static final int ENCODER_ID = 22;
-            private static final Angle ENCODER_OFFSET = Rotations.of(-0.091796875);
+            private static final Angle ENCODER_OFFSET = Rotations.of(-0.120361328125);
             private static final boolean STEER_MOTOR_INVERTED = true;
             private static final boolean CANCODER_INVERTED = false;
 
@@ -456,7 +454,7 @@ public final class DefaultConstants {
             private static final int DRIVE_MOTOR_ID = 3;
             private static final int STEER_MOTOR_ID = 13;
             private static final int ENCODER_ID = 23;
-            private static final Angle ENCODER_OFFSET = Rotations.of(-0.120361328125);
+            private static final Angle ENCODER_OFFSET = Rotations.of(-0.091796875);
             private static final boolean STEER_MOTOR_INVERTED = true;
             private static final boolean CANCODER_INVERTED = false;
 
@@ -474,7 +472,7 @@ public final class DefaultConstants {
             private static final int DRIVE_MOTOR_ID = 4;
             private static final int STEER_MOTOR_ID = 14;
             private static final int ENCODER_ID = 24;
-            private static final Angle ENCODER_OFFSET = Rotations.of(-0.19921875);
+            private static final Angle ENCODER_OFFSET = Rotations.of(0.466552734375);
             private static final boolean STEER_MOTOR_INVERTED = true;
             private static final boolean CANCODER_INVERTED = false;
 
