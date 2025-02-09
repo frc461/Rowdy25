@@ -1,9 +1,9 @@
 TODO:
 
-- [ ] Test swerve drive
-- [ ] Test turret function
-- [ ] Tune slippage current
-- [ ] Test cameras & filters
+- [x] Test swerve drive
+- [x] Test turret function
+- [x] Tune slippage current
+- [x] Test cameras & filters
 - [ ] Test intake command
 - [ ] Test wrist CANCoder offset
 - [ ] Tune elevator

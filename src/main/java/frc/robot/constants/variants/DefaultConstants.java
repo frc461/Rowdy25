@@ -97,7 +97,7 @@ public final class DefaultConstants {
         public static final Function<Double, Matrix<N3, N1>> VISION_STD_DEV_FUNCTION =
                 dist -> dist < 2.0
                         ? VecBuilder.fill(0.15 * dist, 0.15 * dist, Units.degreesToRadians(10.0) * dist)
-                        : VecBuilder.fill(0.5 * dist, 0.5 * dist, Units.degreesToRadians(180.0 * dist)); // TODO SHOP: TEST THIS LESS STRICT STD DEV FUNCTION
+                        : VecBuilder.fill(0.5 * dist, 0.5 * dist, Units.degreesToRadians(180.0) * dist); // TODO SHOP: TEST THIS LESS STRICT STD DEV FUNCTION
 
         public static final class LimelightConstants {
             public static final String LIMELIGHT_NT_NAME = "limelight";
