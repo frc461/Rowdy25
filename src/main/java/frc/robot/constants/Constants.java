@@ -137,9 +137,7 @@ public final class Constants {
         public static int LOWER_LIMIT_SWITCH_ID;
         public static double CURRENT_LIMIT;
         public static double PEAK_VOLTAGE;
-        public static double ROTOR_TO_PULLEY_RATIO;
-        public static double PULLEY_CIRCUMFERENCE;
-        public static double ROTOR_TO_METER_RATIO;
+        public static double ROTOR_TO_INCH_RATIO;
         public static InvertedValue MOTOR_INVERT;
         public static NeutralModeValue NEUTRAL_MODE;
 

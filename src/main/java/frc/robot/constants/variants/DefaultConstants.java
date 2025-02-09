@@ -168,32 +168,34 @@ public final class DefaultConstants {
         public static final int LOWER_LIMIT_SWITCH_ID = 0;
         public static final double CURRENT_LIMIT = 40;
         public static final double PEAK_VOLTAGE = 6; // TODO SHOP: REMOVE IF NEEDED
-        public static final double ROTOR_TO_PULLEY_RATIO = 11.57;
-        public static final double PULLEY_CIRCUMFERENCE = Units.inchesToMeters(7.065); // TODO: CHANGE TO METER
-        public static final double ROTOR_TO_METER_RATIO = ROTOR_TO_PULLEY_RATIO / PULLEY_CIRCUMFERENCE;
-        private static final double SECOND_AND_THIRD_STAGE_MASS = Units.lbsToKilograms(28.44);
         public static final InvertedValue MOTOR_INVERT = InvertedValue.Clockwise_Positive;
         public static final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Coast;
 
+        // mechanism characterization
+        private static final double ROTOR_TO_PULLEY_RATIO = 11.57;
+        private static final double PULLEY_CIRCUMFERENCE = 7.065;
+        public static final double ROTOR_TO_INCH_RATIO = ROTOR_TO_PULLEY_RATIO / PULLEY_CIRCUMFERENCE;
+        private static final double SECOND_AND_THIRD_STAGE_MASS_LBS = 28.44;
+
         // pid & tolerance
         public static final Function<Double, Double> G = (pivotDeg) -> 0.2175 * Math.sin(Math.toRadians(pivotDeg)); // TODO SHOP: TEST THESE VALUES
-        public static final double V = 8.188125 / ROTOR_TO_METER_RATIO; // 1V / (m/s) -> 1V / (rotor rps)
-        public static final double A = 0.029375 / ROTOR_TO_METER_RATIO; // 1V / (m/s^2) -> 1V / (rotor rps^2)
+        public static final double V = 0.208125 / ROTOR_TO_INCH_RATIO; // 1V / (in/s) -> 1V / (rotor rps)
+        public static final double A = 0.000743 / ROTOR_TO_INCH_RATIO; // 1V / (in/s^2) -> 1V / (rotor rps^2)
         public static final double P = 0.0;
         public static final double I = 0.0;
         public static final double D = 0.0;
         public static final double EXPO_V = V / 0.3; // 80% of the actual max velocity, as it will allocate 1 / 0.8 = 1.25 times the voltage to 1 rps
         public static final double EXPO_A = A / 0.005; // 80% of the actual max accel
-        public static final double TOLERANCE = Units.inchesToMeters(2.5);
+        public static final double TOLERANCE = 2.5;
 
         // presets
         public static final double LOWER_LIMIT = 0; // TODO: SET PRESETS
-        public static final double UPPER_LIMIT = Units.inchesToMeters(45);
+        public static final double UPPER_LIMIT = 45;
         public static final double CORAL_STATION = 0;
         public static final double GROUND_CORAL = 0;
         public static final double GROUND_ALGAE = 0;
         public static final double L1_CORAL = 0;
-        public static final double L2_CORAL = Units.inchesToMeters(8);
+        public static final double L2_CORAL = 8;
         public static final double L3_CORAL = 0;
         public static final double L4_CORAL = 0;
         public static final double LOW_REEF_ALGAE = 0;
@@ -218,10 +220,12 @@ public final class DefaultConstants {
         public static final int SERVO_HUB_ID = 54;
         public static final double CURRENT_LIMIT = 40;
         public static final double PEAK_VOLTAGE = 6; // TODO SHOP: REMOVE IF NEEDED
-        public static final double SENSOR_TO_DEGREE_RATIO = 1 / 360.0;
-        public static final double ROTOR_TO_MECHANISM_RATIO = 107.6923;
         public static final InvertedValue PIVOT_INVERT = InvertedValue.Clockwise_Positive;
         public static final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Coast;
+
+        // mechanism characterization
+        public static final double SENSOR_TO_DEGREE_RATIO = 1 / 360.0;
+        public static final double ROTOR_TO_MECHANISM_RATIO = 107.6923;
 
         // encoder config
         public static final int ENCODER_ID = 53;
@@ -260,10 +264,12 @@ public final class DefaultConstants {
         public static final int MOTOR_ID = 61;
         public static final double CURRENT_LIMIT = 40;
         public static final double PEAK_VOLTAGE = 6; // TODO SHOP: REMOVE IF NEEDED
-        public static final double SENSOR_TO_DEGREE_RATIO = 1 / 360.0;
-        public static final double ROTOR_TO_MECHANISM_RATIO = 45.3704;
         public static final InvertedValue MOTOR_INVERT = InvertedValue.Clockwise_Positive;
         public static final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Coast;
+
+        // mechanism characterization
+        public static final double SENSOR_TO_DEGREE_RATIO = 1 / 360.0;
+        public static final double ROTOR_TO_MECHANISM_RATIO = 45.3704;
 
         // encoder config
         public static final int ENCODER_ID = 62;

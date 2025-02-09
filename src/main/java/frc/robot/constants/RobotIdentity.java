@@ -119,9 +119,7 @@ public enum RobotIdentity {
         Constants.ElevatorConstants.LOWER_LIMIT_SWITCH_ID = DefaultConstants.ElevatorConstants.LOWER_LIMIT_SWITCH_ID;
         Constants.ElevatorConstants.CURRENT_LIMIT = DefaultConstants.ElevatorConstants.CURRENT_LIMIT;
         Constants.ElevatorConstants.PEAK_VOLTAGE = DefaultConstants.ElevatorConstants.PEAK_VOLTAGE;
-        Constants.ElevatorConstants.ROTOR_TO_PULLEY_RATIO = DefaultConstants.ElevatorConstants.ROTOR_TO_PULLEY_RATIO;
-        Constants.ElevatorConstants.PULLEY_CIRCUMFERENCE = DefaultConstants.ElevatorConstants.PULLEY_CIRCUMFERENCE;
-        Constants.ElevatorConstants.ROTOR_TO_METER_RATIO = DefaultConstants.ElevatorConstants.ROTOR_TO_METER_RATIO;
+        Constants.ElevatorConstants.ROTOR_TO_INCH_RATIO = DefaultConstants.ElevatorConstants.ROTOR_TO_INCH_RATIO;
         Constants.ElevatorConstants.MOTOR_INVERT = DefaultConstants.ElevatorConstants.MOTOR_INVERT;
         Constants.ElevatorConstants.NEUTRAL_MODE = DefaultConstants.ElevatorConstants.NEUTRAL_MODE;
         Constants.ElevatorConstants.G = DefaultConstants.ElevatorConstants.G;

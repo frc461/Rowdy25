@@ -102,7 +102,7 @@ public class Intake extends SubsystemBase {
 
         Lights.setLights(hasCoral() || hasAlgae());
 
-        switch (getState()) {
+        switch (getState()) { // TODO: Command this
             case INTAKE:
                 if (hasAlgae()) {
                     setState(Intake.State.HAS_ALGAE);

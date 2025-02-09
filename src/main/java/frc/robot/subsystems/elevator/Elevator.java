@@ -47,13 +47,13 @@ public class Elevator extends SubsystemBase {
 
 	private final ElevatorTelemetry elevatorTelemetry = new ElevatorTelemetry(this);
 
-    public Elevator(Pivot pivot) {
+    public Elevator(Pivot pivot) { // TODO: FIGURE OUT HOW TO OBTAIN G CONSTANT WITHOUT PIVOT INSIDE SUBSYSTEM
         currentState = State.L2_CORAL; // TODO SHOP: TEST
 
         elevator = new TalonFX(Constants.ElevatorConstants.LEAD_ID);
-        elevator.getConfigurator().apply(new TalonFXConfiguration() // TODO SHOP: TEST WITHOUT VOLTAGE
+        elevator.getConfigurator().apply(new TalonFXConfiguration() // TODO SHOP: TEST WITHOUT VOLTAGE CONSTRAINT
                 .withFeedback(new FeedbackConfigs()
-                        .withSensorToMechanismRatio(Constants.ElevatorConstants.ROTOR_TO_PULLEY_RATIO)) // TODO: FIX THIS
+                        .withSensorToMechanismRatio(Constants.ElevatorConstants.ROTOR_TO_INCH_RATIO))
                 .withMotorOutput(new MotorOutputConfigs()
                         .withInverted(Constants.ElevatorConstants.MOTOR_INVERT)
                         .withNeutralMode(NeutralModeValue.Coast))
