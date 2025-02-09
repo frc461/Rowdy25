@@ -4,12 +4,10 @@ import com.ctre.phoenix6.configs.AudioConfigs;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.configs.VoltageConfigs;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import com.reduxrobotics.canand.CanandEventLoop;
 import com.reduxrobotics.sensors.canandcolor.Canandcolor;
-import com.reduxrobotics.sensors.canandcolor.CanandcolorSettings;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -26,18 +24,18 @@ public class Intake extends SubsystemBase {
         OUTTAKE
     }
 
-    private final TalonFX motor;
-    private final Canandcolor canandcolor; // TODO SHOP: Use https://docs.reduxrobotics.com/alchemist/ to configure IDs
-    private final Timer pulseTimer = new Timer();
     private State currentState;
+
+    private final TalonFX motor;
+    private final Canandcolor canandcolor; // TODO SHOP: TUNE
+    private final Timer pulseTimer = new Timer();
 
     private final IntakeTelemetry intakeTelemetry = new IntakeTelemetry(this);
 
     public Intake() {
         motor = new TalonFX(Constants.IntakeConstants.MOTOR_ID);
 
-        motor.getConfigurator().apply(new TalonFXConfiguration()
-                .withVoltage(new VoltageConfigs().withPeakForwardVoltage(Constants.IntakeConstants.PEAK_VOLTAGE))
+        motor.getConfigurator().apply(new TalonFXConfiguration() // TODO SHOP: TEST WITHOUT VOLTAGE CONSTRAINT
                 .withMotorOutput(new MotorOutputConfigs()
                         .withInverted(Constants.IntakeConstants.MOTOR_INVERT)
                         .withNeutralMode(Constants.IntakeConstants.NEUTRAL_MODE))
@@ -54,7 +52,7 @@ public class Intake extends SubsystemBase {
         pulseTimer.start();
     }
 
-    public State getCurrentState() {
+    public State getState() {
         return currentState;
     }
 
@@ -67,11 +65,19 @@ public class Intake extends SubsystemBase {
     }
  
     public boolean hasCoral() {
-        return getProximity() < 0.1; // TODO SHOP: Set the color to close to the color of coral
+        return getProximity() < 0.1; // TODO SHOP: TUNE THIS
     }
 
     public boolean hasAlgae() {
-        return canandcolor.getColor().toWpilibColor().equals(Color.kAqua); // TODO SHOP: Set the color to close to the color of algae
+        return canandcolor.getColor().toWpilibColor().equals(Color.kAqua); // TODO SHOP: TUNE THIS
+    }
+
+    public void setIdleState() {
+        setState(State.IDLE);
+    }
+
+    public void toggleHasAlgaeState() {
+        setState(currentState == State.HAS_ALGAE ? State.IDLE : State.HAS_ALGAE);
     }
 
     public void toggleIntakeState() {
@@ -82,8 +88,8 @@ public class Intake extends SubsystemBase {
         setState(currentState == State.OUTTAKE ? State.IDLE : State.OUTTAKE);
     }
 
-    public void setState(State state) {
-        currentState = state;
+    private void setState(State newState) {
+        currentState = newState;
     }
 
     public void setIntakeSpeed(double speed) {
@@ -102,43 +108,6 @@ public class Intake extends SubsystemBase {
     public void periodic() {
         intakeTelemetry.publishValues();
 
-        if (hasCoral() || hasAlgae()) {
-            Lights.setLights(true);
-        } else {
-            Lights.setLights(false);
-        }
-
-        switch (getCurrentState()) {
-            case INTAKE:
-                if (hasAlgae()) {
-                    setState(Intake.State.HAS_ALGAE);
-                } else if (hasCoral()) {
-                    setState(Intake.State.IDLE);
-                } else {
-                    setIntakeSpeed(0.5);
-                }
-                break;
-            case OUTTAKE:
-                if (!hasAlgae() && !hasCoral()) {
-                    setState(Intake.State.IDLE);
-                } else {
-                    setIntakeSpeed(-0.5);
-                }
-                break;
-            case HAS_ALGAE:
-                if (!hasAlgae()) {
-                    setState(Intake.State.IDLE);
-                } else {
-                    pulseIntake();
-                }
-                break;
-            case IDLE:
-                if (hasCoral() || hasAlgae()) {
-                    setState(hasAlgae() ? Intake.State.HAS_ALGAE : Intake.State.IDLE);
-                } else {
-                    setIntakeSpeed(0.0);
-                }
-                break;
-        }
+        Lights.setLights(hasCoral() || hasAlgae());
     }
 }

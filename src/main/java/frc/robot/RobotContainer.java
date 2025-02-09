@@ -8,9 +8,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.autos.AutoChooser;
-import frc.robot.commands.PivotCommand;
-import frc.robot.commands.IntakeCommand;
-import frc.robot.commands.WristCommand;
+import frc.robot.commands.*;
+import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.drivetrain.Swerve;
 import frc.robot.subsystems.pivot.Pivot;
@@ -21,10 +20,10 @@ import frc.robot.util.Lights;
 public class RobotContainer {
     /* Subsystems */
     private final Swerve swerve = new Swerve();
-    // private final Elevator elevator = new Elevator();
     private final Intake intake = new Intake();
-     private final Pivot pivot = new Pivot();
-     private final Wrist wrist = new Wrist(pivot);
+    private final Pivot pivot = new Pivot();
+    private final Elevator elevator = new Elevator();
+    private final Wrist wrist = new Wrist();
     
     private final AutoChooser autoChooser = new AutoChooser(swerve);
 
@@ -165,42 +164,48 @@ public class RobotContainer {
                 )
         );
 
-        // intake.setDefaultCommand(new IntakeCommand(intake));
+        intake.setDefaultCommand(new IntakeCommand(intake));
 
-//        elevator.setDefaultCommand(
-//                new RunCommand(
-//                        () -> elevator.moveElevator(MathUtil.applyDeadband(-opXbox.getLeftY(), Constants.DEADBAND)),
-//                        elevator
-//                )
+        // TODO SHOP: TEST AXES
+        elevator.setDefaultCommand(
+                new ElevatorCommand(
+                        elevator,
+                        () -> opXbox.getRightTriggerAxis() - opXbox.getLeftTriggerAxis(),
+                        pivot::getPosition
+                )
+        );
+
+//        pivot.setDefaultCommand(
+//                new PivotCommand(pivot, () -> -opXbox.getLeftY())
 //        );
 //
-//        pivot.setDefaultCommand(
-//                new PivotCommand(pivot, opXbox::getLeftY)
+//        wrist.setDefaultCommand(
+//                new WristCommand(wrist, opXbox::getRightY)
 //        );
-
-        wrist.setDefaultCommand(
-                new WristCommand(wrist, opXbox::getRightY)
-        );
     }
 
     private void configureBindings() {
 
         driverXbox.a().onTrue(swerve.runOnce(swerve.localizer::configureQuestOffset));
 
-        // toggle between robot choosing quest nav pose and pose estimation with cameras
-        driverXbox.b().onTrue(swerve.runOnce(swerve.localizer::toggleLocalizationStrategy));
+        driverXbox.b().onTrue(new InstantCommand(elevator::toggleL2CoralState));
 
         // reset the field-centric heading on y press
         driverXbox.leftStick().onTrue(swerve.resetGyro());
 
-        driverXbox.povUp().whileTrue(swerve.moveToObject());
+//        driverXbox.povUp().whileTrue(swerve.moveToObject());
+        driverXbox.povUp().onTrue(new InstantCommand(elevator::toggleL4CoralState));
 
-        driverXbox.povRight().whileTrue(swerve.pathFindToNearestBranch());
+        driverXbox.povRight().onTrue(new InstantCommand(pivot::toggleL2CoralState));
 
-        //driverXbox.leftBumper().onTrue(new InstantCommand(intake::toggleOuttakeState));
-        driverXbox.povLeft().onTrue(new InstantCommand(wrist::toggleGroundCoral));
+//        driverXbox.rightBumper().onTrue(new InstantCommand(intake::toggleIntakeState));
+//        driverXbox.povLeft().onTrue(new InstantCommand(wrist::toggleGroundCoralState));
+//        driverXbox.povLeft().onTrue(new InstantCommand(intake::toggleOuttakeState));
+        driverXbox.povLeft().onTrue(new InstantCommand(elevator::toggleL3CoralState));
+        driverXbox.povRight().onTrue(new InstantCommand(elevator::setStowState));
 
-        driverXbox.povDown().onTrue(new InstantCommand(pivot::toggleRatchet));
+//        driverXbox.povDown().onTrue(new InstantCommand(pivot::toggleRatchet));
+        driverXbox.povDown().onTrue(new InstantCommand(elevator::toggleL2CoralState));
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.

@@ -26,7 +26,7 @@ public class IntakeTelemetry {
         rgbPub.set(intake.getColorReading());
         hasCoralPub.set(intake.hasCoral());
         hasAlgaePub.set(intake.hasAlgae());
-        currentStatePub.set(intake.getCurrentState().toString());
+        currentStatePub.set(intake.getState().toString());
         proximityPub.set(intake.getProximity());
 
         logValues();
@@ -36,7 +36,7 @@ public class IntakeTelemetry {
         DogLog.log("IntakeRGBReading", intake.getColorReading());
         DogLog.log("IntakeHasCoral", intake.hasCoral());
         DogLog.log("IntakeHasAlgae", intake.hasAlgae());
-        DogLog.log("IntakeState", intake.getCurrentState());
+        DogLog.log("IntakeState", intake.getState());
         DogLog.log("IntakeCanandcolorProximity", intake.getProximity());
     }
 }

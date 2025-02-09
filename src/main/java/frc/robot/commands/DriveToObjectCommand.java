@@ -78,7 +78,7 @@ public class DriveToObjectCommand extends Command {
                 end = true;
             }
         } else {
-            // TODO WAIT (2/3): MORE ROBUST CHECKING I.E., IF OBJECT IN INTAKE, OTHERWISE METHOD TO INTAKE OBJECT OR GIVE UP, DEPENDING ON AUTO OR TELEOP
+            // TODO WAIT (2/11): MORE ROBUST CHECKING I.E., IF OBJECT IN INTAKE, OTHERWISE METHOD TO INTAKE OBJECT OR GIVE UP, DEPENDING ON AUTO OR TELEOP
             swerve.forceStop();
             end = true;
         }

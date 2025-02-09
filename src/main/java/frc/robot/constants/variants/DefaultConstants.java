@@ -20,6 +20,7 @@ import com.pathplanner.lib.path.PathConstraints;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
@@ -96,7 +97,7 @@ public final class DefaultConstants {
         public static final Function<Double, Matrix<N3, N1>> VISION_STD_DEV_FUNCTION =
                 dist -> dist < 2.0
                         ? VecBuilder.fill(0.15 * dist, 0.15 * dist, Units.degreesToRadians(10.0) * dist)
-                        : VecBuilder.fill(0.5 * dist, 0.5 * dist, Units.degreesToRadians(180.0 * dist)); // TODO SHOP: TEST THIS LESS STRICT STD DEV FUNCTION
+                        : VecBuilder.fill(0.5 * dist, 0.5 * dist, Units.degreesToRadians(180.0) * dist); // TODO SHOP: TEST THIS LESS STRICT STD DEV FUNCTION
 
         public static final class LimelightConstants {
             public static final String LIMELIGHT_NT_NAME = "limelight";
@@ -113,7 +114,7 @@ public final class DefaultConstants {
 
         public static final class PhotonConstants {
             // TODO SHOP: TEST CAMERAS TO CENTER OF ROBOT OFFSETS
-            public static final String BW_TOP_RIGHT_NAME = "ArducamBW";
+            public static final String BW_TOP_RIGHT_NAME = "ArducamBW2";
             public static final double BW_TOP_RIGHT_FORWARD = 0.404;
             public static final double BW_TOP_RIGHT_LEFT = -0.291321;
             public static final double BW_TOP_RIGHT_UP = 0.279631;
@@ -121,7 +122,7 @@ public final class DefaultConstants {
             public static final double BW_TOP_RIGHT_PITCH = -5.0;
             public static final double BW_TOP_RIGHT_YAW = -30.0;
 
-            public static final String BW_TOP_LEFT_NAME = "ArducamBW2";
+            public static final String BW_TOP_LEFT_NAME = "ArducamBW";
             public static final double BW_TOP_LEFT_FORWARD = 0.404;
             public static final double BW_TOP_LEFT_LEFT = 0.291321;
             public static final double BW_TOP_LEFT_UP = 0.279631;
@@ -161,40 +162,56 @@ public final class DefaultConstants {
         }
     }
 
-    // TODO SHOP: UPDATE VALUES FOR 2025 + TUNE
     public final static class ElevatorConstants {
-        // basic configs
+        // motor config
         public static final int LEAD_ID = 31;
         public static final int FOLLOWER_ID = 32;
-        public static final int LOWER_LIMIT_SWITCH_ID = 2;
-        public static final int CURRENT_LIMIT = 60;
-        public static final InvertedValue ELEVATOR_INVERT = InvertedValue.Clockwise_Positive; // TODO SHOP: CHECK ON REAL ROBOT
+        public static final int LOWER_LIMIT_SWITCH_ID = 0;
+        public static final double CURRENT_LIMIT = 40;
+        public static final double PEAK_VOLTAGE = 6; // TODO SHOP: REMOVE IF NEEDED
+        public static final InvertedValue MOTOR_INVERT = InvertedValue.Clockwise_Positive;
+        public static final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Coast;
 
-        // pid
-        public static final double ELEVATOR_S = 0.0;
-        public static final double ELEVATOR_V = 0.0;
-        public static final double ELEVATOR_A = 0.0;
-        public static final double ELEVATOR_P = 0.0;
-        public static final double ELEVATOR_I = 0.0;
-        public static final double ELEVATOR_D = 0.0;
+        // mechanism characterization
+        private static final double ROTOR_TO_PULLEY_RATIO = 11.57;
+        private static final double PULLEY_CIRCUMFERENCE = 7.065;
+        public static final double ROTOR_TO_INCH_RATIO = ROTOR_TO_PULLEY_RATIO / PULLEY_CIRCUMFERENCE;
+        private static final double STAGE_2_LOAD_LBS = 28.44;
+        public static final double MASS_LBS = 23.0132625;
+        public static final double COM_TO_STAGE_2_RATIO = 0.509767;
+        public static final double STAGE_2_LIMIT = 24;
+        public static final double COM_TO_STAGE_3_RATIO = 0.3345002;
+        public static final Translation2d ZERO_UPRIGHT_COM = new Translation2d(-11.347053, 15.125012);
+
+        // pid & tolerance
+        public static final Function<Double, Double> G = (pivotDeg) -> 0.2175 * Math.sin(Math.toRadians(pivotDeg));
+        public static final double V = 0.31 / ROTOR_TO_INCH_RATIO; // 1V / (in/s) -> 1V / (rotor rps)
+        public static final double A = 0.001 / ROTOR_TO_INCH_RATIO; // 1V / (in/s^2) -> 1V / (rotor rps^2)
+        public static final double P = 0.25;
+        public static final double I = 0.0;
+        public static final double D = 0.025;
+        public static final double EXPO_V = V / 0.95; // 60% of the actual max velocity, as it will allocate 1 / 0.8 = 1.25 times the voltage to 1 rps
+        public static final double EXPO_A = A / 0.04; // 1% of the actual max accel
+        public static final double TOLERANCE = 2.5;
 
         // presets
-        public static final double LOWER_LIMIT = 0;
-        public static final double UPPER_LIMIT = 37;
+        public static final double LOWER_LIMIT = 0; // TODO SHOP: TEST PRESETS
+        public static final double UPPER_LIMIT = 46;
+        public static final double STOW = 0;
+        public static final double CORAL_STATION = 0;
         public static final double GROUND_CORAL = 0;
         public static final double GROUND_ALGAE = 0;
         public static final double L1_CORAL = 0;
-        public static final double L2_CORAL = 0;
-        public static final double L3_CORAL = 0;
-        public static final double L4_CORAL = 0;
-        public static final double LOW_REEF_ALGAE = 0;
-        public static final double HIGH_REEF_ALGAE = 0;
+        public static final double L2_CORAL = 5.5;
+        public static final double L3_CORAL = 17.5;
+        public static final double L4_CORAL = 42;
+        public static final double LOW_REEF_ALGAE = 5.5;
+        public static final double HIGH_REEF_ALGAE = 24;
         public static final double PROCESSOR = 0;
-        public static final double NET = 0;
+        public static final double NET = 44;
     }
 
     public final static class IntakeConstants {
-        // basic configs
         public static final int MOTOR_ID = 41;
         public static final int SENSOR_ID = 42;
         public static final double CURRENT_LIMIT = 40;
@@ -204,25 +221,32 @@ public final class DefaultConstants {
     }
 
     public final static class PivotConstants {
-        // motor configs
+        // motor config
         public static final int LEAD_ID = 51;
         public static final int FOLLOWER_ID = 52;
         public static final int SERVO_HUB_ID = 54;
-        public static final int RATCHET_CHANNEL = 0;
         public static final double CURRENT_LIMIT = 40;
-        public static final double PEAK_VOLTAGE = 6; // TODO SHOP: TEST WITHOUT PEAK VOLTAGE AND WITH 12 V PEAK VOLTAGE
-        public static final double SENSOR_TO_DEGREE_RATIO = 1 / 360.0;
-        public static final double ROTOR_TO_MECHANISM_RATIO = 107.6923;
+        public static final double PEAK_VOLTAGE = 6; // TODO SHOP: REMOVE IF NEEDED
         public static final InvertedValue PIVOT_INVERT = InvertedValue.Clockwise_Positive;
         public static final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Coast;
 
-        // encoder configs
+        // mechanism characterization
+        private static final double ROTOR_TO_MECHANISM_RATIO = 107.6923;
+        public static final double SENSOR_TO_DEGREE_RATIO = 1 / 360.0;
+        public static final Translation2d AXIS_POSITION = new Translation2d(-9.417377, 9.257139);
+
+        // encoder config
         public static final int ENCODER_ID = 53;
         public static final double ENCODER_ABSOLUTE_OFFSET = 0.06909247503;
         public static final SensorDirectionValue ENCODER_INVERT = SensorDirectionValue.CounterClockwise_Positive;
 
-        // pid
-        public static final double G = 0.2269 / 2; // TODO SHOP: TEST THESE VALUES
+        // ratchet config
+        public static final int RATCHET_CHANNEL = 0;
+        public static final int RATCHET_ON = 1050;
+        public static final int RATCHET_OFF = 1200;
+
+        // pid & tolerance
+        public static final double G = 0.2269 / 2;
         public static final double V = 7.75 / 2 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps) -> V / (rotor rps)
         public static final double A = 0.025 / 2 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps^2) -> V / (rotor rps^2)
         public static final double P = 0.15;
@@ -230,59 +254,71 @@ public final class DefaultConstants {
         public static final double D = 0.01;
         public static final double EXPO_V = V / 0.75; // 75% of the actual max velocity, as it will allocate 1 / 0.8 = 1.25 times the voltage to 1 rps
         public static final double EXPO_A = A / 0.005; // 0.5% of the actual max acceleration
+        public static final double TOLERANCE = 2.5;
 
         // presets
-        public static final double LOWER_LIMIT = 0;
-        public static final double UPPER_LIMIT = 0;
-        public static final double CORAL_STATION = 0;
-        public static final double GROUND_ALGAE = 0;
-        public static final double GROUND_CORAL = 0;
-        public static final double SCORE_CORAL = 90;
-        public static final double SCORE_ALGAE = 0;
-        public static final double STOW_POSITION = 45;
-        public static final double TOLERANCE = 0;
-
-        public static final int RATCHET_ON = 1050;
-        public static final int RATCHET_OFF = 1200;
+        public static final double LOWER_LIMIT = 0; // TODO SHOP: TEST PRESETS
+        public static final double UPPER_LIMIT = 105;
+        public static final double STOW = 50;
+        public static final double CORAL_STATION = 65;
+        public static final double GROUND_CORAL = 4;
+        public static final double GROUND_ALGAE = 4;
+        public static final double L1_CORAL = 55;
+        public static final double L2_CORAL = 75;
+        public static final double L3_CORAL = 75;
+        public static final double L4_CORAL = 85;
+        public static final double LOW_REEF_ALGAE = 70;
+        public static final double HIGH_REEF_ALGAE = 80;
+        public static final double PROCESSOR = 4;
+        public static final double NET = 90;
     }
 
     public final static class WristConstants {
-        // motor configs
+        // motor config
         public static final int MOTOR_ID = 61;
         public static final double CURRENT_LIMIT = 40;
-        public static final double PEAK_VOLTAGE = 6;
-        public static final double SENSOR_TO_DEGREE_RATIO = 1 / 360.0; // TODO SHOP: TEST THIS VALUE
-        public static final double ROTOR_TO_MECHANISM_RATIO = 45.3704;
+        public static final double PEAK_VOLTAGE = 6; // TODO SHOP: REMOVE IF NEEDED
         public static final InvertedValue MOTOR_INVERT = InvertedValue.Clockwise_Positive;
         public static final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Coast;
 
-        // encoder configs
-        public static final int ENCODER_ID = 62;
-        public static final double ENCODER_ABSOLUTE_OFFSET = -0.33154229058;
-        public static final SensorDirectionValue ENCODER_INVERT = SensorDirectionValue.Clockwise_Positive; // TODO SHOP: CHECK ON REAL
+        // mechanism characterization
+        private static final double ROTOR_TO_MECHANISM_RATIO = 45.3704;
+        public static final double SENSOR_TO_DEGREE_RATIO = 1 / 360.0;
+        public static final double MASS_LBS = 7.1301147;
+        public static final Translation2d AXIS_POSITION = new Translation2d(-11.767377, 38.007139);
+        public static final Translation2d AXIS_TO_ZERO_COM = new Translation2d(0, -7.453525);
 
-        // pid
-        public static final BiFunction<Double, Double, Double> G = (wristDeg, pivotDeg) -> 0.2188 * Math.sin(Math.toRadians(wristDeg - (90 - pivotDeg))); // TODO SHOP: TEST THESE VALUES
+        // encoder config
+        public static final int ENCODER_ID = 62;
+        public static final double ENCODER_ABSOLUTE_OFFSET = -0.33154229058; // TODO SHOP: CONFIRM THIS IS ACCURATE
+        public static final SensorDirectionValue ENCODER_INVERT = SensorDirectionValue.Clockwise_Positive;
+
+        // pid & tolerance
+        public static final BiFunction<Double, Double, Double> G = (wristDeg, pivotDeg) -> 0.2188 * Math.sin(Math.toRadians(wristDeg - (90 - pivotDeg)));
         public static final double V = 0.75 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps) -> V / (rotor rps)
         public static final double A = 0.025 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps^2) -> V / (rotor rps^2)
         public static final double P = 0.1;
         public static final double I = 0.0;
         public static final double D = 0.0;
-        public static final double EXPO_V = V / 0.8; // 30% of the actual max velocity, as it will allocate 1 / 0.8 = 1.25 times the voltage to 1 rps
-        public static final double EXPO_A = A / 0.05; // 0.5% of the actual max accel
+        public static final double EXPO_V = V / 0.8; // 80% of the actual max velocity, as it will allocate 1 / 0.8 = 1.25 times the voltage to 1 rps
+        public static final double EXPO_A = A / 0.05; // 5% of the actual max accel
+        public static final double TOLERANCE = 2.5;
 
         // presets
-        public static final double LOWER_LIMIT = 0;  // TODO: WHAT SHOULD WE SET ZERO AS??
-        public static final double UPPER_LIMIT = 20;
-        public static final double GROUND_CORAL = 90;
-        public static final double GROUND_ALGAE = 0;
-        public static final double L1_CORAL = 0;
-        public static final double L2_L3_CORAL = 0;
-        public static final double L4_CORAL = 0;
-        public static final double REEF_ALGAE = 0;
-        public static final double PROCESSOR = 0;
-        public static final double NET = 0;
-        public static final double STOW_POSITION = 45;
+        public static final double LOWER_LIMIT = 35; // TODO SHOP: TEST PRESETS
+        public static final double UPPER_LIMIT = 320;
+        public static final double STOW = 45;
+        public static final double CORAL_STATION = 75;
+        public static final double GROUND_CORAL = 125;
+        public static final double GROUND_ALGAE = 135;
+        public static final double L1_CORAL = 195; // TODO SHOP: SHOOT IT!
+        public static final double L2_CORAL = 285;
+        public static final double L3_CORAL = 275;
+        public static final double L4_CORAL = 300;
+        public static final double LOW_REEF_ALGAE = 265;
+        public static final double HIGH_REEF_ALGAE = 265;
+        public static final double PROCESSOR = 135;
+        public static final double NET = 180;
 
     }
 
@@ -303,8 +339,6 @@ public final class DefaultConstants {
         public static final double ANGULAR_MINIMUM_ANGLE = -180.0;
         public static final double ANGULAR_MAXIMUM_ANGLE = 180.0;
 
-        // TODO SHOP: TUNE FOR 2025 ROBOT
-
         // The steer motor uses any SwerveModule.SteerRequestType control request with the
         // output type specified by SwerveModuleConstants.SteerMotorClosedLoopOutput
         private static final Slot0Configs STEER_GAINS = new Slot0Configs()
@@ -324,13 +358,17 @@ public final class DefaultConstants {
         // This affects the PID/FF gains for the drive motors
         private static final ClosedLoopOutputType DRIVE_CLOSED_LOOP_OUTPUT_TYPE = ClosedLoopOutputType.Voltage;
 
+        // The type of motor used for the drive motor
+        private static final SwerveModuleConstants.DriveMotorArrangement DRIVE_MOTOR_TYPE = SwerveModuleConstants.DriveMotorArrangement.TalonFX_Integrated;
+        // The type of motor used for the steer motor
+        private static final SwerveModuleConstants.SteerMotorArrangement STEER_MOTOR_TYPE = SwerveModuleConstants.SteerMotorArrangement.TalonFX_Integrated;
+
         // The remote sensor feedback type to use for the steer motors;
         // When not Pro-licensed, FusedCANcoder/SyncCANcoder automatically fall back to RemoteCANcoder
         private static final SteerFeedbackType STEER_FEEDBACK_TYPE = SteerFeedbackType.FusedCANcoder;
 
         // The stator current at which the wheels start to slip;
-        // TODO SHOP: TUNE FOR 2025 ROBOT
-        private static final Current SLIP_CURRENT = Amps.of(120.0);
+        private static final Current SLIP_CURRENT = Amps.of(70.0);
 
         public static final AudioConfigs AUDIO_CONFIGS = new AudioConfigs().withAllowMusicDurDisable(true);
 
@@ -389,6 +427,8 @@ public final class DefaultConstants {
                         .withDriveMotorClosedLoopOutput(DRIVE_CLOSED_LOOP_OUTPUT_TYPE)
                         .withSlipCurrent(SLIP_CURRENT)
                         .withSpeedAt12Volts(SPEED_AT_12_VOLTS)
+                        .withDriveMotorType(DRIVE_MOTOR_TYPE)
+                        .withSteerMotorType(STEER_MOTOR_TYPE)
                         .withFeedbackSource(STEER_FEEDBACK_TYPE)
                         .withDriveMotorInitialConfigs(DRIVE_INITIAL_CONFIGS)
                         .withSteerMotorInitialConfigs(STEER_INITIAL_CONFIGS)
@@ -404,7 +444,7 @@ public final class DefaultConstants {
             private static final int DRIVE_MOTOR_ID = 1;
             private static final int STEER_MOTOR_ID = 11;
             private static final int ENCODER_ID = 21;
-            private static final Angle ENCODER_OFFSET = Rotations.of(0.466552734375);
+            public static final Angle ENCODER_OFFSET = Rotations.of(-0.187255859375);
             private static final boolean STEER_MOTOR_INVERTED = true;
             private static final boolean CANCODER_INVERTED = false;
 
@@ -422,7 +462,7 @@ public final class DefaultConstants {
             private static final int DRIVE_MOTOR_ID = 2;
             private static final int STEER_MOTOR_ID = 12;
             private static final int ENCODER_ID = 22;
-            private static final Angle ENCODER_OFFSET = Rotations.of(-0.091796875);
+            public static final Angle ENCODER_OFFSET = Rotations.of(-0.121337890625);
             private static final boolean STEER_MOTOR_INVERTED = true;
             private static final boolean CANCODER_INVERTED = false;
 
@@ -440,7 +480,7 @@ public final class DefaultConstants {
             private static final int DRIVE_MOTOR_ID = 3;
             private static final int STEER_MOTOR_ID = 13;
             private static final int ENCODER_ID = 23;
-            private static final Angle ENCODER_OFFSET = Rotations.of(-0.120361328125);
+            public static final Angle ENCODER_OFFSET = Rotations.of(-0.146728515625);
             private static final boolean STEER_MOTOR_INVERTED = true;
             private static final boolean CANCODER_INVERTED = false;
 
@@ -458,7 +498,7 @@ public final class DefaultConstants {
             private static final int DRIVE_MOTOR_ID = 4;
             private static final int STEER_MOTOR_ID = 14;
             private static final int ENCODER_ID = 24;
-            private static final Angle ENCODER_OFFSET = Rotations.of(-0.19921875);
+            public static final Angle ENCODER_OFFSET = Rotations.of(0.467529296875);
             private static final boolean STEER_MOTOR_INVERTED = true;
             private static final boolean CANCODER_INVERTED = false;
 

@@ -8,10 +8,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.networktables.DoublePublisher;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.StructArrayPublisher;
-import edu.wpi.first.networktables.StructPublisher;
+import edu.wpi.first.networktables.*;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -44,6 +41,7 @@ public class SwerveTelemetry {
     private final StructArrayPublisher<SwerveModulePosition> driveModulePositions = driveStateTable.getStructArrayTopic("ModulePositions", SwerveModulePosition.struct).publish();
     private final DoublePublisher driveTimestamp = driveStateTable.getDoubleTopic("Timestamp").publish();
     private final DoublePublisher driveOdometryFrequency = driveStateTable.getDoubleTopic("OdometryFrequency").publish();
+    private final DoubleArrayPublisher currentCurrent = driveStateTable.getDoubleArrayTopic("Current Amp Currents").publish();
 
     /* Mechanisms to represent the swerve module states */
     private final Mechanism2d[] moduleMechanisms = new Mechanism2d[] {
@@ -87,6 +85,8 @@ public class SwerveTelemetry {
         driveTimestamp.set(state.Timestamp);
         driveOdometryFrequency.set(1.0 / state.OdometryPeriod);
 
+        double[] currents = new double[4];
+
         /* Also write to log file */
         poseArray[0] = state.Pose.getX();
         poseArray[1] = state.Pose.getY();
@@ -96,7 +96,10 @@ public class SwerveTelemetry {
             moduleStatesArray[i * 2 + 1] = state.ModuleStates[i].speedMetersPerSecond;
             moduleTargetsArray[i * 2] = state.ModuleTargets[i].angle.getRadians();
             moduleTargetsArray[i * 2 + 1] = state.ModuleTargets[i].speedMetersPerSecond;
+            currents[i] = swerve.getModule(i).getDriveMotor().getStatorCurrent().getValueAsDouble();
         }
+
+        currentCurrent.set(currents); // sets the current current to currents
 
         SignalLogger.writeDoubleArray("DriveState/Pose", poseArray);
         SignalLogger.writeDoubleArray("DriveState/ModuleStates", moduleStatesArray);

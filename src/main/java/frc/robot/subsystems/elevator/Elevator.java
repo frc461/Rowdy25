@@ -14,20 +14,46 @@ import frc.robot.util.ExpUtil;
 import frc.robot.util.FieldUtil;
 
 public class Elevator extends SubsystemBase {
-    private final TalonFX elevator;
-    private final MotionMagicExpoVoltage request;
-    private final DigitalInput lowerSwitch;
-    private double target, accuracy;
+    public enum State {
+        MANUAL(Constants.ElevatorConstants.LOWER_LIMIT),
+        STOW(Constants.ElevatorConstants.STOW),
+        CORAL_STATION(Constants.ElevatorConstants.CORAL_STATION),
+        GROUND_ALGAE(Constants.ElevatorConstants.GROUND_ALGAE),
+        GROUND_CORAL(Constants.ElevatorConstants.GROUND_CORAL),
+        L1_CORAL(Constants.ElevatorConstants.L1_CORAL),
+        L2_CORAL(Constants.ElevatorConstants.L2_CORAL),
+        L3_CORAL(Constants.ElevatorConstants.L3_CORAL),
+        L4_CORAL(Constants.ElevatorConstants.L4_CORAL),
+        LOW_REEF_ALGAE(Constants.ElevatorConstants.LOW_REEF_ALGAE),
+        HIGH_REEF_ALGAE(Constants.ElevatorConstants.HIGH_REEF_ALGAE),
+        NET(Constants.ElevatorConstants.NET),
+        PROCESSOR(Constants.ElevatorConstants.PROCESSOR);
 
-    private final ElevatorTelemetry elevatorTelemetry = new ElevatorTelemetry(this);
+        private final double position;
+
+        State(double position) {
+            this.position = position;
+        }
+    }
+
+    private State currentState;
+
+    private final TalonFX elevator;
+    private final DigitalInput lowerSwitch;
+    private final MotionMagicExpoVoltage request;
+    private double error;
+
+	private final ElevatorTelemetry elevatorTelemetry = new ElevatorTelemetry(this);
 
     public Elevator() {
-        elevator = new TalonFX(Constants.ElevatorConstants.LEAD_ID);
+        currentState = State.STOW;
 
+        elevator = new TalonFX(Constants.ElevatorConstants.LEAD_ID);
         elevator.getConfigurator().apply(new TalonFXConfiguration()
-                .withVoltage(new VoltageConfigs().withPeakForwardVoltage(6))
+                .withFeedback(new FeedbackConfigs()
+                        .withSensorToMechanismRatio(Constants.ElevatorConstants.ROTOR_TO_INCH_RATIO))
                 .withMotorOutput(new MotorOutputConfigs()
-                        .withInverted(Constants.ElevatorConstants.ELEVATOR_INVERT)
+                        .withInverted(Constants.ElevatorConstants.MOTOR_INVERT)
                         .withNeutralMode(NeutralModeValue.Coast))
                 .withCurrentLimits(new CurrentLimitsConfigs()
                         .withSupplyCurrentLimit(Constants.ElevatorConstants.CURRENT_LIMIT))
@@ -35,16 +61,15 @@ public class Elevator extends SubsystemBase {
                         .withBeepOnBoot(false)
                         .withAllowMusicDurDisable(true))
                 .withSlot0(new Slot0Configs()
-                        .withKS(Constants.ElevatorConstants.ELEVATOR_S) // TODO SHOP: NEED G??????
-                        .withKV(Constants.ElevatorConstants.ELEVATOR_V)
-                        .withKA(Constants.ElevatorConstants.ELEVATOR_A)
-                        .withKP(Constants.ElevatorConstants.ELEVATOR_P)
-                        .withKI(Constants.ElevatorConstants.ELEVATOR_I)
-                        .withKD(Constants.ElevatorConstants.ELEVATOR_D))
+                        .withKV(Constants.ElevatorConstants.V)
+                        .withKA(Constants.ElevatorConstants.A)
+                        .withKP(Constants.ElevatorConstants.P)
+                        .withKI(Constants.ElevatorConstants.I)
+                        .withKD(Constants.ElevatorConstants.D))
                 .withMotionMagic(new MotionMagicConfigs()
                         .withMotionMagicCruiseVelocity(0)
-                        .withMotionMagicExpo_kV(Constants.ElevatorConstants.ELEVATOR_V)
-                        .withMotionMagicExpo_kA(Constants.ElevatorConstants.ELEVATOR_A)));
+                        .withMotionMagicExpo_kV(Constants.ElevatorConstants.EXPO_V)
+                        .withMotionMagicExpo_kA(Constants.ElevatorConstants.EXPO_A)));
 
         try (TalonFX elevator2 = new TalonFX(Constants.ElevatorConstants.FOLLOWER_ID)) {
             elevator2.setControl(new Follower(Constants.ElevatorConstants.LEAD_ID, true));
@@ -54,25 +79,89 @@ public class Elevator extends SubsystemBase {
 
         request = new MotionMagicExpoVoltage(0);
 
-        target = 0.0;
-        accuracy = 1.0;
+        elevator.setPosition(0.0); // TODO WAIT (LIMIT SWITCH IS AVAILABLE): REMOVE THIS
+        error = 0.0;
     }
+
+	public State getState() {
+		return currentState;
+	}
 
     public double getPosition() {
         return elevator.getPosition().getValueAsDouble();
     }
 
     public double getTarget() {
-        return target;
+        return getState() == State.MANUAL ? getPosition() : getState().position;
     }
 
-    public double getAlgaeHeight(Pose2d currentPose) {
+    public double getAlgaeHeight(Pose2d currentPose) { // TODO: CHANGE STATE BASED ON CLOSEST ALGAE HEIGHT
         return FieldUtil.Reef.getAlgaeReefLevelFromTag(FieldUtil.Reef.getNearestReefTag(currentPose)) == FieldUtil.Reef.AlgaeLocation.UPPER
                 ? Constants.ElevatorConstants.HIGH_REEF_ALGAE : Constants.ElevatorConstants.LOW_REEF_ALGAE;
     }
 
     public boolean lowerSwitchTriggered() {
-        return !lowerSwitch.get();
+        return false; // TODO WAIT (LIMIT SWITCH IS AVAILABLE): return !lowerSwitch.get();
+    }
+
+    public boolean isAtTarget() {
+        return error < Constants.ElevatorConstants.TOLERANCE;
+    }
+
+	private void setState(State state) {
+		currentState = state;
+	}
+
+    public void setManualState() {
+        setState(State.MANUAL);
+    }
+
+    public void setStowState() {
+        setState(State.STOW);
+    }
+
+    public void toggleCoralStationState() {
+        setState(getState() == State.CORAL_STATION ? State.STOW : State.CORAL_STATION);
+    }
+
+    public void toggleGroundCoralState() {
+        setState(getState() == State.GROUND_CORAL ? State.STOW : State.GROUND_CORAL);
+    }
+
+    public void toggleGroundAlgaeState() {
+        setState(getState() == State.GROUND_ALGAE ? State.STOW : State.GROUND_ALGAE);
+    }
+
+    public void toggleL1CoralState() {
+        setState(getState() == State.L1_CORAL ? State.STOW : State.L1_CORAL);
+    }
+
+    public void toggleL2CoralState() {
+        setState(getState() == State.L2_CORAL ? State.MANUAL : State.L2_CORAL);
+    }
+
+    public void toggleL3CoralState() {
+        setState(getState() == State.L3_CORAL ? State.STOW : State.L3_CORAL);
+    }
+
+    public void toggleL4CoralState() {
+        setState(getState() == State.L4_CORAL ? State.STOW : State.L4_CORAL);
+    }
+
+    public void toggleLowReefAlgaeState() {
+        setState(getState() == State.LOW_REEF_ALGAE ? State.STOW : State.LOW_REEF_ALGAE);
+    }
+
+    public void toggleHighReefAlgaeState() {
+        setState(getState() == State.HIGH_REEF_ALGAE ? State.STOW : State.HIGH_REEF_ALGAE);
+    }
+
+    public void toggleProcessorState() {
+        setState(getState() == State.PROCESSOR ? State.STOW : State.PROCESSOR);
+    }
+
+    public void toggleNetState() {
+        setState(getState() == State.NET ? State.STOW : State.NET);
     }
 
     public void checkLimitSwitch() {
@@ -81,33 +170,23 @@ public class Elevator extends SubsystemBase {
         }
     }
 
-    public void holdTarget(double height) {
+    public void holdTarget(double pivotPosition) {
         checkLimitSwitch();
-        target = Math.max(Constants.ElevatorConstants.LOWER_LIMIT, Math.min(Constants.ElevatorConstants.UPPER_LIMIT, height));
-        elevator.setControl(request.withPosition(target));
-    }
-
-    public void holdTarget() {
-        holdTarget(target);
+        elevator.setControl(request.withPosition(getTarget()).withFeedForward(Constants.ElevatorConstants.G.apply(pivotPosition)));
     }
 
     public void moveElevator(double axisValue) {
         checkLimitSwitch();
         // TODO SHOP: TUNE CURBING VALUE
-        if (axisValue == 0) {
-            holdTarget();
-        } else {
-            elevator.set(axisValue > 0
-                    ? axisValue * ExpUtil.output(Constants.ElevatorConstants.UPPER_LIMIT - getPosition(), 1, 5, 10)
-                    : axisValue * ExpUtil.output(getPosition() - Constants.ElevatorConstants.LOWER_LIMIT, 1, 5, 10));
-            target = getPosition();
-        }
+        elevator.set(axisValue > 0
+                ? axisValue * ExpUtil.output(Constants.ElevatorConstants.UPPER_LIMIT - getPosition(), 1, 5, 10)
+                : axisValue * ExpUtil.output(getPosition() - Constants.ElevatorConstants.LOWER_LIMIT, 1, 5, 10));
     }
 
     @Override
     public void periodic() {
-        accuracy = target > getPosition() ? getPosition() / target : target / getPosition();
-
         elevatorTelemetry.publishValues();
+
+        error = Math.abs(getPosition() - getTarget());
     }
 }

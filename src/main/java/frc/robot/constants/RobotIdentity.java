@@ -7,21 +7,18 @@ import frc.robot.constants.variants.SimConstants;
 import frc.robot.constants.variants.TestConstants;
 
 public enum RobotIdentity {
-    ROWDY1,
-    ROWDY2,
     TEST,
+    ALPHA,
+    ROWDY,
     SIM;
 
     private static RobotIdentity getIdentity() {
-        String mac = MacAddress.getMACAddress();
-        if (mac.equals(MacAddress.ROWDY1)) {
-            return ROWDY1;
-        } else if (mac.equals(MacAddress.ROWDY2)) {
-            return ROWDY2;
-        } else if (mac.equals(MacAddress.TEST)) {
-            return TEST;
-        }
-        return SIM;
+        return switch (MacAddress.getMACAddress()) {
+            case MacAddress.TEST -> TEST;
+            case MacAddress.ALPHA -> ALPHA;
+            case MacAddress.ROWDY -> ROWDY;
+            default -> SIM;
+        };
     }
 
     public static void initializeConstants() {
@@ -29,11 +26,11 @@ public enum RobotIdentity {
         NetworkTable identityEntry = Constants.NT_INSTANCE.getTable("Robot");
         StringPublisher identityPublisher = identityEntry.getStringTopic("Robot Identity").publish();
         switch (getIdentity()) {
-            case ROWDY1:
-                identityPublisher.set(ROWDY1.name());
+            case ALPHA:
+                identityPublisher.set(ALPHA.name());
                 break;
-            case ROWDY2:
-                identityPublisher.set(ROWDY2.name());
+            case ROWDY:
+                identityPublisher.set(ROWDY.name());
                 break;
             case TEST:
                 setTestConstants();
@@ -118,15 +115,38 @@ public enum RobotIdentity {
         Constants.ElevatorConstants.FOLLOWER_ID = DefaultConstants.ElevatorConstants.FOLLOWER_ID;
         Constants.ElevatorConstants.LOWER_LIMIT_SWITCH_ID = DefaultConstants.ElevatorConstants.LOWER_LIMIT_SWITCH_ID;
         Constants.ElevatorConstants.CURRENT_LIMIT = DefaultConstants.ElevatorConstants.CURRENT_LIMIT;
-        Constants.ElevatorConstants.ELEVATOR_INVERT = DefaultConstants.ElevatorConstants.ELEVATOR_INVERT;
-        Constants.ElevatorConstants.ELEVATOR_S = DefaultConstants.ElevatorConstants.ELEVATOR_S;
-        Constants.ElevatorConstants.ELEVATOR_V = DefaultConstants.ElevatorConstants.ELEVATOR_V;
-        Constants.ElevatorConstants.ELEVATOR_A = DefaultConstants.ElevatorConstants.ELEVATOR_A;
-        Constants.ElevatorConstants.ELEVATOR_P = DefaultConstants.ElevatorConstants.ELEVATOR_P;
-        Constants.ElevatorConstants.ELEVATOR_I = DefaultConstants.ElevatorConstants.ELEVATOR_I;
-        Constants.ElevatorConstants.ELEVATOR_D = DefaultConstants.ElevatorConstants.ELEVATOR_D;
+        Constants.ElevatorConstants.PEAK_VOLTAGE = DefaultConstants.ElevatorConstants.PEAK_VOLTAGE;
+        Constants.ElevatorConstants.MOTOR_INVERT = DefaultConstants.ElevatorConstants.MOTOR_INVERT;
+        Constants.ElevatorConstants.NEUTRAL_MODE = DefaultConstants.ElevatorConstants.NEUTRAL_MODE;
+        Constants.ElevatorConstants.ROTOR_TO_INCH_RATIO = DefaultConstants.ElevatorConstants.ROTOR_TO_INCH_RATIO;
+        Constants.ElevatorConstants.MASS_LBS = DefaultConstants.ElevatorConstants.MASS_LBS;
+        Constants.ElevatorConstants.COM_TO_STAGE_2_RATIO = DefaultConstants.ElevatorConstants.COM_TO_STAGE_2_RATIO;
+        Constants.ElevatorConstants.STAGE_2_LIMIT = DefaultConstants.ElevatorConstants.STAGE_2_LIMIT;
+        Constants.ElevatorConstants.COM_TO_STAGE_3_RATIO = DefaultConstants.ElevatorConstants.COM_TO_STAGE_3_RATIO;
+        Constants.ElevatorConstants.ZERO_UPRIGHT_COM = DefaultConstants.ElevatorConstants.ZERO_UPRIGHT_COM;
+        Constants.ElevatorConstants.G = DefaultConstants.ElevatorConstants.G;
+        Constants.ElevatorConstants.V = DefaultConstants.ElevatorConstants.V;
+        Constants.ElevatorConstants.A = DefaultConstants.ElevatorConstants.A;
+        Constants.ElevatorConstants.P = DefaultConstants.ElevatorConstants.P;
+        Constants.ElevatorConstants.I = DefaultConstants.ElevatorConstants.I;
+        Constants.ElevatorConstants.D = DefaultConstants.ElevatorConstants.D;
+        Constants.ElevatorConstants.EXPO_V = DefaultConstants.ElevatorConstants.EXPO_V;
+        Constants.ElevatorConstants.EXPO_A = DefaultConstants.ElevatorConstants.EXPO_A;
+        Constants.ElevatorConstants.TOLERANCE = DefaultConstants.ElevatorConstants.TOLERANCE;
         Constants.ElevatorConstants.LOWER_LIMIT = DefaultConstants.ElevatorConstants.LOWER_LIMIT;
         Constants.ElevatorConstants.UPPER_LIMIT = DefaultConstants.ElevatorConstants.UPPER_LIMIT;
+        Constants.ElevatorConstants.STOW = DefaultConstants.ElevatorConstants.STOW;
+        Constants.ElevatorConstants.CORAL_STATION = DefaultConstants.ElevatorConstants.CORAL_STATION;
+        Constants.ElevatorConstants.GROUND_CORAL = DefaultConstants.ElevatorConstants.GROUND_CORAL;
+        Constants.ElevatorConstants.GROUND_ALGAE = DefaultConstants.ElevatorConstants.GROUND_ALGAE;
+        Constants.ElevatorConstants.L1_CORAL = DefaultConstants.ElevatorConstants.L1_CORAL;
+        Constants.ElevatorConstants.L2_CORAL = DefaultConstants.ElevatorConstants.L2_CORAL;
+        Constants.ElevatorConstants.L3_CORAL = DefaultConstants.ElevatorConstants.L3_CORAL;
+        Constants.ElevatorConstants.L4_CORAL = DefaultConstants.ElevatorConstants.L4_CORAL;
+        Constants.ElevatorConstants.LOW_REEF_ALGAE = DefaultConstants.ElevatorConstants.LOW_REEF_ALGAE;
+        Constants.ElevatorConstants.HIGH_REEF_ALGAE = DefaultConstants.ElevatorConstants.HIGH_REEF_ALGAE;
+        Constants.ElevatorConstants.PROCESSOR = DefaultConstants.ElevatorConstants.PROCESSOR;
+        Constants.ElevatorConstants.NET = DefaultConstants.ElevatorConstants.NET;
 
         Constants.IntakeConstants.MOTOR_ID = DefaultConstants.IntakeConstants.MOTOR_ID;
         Constants.IntakeConstants.SENSOR_ID = DefaultConstants.IntakeConstants.SENSOR_ID;
@@ -138,16 +158,18 @@ public enum RobotIdentity {
         Constants.PivotConstants.LEAD_ID = DefaultConstants.PivotConstants.LEAD_ID;
         Constants.PivotConstants.FOLLOWER_ID = DefaultConstants.PivotConstants.FOLLOWER_ID;
         Constants.PivotConstants.SERVO_HUB_ID = DefaultConstants.PivotConstants.SERVO_HUB_ID;
-        Constants.PivotConstants.RATCHET_ID = DefaultConstants.PivotConstants.RATCHET_CHANNEL;
         Constants.PivotConstants.CURRENT_LIMIT = DefaultConstants.PivotConstants.CURRENT_LIMIT;
         Constants.PivotConstants.PEAK_VOLTAGE = DefaultConstants.PivotConstants.PEAK_VOLTAGE;
-        Constants.PivotConstants.SENSOR_TO_DEGREE_RATIO = DefaultConstants.PivotConstants.SENSOR_TO_DEGREE_RATIO;
-        Constants.PivotConstants.ROTOR_TO_MECHANISM_RATIO = DefaultConstants.PivotConstants.ROTOR_TO_MECHANISM_RATIO;
         Constants.PivotConstants.PIVOT_INVERT = DefaultConstants.PivotConstants.PIVOT_INVERT;
         Constants.PivotConstants.NEUTRAL_MODE = DefaultConstants.PivotConstants.NEUTRAL_MODE;
+        Constants.PivotConstants.SENSOR_TO_DEGREE_RATIO = DefaultConstants.PivotConstants.SENSOR_TO_DEGREE_RATIO;
+        Constants.PivotConstants.AXIS_POSITION = DefaultConstants.PivotConstants.AXIS_POSITION;
         Constants.PivotConstants.ENCODER_ID = DefaultConstants.PivotConstants.ENCODER_ID;
         Constants.PivotConstants.ENCODER_ABSOLUTE_OFFSET = DefaultConstants.PivotConstants.ENCODER_ABSOLUTE_OFFSET;
         Constants.PivotConstants.ENCODER_INVERT = DefaultConstants.PivotConstants.ENCODER_INVERT;
+        Constants.PivotConstants.RATCHET_ID = DefaultConstants.PivotConstants.RATCHET_CHANNEL;
+        Constants.PivotConstants.RATCHET_ON = DefaultConstants.PivotConstants.RATCHET_ON;
+        Constants.PivotConstants.RATCHET_OFF = DefaultConstants.PivotConstants.RATCHET_OFF;
         Constants.PivotConstants.G = DefaultConstants.PivotConstants.G;
         Constants.PivotConstants.V = DefaultConstants.PivotConstants.V;
         Constants.PivotConstants.A = DefaultConstants.PivotConstants.A;
@@ -156,24 +178,31 @@ public enum RobotIdentity {
         Constants.PivotConstants.D = DefaultConstants.PivotConstants.D;
         Constants.PivotConstants.EXPO_V = DefaultConstants.PivotConstants.EXPO_V;
         Constants.PivotConstants.EXPO_A = DefaultConstants.PivotConstants.EXPO_A;
+        Constants.PivotConstants.TOLERANCE = DefaultConstants.PivotConstants.TOLERANCE;
         Constants.PivotConstants.LOWER_LIMIT = DefaultConstants.PivotConstants.LOWER_LIMIT;
         Constants.PivotConstants.UPPER_LIMIT = DefaultConstants.PivotConstants.UPPER_LIMIT;
+        Constants.PivotConstants.STOW = DefaultConstants.PivotConstants.STOW;
         Constants.PivotConstants.CORAL_STATION = DefaultConstants.PivotConstants.CORAL_STATION;
-        Constants.PivotConstants.GROUND_ALGAE = DefaultConstants.PivotConstants.GROUND_ALGAE;
         Constants.PivotConstants.GROUND_CORAL = DefaultConstants.PivotConstants.GROUND_CORAL;
-        Constants.PivotConstants.SCORE_CORAL = DefaultConstants.PivotConstants.SCORE_CORAL;
-        Constants.PivotConstants.SCORE_ALGAE = DefaultConstants.PivotConstants.SCORE_ALGAE;
-        Constants.PivotConstants.STOW_POSITION = DefaultConstants.PivotConstants.STOW_POSITION;
-        Constants.PivotConstants.TOLERANCE = DefaultConstants.PivotConstants.TOLERANCE;
-        Constants.PivotConstants.RATCHET_ON = DefaultConstants.PivotConstants.RATCHET_ON;
-        Constants.PivotConstants.RATCHET_OFF = DefaultConstants.PivotConstants.RATCHET_OFF;
+        Constants.PivotConstants.GROUND_ALGAE = DefaultConstants.PivotConstants.GROUND_ALGAE;
+        Constants.PivotConstants.L1_CORAL = DefaultConstants.PivotConstants.L1_CORAL;
+        Constants.PivotConstants.L2_CORAL = DefaultConstants.PivotConstants.L2_CORAL;
+        Constants.PivotConstants.L3_CORAL = DefaultConstants.PivotConstants.L3_CORAL;
+        Constants.PivotConstants.L4_CORAL = DefaultConstants.PivotConstants.L4_CORAL;
+        Constants.PivotConstants.LOW_REEF_ALGAE = DefaultConstants.PivotConstants.LOW_REEF_ALGAE;
+        Constants.PivotConstants.HIGH_REEF_ALGAE = DefaultConstants.PivotConstants.HIGH_REEF_ALGAE;
+        Constants.PivotConstants.PROCESSOR = DefaultConstants.PivotConstants.PROCESSOR;
+        Constants.PivotConstants.NET = DefaultConstants.PivotConstants.NET;
 
         Constants.WristConstants.MOTOR_ID = DefaultConstants.WristConstants.MOTOR_ID;
         Constants.WristConstants.CURRENT_LIMIT = DefaultConstants.WristConstants.CURRENT_LIMIT;
         Constants.WristConstants.PEAK_VOLTAGE = DefaultConstants.WristConstants.PEAK_VOLTAGE;
-        Constants.WristConstants.SENSOR_TO_DEGREE_RATIO = DefaultConstants.WristConstants.SENSOR_TO_DEGREE_RATIO;
         Constants.WristConstants.MOTOR_INVERT = DefaultConstants.WristConstants.MOTOR_INVERT;
         Constants.WristConstants.NEUTRAL_MODE = DefaultConstants.WristConstants.NEUTRAL_MODE;
+        Constants.WristConstants.SENSOR_TO_DEGREE_RATIO = DefaultConstants.WristConstants.SENSOR_TO_DEGREE_RATIO;
+        Constants.WristConstants.MASS_LBS = DefaultConstants.WristConstants.MASS_LBS;
+        Constants.WristConstants.AXIS_POSITION = DefaultConstants.WristConstants.AXIS_POSITION;
+        Constants.WristConstants.AXIS_TO_ZERO_COM = DefaultConstants.WristConstants.AXIS_TO_ZERO_COM;
         Constants.WristConstants.ENCODER_ID = DefaultConstants.WristConstants.ENCODER_ID;
         Constants.WristConstants.ENCODER_ABSOLUTE_OFFSET = DefaultConstants.WristConstants.ENCODER_ABSOLUTE_OFFSET;
         Constants.WristConstants.ENCODER_INVERT = DefaultConstants.WristConstants.ENCODER_INVERT;
@@ -185,17 +214,21 @@ public enum RobotIdentity {
         Constants.WristConstants.D = DefaultConstants.WristConstants.D;
         Constants.WristConstants.EXPO_V = DefaultConstants.WristConstants.EXPO_V;
         Constants.WristConstants.EXPO_A = DefaultConstants.WristConstants.EXPO_A;
+        Constants.WristConstants.TOLERANCE = DefaultConstants.WristConstants.TOLERANCE;
         Constants.WristConstants.LOWER_LIMIT = DefaultConstants.WristConstants.LOWER_LIMIT;
         Constants.WristConstants.UPPER_LIMIT = DefaultConstants.WristConstants.UPPER_LIMIT;
+        Constants.WristConstants.STOW = DefaultConstants.WristConstants.STOW;
+        Constants.WristConstants.CORAL_STATION = DefaultConstants.WristConstants.CORAL_STATION;
         Constants.WristConstants.GROUND_CORAL = DefaultConstants.WristConstants.GROUND_CORAL;
         Constants.WristConstants.GROUND_ALGAE = DefaultConstants.WristConstants.GROUND_ALGAE;
         Constants.WristConstants.L1_CORAL = DefaultConstants.WristConstants.L1_CORAL;
-        Constants.WristConstants.L2_L3_CORAL = DefaultConstants.WristConstants.L2_L3_CORAL;
+        Constants.WristConstants.L2_CORAL = DefaultConstants.WristConstants.L2_CORAL;
+        Constants.WristConstants.L3_CORAL = DefaultConstants.WristConstants.L3_CORAL;
         Constants.WristConstants.L4_CORAL = DefaultConstants.WristConstants.L4_CORAL;
-        Constants.WristConstants.REEF_ALGAE = DefaultConstants.WristConstants.REEF_ALGAE;
+        Constants.WristConstants.LOW_REEF_ALGAE = DefaultConstants.WristConstants.LOW_REEF_ALGAE;
+        Constants.WristConstants.HIGH_REEF_ALGAE = DefaultConstants.WristConstants.HIGH_REEF_ALGAE;
         Constants.WristConstants.PROCESSOR = DefaultConstants.WristConstants.PROCESSOR;
         Constants.WristConstants.NET = DefaultConstants.WristConstants.NET;
-        Constants.WristConstants.STOW_POSITION = DefaultConstants.WristConstants.STOW_POSITION;
 
         Constants.SwerveConstants.PATH_TRANSLATION_CONTROLLER_P = DefaultConstants.SwerveConstants.PATH_TRANSLATION_CONTROLLER_P;
         Constants.SwerveConstants.PATH_ROTATION_CONTROLLER_P = DefaultConstants.SwerveConstants.PATH_ROTATION_CONTROLLER_P;
