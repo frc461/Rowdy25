@@ -133,9 +133,10 @@ public enum RobotIdentity {
         Constants.ElevatorConstants.TOLERANCE = DefaultConstants.ElevatorConstants.TOLERANCE;
         Constants.ElevatorConstants.LOWER_LIMIT = DefaultConstants.ElevatorConstants.LOWER_LIMIT;
         Constants.ElevatorConstants.UPPER_LIMIT = DefaultConstants.ElevatorConstants.UPPER_LIMIT;
+        Constants.ElevatorConstants.STOW = DefaultConstants.ElevatorConstants.STOW;
         Constants.ElevatorConstants.CORAL_STATION = DefaultConstants.ElevatorConstants.CORAL_STATION;
-        Constants.ElevatorConstants.GROUND_ALGAE = DefaultConstants.ElevatorConstants.GROUND_ALGAE;
         Constants.ElevatorConstants.GROUND_CORAL = DefaultConstants.ElevatorConstants.GROUND_CORAL;
+        Constants.ElevatorConstants.GROUND_ALGAE = DefaultConstants.ElevatorConstants.GROUND_ALGAE;
         Constants.ElevatorConstants.L1_CORAL = DefaultConstants.ElevatorConstants.L1_CORAL;
         Constants.ElevatorConstants.L2_CORAL = DefaultConstants.ElevatorConstants.L2_CORAL;
         Constants.ElevatorConstants.L3_CORAL = DefaultConstants.ElevatorConstants.L3_CORAL;
@@ -178,12 +179,18 @@ public enum RobotIdentity {
         Constants.PivotConstants.TOLERANCE = DefaultConstants.PivotConstants.TOLERANCE;
         Constants.PivotConstants.LOWER_LIMIT = DefaultConstants.PivotConstants.LOWER_LIMIT;
         Constants.PivotConstants.UPPER_LIMIT = DefaultConstants.PivotConstants.UPPER_LIMIT;
+        Constants.PivotConstants.STOW = DefaultConstants.PivotConstants.STOW;
         Constants.PivotConstants.CORAL_STATION = DefaultConstants.PivotConstants.CORAL_STATION;
         Constants.PivotConstants.GROUND_CORAL = DefaultConstants.PivotConstants.GROUND_CORAL;
         Constants.PivotConstants.GROUND_ALGAE = DefaultConstants.PivotConstants.GROUND_ALGAE;
-        Constants.PivotConstants.SCORE_CORAL = DefaultConstants.PivotConstants.SCORE_CORAL;
-        Constants.PivotConstants.SCORE_ALGAE = DefaultConstants.PivotConstants.SCORE_ALGAE;
-        Constants.PivotConstants.STOW_POSITION = DefaultConstants.PivotConstants.STOW_POSITION;
+        Constants.PivotConstants.L1_CORAL = DefaultConstants.PivotConstants.L1_CORAL;
+        Constants.PivotConstants.L2_CORAL = DefaultConstants.PivotConstants.L2_CORAL;
+        Constants.PivotConstants.L3_CORAL = DefaultConstants.PivotConstants.L3_CORAL;
+        Constants.PivotConstants.L4_CORAL = DefaultConstants.PivotConstants.L4_CORAL;
+        Constants.PivotConstants.LOW_REEF_ALGAE = DefaultConstants.PivotConstants.LOW_REEF_ALGAE;
+        Constants.PivotConstants.HIGH_REEF_ALGAE = DefaultConstants.PivotConstants.HIGH_REEF_ALGAE;
+        Constants.PivotConstants.PROCESSOR = DefaultConstants.PivotConstants.PROCESSOR;
+        Constants.PivotConstants.NET = DefaultConstants.PivotConstants.NET;
 
         Constants.WristConstants.MOTOR_ID = DefaultConstants.WristConstants.MOTOR_ID;
         Constants.WristConstants.CURRENT_LIMIT = DefaultConstants.WristConstants.CURRENT_LIMIT;
@@ -205,15 +212,18 @@ public enum RobotIdentity {
         Constants.WristConstants.TOLERANCE = DefaultConstants.WristConstants.TOLERANCE;
         Constants.WristConstants.LOWER_LIMIT = DefaultConstants.WristConstants.LOWER_LIMIT;
         Constants.WristConstants.UPPER_LIMIT = DefaultConstants.WristConstants.UPPER_LIMIT;
+        Constants.WristConstants.STOW = DefaultConstants.WristConstants.STOW;
+        Constants.WristConstants.CORAL_STATION = DefaultConstants.WristConstants.CORAL_STATION;
         Constants.WristConstants.GROUND_CORAL = DefaultConstants.WristConstants.GROUND_CORAL;
         Constants.WristConstants.GROUND_ALGAE = DefaultConstants.WristConstants.GROUND_ALGAE;
         Constants.WristConstants.L1_CORAL = DefaultConstants.WristConstants.L1_CORAL;
-        Constants.WristConstants.L2_L3_CORAL = DefaultConstants.WristConstants.L2_L3_CORAL;
+        Constants.WristConstants.L2_CORAL = DefaultConstants.WristConstants.L2_CORAL;
+        Constants.WristConstants.L3_CORAL = DefaultConstants.WristConstants.L3_CORAL;
         Constants.WristConstants.L4_CORAL = DefaultConstants.WristConstants.L4_CORAL;
-        Constants.WristConstants.REEF_ALGAE = DefaultConstants.WristConstants.REEF_ALGAE;
+        Constants.WristConstants.LOW_REEF_ALGAE = DefaultConstants.WristConstants.LOW_REEF_ALGAE;
+        Constants.WristConstants.HIGH_REEF_ALGAE = DefaultConstants.WristConstants.HIGH_REEF_ALGAE;
         Constants.WristConstants.PROCESSOR = DefaultConstants.WristConstants.PROCESSOR;
         Constants.WristConstants.NET = DefaultConstants.WristConstants.NET;
-        Constants.WristConstants.STOW_POSITION = DefaultConstants.WristConstants.STOW_POSITION;
 
         Constants.SwerveConstants.PATH_TRANSLATION_CONTROLLER_P = DefaultConstants.SwerveConstants.PATH_TRANSLATION_CONTROLLER_P;
         Constants.SwerveConstants.PATH_ROTATION_CONTROLLER_P = DefaultConstants.SwerveConstants.PATH_ROTATION_CONTROLLER_P;

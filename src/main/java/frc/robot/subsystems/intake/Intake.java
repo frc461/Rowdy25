@@ -27,7 +27,7 @@ public class Intake extends SubsystemBase {
     private State currentState;
 
     private final TalonFX motor;
-    private final Canandcolor canandcolor;
+    private final Canandcolor canandcolor; // TODO SHOP: TUNE
     private final Timer pulseTimer = new Timer();
 
     private final IntakeTelemetry intakeTelemetry = new IntakeTelemetry(this);
@@ -87,7 +87,6 @@ public class Intake extends SubsystemBase {
     public void toggleOuttakeState() {
         setState(currentState == State.OUTTAKE ? State.IDLE : State.OUTTAKE);
     }
-
 
     private void setState(State newState) {
         currentState = newState;

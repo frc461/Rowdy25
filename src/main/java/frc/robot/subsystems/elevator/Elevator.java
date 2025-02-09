@@ -16,17 +16,17 @@ import frc.robot.util.FieldUtil;
 
 public class Elevator extends SubsystemBase {
     public enum State {
-        MANUAL(0.0),
-        STOW(Constants.ElevatorConstants.LOWER_LIMIT),
+        MANUAL(Constants.ElevatorConstants.LOWER_LIMIT),
+        STOW(Constants.ElevatorConstants.STOW),
         CORAL_STATION(Constants.ElevatorConstants.CORAL_STATION),
         GROUND_ALGAE(Constants.ElevatorConstants.GROUND_ALGAE),
         GROUND_CORAL(Constants.ElevatorConstants.GROUND_CORAL),
-        HIGH_REEF_ALGAE(Constants.ElevatorConstants.HIGH_REEF_ALGAE),
         L1_CORAL(Constants.ElevatorConstants.L1_CORAL),
         L2_CORAL(Constants.ElevatorConstants.L2_CORAL),
         L3_CORAL(Constants.ElevatorConstants.L3_CORAL),
         L4_CORAL(Constants.ElevatorConstants.L4_CORAL),
         LOW_REEF_ALGAE(Constants.ElevatorConstants.LOW_REEF_ALGAE),
+        HIGH_REEF_ALGAE(Constants.ElevatorConstants.HIGH_REEF_ALGAE),
         NET(Constants.ElevatorConstants.NET),
         PROCESSOR(Constants.ElevatorConstants.PROCESSOR);
 
@@ -108,6 +108,10 @@ public class Elevator extends SubsystemBase {
         return false; // TODO WAIT (LIMIT SWITCH IS AVAILABLE): return !lowerSwitch.get();
     }
 
+	private void setState(State state) {
+		currentState = state;
+	}
+
     public void setManualState() {
         setState(State.MANUAL);
     }
@@ -115,10 +119,6 @@ public class Elevator extends SubsystemBase {
     public void toggleL2CoralState() {
         setState(getState() == State.L2_CORAL ? State.MANUAL : State.L2_CORAL);
     }
-
-	public void setState(State state) {
-		currentState = state;
-	}
 
     public void checkLimitSwitch() {
         if (lowerSwitchTriggered() || (!lowerSwitchTriggered() && getPosition() <= Constants.ElevatorConstants.LOWER_LIMIT)) {

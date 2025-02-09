@@ -11,9 +11,7 @@ import frc.robot.autos.AutoChooser;
 import frc.robot.commands.*;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.intake.Intake;
-import frc.robot.commands.PivotCommand;
 import frc.robot.subsystems.drivetrain.Swerve;
-import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.wrist.Wrist;
 import frc.robot.util.SysID;
@@ -194,7 +192,7 @@ public class RobotContainer {
 
         driverXbox.povUp().whileTrue(swerve.moveToObject());
 
-        driverXbox.povRight().onTrue(new InstantCommand(pivot::toggleScoreCoralState));
+        driverXbox.povRight().onTrue(new InstantCommand(pivot::toggleL2CoralState));
 
         //driverXbox.leftBumper().onTrue(new InstantCommand(intake::toggleOuttakeState));
         driverXbox.povLeft().onTrue(new InstantCommand(wrist::toggleGroundCoral));

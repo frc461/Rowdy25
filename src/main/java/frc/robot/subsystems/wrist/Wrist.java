@@ -12,16 +12,19 @@ import frc.robot.util.ExpUtil;
 
 public class Wrist extends SubsystemBase {
     public enum State {
-        MANUAL(0.0),
+        MANUAL(Constants.WristConstants.LOWER_LIMIT),
+        STOW(Constants.WristConstants.STOW),
+        CORAL_STATION(Constants.WristConstants.CORAL_STATION),
         GROUND_CORAL(Constants.WristConstants.GROUND_CORAL),
         GROUND_ALGAE(Constants.WristConstants.GROUND_ALGAE),
         L1_CORAL(Constants.WristConstants.L1_CORAL),
-        L2_L3_CORAL(Constants.WristConstants.L2_L3_CORAL),
+        L2_CORAL(Constants.WristConstants.L2_CORAL),
+        L3_CORAL(Constants.WristConstants.L3_CORAL),
         L4_CORAL(Constants.WristConstants.L4_CORAL),
-        REEF_ALGAE(Constants.WristConstants.REEF_ALGAE),
+        LOW_REEF_ALGAE(Constants.WristConstants.LOW_REEF_ALGAE),
+        HIGH_REEF_ALGAE(Constants.WristConstants.HIGH_REEF_ALGAE),
         PROCESSOR(Constants.WristConstants.PROCESSOR),
-        NET(Constants.WristConstants.NET),
-        STOW(Constants.WristConstants.STOW_POSITION);
+        NET(Constants.WristConstants.NET);
 
         private final double position;
 

@@ -19,7 +19,7 @@ public class ElevatorCommand extends Command {
 
     @Override
     public void execute() {
-        double val = MathUtil.applyDeadband(controllerValue.getAsDouble(), Constants.DEADBAND);
+        double val = MathUtil.applyDeadband(controllerValue.getAsDouble(), Constants.DEADBAND); // TODO: FIX THIS (AND ALL OTHER MANUALS)
         if (val != 0.0) {
             elevator.setManualState();
             elevator.moveElevator(val);

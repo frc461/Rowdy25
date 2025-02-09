@@ -155,6 +155,7 @@ public final class Constants {
         // presets
         public static double LOWER_LIMIT;
         public static double UPPER_LIMIT;
+        public static double STOW;
         public static double CORAL_STATION;
         public static double GROUND_CORAL;
         public static double GROUND_ALGAE;
@@ -215,12 +216,18 @@ public final class Constants {
         // presets
         public static double LOWER_LIMIT;
         public static double UPPER_LIMIT;
+        public static double STOW;
         public static double CORAL_STATION;
         public static double GROUND_CORAL;
         public static double GROUND_ALGAE;
-        public static double SCORE_CORAL;
-        public static double SCORE_ALGAE;
-        public static double STOW_POSITION;
+        public static double L1_CORAL;
+        public static double L2_CORAL;
+        public static double L3_CORAL;
+        public static double L4_CORAL;
+        public static double LOW_REEF_ALGAE;
+        public static double HIGH_REEF_ALGAE;
+        public static double PROCESSOR;
+        public static double NET;
 
     }
 
@@ -251,16 +258,19 @@ public final class Constants {
 
         // presets
         public static double LOWER_LIMIT;
-        public static double UPPER_LIMIT; 
+        public static double UPPER_LIMIT;
+        public static double STOW;
+        public static double CORAL_STATION;
         public static double GROUND_CORAL;
         public static double GROUND_ALGAE;
         public static double L1_CORAL;
-        public static double L2_L3_CORAL;
+        public static double L2_CORAL;
+        public static double L3_CORAL;
         public static double L4_CORAL;
-        public static double REEF_ALGAE;
+        public static double LOW_REEF_ALGAE;
+        public static double HIGH_REEF_ALGAE;
         public static double PROCESSOR;
         public static double NET;
-        public static double STOW_POSITION;
 
     }
 

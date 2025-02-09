@@ -17,13 +17,19 @@ import frc.robot.util.Lights;
 
 public class Pivot extends SubsystemBase {
     public enum State {
-        MANUAL(0.0),
-        STOW(Constants.PivotConstants.STOW_POSITION),
-        SCORE_CORAL(Constants.PivotConstants.SCORE_CORAL),
-        SCORE_ALGAE(Constants.PivotConstants.SCORE_ALGAE),
+        MANUAL(Constants.PivotConstants.LOWER_LIMIT),
+        STOW(Constants.PivotConstants.STOW),
+        CORAL_STATION(Constants.PivotConstants.CORAL_STATION),
         GROUND_CORAL(Constants.PivotConstants.GROUND_CORAL),
         GROUND_ALGAE(Constants.PivotConstants.GROUND_ALGAE),
-        CORAL_STATION(Constants.PivotConstants.CORAL_STATION);
+        L1_CORAL(Constants.PivotConstants.L1_CORAL),
+        L2_CORAL(Constants.PivotConstants.L2_CORAL),
+        L3_CORAL(Constants.PivotConstants.L3_CORAL),
+        L4_CORAL(Constants.PivotConstants.L4_CORAL),
+        LOW_REEF_ALGAE(Constants.PivotConstants.LOW_REEF_ALGAE),
+        HIGH_REEF_ALGAE(Constants.PivotConstants.HIGH_REEF_ALGAE),
+        PROCESSOR(Constants.PivotConstants.PROCESSOR),
+        NET(Constants.PivotConstants.NET);
 
         private final double position;
 
@@ -119,7 +125,7 @@ public class Pivot extends SubsystemBase {
     }
 
     public boolean validStartPosition() {
-        return Math.abs(getPosition() - Constants.PivotConstants.STOW_POSITION) <= Constants.PivotConstants.TOLERANCE;
+        return Math.abs(getPosition() - Constants.PivotConstants.STOW) <= Constants.PivotConstants.TOLERANCE;
     }
 
     public double getError() {
@@ -143,12 +149,12 @@ public class Pivot extends SubsystemBase {
         setState(State.MANUAL);
     }
 
-    public void toggleScoreCoralState() {
-        setState(currentState == State.SCORE_CORAL ? State.STOW : State.SCORE_CORAL);
+    public void toggleL2CoralState() {
+        setState(currentState == State.L2_CORAL ? State.STOW : State.L2_CORAL);
     }
 
-    public void toggleScoreAlgaeState() {
-        setState(currentState == State.SCORE_ALGAE ? State.STOW : State.SCORE_ALGAE);
+    public void toggleNetState() {
+        setState(currentState == State.NET ? State.STOW : State.NET);
     }
 
     public void holdTarget() {
