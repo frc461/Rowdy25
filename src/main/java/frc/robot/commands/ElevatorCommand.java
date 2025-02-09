@@ -21,7 +21,7 @@ public class ElevatorCommand extends Command {
 
     @Override
     public void execute() {
-        double axisValue = MathUtil.applyDeadband(manualAxisValue.getAsDouble(), Constants.DEADBAND) * 0.5; // TODO: FIX THIS (AND ALL OTHER MANUALS)
+        double axisValue = MathUtil.applyDeadband(manualAxisValue.getAsDouble(), Constants.DEADBAND) * 0.1;
         if (axisValue != 0.0) {
             elevator.setManualState();
             elevator.moveElevator(axisValue);
