@@ -359,6 +359,11 @@ public final class DefaultConstants {
         // This affects the PID/FF gains for the drive motors
         private static final ClosedLoopOutputType DRIVE_CLOSED_LOOP_OUTPUT_TYPE = ClosedLoopOutputType.Voltage;
 
+        // The type of motor used for the drive motor
+        private static final SwerveModuleConstants.DriveMotorArrangement DRIVE_MOTOR_TYPE = SwerveModuleConstants.DriveMotorArrangement.TalonFX_Integrated;
+        // The type of motor used for the steer motor
+        private static final SwerveModuleConstants.SteerMotorArrangement STEER_MOTOR_TYPE = SwerveModuleConstants.SteerMotorArrangement.TalonFX_Integrated;
+
         // The remote sensor feedback type to use for the steer motors;
         // When not Pro-licensed, FusedCANcoder/SyncCANcoder automatically fall back to RemoteCANcoder
         private static final SteerFeedbackType STEER_FEEDBACK_TYPE = SteerFeedbackType.FusedCANcoder;
@@ -423,6 +428,8 @@ public final class DefaultConstants {
                         .withDriveMotorClosedLoopOutput(DRIVE_CLOSED_LOOP_OUTPUT_TYPE)
                         .withSlipCurrent(SLIP_CURRENT)
                         .withSpeedAt12Volts(SPEED_AT_12_VOLTS)
+                        .withDriveMotorType(DRIVE_MOTOR_TYPE)
+                        .withSteerMotorType(STEER_MOTOR_TYPE)
                         .withFeedbackSource(STEER_FEEDBACK_TYPE)
                         .withDriveMotorInitialConfigs(DRIVE_INITIAL_CONFIGS)
                         .withSteerMotorInitialConfigs(STEER_INITIAL_CONFIGS)
@@ -438,7 +445,7 @@ public final class DefaultConstants {
             private static final int DRIVE_MOTOR_ID = 1;
             private static final int STEER_MOTOR_ID = 11;
             private static final int ENCODER_ID = 21;
-            private static final Angle ENCODER_OFFSET = Rotations.of(-0.19921875);
+            public static final Angle ENCODER_OFFSET = Rotations.of(-0.187255859375);
             private static final boolean STEER_MOTOR_INVERTED = true;
             private static final boolean CANCODER_INVERTED = false;
 
@@ -456,7 +463,7 @@ public final class DefaultConstants {
             private static final int DRIVE_MOTOR_ID = 2;
             private static final int STEER_MOTOR_ID = 12;
             private static final int ENCODER_ID = 22;
-            private static final Angle ENCODER_OFFSET = Rotations.of(-0.120361328125);
+            public static final Angle ENCODER_OFFSET = Rotations.of(-0.121337890625);
             private static final boolean STEER_MOTOR_INVERTED = true;
             private static final boolean CANCODER_INVERTED = false;
 
@@ -474,7 +481,7 @@ public final class DefaultConstants {
             private static final int DRIVE_MOTOR_ID = 3;
             private static final int STEER_MOTOR_ID = 13;
             private static final int ENCODER_ID = 23;
-            private static final Angle ENCODER_OFFSET = Rotations.of(-0.091796875);
+            public static final Angle ENCODER_OFFSET = Rotations.of(-0.146728515625);
             private static final boolean STEER_MOTOR_INVERTED = true;
             private static final boolean CANCODER_INVERTED = false;
 
@@ -492,7 +499,7 @@ public final class DefaultConstants {
             private static final int DRIVE_MOTOR_ID = 4;
             private static final int STEER_MOTOR_ID = 14;
             private static final int ENCODER_ID = 24;
-            private static final Angle ENCODER_OFFSET = Rotations.of(0.466552734375);
+            public static final Angle ENCODER_OFFSET = Rotations.of(0.467529296875);
             private static final boolean STEER_MOTOR_INVERTED = true;
             private static final boolean CANCODER_INVERTED = false;
 

@@ -7,21 +7,18 @@ import frc.robot.constants.variants.SimConstants;
 import frc.robot.constants.variants.TestConstants;
 
 public enum RobotIdentity {
-    ROWDY1,
-    ROWDY2,
     TEST,
+    ALPHA,
+    ROWDY,
     SIM;
 
     private static RobotIdentity getIdentity() {
-        String mac = MacAddress.getMACAddress();
-        if (mac.equals(MacAddress.ROWDY1)) {
-            return ROWDY1;
-        } else if (mac.equals(MacAddress.ROWDY2)) {
-            return ROWDY2;
-        } else if (mac.equals(MacAddress.TEST)) {
-            return TEST;
-        }
-        return SIM;
+        return switch (MacAddress.getMACAddress()) {
+            case MacAddress.TEST -> TEST;
+            case MacAddress.ALPHA -> ALPHA;
+            case MacAddress.ROWDY -> ROWDY;
+            default -> SIM;
+        };
     }
 
     public static void initializeConstants() {
@@ -29,11 +26,11 @@ public enum RobotIdentity {
         NetworkTable identityEntry = Constants.NT_INSTANCE.getTable("Robot");
         StringPublisher identityPublisher = identityEntry.getStringTopic("Robot Identity").publish();
         switch (getIdentity()) {
-            case ROWDY1:
-                identityPublisher.set(ROWDY1.name());
+            case ALPHA:
+                identityPublisher.set(ALPHA.name());
                 break;
-            case ROWDY2:
-                identityPublisher.set(ROWDY2.name());
+            case ROWDY:
+                identityPublisher.set(ROWDY.name());
                 break;
             case TEST:
                 setTestConstants();

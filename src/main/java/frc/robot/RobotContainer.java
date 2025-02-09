@@ -167,13 +167,13 @@ public class RobotContainer {
         intake.setDefaultCommand(new IntakeCommand(intake));
 
         // TODO SHOP: TEST AXES
-        elevator.setDefaultCommand(
-                new ElevatorCommand(
-                        elevator,
-                        () -> opXbox.getRightTriggerAxis() - opXbox.getLeftTriggerAxis(),
-                        pivot::getPosition
-                )
-        );
+//        elevator.setDefaultCommand(
+//                new ElevatorCommand(
+//                        elevator,
+//                        () -> opXbox.getRightTriggerAxis() - opXbox.getLeftTriggerAxis(),
+//                        pivot::getPosition
+//                )
+//        );
 
 //        pivot.setDefaultCommand(
 //                new PivotCommand(pivot, () -> -opXbox.getLeftY())
