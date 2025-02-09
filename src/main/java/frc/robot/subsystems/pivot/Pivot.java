@@ -149,8 +149,48 @@ public class Pivot extends SubsystemBase {
         setState(State.MANUAL);
     }
 
+    public void setStowState() {
+        setState(State.STOW);
+    }
+
+    public void toggleCoralStationState() {
+        setState(currentState == State.CORAL_STATION ? State.STOW : State.CORAL_STATION);
+    }
+
+    public void toggleGroundCoralState() {
+        setState(currentState == State.GROUND_CORAL ? State.STOW : State.GROUND_CORAL);
+    }
+
+    public void toggleGroundAlgaeState() {
+        setState(currentState == State.GROUND_ALGAE ? State.STOW : State.GROUND_ALGAE);
+    }
+
+    public void toggleL1CoralState() {
+        setState(currentState == State.L1_CORAL ? State.STOW : State.L1_CORAL);
+    }
+
     public void toggleL2CoralState() {
         setState(currentState == State.L2_CORAL ? State.STOW : State.L2_CORAL);
+    }
+
+    public void toggleL3CoralState() {
+        setState(currentState == State.L3_CORAL ? State.STOW : State.L3_CORAL);
+    }
+
+    public void toggleL4CoralState() {
+        setState(currentState == State.L4_CORAL ? State.STOW : State.L4_CORAL);
+    }
+
+    public void toggleLowReefAlgaeState() {
+        setState(currentState == State.LOW_REEF_ALGAE ? State.STOW : State.LOW_REEF_ALGAE);
+    }
+
+    public void toggleHighReefAlgaeState() {
+        setState(currentState == State.HIGH_REEF_ALGAE ? State.STOW : State.HIGH_REEF_ALGAE);
+    }
+
+    public void toggleProcessorState() {
+        setState(currentState == State.PROCESSOR ? State.STOW : State.PROCESSOR);
     }
 
     public void toggleNetState() {

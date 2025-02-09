@@ -116,8 +116,52 @@ public class Elevator extends SubsystemBase {
         setState(State.MANUAL);
     }
 
+    public void setStowState() {
+        setState(State.STOW);
+    }
+
+    public void toggleCoralStationState() {
+        setState(getState() == State.CORAL_STATION ? State.STOW : State.CORAL_STATION);
+    }
+
+    public void toggleGroundCoralState() {
+        setState(getState() == State.GROUND_CORAL ? State.STOW : State.GROUND_CORAL);
+    }
+
+    public void toggleGroundAlgaeState() {
+        setState(getState() == State.GROUND_ALGAE ? State.STOW : State.GROUND_ALGAE);
+    }
+
+    public void toggleL1CoralState() {
+        setState(getState() == State.L1_CORAL ? State.STOW : State.L1_CORAL);
+    }
+
     public void toggleL2CoralState() {
         setState(getState() == State.L2_CORAL ? State.MANUAL : State.L2_CORAL);
+    }
+
+    public void toggleL3CoralState() {
+        setState(getState() == State.L3_CORAL ? State.STOW : State.L3_CORAL);
+    }
+
+    public void toggleL4CoralState() {
+        setState(getState() == State.L4_CORAL ? State.STOW : State.L4_CORAL);
+    }
+
+    public void toggleLowReefAlgaeState() {
+        setState(getState() == State.LOW_REEF_ALGAE ? State.STOW : State.LOW_REEF_ALGAE);
+    }
+
+    public void toggleHighReefAlgaeState() {
+        setState(getState() == State.HIGH_REEF_ALGAE ? State.STOW : State.HIGH_REEF_ALGAE);
+    }
+
+    public void toggleProcessorState() {
+        setState(getState() == State.PROCESSOR ? State.STOW : State.PROCESSOR);
+    }
+
+    public void toggleNetState() {
+        setState(getState() == State.NET ? State.STOW : State.NET);
     }
 
     public void checkLimitSwitch() {

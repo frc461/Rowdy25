@@ -195,7 +195,7 @@ public class RobotContainer {
         driverXbox.povRight().onTrue(new InstantCommand(pivot::toggleL2CoralState));
 
         //driverXbox.leftBumper().onTrue(new InstantCommand(intake::toggleOuttakeState));
-        driverXbox.povLeft().onTrue(new InstantCommand(wrist::toggleGroundCoral));
+        driverXbox.povLeft().onTrue(new InstantCommand(wrist::toggleGroundCoralState));
 
         driverXbox.povDown().onTrue(new InstantCommand(pivot::toggleRatchet));
 
