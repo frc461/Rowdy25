@@ -94,6 +94,10 @@ public class Wrist extends SubsystemBase {
         return error;
     }
 
+    public boolean isAtTarget() {
+        return error < Constants.ElevatorConstants.TOLERANCE;
+    }
+
     private void setState(State newState) {
         currentState = newState;
     }
