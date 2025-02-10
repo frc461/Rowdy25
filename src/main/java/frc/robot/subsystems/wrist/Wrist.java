@@ -110,7 +110,51 @@ public class Wrist extends SubsystemBase {
         setState(State.STOW);
     }
 
-    public void toggleCoralStationState() {
+    public void setCoralStationState() {
+        setState(State.CORAL_STATION);
+    }
+
+    public void setGroundCoralState() {
+        setState(State.GROUND_CORAL);
+    }
+
+    public void setGroundAlgaeState() {
+        setState(State.GROUND_ALGAE);
+    }
+
+    public void setL1CoralState() {
+        setState(State.L1_CORAL);
+    }
+
+    public void setL2CoralState() {
+        setState(State.L2_CORAL);
+    }
+
+    public void setL3CoralState() {
+        setState(State.L3_CORAL);
+    }
+
+    public void setL4CoralState() {
+        setState(State.L4_CORAL);
+    }
+
+    public void setLowReefAlgaeState() {
+        setState(State.LOW_REEF_ALGAE);
+    }
+
+    public void setHighReefAlgaeState() {
+        setState(State.HIGH_REEF_ALGAE);
+    }
+
+    public void setProcessorState() {
+        setState(State.PROCESSOR);
+    }
+
+    public void setNetState() {
+        setState(State.NET);
+    }
+
+    public void toggleCoralStationState() { // TODO SHOP: REMOVE TOGGLING ONCE TESTING IS FINISHED
         setState(currentState == State.CORAL_STATION ? State.STOW : State.CORAL_STATION);
     }
 
