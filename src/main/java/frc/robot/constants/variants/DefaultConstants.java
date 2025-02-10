@@ -294,7 +294,7 @@ public final class DefaultConstants {
         public static final SensorDirectionValue ENCODER_INVERT = SensorDirectionValue.Clockwise_Positive;
 
         // pid & tolerance
-        public static final BiFunction<Double, Double, Double> G = (wristDeg, pivotDeg) -> 0.23 * Math.sin(Math.toRadians(wristDeg - (90 - pivotDeg)));
+        public static final BiFunction<Double, Double, Double> G = (wristDeg, pivotDeg) -> 0.2188 * Math.sin(Math.toRadians(wristDeg - (90 - pivotDeg)));
         public static final double V = 0.75 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps) -> V / (rotor rps)
         public static final double A = 0.025 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps^2) -> V / (rotor rps^2)
         public static final double P = 0.1;

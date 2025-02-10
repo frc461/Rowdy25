@@ -6,6 +6,7 @@ import com.pathplanner.lib.pathfinding.Pathfinding;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.autos.AutoChooser;
 import frc.robot.commands.*;
@@ -201,6 +202,15 @@ public class RobotContainer {
         // FOR OPERATOR PRACTICE, JUST USE THE TWO JOYSTICKS & THE TRIGGERS (LT+RT) FOR MOVING PIVOT, ELEVATOR, WRIST, AND INTAKE
 
         opXbox.rightBumper().onTrue(new InstantCommand(intake::toggleIntakeState));
+        opXbox.leftBumper().onTrue(
+                new InstantCommand(intake::toggleOuttakeState)
+                        .andThen(new WaitUntilCommand(intake::isIdle))
+                        .andThen(pivot::setStowState)
+                        .andThen(new WaitUntilCommand(pivot::isAtTarget))
+                        .andThen(elevator::setStowState)
+                        .andThen(new WaitUntilCommand(elevator::isAtTarget))
+                        .andThen(wrist::setStowState)
+        );
 
 //        opXbox.povLeft().onTrue(new InstantCommand(elevator::toggleL2CoralState));
 //        opXbox.povLeft().onTrue(new InstantCommand(pivot::toggleL2CoralState));

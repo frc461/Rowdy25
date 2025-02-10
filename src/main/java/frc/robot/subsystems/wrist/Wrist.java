@@ -37,7 +37,7 @@ public class Wrist extends SubsystemBase {
 
     private final TalonFX wrist;
     private final MotionMagicExpoVoltage request;
-    private double error;
+    private double error, lastManualPosition;
 
     private final WristTelemetry wristTelemetry = new WristTelemetry(this);
 
@@ -76,6 +76,7 @@ public class Wrist extends SubsystemBase {
         request = new MotionMagicExpoVoltage(0);
 
         error = 0.0;
+        lastManualPosition = State.STOW.position;
     }
 
     public State getState() {
@@ -87,7 +88,7 @@ public class Wrist extends SubsystemBase {
     }
 
     public double getTarget() {
-        return getState() == State.MANUAL ? getPosition() : getState().position;
+        return getState() == State.MANUAL ? lastManualPosition : getState().position;
     }
 
     public double getError() {
@@ -104,6 +105,7 @@ public class Wrist extends SubsystemBase {
 
     public void setManualState() {
         setState(State.MANUAL);
+        lastManualPosition = getPosition();
     }
 
     public void setStowState() {
