@@ -1,6 +1,5 @@
 package frc.robot.subsystems.drivetrain;
 
-import java.util.Random;
 import java.util.Set;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
@@ -8,7 +7,6 @@ import java.util.function.Supplier;
 
 import com.ctre.phoenix6.Orchestra;
 import com.ctre.phoenix6.Utils;
-import com.ctre.phoenix6.configs.MagnetSensorConfigs;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.swerve.*;
@@ -20,7 +18,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
@@ -163,7 +160,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
         }, Set.of(this)).andThen(directMoveToNearestBranch());
     }
 
-    public Command moveToObject() {
+    public Command directMoveToObject() {
         return new DriveToObjectCommand(this, robotCentric);
     }
 
@@ -175,8 +172,8 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
         return applyRequest(() -> xMode);
     }
 
-    public Command resetGyro() {
-        return runOnce(() -> resetRotation(localizer.getStrategyPose().getRotation()));
+    public void resetGyro() {
+        resetRotation(localizer.getStrategyPose().getRotation());
     }
 
     public void forceStop() {

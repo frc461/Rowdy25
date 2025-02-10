@@ -55,7 +55,7 @@ public class Pivot extends SubsystemBase {
     private final TalonFX pivot;
     private final ServoChannel ratchet;
     private final MotionMagicExpoVoltage request;
-    private double error;
+    private double error, lastManualPosition;
 
     private final PivotTelemetry pivotTelemetry = new PivotTelemetry(this);
 
@@ -103,6 +103,7 @@ public class Pivot extends SubsystemBase {
         request = new MotionMagicExpoVoltage(getTarget());
 
         error = 0.0;
+        lastManualPosition = State.STOW.position;
     }
 
     public State getState() {
@@ -118,7 +119,7 @@ public class Pivot extends SubsystemBase {
     }
 
     public double getTarget() {
-        return getState() == State.MANUAL ? getPosition() : getState().position;
+        return getState() == State.MANUAL ? lastManualPosition : getState().position;
     }
 
     public boolean validStartPosition() {
@@ -133,6 +134,10 @@ public class Pivot extends SubsystemBase {
         return ratchet.getPulseWidth();
     }
 
+    public boolean isAtTarget() {
+        return error < Constants.ElevatorConstants.TOLERANCE;
+    }
+
     public void toggleRatchet() {
         currentRatchetState = currentRatchetState == RatchetState.ON ? RatchetState.OFF : RatchetState.ON;
         ratchet.setPulseWidth(currentRatchetState.pulseWidth);
@@ -144,6 +149,7 @@ public class Pivot extends SubsystemBase {
 
     public void setManualState() {
         setState(State.MANUAL);
+        lastManualPosition = getPosition();
     }
 
     public void setStowState() {

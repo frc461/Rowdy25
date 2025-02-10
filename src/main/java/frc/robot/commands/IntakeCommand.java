@@ -3,7 +3,7 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.intake.Intake;
 
-public class IntakeCommand extends Command { // TODO SHOP: TEST THIS
+public class IntakeCommand extends Command {
     private final Intake intake;
 
     public IntakeCommand(Intake intake) {
@@ -16,7 +16,7 @@ public class IntakeCommand extends Command { // TODO SHOP: TEST THIS
         switch (intake.getState()) {
             case INTAKE:
                 if (intake.hasAlgae()) {
-                    intake.toggleHasAlgaeState();
+                    intake.setHasAlgaeState();
                 } else if (intake.hasCoral()) {
                     intake.setIdleState();
                 } else {
@@ -39,7 +39,7 @@ public class IntakeCommand extends Command { // TODO SHOP: TEST THIS
                 break;
             case IDLE:
                 if (intake.hasAlgae()) {
-                    intake.toggleHasAlgaeState();
+                    intake.setHasAlgaeState();
                 } else {
                     intake.setIntakeSpeed(0.0);
                 }
