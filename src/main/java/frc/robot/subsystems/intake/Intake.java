@@ -114,13 +114,5 @@ public class Intake extends SubsystemBase {
         intakeTelemetry.publishValues();
 
         Lights.setLights(hasCoral() || hasAlgae());
-
-        if (DriverStation.isDisabled()) {
-            if (canandcolor.getSettings().getLampLEDBrightness().orElse(0.0) > 0.0) {
-                canandcolor.setLampLEDBrightness(0.0);
-            }
-        } else if (canandcolor.getSettings().getLampLEDBrightness().orElse(0.0) == 0.0) {
-            canandcolor.setLampLEDBrightness(1.0);
-        }
     }
 }
