@@ -133,6 +133,10 @@ public class Pivot extends SubsystemBase {
         return ratchet.getPulseWidth();
     }
 
+    public boolean isAtTarget() {
+        return error < Constants.ElevatorConstants.TOLERANCE;
+    }
+
     public void toggleRatchet() {
         currentRatchetState = currentRatchetState == RatchetState.ON ? RatchetState.OFF : RatchetState.ON;
         ratchet.setPulseWidth(currentRatchetState.pulseWidth);

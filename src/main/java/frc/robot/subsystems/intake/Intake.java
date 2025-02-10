@@ -72,12 +72,20 @@ public class Intake extends SubsystemBase {
         return canandcolor.getColor().toWpilibColor().equals(Color.kAqua); // TODO SHOP: TUNE THIS
     }
 
+    public boolean isIdle() {
+        return currentState == State.IDLE;
+    }
+
+    private void setState(State newState) {
+        currentState = newState;
+    }
+
     public void setIdleState() {
         setState(State.IDLE);
     }
 
-    public void toggleHasAlgaeState() {
-        setState(currentState == State.HAS_ALGAE ? State.IDLE : State.HAS_ALGAE);
+    public void setHasAlgaeState() {
+        setState(State.HAS_ALGAE);
     }
 
     public void toggleIntakeState() {
@@ -86,10 +94,6 @@ public class Intake extends SubsystemBase {
 
     public void toggleOuttakeState() {
         setState(currentState == State.OUTTAKE ? State.IDLE : State.OUTTAKE);
-    }
-
-    private void setState(State newState) {
-        currentState = newState;
     }
 
     public void setIntakeSpeed(double speed) {
