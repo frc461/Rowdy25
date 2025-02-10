@@ -44,7 +44,7 @@ public class DriveToObjectCommand extends Command {
         double currentYaw = VisionUtil.Photon.Color.getBestObjectYaw();
         double currentPitch = VisionUtil.Photon.Color.getBestObjectPitch();
         if (targetValid && !rotationComplete) {
-            double degreeError = Math.abs(currentYaw);
+            double yawError = Math.abs(currentYaw);
 
             swerve.setControl(
                     robotCentric.withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
@@ -55,11 +55,12 @@ public class DriveToObjectCommand extends Command {
                                     0.0
                             ) * Constants.MAX_CONTROLLED_ANGULAR_VEL)
             );
-            if (degreeError < Constants.AutoConstants.DEGREE_TOLERANCE_TO_ACCEPT) {
+            if (yawError < Constants.AutoConstants.DEGREE_TOLERANCE_TO_ACCEPT) {
                 rotationComplete = true;
             }
         } else if (targetValid && !translationComplete) {
-            double degreeError = Math.abs(currentPitch - Constants.VisionConstants.PhotonConstants.OBJECT_GOAL_PITCH);
+            double yawError = Math.abs(currentYaw);
+            double pitchError = Math.abs(currentPitch - Constants.VisionConstants.PhotonConstants.OBJECT_GOAL_PITCH);
 
             swerve.setControl(
                     robotCentric.withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
@@ -73,12 +74,14 @@ public class DriveToObjectCommand extends Command {
                             ))
                             .withRotationalRate(0.0)
             );
-            if (degreeError < Constants.AutoConstants.DEGREE_TOLERANCE_TO_ACCEPT) {
+            if (yawError > Constants.AutoConstants.DEGREE_TOLERANCE_TO_ACCEPT) {
+                rotationComplete = false;
+            } else if (pitchError < Constants.AutoConstants.DEGREE_TOLERANCE_TO_ACCEPT) {
                 translationComplete = true;
                 end = true;
             }
         } else {
-            // TODO WAIT (2/11): MORE ROBUST CHECKING I.E., IF OBJECT IN INTAKE, OTHERWISE METHOD TO INTAKE OBJECT OR GIVE UP, DEPENDING ON AUTO OR TELEOP
+            // TODO: MORE ROBUST CHECKING I.E., IF OBJECT INTAKE
             swerve.forceStop();
             end = true;
         }

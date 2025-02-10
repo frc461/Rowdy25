@@ -17,6 +17,7 @@ import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.wrist.Wrist;
 import frc.robot.util.SysID;
 import frc.robot.util.Lights;
+import frc.robot.util.VisionUtil;
 
 public class RobotContainer {
     /* Subsystems */
@@ -35,38 +36,6 @@ public class RobotContainer {
     private final SysID sysID = new SysID(swerve);
 
     private final CommandXboxController driverXbox = new CommandXboxController(0);
-    /* Currently Allocated For Driver:
-     * POV buttons / D-pad:
-     * Up: Rotate then translate to a game element (if applicable)
-     * Down:
-     * Left:
-     * Right:
-     *
-     * Triggers:
-     * Left: Rotate CCW (with bumper - FAST)
-     * Right: Rotate CW (with bumper - FAST)
-     *
-     * Joysticks:
-     * Left: Translation
-     * Right:
-     * Left Button:
-     * Right Button:
-     *
-     * Bumpers:
-     * Left: Tag alignment
-     * Right: Game element alignment
-     *
-     * Buttons:
-     *
-     * A: Manual-configure Quest (if applicable)
-     *
-     * B: Toggle localization strategy
-     *
-     * X:
-     *
-     * Y: Reset gyro
-     */
-
     /* Driver Tentative:
      * POV buttons / D-pad:
      * Up:
@@ -95,7 +64,7 @@ public class RobotContainer {
      *     Coral: Click - L4 score stage, Click Again - outtake, stow
      *
      * B:
-     *     No Coral: Click - Algae pickup stage (height determined by heading, then camera, then stow automatically), stow automatically, Click Again - Stow
+     *     No Coral: Click - Algae pickup stage (height determined by nearest reef, then camera, then stow automatically), stow automatically, Click Again - Stow
      *     Coral: Click - L1 score stage, Click Again - outtake, stow
      *
      * X:
@@ -103,7 +72,7 @@ public class RobotContainer {
      *     Coral: Click - L3 score stage, Click Again - outtake, stow
      *
      * Y:
-     *     No Coral: Click - Algae score stage (processor height if within 45 degrees of processor, otherwise net height), Click again - Outtake, stow
+     *     No Coral: Click - Algae score stage (net or processor, whichever is closer), Click again - Outtake, stow
      *     Coral: Click - L2 score stage, Click Again - outtake, stow
      */
 
@@ -116,12 +85,12 @@ public class RobotContainer {
      * Right: Click - L1 score stage, Click Again - outtake, stow
      *
      * Triggers:
-     * Left: Rotate wrist down
-     * Right: Rotate wrist up
+     * Left: Move elevator down
+     * Right: Move elevator up
      *
      * Joysticks:
-     * Left: Rotate elevator
-     * Right: Rotate pivot
+     * Left: Rotate pivot
+     * Right: Rotate wrist
      *
      * Bumpers:
      * Left: Click - manually temp toggle between lower and higher algae reef intake level
@@ -190,46 +159,13 @@ public class RobotContainer {
     }
 
     private void configureBindings() {
-
-        driverXbox.a().onTrue(new InstantCommand(swerve.localizer::configureQuestOffset));
-
-        driverXbox.b().onTrue(new InstantCommand(swerve.localizer::toggleLocalizationStrategy));
-
-        // reset the field-centric heading on left joystick press
-        driverXbox.leftStick().onTrue(new InstantCommand(swerve::resetGyro));
-
-        driverXbox.povLeft().whileTrue(swerve.directMoveToObject());
-
-        driverXbox.povRight().whileTrue(swerve.pathFindToNearestBranch());
-
-        // test presets on the operator xbox controller before setting final bindings
-        // FOR OPERATOR PRACTICE, JUST USE THE TWO JOYSTICKS & THE TRIGGERS (LT+RT) FOR MOVING PIVOT, ELEVATOR, WRIST, AND INTAKE
-
-        opXbox.rightBumper().onTrue(new InstantCommand(intake::toggleIntakeState));
-        opXbox.leftStick().onTrue(
-                new InstantCommand(wrist::setStowState)
-                        .andThen(new WaitUntilCommand(wrist::isAtTarget))
-                        .andThen(new InstantCommand(elevator::setStowState))
-                        .andThen(new WaitUntilCommand(elevator::isAtTarget))
-                        .andThen(new InstantCommand(pivot::setStowState))
+        // (set to ground state and if holding then wait until there's an object then drive to it)
+        driverXbox.leftBumper().and(driverXbox.leftTrigger().negate()).onTrue(new InstantCommand(robotStates::toggleGroundCoralState));
+        driverXbox.leftBumper().and(driverXbox.leftTrigger()).onTrue(new InstantCommand(robotStates::setStowState));
+        driverXbox.leftBumper().and(driverXbox.leftTrigger().negate()).debounce(2.0).whileTrue(
+                new WaitUntilCommand(VisionUtil.Photon.Color::hasCoralTargets)
+                        .andThen(swerve.directMoveToObject())
         );
-
-//        opXbox.povLeft().onTrue(new InstantCommand(elevator::toggleL2CoralState));
-//        opXbox.povLeft().onTrue(new InstantCommand(pivot::toggleL2CoralState));
-//        opXbox.povLeft().onTrue(new InstantCommand(wrist::toggleGroundCoralState));
-
-//        opXbox.povUp().onTrue(new InstantCommand(elevator::toggleL4CoralState));
-//        opXbox.povUp().onTrue(new InstantCommand(pivot::toggleL4CoralState));
-//        opXbox.povUp().onTrue(new InstantCommand(wrist::toggleGroundAlgaeState));
-
-//        opXbox.povRight().onTrue(new InstantCommand(elevator::toggleL3CoralState));
-//        opXbox.povRight().onTrue(new InstantCommand(pivot::toggleL3CoralState));
-//        opXbox.povRight().onTrue(new InstantCommand(wrist::toggleCoralStationState));
-
-//        opXbox.povDown().onTrue(new InstantCommand(elevator::setStowState));
-//        opXbox.povDown().onTrue(new InstantCommand(pivot::setStowState));
-//        opXbox.povDown().onTrue(new InstantCommand(pivot::toggleRatchet));
-//        opXbox.povDown().onTrue(new InstantCommand(wrist::setStowState));
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.

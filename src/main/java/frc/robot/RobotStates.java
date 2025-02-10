@@ -10,7 +10,7 @@ import frc.robot.subsystems.wrist.Wrist;
 
 public class RobotStates {
 
-    public enum State {
+    public enum State { // TODO: IMPLEMENT CLIMBING
         STOW,
         OUTTAKE,
         CORAL_STATION,
