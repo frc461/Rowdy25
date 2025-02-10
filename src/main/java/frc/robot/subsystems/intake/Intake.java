@@ -8,6 +8,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 import com.reduxrobotics.canand.CanandEventLoop;
 import com.reduxrobotics.sensors.canandcolor.Canandcolor;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -63,7 +64,7 @@ public class Intake extends SubsystemBase {
     public double getProximity() {
         return canandcolor.getProximity();
     }
- 
+
     public boolean hasCoral() {
         return getProximity() < 0.2; // TODO SHOP: TUNE THIS
     }
@@ -109,5 +110,13 @@ public class Intake extends SubsystemBase {
         intakeTelemetry.publishValues();
 
         Lights.setLights(hasCoral() || hasAlgae());
+
+        if (DriverStation.isDisabled()) {
+            if (canandcolor.getSettings().getLampLEDBrightness().orElse(0.0) > 0.0) {
+                canandcolor.setLampLEDBrightness(0.0);
+            }
+        } else if (canandcolor.getSettings().getLampLEDBrightness().orElse(0.0) == 0.0) {
+            canandcolor.setLampLEDBrightness(1.0);
+        }
     }
 }
