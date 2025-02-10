@@ -180,42 +180,48 @@ public class RobotContainer {
         );
 
         wrist.setDefaultCommand(
-                new WristCommand(wrist, opXbox::getRightY, pivot::getPosition)
+                new WristCommand(wrist, () -> -opXbox.getRightY(), pivot::getPosition)
         );
     }
 
     private void configureBindings() {
 
-        driverXbox.a().onTrue(swerve.runOnce(swerve.localizer::configureQuestOffset));
+        driverXbox.a().onTrue(new InstantCommand(swerve.localizer::configureQuestOffset));
 
-        driverXbox.b().onTrue(new InstantCommand(elevator::toggleL2CoralState));
+        driverXbox.b().onTrue(new InstantCommand(swerve.localizer::toggleLocalizationStrategy));
 
-        // reset the field-centric heading on y press
-        driverXbox.leftStick().onTrue(swerve.resetGyro());
+        // reset the field-centric heading on left joystick press
+        driverXbox.leftStick().onTrue(new InstantCommand(swerve::resetGyro));
 
-//        driverXbox.rightBumper().onTrue(new InstantCommand(intake::toggleIntakeState));
+        driverXbox.povLeft().whileTrue(swerve.directMoveToObject());
 
-//        driverXbox.povLeft().onTrue(new InstantCommand(wrist::toggleGroundCoralState));
-//        driverXbox.povLeft().onTrue(new InstantCommand(intake::toggleOuttakeState));
-//        driverXbox.povLeft().onTrue(new InstantCommand(elevator::toggleL3CoralState));
+        driverXbox.povRight().whileTrue(swerve.pathFindToNearestBranch());
 
-//        driverXbox.povUp().whileTrue(swerve.moveToObject());
-//        driverXbox.povUp().onTrue(new InstantCommand(elevator::toggleL4CoralState));
-//        driverXbox.povUp().onTrue(new InstantCommand(pivot::toggleL3CoralState));
-        driverXbox.povDown().onTrue(new InstantCommand(wrist::setStowState));
-        driverXbox.povLeft().onTrue(new InstantCommand(wrist::toggleL1CoralState));
-        driverXbox.povUp().onTrue(new InstantCommand(wrist::toggleL2CoralState));
-        driverXbox.povRight().onTrue(new InstantCommand(wrist::toggleL3CoralState));
+        // test presets on the operator xbox controller before setting final bindings
+        // FOR OPERATOR PRACTICE, JUST USE THE TWO JOYSTICKS & THE TRIGGERS (LT+RT) FOR MOVING PIVOT, ELEVATOR, WRIST, AND INTAKE
 
-//        driverXbox.povRight().onTrue(new InstantCommand(pivot::setStowState));
-//        driverXbox.povRight().onTrue(new InstantCommand(elevator::setStowState));
+        opXbox.rightBumper().onTrue(new InstantCommand(intake::toggleIntakeState));
 
-//        driverXbox.povDown().onTrue(new InstantCommand(pivot::toggleRatchet));
-//        driverXbox.povDown().onTrue(new InstantCommand(elevator::toggleL2CoralState));
+//        opXbox.povLeft().onTrue(new InstantCommand(elevator::toggleL2CoralState));
+//        opXbox.povLeft().onTrue(new InstantCommand(pivot::toggleL2CoralState));
+//        opXbox.povLeft().onTrue(new InstantCommand(wrist::toggleGroundCoralState));
+
+//        opXbox.povUp().onTrue(new InstantCommand(elevator::toggleL4CoralState));
+//        opXbox.povUp().onTrue(new InstantCommand(pivot::toggleL4CoralState));
+//        opXbox.povUp().onTrue(new InstantCommand(wrist::toggleGroundAlgaeState));
+
+//        opXbox.povRight().onTrue(new InstantCommand(elevator::toggleL3CoralState));
+//        opXbox.povRight().onTrue(new InstantCommand(pivot::toggleL3CoralState));
+//        opXbox.povRight().onTrue(new InstantCommand(wrist::toggleCoralStationState));
+
+//        opXbox.povDown().onTrue(new InstantCommand(elevator::setStowState));
+//        opXbox.povDown().onTrue(new InstantCommand(pivot::setStowState));
+//        opXbox.povDown().onTrue(new InstantCommand(pivot::toggleRatchet));
+//        opXbox.povDown().onTrue(new InstantCommand(wrist::setStowState));
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
-        sysID.configureBindings(driverXbox);
+        sysID.configureBindings(opXbox);
     }
 
     public Command getAutonomousCommand() {
