@@ -1,12 +1,13 @@
 package frc.robot;
 
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.subsystems.drivetrain.Swerve;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.wrist.Wrist;
+import frc.robot.util.VisionUtil;
 
 public class RobotStates {
 
@@ -94,7 +95,7 @@ public class RobotStates {
         currentState = currentState == State.NET ? State.OUTTAKE : State.NET;
     }
 
-    public void configureToggleStateTriggers(Elevator elevator, Intake intake, Pivot pivot, Wrist wrist) {
+    public void configureToggleStateTriggers(Swerve swerve, Elevator elevator, Intake intake, Pivot pivot, Wrist wrist) { // TODO SHOP: TEST THIS
         stowState.onTrue(
                 new InstantCommand(intake::setIdleState)
                         .andThen(wrist::setStowState)
@@ -107,110 +108,155 @@ public class RobotStates {
         outtakeState.onTrue(
                 new InstantCommand(intake::setOuttakeState)
                         .andThen(new WaitUntilCommand(intake::atIdleState))
-                        .andThen(new InstantCommand(this::setStowState))
+                        .andThen(this::setStowState)
         );
 
         coralStationState.onTrue(
                 new InstantCommand(intake::setIntakeState)
-                        .andThen(pivot::setCoralStationState)
-                        .andThen(new WaitUntilCommand(pivot::isAtTarget))
-                        .andThen(new InstantCommand(elevator::setCoralStationState))
+                        .andThen(wrist::setCoralStationState)
+                        .andThen(new WaitUntilCommand(wrist::isAtTarget))
+                        .andThen(elevator::setCoralStationState)
                         .andThen(new WaitUntilCommand(elevator::isAtTarget))
-                        .andThen(new InstantCommand(wrist::setCoralStationState))
-                        .andThen(new WaitUntilCommand(() -> intake.atIdleState() || intake.atHasAlgaeState()))
-                        .andThen(new InstantCommand(this::setStowState))
+                        .andThen(pivot::setCoralStationState)
+                        .raceWith(new WaitUntilCommand(() -> intake.atIdleState() || intake.atHasAlgaeState()))
+                        .andThen(this::setStowState)
+                        .raceWith(new WaitUntilCommand(() -> !coralStationState.getAsBoolean()))
         );
 
         groundCoralState.onTrue(
                 new InstantCommand(intake::setIntakeState)
                         .andThen(wrist::setGroundCoralState)
                         .andThen(new WaitUntilCommand(wrist::isAtTarget))
-                        .andThen(new InstantCommand(elevator::setGroundCoralState))
+                        .andThen(elevator::setGroundCoralState)
                         .andThen(new WaitUntilCommand(elevator::isAtTarget))
-                        .andThen(new InstantCommand(pivot::setGroundCoralState))
-                        .andThen(new WaitUntilCommand(() -> intake.atIdleState() || intake.atHasAlgaeState()))
-                        .andThen(new InstantCommand(this::setStowState))
+                        .andThen(pivot::setGroundCoralState)
+                        .andThen(new WaitUntilCommand(VisionUtil.Photon.Color::hasCoralTargets))
+                        .andThen(swerve.directMoveToObject().asProxy())
+                        .raceWith(new WaitUntilCommand(() -> intake.atIdleState() || intake.atHasAlgaeState()))
+                        .andThen(this::setStowState)
+                        .raceWith(new WaitUntilCommand(() -> !groundCoralState.getAsBoolean()))
         );
 
         groundAlgaeState.onTrue(
                 new InstantCommand(intake::setIntakeState)
                         .andThen(wrist::setGroundAlgaeState)
                         .andThen(new WaitUntilCommand(wrist::isAtTarget))
-                        .andThen(new InstantCommand(elevator::setGroundAlgaeState))
+                        .andThen(elevator::setGroundAlgaeState)
                         .andThen(new WaitUntilCommand(elevator::isAtTarget))
-                        .andThen(new InstantCommand(pivot::setGroundAlgaeState))
-                        .andThen(new WaitUntilCommand(() -> intake.atIdleState() || intake.atHasAlgaeState()))
-                        .andThen(new InstantCommand(this::setStowState))
+                        .andThen(pivot::setGroundAlgaeState)
+                        .andThen(new WaitUntilCommand(VisionUtil.Photon.Color::hasAlgaeTargets))
+                        .andThen(swerve.directMoveToObject().asProxy()) // TODO: MOVE TO ALGAE VS CORAL
+                        .raceWith(new WaitUntilCommand(() -> intake.atIdleState() || intake.atHasAlgaeState()))
+                        .andThen(this::setStowState)
+                        .raceWith(new WaitUntilCommand(() -> !groundAlgaeState.getAsBoolean()))
         );
 
         l1CoralState.onTrue(
-                new InstantCommand(pivot::setL1CoralState)
+                new InstantCommand(this::setStowState)
+                        .andThen(new WaitUntilCommand(() -> elevator.isAtTarget() && pivot.isAtTarget() && wrist.isAtTarget()))
+                        .andThen(pivot::setL1CoralState)
                         .andThen(new WaitUntilCommand(pivot::isAtTarget))
-                        .andThen(new InstantCommand(elevator::setL1CoralState))
+                        .andThen(elevator::setL1CoralState)
                         .andThen(new WaitUntilCommand(elevator::isAtTarget))
-                        .andThen(new InstantCommand(wrist::setL1CoralState))
+                        .andThen(wrist::setL1CoralState)
+                        .raceWith(new WaitUntilCommand(() -> !intake.hasCoral() && !intake.hasAlgae()))
+                        .andThen(this::setStowState)
+                        .raceWith(new WaitUntilCommand(() -> !l1CoralState.getAsBoolean()))
         );
 
         l2CoralState.onTrue(
-                new InstantCommand(pivot::setL2CoralState)
+                new InstantCommand(this::setStowState)
+                        .andThen(new WaitUntilCommand(() -> elevator.isAtTarget() && pivot.isAtTarget() && wrist.isAtTarget()))
+                        .andThen(pivot::setL2CoralState)
                         .andThen(new WaitUntilCommand(pivot::isAtTarget))
-                        .andThen(new InstantCommand(elevator::setL2CoralState))
+                        .andThen(elevator::setL2CoralState)
                         .andThen(new WaitUntilCommand(elevator::isAtTarget))
-                        .andThen(new InstantCommand(wrist::setL2CoralState))
+                        .andThen(wrist::setL2CoralState)
+                        .raceWith(new WaitUntilCommand(() -> !intake.hasCoral() && !intake.hasAlgae()))
+                        .andThen(this::setStowState)
+                        .raceWith(new WaitUntilCommand(() -> !l2CoralState.getAsBoolean()))
         );
 
         l3CoralState.onTrue(
-                new InstantCommand(pivot::setL3CoralState)
+                new InstantCommand(this::setStowState)
+                        .andThen(new WaitUntilCommand(() -> elevator.isAtTarget() && pivot.isAtTarget() && wrist.isAtTarget()))
+                        .andThen(pivot::setL3CoralState)
                         .andThen(new WaitUntilCommand(pivot::isAtTarget))
-                        .andThen(new InstantCommand(elevator::setL3CoralState))
+                        .andThen(elevator::setL3CoralState)
                         .andThen(new WaitUntilCommand(elevator::isAtTarget))
-                        .andThen(new InstantCommand(wrist::setL3CoralState))
+                        .andThen(wrist::setL3CoralState)
+                        .raceWith(new WaitUntilCommand(() -> !intake.hasCoral() && !intake.hasAlgae()))
+                        .andThen(this::setStowState)
+                        .raceWith(new WaitUntilCommand(() -> !l3CoralState.getAsBoolean()))
         );
 
         l4CoralState.onTrue(
-                new InstantCommand(pivot::setL4CoralState)
+                new InstantCommand(this::setStowState)
+                        .andThen(new WaitUntilCommand(() -> elevator.isAtTarget() && pivot.isAtTarget() && wrist.isAtTarget()))
+                        .andThen(pivot::setL4CoralState)
                         .andThen(new WaitUntilCommand(pivot::isAtTarget))
-                        .andThen(new InstantCommand(elevator::setL4CoralState))
+                        .andThen(elevator::setL4CoralState)
                         .andThen(new WaitUntilCommand(elevator::isAtTarget))
-                        .andThen(new InstantCommand(wrist::setL4CoralState))
+                        .andThen(wrist::setL4CoralState)
+                        .raceWith(new WaitUntilCommand(() -> !intake.hasCoral() && !intake.hasAlgae()))
+                        .andThen(this::setStowState)
+                        .raceWith(new WaitUntilCommand(() -> !l4CoralState.getAsBoolean()))
         );
 
         lowReefAlgaeState.onTrue(
-                new InstantCommand(intake::setIntakeState)
+                new InstantCommand(this::setStowState)
+                        .andThen(new WaitUntilCommand(() -> elevator.isAtTarget() && pivot.isAtTarget() && wrist.isAtTarget()))
+                        .andThen(intake::setIntakeState)
                         .andThen(pivot::setLowReefAlgaeState)
                         .andThen(new WaitUntilCommand(pivot::isAtTarget))
-                        .andThen(new InstantCommand(elevator::setLowReefAlgaeState))
+                        .andThen(elevator::setLowReefAlgaeState)
                         .andThen(new WaitUntilCommand(elevator::isAtTarget))
-                        .andThen(new InstantCommand(wrist::setLowReefAlgaeState))
-                        .andThen(new WaitUntilCommand(() -> intake.atIdleState() || intake.atHasAlgaeState()))
-                        .andThen(new InstantCommand(this::setStowState))
+                        .andThen(wrist::setLowReefAlgaeState)
+                        .raceWith(new WaitUntilCommand(() -> intake.atIdleState() || intake.atHasAlgaeState()))
+                        .andThen(this::setStowState)
+                        .raceWith(new WaitUntilCommand(() -> elevator.nearestAlgaeIsHigh(swerve.localizer.getStrategyPose())))
+                        .andThen(this::toggleHighReefAlgaeState)
+                        .raceWith(new WaitUntilCommand(() -> !lowReefAlgaeState.getAsBoolean()))
         );
 
         highReefAlgaeState.onTrue(
-                new InstantCommand(intake::setIntakeState)
+                new InstantCommand(this::setStowState)
+                        .andThen(new WaitUntilCommand(() -> elevator.isAtTarget() && pivot.isAtTarget() && wrist.isAtTarget()))
+                        .andThen(intake::setIntakeState)
                         .andThen(pivot::setHighReefAlgaeState)
                         .andThen(new WaitUntilCommand(pivot::isAtTarget))
-                        .andThen(new InstantCommand(elevator::setHighReefAlgaeState))
+                        .andThen(elevator::setHighReefAlgaeState)
                         .andThen(new WaitUntilCommand(elevator::isAtTarget))
-                        .andThen(new InstantCommand(wrist::setHighReefAlgaeState))
-                        .andThen(new WaitUntilCommand(() -> intake.atIdleState() || intake.atHasAlgaeState()))
-                        .andThen(new InstantCommand(this::setStowState))
+                        .andThen(wrist::setHighReefAlgaeState)
+                        .raceWith(new WaitUntilCommand(() -> intake.atIdleState() || intake.atHasAlgaeState()))
+                        .andThen(this::setStowState)
+                        .raceWith(new WaitUntilCommand(() -> !elevator.nearestAlgaeIsHigh(swerve.localizer.getStrategyPose())))
+                        .andThen(this::toggleHighReefAlgaeState)
+                        .raceWith(new WaitUntilCommand(() -> !highReefAlgaeState.getAsBoolean()))
         );
 
         processorState.onTrue(
                 new InstantCommand(wrist::setProcessorState)
                         .andThen(new WaitUntilCommand(wrist::isAtTarget))
-                        .andThen(new InstantCommand(elevator::setProcessorState))
+                        .andThen(elevator::setProcessorState)
                         .andThen(new WaitUntilCommand(elevator::isAtTarget))
-                        .andThen(new InstantCommand(pivot::setProcessorState))
+                        .andThen(pivot::setProcessorState)
+                        .raceWith(new WaitUntilCommand(() -> !intake.hasCoral() && !intake.hasAlgae()))
+                        .andThen(this::setStowState)
+                        .raceWith(new WaitUntilCommand(() -> !processorState.getAsBoolean()))
         );
 
         netState.onTrue(
-                new InstantCommand(pivot::setNetState)
+                new InstantCommand(this::setStowState)
+                        .andThen(new WaitUntilCommand(() -> elevator.isAtTarget() && pivot.isAtTarget() && wrist.isAtTarget()))
+                        .andThen(pivot::setNetState)
                         .andThen(new WaitUntilCommand(pivot::isAtTarget))
-                        .andThen(new InstantCommand(elevator::setNetState))
+                        .andThen(elevator::setNetState)
                         .andThen(new WaitUntilCommand(elevator::isAtTarget))
-                        .andThen(new InstantCommand(wrist::setNetState))
+                        .andThen(wrist::setNetState)
+                        .raceWith(new WaitUntilCommand(() -> !intake.hasCoral() && !intake.hasAlgae()))
+                        .andThen(this::setStowState)
+                        .raceWith(new WaitUntilCommand(() -> !netState.getAsBoolean()))
         );
     }
 }

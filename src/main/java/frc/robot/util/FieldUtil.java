@@ -155,8 +155,8 @@ public class FieldUtil {
         }
 
         public enum AlgaeLocation {
-            LOWER,
-            UPPER
+            LOW,
+            HIGH
         }
 
         public static AprilTag getNearestReefTag(Pose2d currentPose) {
@@ -165,8 +165,8 @@ public class FieldUtil {
 
         public static AlgaeLocation getAlgaeReefLevelFromTag(AprilTag tag) {
             return switch (tag) {
-                case ID_7, ID_9, ID_11, ID_18, ID_20, ID_22 -> Reef.AlgaeLocation.UPPER;
-                case ID_6, ID_8, ID_10, ID_17, ID_19, ID_21  -> Reef.AlgaeLocation.LOWER;
+                case ID_7, ID_9, ID_11, ID_18, ID_20, ID_22 -> Reef.AlgaeLocation.HIGH;
+                case ID_6, ID_8, ID_10, ID_17, ID_19, ID_21  -> Reef.AlgaeLocation.LOW;
                 default -> null;
             };
         }

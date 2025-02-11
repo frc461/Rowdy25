@@ -164,11 +164,10 @@ public class RobotContainer {
         // (set to ground state and if holding then wait until there's an object then drive to it)
         driverXbox.leftBumper().and(driverXbox.leftTrigger().negate()).onTrue(
                 new InstantCommand(robotStates::toggleGroundCoralState)
-                        .andThen(new WaitUntilCommand(VisionUtil.Photon.Color::hasCoralTargets))
-                        .andThen(swerve.directMoveToObject())
         );
         driverXbox.leftBumper().and(driverXbox.leftTrigger()).onTrue(new InstantCommand(robotStates::setStowState));
-        driverXbox.b().onTrue(elevator.getHighAlgae(swerve.localizer.getStrategyPose()) 
+
+        driverXbox.b().onTrue(elevator.nearestAlgaeIsHigh(swerve.localizer.getStrategyPose())
                 ? new InstantCommand(robotStates::toggleHighReefAlgaeState) 
                 : new InstantCommand(robotStates::toggleLowReefAlgaeState)
         );
@@ -179,7 +178,7 @@ public class RobotContainer {
     }
 
     private void configureToggleStateTriggers() {
-        robotStates.configureToggleStateTriggers(elevator, intake, pivot, wrist);
+        robotStates.configureToggleStateTriggers(swerve, elevator, intake, pivot, wrist);
     }
 
     public Command getAutonomousCommand() {
