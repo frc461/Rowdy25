@@ -96,9 +96,8 @@ public class Elevator extends SubsystemBase {
         return getState() == State.MANUAL ? lastManualPosition : getState().position;
     }
 
-    public double getAlgaeHeight(Pose2d currentPose) { // TODO: CHANGE STATE BASED ON CLOSEST ALGAE HEIGHT
-        return FieldUtil.Reef.getAlgaeReefLevelFromTag(FieldUtil.Reef.getNearestReefTag(currentPose)) == FieldUtil.Reef.AlgaeLocation.UPPER
-                ? Constants.ElevatorConstants.HIGH_REEF_ALGAE : Constants.ElevatorConstants.LOW_REEF_ALGAE;
+    public boolean getHighAlgae(Pose2d currentPose) { // TODO: CHANGE STATE BASED ON CLOSEST ALGAE HEIGHT
+        return FieldUtil.Reef.getAlgaeReefLevelFromTag(FieldUtil.Reef.getNearestReefTag(currentPose)) == FieldUtil.Reef.AlgaeLocation.UPPER; 
     }
 
     public boolean lowerSwitchTriggered() {

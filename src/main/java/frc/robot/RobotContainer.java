@@ -168,6 +168,10 @@ public class RobotContainer {
                         .andThen(swerve.directMoveToObject())
         );
         driverXbox.leftBumper().and(driverXbox.leftTrigger()).onTrue(new InstantCommand(robotStates::setStowState));
+        driverXbox.b().onTrue(elevator.getHighAlgae(swerve.localizer.getStrategyPose()) 
+                ? new InstantCommand(robotStates::toggleHighReefAlgaeState) 
+                : new InstantCommand(robotStates::toggleLowReefAlgaeState)
+        );
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
