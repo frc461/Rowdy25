@@ -202,11 +202,11 @@ public final class DefaultConstants {
         public static final double GROUND_CORAL = 0;
         public static final double GROUND_ALGAE = 0;
         public static final double L1_CORAL = 0;
-        public static final double L2_CORAL = 5.5;
-        public static final double L3_CORAL = 17.5;
-        public static final double L4_CORAL = 42;
-        public static final double LOW_REEF_ALGAE = 5.5;
-        public static final double HIGH_REEF_ALGAE = 24;
+        public static final double L2_CORAL = 5.0;
+        public static final double L3_CORAL = 14.4;
+        public static final double L4_CORAL = 40;
+        public static final double LOW_REEF_ALGAE = 2.9;
+        public static final double HIGH_REEF_ALGAE = 14.5;
         public static final double PROCESSOR = 0;
         public static final double NET = 44;
     }
@@ -260,16 +260,16 @@ public final class DefaultConstants {
         public static final double LOWER_LIMIT = 0; // TODO SHOP: TEST PRESETS
         public static final double UPPER_LIMIT = 105;
         public static final double STOW = 50;
-        public static final double CORAL_STATION = 65;
-        public static final double GROUND_CORAL = 4;
-        public static final double GROUND_ALGAE = 4;
+        public static final double CORAL_STATION = 66.8;
+        public static final double GROUND_CORAL = 2.5;
+        public static final double GROUND_ALGAE = 4.5;
         public static final double L1_CORAL = 55;
-        public static final double L2_CORAL = 75;
-        public static final double L3_CORAL = 75;
-        public static final double L4_CORAL = 85;
-        public static final double LOW_REEF_ALGAE = 70;
-        public static final double HIGH_REEF_ALGAE = 80;
-        public static final double PROCESSOR = 4;
+        public static final double L2_CORAL = 72.5;
+        public static final double L3_CORAL = 80;
+        public static final double L4_CORAL = 84.1;
+        public static final double LOW_REEF_ALGAE = 105;
+        public static final double HIGH_REEF_ALGAE = 97.6;
+        public static final double PROCESSOR = 22.1;
         public static final double NET = 90;
     }
 
@@ -305,20 +305,20 @@ public final class DefaultConstants {
         public static final double TOLERANCE = 2.5;
 
         // presets
-        public static final double LOWER_LIMIT = 35; // TODO SHOP: TEST PRESETS
+        public static final Function<Double, Double> LOWER_LIMIT = (pivotPosition) -> (double) (pivotPosition < 45 ? 125 : 35); // TODO SHOP: TEST PRESETS
         public static final double UPPER_LIMIT = 320;
         public static final double STOW = 45;
-        public static final double CORAL_STATION = 75;
-        public static final double GROUND_CORAL = 125;
-        public static final double GROUND_ALGAE = 135;
+        public static final double CORAL_STATION = 107.5;
+        public static final double GROUND_CORAL = 128.5;
+        public static final double GROUND_ALGAE = 140;
         public static final double L1_CORAL = 195; // TODO SHOP: SHOOT IT!
-        public static final double L2_CORAL = 285;
-        public static final double L3_CORAL = 275;
-        public static final double L4_CORAL = 300;
-        public static final double LOW_REEF_ALGAE = 265;
-        public static final double HIGH_REEF_ALGAE = 265;
-        public static final double PROCESSOR = 135;
-        public static final double NET = 180;
+        public static final double L2_CORAL = 291.5;
+        public static final double L3_CORAL = 281.6;
+        public static final double L4_CORAL = 282.3;
+        public static final double LOW_REEF_ALGAE = 256.3;
+        public static final double HIGH_REEF_ALGAE = 248.5;
+        public static final double PROCESSOR = 125;
+        public static final double NET = 175;
 
     }
 
