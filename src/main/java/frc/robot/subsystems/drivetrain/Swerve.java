@@ -5,7 +5,7 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
-import com.ctre.phoenix6.Utils;
+import com.ctre.phoenix6.Orchestra;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.swerve.*;
@@ -39,15 +39,16 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
 
     private final SwerveTelemetry swerveTelemetry = new SwerveTelemetry(this);
 
+    public final Orchestra orchestra = new Orchestra();
+
     /* Swerve Command Requests */
     private final SwerveRequest.FieldCentric fieldCentric = new SwerveRequest.FieldCentric();
     private final SwerveRequest.RobotCentric robotCentric = new SwerveRequest.RobotCentric();
     private final SwerveRequest.SwerveDriveBrake xMode = new SwerveRequest.SwerveDriveBrake();
 
-    /* Keep track if we've ever applied the operator perspective before or not */
-    private boolean hasAppliedDefaultRotation = false;
 
-    public double consistentHeading = 0.0;
+    private boolean hasAppliedDefaultRotation = false; // Keep track if we've ever applied the operator perspective before or not
+    public double consistentHeading = 0.0; // Heading to keep while translating without rotating
 
     /**
      * Constructs a CTRE SwerveDrivetrain using the specified constants.
@@ -57,7 +58,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
      * through getters in the classes.
      */
     public Swerve() {
-        super(
+        /* ah, */ super(
                 TalonFX::new,
                 TalonFX::new,
                 CANcoder::new,
@@ -68,9 +69,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                 Constants.SwerveConstants.BACK_RIGHT
         );
 
-        if (Utils.isSimulation()) {
-            new SwerveSim(this).startSimThread();
-        }
+        configureMusic();
 
         AutoBuilder.configure(
                 localizer::getStrategyPose,
@@ -142,25 +141,25 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                 ));
     }
 
-    public Command moveToObject() {
-        return new DriveToObjectCommand(this, robotCentric);
-    }
-
-    public Command moveToNearestBranch() {
+    public Command pathFindToNearestBranch() {
         return Commands.defer(() -> {
             Pose2d nearestBranchPose = FieldUtil.Reef.getNearestBranchPose(localizer.getStrategyPose());
             return PathManager.pathFindToClosePose(
                     localizer.getStrategyPose(),
-                    nearestBranchPose, // TODO SHOP: TEST THIS FUNCTION TO SEE IF IT WORKS
+                    nearestBranchPose,
                     nearestBranchPose.getRotation().rotateBy(Rotation2d.fromDegrees(-80)),
                     nearestBranchPose.getRotation().rotateBy(Rotation2d.fromDegrees(80)),
                     Constants.AutoConstants.DISTANCE_TOLERANCE_TO_DRIVE_INTO,
                     2.0
             );
-        }, Set.of(this)).andThen(directAlignToNearestBranch());
+        }, Set.of(this)).andThen(directMoveToNearestBranch());
     }
 
-    public Command directAlignToNearestBranch() {
+    public Command directMoveToObject() {
+        return new DriveToObjectCommand(this, robotCentric);
+    }
+
+    public Command directMoveToNearestBranch() {
         return new DirectAlignToNearestBranchCommand(this, fieldCentric);
     }
 
@@ -168,8 +167,8 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
         return applyRequest(() -> xMode);
     }
 
-    public Command resetGyro() {
-        return runOnce(() -> resetRotation(localizer.getStrategyPose().getRotation()));
+    public void resetGyro() {
+        resetRotation(localizer.getStrategyPose().getRotation());
     }
 
     public void forceStop() {
@@ -178,6 +177,10 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                 .withVelocityX(0.0)
                 .withVelocityY(0.0)
                 .withRotationalRate(0.0));
+    }
+
+    public void configureMusic() {
+        Song.playRandom(this, Song.startupSongs);
     }
 
     @Override
@@ -197,6 +200,13 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
             );
             hasAppliedDefaultRotation = true;
         }
+
+        if (DriverStation.isDisabled() && !orchestra.isPlaying()) {
+            Song.playRandom(this, Song.disableSongs);
+        } if (!DriverStation.isDisabled() && orchestra.isPlaying()) {
+            orchestra.stop();
+        }
+
         swerveTelemetry.publishValues();
         localizer.periodic();
     }

@@ -35,7 +35,7 @@ public class FollowPathRequiringAlgaeCommand extends FollowPathCommand {
     protected boolean interrupted;
 
     public FollowPathRequiringAlgaeCommand(PathPlannerPath path, boolean setAssumedPosition, Swerve swerve) {
-        super(
+        /* ah, */ super(
                 path,
                 swerve.localizer::getStrategyPose,
                 () -> swerve.getKinematics().toChassisSpeeds(swerve.getState().ModuleStates),
@@ -78,7 +78,7 @@ public class FollowPathRequiringAlgaeCommand extends FollowPathCommand {
 
     @Override
     public void initialize() {
-        super.initialize();
+        /* ah, */ super.initialize();
 
         if (this.shouldFlipPath.getAsBoolean() && !this.originalPath.preventFlipping) {
             this.path = this.originalPath.flipPath();
@@ -115,7 +115,7 @@ public class FollowPathRequiringAlgaeCommand extends FollowPathCommand {
 
     @Override
     public void execute() {
-        super.execute();
+        /* ah, */ super.execute();
 
         double currentTime = this.timer.get();
         if (!allInstantEvents.isEmpty()) {
@@ -130,7 +130,7 @@ public class FollowPathRequiringAlgaeCommand extends FollowPathCommand {
 
     @Override
     public void end(boolean interrupted) {
-        super.end(this.interrupted);
+        /* ah, */ super.end(this.interrupted);
         this.interrupted = false;
     }
 
@@ -145,7 +145,7 @@ public class FollowPathRequiringAlgaeCommand extends FollowPathCommand {
             @Override
             public void end(boolean interrupted) {
                 end.accept(FollowPathRequiringAlgaeCommand.this.interrupted || interrupted);
-                super.end(interrupted);
+                /* ah, */ super.end(interrupted);
             }
         };
     }

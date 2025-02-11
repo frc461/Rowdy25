@@ -6,28 +6,31 @@ import com.pathplanner.lib.commands.PathfindingCommand;
 import com.pathplanner.lib.pathfinding.LocalADStar;
 import com.pathplanner.lib.pathfinding.Pathfinding;
 
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import dev.doglog.DogLog;
 import dev.doglog.DogLogOptions;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.autos.AutoChooser;
+import frc.robot.commands.*;
+import frc.robot.subsystems.elevator.Elevator;
+import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.drivetrain.Swerve;
+import frc.robot.subsystems.pivot.Pivot;
+import frc.robot.subsystems.wrist.Wrist;
 import frc.robot.util.SysID;
 import frc.robot.util.Lights;
-import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Pivot;
-import frc.robot.subsystems.Wrist;
 
 public class RobotContainer {
     /* Subsystems */
     private final Swerve swerve = new Swerve();
-    // private final Elevator elevator = new Elevator();
-    // private final Intake intake = new Intake();
-    // private final Pivot pivot = new Pivot();
-    // private final Wrist wrist = new Wrist();
+    private final Intake intake = new Intake();
+    private final Pivot pivot = new Pivot();
+    private final Elevator elevator = new Elevator();
+    private final Wrist wrist = new Wrist();
     
     private final AutoChooser autoChooser = new AutoChooser(swerve);
 
@@ -141,8 +144,8 @@ public class RobotContainer {
         Lights.configureLights();
 
         // DogLogOptions(BooleanSupplier ntPublish, boolean captureNt, boolean captureDs, boolean logExtras, boolean captureConsole, int logEntryQueueCapacity)
-        // DogLog.setOptions(new DogLogOptions(() -> false, false, true, true, false, 5000));
-        // DogLog.setPdh(new PowerDistribution());
+        DogLog.setOptions(new DogLogOptions(() -> false, false, true, true, false, 5000));
+        DogLog.setPdh(new PowerDistribution());
         
         Pathfinding.setPathfinder(new LocalADStar());
         PathfindingCommand.warmupCommand().schedule();
@@ -168,45 +171,73 @@ public class RobotContainer {
                 )
         );
 
-//        elevator.setDefaultCommand(
-//                new RunCommand(
-//                        () -> elevator.moveElevator(MathUtil.applyDeadband(-opXbox.getLeftY(), Constants.DEADBAND)),
-//                        elevator
-//                )
-//        );
-//
-//        pivot.setDefaultCommand(
-//                new RunCommand(
-//                        () -> pivot.movePivot(MathUtil.applyDeadband(-opXbox.getRightY(), Constants.DEADBAND)),
-//                        pivot
-//                )
-//        );
-//
-//        wrist.setDefaultCommand(
-//                new RunCommand(
-//                        () -> wrist.moveWrist(MathUtil.applyDeadband(opXbox.getRightTriggerAxis() - opXbox.getLeftTriggerAxis(), Constants.DEADBAND)),
-//                        wrist
-//                )
-//        );
+        intake.setDefaultCommand(new IntakeCommand(intake));
+
+        // TODO SHOP: TEST AXES
+        elevator.setDefaultCommand(
+                new ElevatorCommand(
+                        elevator,
+                        () -> opXbox.getRightTriggerAxis() - opXbox.getLeftTriggerAxis(),
+                        pivot::getPosition
+                )
+        );
+
+        pivot.setDefaultCommand(
+                new PivotCommand(pivot, () -> -opXbox.getLeftY(), elevator::getPosition, wrist::getPosition)
+        );
+
+        wrist.setDefaultCommand(
+                new WristCommand(wrist, () -> -opXbox.getRightY(), pivot::getPosition)
+        );
     }
 
     private void configureBindings() {
 
-        driverXbox.a().onTrue(swerve.runOnce(swerve.localizer::configureQuestOffset));
+        driverXbox.a().onTrue(new InstantCommand(swerve.localizer::configureQuestOffset));
 
-        // toggle between robot choosing quest nav pose and pose estimation with cameras
-        driverXbox.b().onTrue(swerve.runOnce(swerve.localizer::toggleLocalizationStrategy));
+        driverXbox.b().onTrue(new InstantCommand(swerve.localizer::toggleLocalizationStrategy));
 
-        // reset the field-centric heading on y press
-        driverXbox.leftStick().onTrue(swerve.resetGyro());
+        // reset the field-centric heading on left joystick press
+        driverXbox.leftStick().onTrue(new InstantCommand(swerve::resetGyro));
 
-        driverXbox.povUp().whileTrue(swerve.moveToObject());
+        driverXbox.povLeft().whileTrue(swerve.directMoveToObject());
 
-        driverXbox.povRight().whileTrue(swerve.moveToNearestBranch());
+        driverXbox.povRight().whileTrue(swerve.pathFindToNearestBranch());
+
+        // test presets on the operator xbox controller before setting final bindings
+        // FOR OPERATOR PRACTICE, JUST USE THE TWO JOYSTICKS & THE TRIGGERS (LT+RT) FOR MOVING PIVOT, ELEVATOR, WRIST, AND INTAKE
+
+        opXbox.rightBumper().onTrue(new InstantCommand(intake::toggleIntakeState));
+        opXbox.leftBumper().onTrue(
+                new InstantCommand(intake::toggleOuttakeState)
+                        .andThen(new WaitUntilCommand(intake::isIdle))
+                        .andThen(pivot::setStowState)
+                        .andThen(new WaitUntilCommand(pivot::isAtTarget))
+                        .andThen(elevator::setStowState)
+                        .andThen(new WaitUntilCommand(elevator::isAtTarget))
+                        .andThen(wrist::setStowState)
+        );
+
+//        opXbox.povLeft().onTrue(new InstantCommand(elevator::toggleL2CoralState));
+//        opXbox.povLeft().onTrue(new InstantCommand(pivot::toggleL2CoralState));
+//        opXbox.povLeft().onTrue(new InstantCommand(wrist::toggleGroundCoralState));
+
+//        opXbox.povUp().onTrue(new InstantCommand(elevator::toggleL4CoralState));
+//        opXbox.povUp().onTrue(new InstantCommand(pivot::toggleL4CoralState));
+//        opXbox.povUp().onTrue(new InstantCommand(wrist::toggleGroundAlgaeState));
+
+//        opXbox.povRight().onTrue(new InstantCommand(elevator::toggleL3CoralState));
+//        opXbox.povRight().onTrue(new InstantCommand(pivot::toggleL3CoralState));
+//        opXbox.povRight().onTrue(new InstantCommand(wrist::toggleCoralStationState));
+
+//        opXbox.povDown().onTrue(new InstantCommand(elevator::setStowState));
+//        opXbox.povDown().onTrue(new InstantCommand(pivot::setStowState));
+//        opXbox.povDown().onTrue(new InstantCommand(pivot::toggleRatchet));
+//        opXbox.povDown().onTrue(new InstantCommand(wrist::setStowState));
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
-        sysID.configureBindings(driverXbox);
+        sysID.configureBindings(opXbox);
     }
     public Supplier<Pose2d> poseSupplier;
     public Command getAutonomousCommand() {

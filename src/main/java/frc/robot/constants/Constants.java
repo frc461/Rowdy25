@@ -1,9 +1,12 @@
 package frc.robot.constants;
 
 import com.ctre.phoenix6.CANBus;
+import com.ctre.phoenix6.configs.AudioConfigs;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 
@@ -12,11 +15,13 @@ import com.pathplanner.lib.path.PathConstraints;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -127,24 +132,39 @@ public final class Constants {
     }
 
     public final static class ElevatorConstants {
-        // basic configs
+        // motor config
         public static int LEAD_ID;
         public static int FOLLOWER_ID;
         public static int LOWER_LIMIT_SWITCH_ID;
-        public static int CURRENT_LIMIT;
-        public static InvertedValue ELEVATOR_INVERT;
+        public static double CURRENT_LIMIT;
+        public static double PEAK_VOLTAGE;
+        public static InvertedValue MOTOR_INVERT;
+        public static NeutralModeValue NEUTRAL_MODE;
 
-        // pid
-        public static double ELEVATOR_S;
-        public static double ELEVATOR_V;
-        public static double ELEVATOR_A;
-        public static double ELEVATOR_P;
-        public static double ELEVATOR_I;
-        public static double ELEVATOR_D;
+        // mechanism characterization
+        public static double ROTOR_TO_INCH_RATIO;
+        public static double MASS_LBS;
+        public static double COM_TO_STAGE_2_RATIO;
+        public static double STAGE_2_LIMIT;
+        public static double COM_TO_STAGE_3_RATIO;
+        public static Translation2d ZERO_UPRIGHT_COM;
+
+        // pid & tolerance
+        public static Function<Double, Double> G;
+        public static double V;
+        public static double A;
+        public static double P;
+        public static double I;
+        public static double D;
+        public static double EXPO_V;
+        public static double EXPO_A;
+        public static double TOLERANCE;
 
         // presets
         public static double LOWER_LIMIT;
         public static double UPPER_LIMIT;
+        public static double STOW;
+        public static double CORAL_STATION;
         public static double GROUND_CORAL;
         public static double GROUND_ALGAE;
         public static double L1_CORAL;
@@ -161,72 +181,109 @@ public final class Constants {
     public final static class IntakeConstants {
         // basic configs
         public static int MOTOR_ID;
-        public static int CORAL_BEAM_ID;
-        public static int ALGAE_BEAM_ID;
-        public static int CURRENT_LIMIT;
-        public static InvertedValue INVERT;
+        public static int SENSOR_ID;
+        public static double CURRENT_LIMIT;
+        public static double PEAK_VOLTAGE;
+        public static InvertedValue MOTOR_INVERT;
+        public static NeutralModeValue NEUTRAL_MODE;
     }
 
     public final static class PivotConstants {
-        // basic configs
+        // motor config
         public static int LEAD_ID;
         public static int FOLLOWER_ID;
-        public static int ENCODER_ID;
-        public static int LOWER_LIMIT_SWITCH_ID;
-        public static int UPPER_LIMIT_SWITCH_ID;
-        public static int RATCHET_ID;
-        public static int CURRENT_LIMIT;
+        public static int SERVO_HUB_ID;
+        public static double CURRENT_LIMIT;
+        public static double PEAK_VOLTAGE;
         public static InvertedValue PIVOT_INVERT;
+        public static NeutralModeValue NEUTRAL_MODE;
 
-        // pid
-        public static double PIVOT_S;
-        public static double PIVOT_V;
-        public static double PIVOT_A;
-        public static double PIVOT_P;
-        public static double PIVOT_I;
-        public static double PIVOT_D;
+        // mechanism characterization
+        public static double SENSOR_TO_DEGREE_RATIO;
+        public static Translation2d AXIS_POSITION;
+
+        // encoder config
+        public static int ENCODER_ID;
+        public static double ENCODER_ABSOLUTE_OFFSET;
+        public static SensorDirectionValue ENCODER_INVERT;
+
+        // ratchet config
+        public static int RATCHET_ID;
+        public static int RATCHET_ON;
+        public static int RATCHET_OFF;
+
+        // pid & tolerance
+        public static double G;
+        public static double V;
+        public static double A;
+        public static double P;
+        public static double I;
+        public static double D;
+        public static double EXPO_V;
+        public static double EXPO_A;
+        public static double TOLERANCE;
 
         // presets
         public static double LOWER_LIMIT;
         public static double UPPER_LIMIT;
+        public static double STOW;
         public static double CORAL_STATION;
-        public static double GROUND_ALGAE;
-        public static double GROUND_CORAL;
-        public static double SCORE_CORAL;
-        public static double SCORE_ALGAE;
-        public static double STOW_POSITION;
-        public static double TOLERANCE;
-
-        public static double RATCHET_ON;
-        public static double RATCHET_OFF;
-    }
-
-    public final static class WristConstants {
-        // basic configs
-        public static int MOTOR_ID;
-        public static int ENCODER_ID;
-        public static int LOWER_LIMIT_SWITCH_ID;
-        public static int UPPER_LIMIT_SWITCH_ID;
-        public static int CURRENT_LIMIT;
-        public static InvertedValue WRIST_INVERT;
-
-        // pid
-        public static double WRIST_S;
-        public static double WRIST_V;
-        public static double WRIST_A;
-        public static double WRIST_P;
-        public static double WRIST_I;
-        public static double WRIST_D;
-
-        // presets
-        public static double LOWER_LIMIT;
-        public static double UPPER_LIMIT; 
         public static double GROUND_CORAL;
         public static double GROUND_ALGAE;
         public static double L1_CORAL;
-        public static double L2_L3_CORAL;
+        public static double L2_CORAL;
+        public static double L3_CORAL;
         public static double L4_CORAL;
-        public static double REEF_ALGAE;
+        public static double LOW_REEF_ALGAE;
+        public static double HIGH_REEF_ALGAE;
+        public static double PROCESSOR;
+        public static double NET;
+
+    }
+
+    public final static class WristConstants {
+        // motor config
+        public static int MOTOR_ID;
+        public static double CURRENT_LIMIT;
+        public static double PEAK_VOLTAGE;
+        public static InvertedValue MOTOR_INVERT;
+        public static NeutralModeValue NEUTRAL_MODE;
+
+        // mechanism characterization
+        public static double SENSOR_TO_DEGREE_RATIO;
+        public static double MASS_LBS;
+        public static Translation2d AXIS_POSITION;
+        public static Translation2d AXIS_TO_ZERO_COM;
+
+        // encoder config
+        public static int ENCODER_ID;
+        public static double ENCODER_ABSOLUTE_OFFSET;
+        public static SensorDirectionValue ENCODER_INVERT;
+
+        // pid & tolerance
+        public static BiFunction<Double, Double, Double> G;
+        public static double V;
+        public static double A;
+        public static double P;
+        public static double I;
+        public static double D;
+        public static double EXPO_V;
+        public static double EXPO_A;
+        public static double TOLERANCE;
+
+        // presets
+        public static double LOWER_LIMIT;
+        public static double UPPER_LIMIT;
+        public static double STOW;
+        public static double CORAL_STATION;
+        public static double GROUND_CORAL;
+        public static double GROUND_ALGAE;
+        public static double L1_CORAL;
+        public static double L2_CORAL;
+        public static double L3_CORAL;
+        public static double L4_CORAL;
+        public static double LOW_REEF_ALGAE;
+        public static double HIGH_REEF_ALGAE;
         public static double PROCESSOR;
         public static double NET;
 
@@ -249,6 +306,8 @@ public final class Constants {
 
         public static double ANGULAR_MINIMUM_ANGLE;
         public static double ANGULAR_MAXIMUM_ANGLE;
+
+        public static AudioConfigs AUDIO_CONFIGS;
 
         public static SwerveDrivetrainConstants SWERVE_DRIVETRAIN_CONSTANTS;
 
