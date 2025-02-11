@@ -26,6 +26,7 @@ public class Song {
             new Song("mii-theme.chrp"),
             new Song("richh-ballin.chrp"),
             new Song("tombstone.chrp"),
+            new Song("nggyu.chrp", new int[] {6, 2}),
     };
 
     public static final Song[] disableSongs = new Song[] {
@@ -38,17 +39,12 @@ public class Song {
             new Song("mii-theme.chrp"),
             new Song("richh-ballin.chrp"),
             new Song("tombstone.chrp"),
+            new Song("nggyu.chrp", new int[] {6, 2}),
     };
-
-    public static final Song nggyu = new Song("nggyu.chrp", new int[] {6, 2});
 
     public static void playRandom(Swerve swerve, Song[] songs) {
         Song song;
-        if (random.nextDouble() < 0.075) {
-            song = nggyu;
-        } else {
-            song = songs[random.nextInt(songs.length)];
-        }
+        song = songs[random.nextInt(songs.length)];
 
         song.play(swerve);
     }
