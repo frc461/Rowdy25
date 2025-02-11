@@ -5,13 +5,14 @@ import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
 import frc.robot.util.ExpUtil;
 
 public class Wrist extends SubsystemBase {
     public enum State {
-        MANUAL(Constants.WristConstants.LOWER_LIMIT),
+        MANUAL(Constants.WristConstants.LOWER_LIMIT.apply(50.0)),
         STOW(Constants.WristConstants.STOW),
         CORAL_STATION(Constants.WristConstants.CORAL_STATION),
         GROUND_CORAL(Constants.WristConstants.GROUND_CORAL),
@@ -37,7 +38,7 @@ public class Wrist extends SubsystemBase {
 
     private final TalonFX wrist;
     private final MotionMagicExpoVoltage request;
-    private double error, lastManualPosition;
+    private double target, error, lastManualPosition;
 
     private final WristTelemetry wristTelemetry = new WristTelemetry(this);
 
@@ -75,6 +76,7 @@ public class Wrist extends SubsystemBase {
 
         request = new MotionMagicExpoVoltage(0);
 
+        target = State.STOW.position;
         error = 0.0;
         lastManualPosition = State.STOW.position;
     }
@@ -83,12 +85,12 @@ public class Wrist extends SubsystemBase {
         return currentState;
     }
 
-    public double getPosition() { 
-        return wrist.getPosition().getValueAsDouble();
+    public double getTarget() {
+        return target;
     }
 
-    public double getTarget() {
-        return getState() == State.MANUAL ? lastManualPosition : getState().position;
+    public double getPosition() { 
+        return wrist.getPosition().getValueAsDouble();
     }
 
     public double getError() {
@@ -97,6 +99,10 @@ public class Wrist extends SubsystemBase {
 
     public boolean isAtTarget() {
         return error < Constants.ElevatorConstants.TOLERANCE;
+    }
+
+    public void setTarget(double pivotPosition) {
+        this.target = Math.max(getState() == State.MANUAL ? lastManualPosition : getState().position, Constants.WristConstants.LOWER_LIMIT.apply(pivotPosition));
     }
 
     private void setState(State newState) {
@@ -110,6 +116,10 @@ public class Wrist extends SubsystemBase {
 
     public void setStowState() {
         setState(State.STOW);
+    }
+
+    public void setGroundCoralState() {
+        setState(State.GROUND_CORAL);
     }
 
     public void toggleCoralStationState() {
@@ -157,20 +167,20 @@ public class Wrist extends SubsystemBase {
     }
 
     public void holdTarget(double pivotPosition) {
-        wrist.setControl(request.withPosition(getTarget()).withFeedForward(Constants.WristConstants.G.apply(getPosition(), pivotPosition)));
+        wrist.setControl(request.withPosition(target).withFeedForward(Constants.WristConstants.G.apply(getPosition(), pivotPosition)));
     }
 
-    public void moveWrist(double axisValue) {
+    public void moveWrist(double axisValue, double pivotPosition) {
         // TODO SHOP: TUNE CURBING VALUE
         wrist.set(axisValue > 0
                 ? axisValue * ExpUtil.output(Constants.WristConstants.UPPER_LIMIT - getPosition(), 1, 5, 10)
-                : axisValue * ExpUtil.output(getPosition() - Constants.WristConstants.LOWER_LIMIT, 1, 5, 10));
+                : axisValue * ExpUtil.output(getPosition() - Constants.WristConstants.LOWER_LIMIT.apply(pivotPosition), 1, 5, 10));
     }
 
     @Override
     public void periodic() {
         wristTelemetry.publishValues();
 
-        error = Math.abs(getTarget() - getPosition());
+        error = Math.abs(target - getPosition());
     }
 }

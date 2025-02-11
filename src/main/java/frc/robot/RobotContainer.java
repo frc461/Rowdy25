@@ -205,29 +205,18 @@ public class RobotContainer {
         opXbox.leftBumper().onTrue(
                 new InstantCommand(intake::toggleOuttakeState)
                         .andThen(new WaitUntilCommand(intake::isIdle))
-                        .andThen(pivot::setStowState)
-                        .andThen(new WaitUntilCommand(pivot::isAtTarget))
+                        .andThen(wrist::setStowState)
+                        .andThen(new WaitUntilCommand(wrist::isAtTarget))
                         .andThen(elevator::setStowState)
                         .andThen(new WaitUntilCommand(elevator::isAtTarget))
-                        .andThen(wrist::setStowState)
+                        .andThen(pivot::setStowState)
         );
 
-//        opXbox.povLeft().onTrue(new InstantCommand(elevator::toggleL2CoralState));
-//        opXbox.povLeft().onTrue(new InstantCommand(pivot::toggleL2CoralState));
-//        opXbox.povLeft().onTrue(new InstantCommand(wrist::toggleGroundCoralState));
+        // RULE 1:
 
-//        opXbox.povUp().onTrue(new InstantCommand(elevator::toggleL4CoralState));
-//        opXbox.povUp().onTrue(new InstantCommand(pivot::toggleL4CoralState));
-//        opXbox.povUp().onTrue(new InstantCommand(wrist::toggleGroundAlgaeState));
-
-//        opXbox.povRight().onTrue(new InstantCommand(elevator::toggleL3CoralState));
-//        opXbox.povRight().onTrue(new InstantCommand(pivot::toggleL3CoralState));
-//        opXbox.povRight().onTrue(new InstantCommand(wrist::toggleCoralStationState));
-
-//        opXbox.povDown().onTrue(new InstantCommand(elevator::setStowState));
-//        opXbox.povDown().onTrue(new InstantCommand(pivot::setStowState));
-//        opXbox.povDown().onTrue(new InstantCommand(pivot::toggleRatchet));
-//        opXbox.povDown().onTrue(new InstantCommand(wrist::setStowState));
+        opXbox.povLeft().onTrue(new InstantCommand(pivot::toggleCoralStationState));
+        opXbox.povUp().onTrue(new InstantCommand(elevator::toggleCoralStationState));
+        opXbox.povRight().onTrue(new InstantCommand(wrist::toggleCoralStationState));
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.

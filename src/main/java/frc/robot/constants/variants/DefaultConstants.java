@@ -305,7 +305,7 @@ public final class DefaultConstants {
         public static final double TOLERANCE = 2.5;
 
         // presets
-        public static final double LOWER_LIMIT = 35; // TODO SHOP: TEST PRESETS
+        public static final Function<Double, Double> LOWER_LIMIT = (pivotPosition) -> (double) (pivotPosition < 45 ? 125 : 35); // TODO SHOP: TEST PRESETS
         public static final double UPPER_LIMIT = 320;
         public static final double STOW = 45;
         public static final double CORAL_STATION = 75;
