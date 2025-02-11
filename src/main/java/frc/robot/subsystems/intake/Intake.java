@@ -63,7 +63,7 @@ public class Intake extends SubsystemBase {
     public double getProximity() {
         return canandcolor.getProximity();
     }
- 
+
     public boolean hasCoral() {
         return getProximity() < 0.2; // TODO SHOP: TUNE THIS
     }

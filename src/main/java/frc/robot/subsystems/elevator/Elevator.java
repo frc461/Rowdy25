@@ -41,7 +41,7 @@ public class Elevator extends SubsystemBase {
     private final TalonFX elevator;
     private final DigitalInput lowerSwitch;
     private final MotionMagicExpoVoltage request;
-    private double error;
+    private double error, lastManualPosition;
 
 	private final ElevatorTelemetry elevatorTelemetry = new ElevatorTelemetry(this);
 
@@ -81,6 +81,7 @@ public class Elevator extends SubsystemBase {
 
         elevator.setPosition(0.0); // TODO WAIT (LIMIT SWITCH IS AVAILABLE): REMOVE THIS
         error = 0.0;
+        lastManualPosition = State.STOW.position;
     }
 
 	public State getState() {
@@ -92,7 +93,7 @@ public class Elevator extends SubsystemBase {
     }
 
     public double getTarget() {
-        return getState() == State.MANUAL ? getPosition() : getState().position;
+        return getState() == State.MANUAL ? lastManualPosition : getState().position;
     }
 
     public double getAlgaeHeight(Pose2d currentPose) { // TODO: CHANGE STATE BASED ON CLOSEST ALGAE HEIGHT
@@ -114,6 +115,7 @@ public class Elevator extends SubsystemBase {
 
     public void setManualState() {
         setState(State.MANUAL);
+        lastManualPosition = getPosition();
     }
 
     public void setStowState() {

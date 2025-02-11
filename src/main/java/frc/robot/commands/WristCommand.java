@@ -24,9 +24,10 @@ public class WristCommand extends Command {
         double axisValue = MathUtil.applyDeadband(manualAxisValue.getAsDouble(), Constants.DEADBAND) * 0.1;
         if (axisValue != 0.0) {
             wrist.setManualState();
-            wrist.moveWrist(axisValue);
+            wrist.moveWrist(axisValue, pivotPosition.getAsDouble());
         } else {
             wrist.holdTarget(pivotPosition.getAsDouble());
         }
+        wrist.setTarget(pivotPosition.getAsDouble());
     }
 }

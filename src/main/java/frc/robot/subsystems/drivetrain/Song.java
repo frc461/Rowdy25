@@ -20,8 +20,13 @@ public class Song {
 
     public static final Song[] startupSongs = new Song[] {
             new Song("mario.chrp", new int[] {5, 2, 1}),
-            new Song("underground-2.chrp", new int[] {8}),
-            new Song("your phone linging.chrp", new int[] {2, 2, 2, 2}),
+            new Song("underground-2.chrp"),
+            new Song("your-phone-linging.chrp", new int[] {2, 2, 2, 2}),
+            new Song("candyland.chrp"),
+            new Song("mii-theme.chrp"),
+            new Song("richh-ballin.chrp"),
+            new Song("tombstone.chrp"),
+            new Song("nggyu.chrp", new int[] {6, 2}),
     };
 
     public static final Song[] disableSongs = new Song[] {
@@ -29,26 +34,30 @@ public class Song {
             new Song("castle-complete.chrp", new int[] {2, 2, 1, 1, 1, 1}),
             new Song("level-complete.chrp", new int[] {3, 3, 2}),
             new Song("mario.chrp", new int[] {5, 2, 1}),
-            new Song("underground-2.chrp", new int[] {8}),
+            new Song("underground-2.chrp"),
+            new Song("candyland.chrp"),
+            new Song("mii-theme.chrp"),
+            new Song("richh-ballin.chrp"),
+            new Song("tombstone.chrp"),
+            new Song("nggyu.chrp", new int[] {6, 2}),
     };
-
-    public static final Song nggyu = new Song("nggyu.chrp", new int[] {6, 2});
 
     public static void playRandom(Swerve swerve, Song[] songs) {
         Song song;
-        if (random.nextDouble() < 0.05) {
-            song = nggyu;
-        } else {
-            song = songs[random.nextInt(songs.length)];
-        }
+        song = songs[random.nextInt(songs.length)];
 
         song.play(swerve);
+    }
+
+    public Song(String filename) {
+        this(filename, new int[] {8});
     }
 
     public Song(String filename, int[] trackWeights) {
         this.trackWeights = trackWeights;
         this.filename = filename;
     }
+
 
     public String getPath() {
         return "sound/" + filename;

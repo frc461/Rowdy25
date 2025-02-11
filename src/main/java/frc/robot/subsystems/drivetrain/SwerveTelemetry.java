@@ -119,11 +119,11 @@ public class SwerveTelemetry {
     }
 
     private void logValues(SwerveDriveState state) {
-        //DogLog.log("OdometryPose", state.Pose);
-        //DogLog.log("ChassisSpeeds", state.Speeds);
-        //DogLog.log("ModuleStates", state.ModuleStates);
-        //DogLog.log("ModuleTargets", state.ModuleTargets);
-        //DogLog.log("ModulePositions", state.ModulePositions);
-        //DogLog.log("OdometryPeriod", state.OdometryPeriod);
+        DogLog.log("OdometryPose", state.Pose);
+        DogLog.log("ChassisSpeeds", state.Speeds);
+        DogLog.log("ModuleStates", state.ModuleStates);
+        DogLog.log("ModuleTargets", state.ModuleTargets);
+        DogLog.log("ModulePositions", state.ModulePositions);
+        DogLog.log("OdometryPeriod", state.OdometryPeriod);
     }
 }
