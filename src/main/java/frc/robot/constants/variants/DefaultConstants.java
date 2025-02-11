@@ -260,9 +260,9 @@ public final class DefaultConstants {
         public static final double LOWER_LIMIT = 0; // TODO SHOP: TEST PRESETS
         public static final double UPPER_LIMIT = 105;
         public static final double STOW = 50;
-        public static final double CORAL_STATION = 65;
-        public static final double GROUND_CORAL = 4;
-        public static final double GROUND_ALGAE = 4;
+        public static final double CORAL_STATION = 66.8;
+        public static final double GROUND_CORAL = 2.5;
+        public static final double GROUND_ALGAE = 4.5;
         public static final double L1_CORAL = 55;
         public static final double L2_CORAL = 75;
         public static final double L3_CORAL = 75;
@@ -308,9 +308,9 @@ public final class DefaultConstants {
         public static final Function<Double, Double> LOWER_LIMIT = (pivotPosition) -> (double) (pivotPosition < 45 ? 125 : 35); // TODO SHOP: TEST PRESETS
         public static final double UPPER_LIMIT = 320;
         public static final double STOW = 45;
-        public static final double CORAL_STATION = 75;
-        public static final double GROUND_CORAL = 125;
-        public static final double GROUND_ALGAE = 135;
+        public static final double CORAL_STATION = 107.5;
+        public static final double GROUND_CORAL = 128.5;
+        public static final double GROUND_ALGAE = 140;
         public static final double L1_CORAL = 195; // TODO SHOP: SHOOT IT!
         public static final double L2_CORAL = 285;
         public static final double L3_CORAL = 275;
