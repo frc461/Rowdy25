@@ -44,7 +44,7 @@ public class Song {
 
     public static void playRandom(Swerve swerve, Song[] songs) {
         Song song;
-        if (random.nextDouble() < 0.05) {
+        if (random.nextDouble() < 0.075) {
             song = nggyu;
         } else {
             song = songs[random.nextInt(songs.length)];
