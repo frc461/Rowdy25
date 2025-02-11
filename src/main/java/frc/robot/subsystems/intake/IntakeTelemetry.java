@@ -1,5 +1,6 @@
 package frc.robot.subsystems.intake;
 
+import dev.doglog.DogLog;
 import edu.wpi.first.networktables.BooleanPublisher;
 import edu.wpi.first.networktables.DoubleArrayPublisher;
 import edu.wpi.first.networktables.DoublePublisher;
@@ -32,8 +33,10 @@ public class IntakeTelemetry {
     }
 
     private void logValues() {
-        //DogLog.log("IntakeRGBReading", intake.getColorReading());
-        //DogLog.log("IntakeHasCoral", intake.hasCoral());
-        //DogLog.log("IntakeHasAlgae", intake.hasAlgae());
+        DogLog.log("IntakeRGBReading", intake.getColorReading());
+        DogLog.log("IntakeHasCoral", intake.hasCoral());
+        DogLog.log("IntakeHasAlgae", intake.hasAlgae());
+        DogLog.log("IntakeState", intake.getState());
+        DogLog.log("IntakeCanandcolorProximity", intake.getProximity());
     }
 }

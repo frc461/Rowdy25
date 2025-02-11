@@ -1,7 +1,9 @@
 package frc.robot.subsystems.wrist;
 
+import dev.doglog.DogLog;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.StringPublisher;
 import frc.robot.constants.Constants;
 
 public class WristTelemetry {
@@ -15,19 +17,21 @@ public class WristTelemetry {
     private final DoublePublisher wristPositionPub = wristTelemetryTable.getDoubleTopic("Wrist Position").publish();
     private final DoublePublisher wristTargetPub = wristTelemetryTable.getDoubleTopic("Wrist Target").publish();
     private final DoublePublisher wristErrorPub = wristTelemetryTable.getDoubleTopic("Wrist Error").publish();
+    private final StringPublisher wristStatePub = wristTelemetryTable.getStringTopic("Wrist State").publish();
 
     public void publishValues() {
         wristPositionPub.set(wrist.getPosition());
         wristTargetPub.set(wrist.getTarget());
         wristErrorPub.set(wrist.getError());
+        wristStatePub.set(wrist.getState().toString());
 
         logValues();
     }
 
     private void logValues() {
-        //DogLog.log("WristPose", wrist.getPosition());
-        //DogLog.log("WristTarget", wrist.getTarget());
-        //DogLog.log("WristError", wrist.getError());
-        //DogLog.log("WristLowerSwitchTriggered", wrist.lowerSwitchTriggered());
+        DogLog.log("WristPosition", wrist.getPosition());
+        DogLog.log("WristTarget", wrist.getTarget());
+        DogLog.log("WristError", wrist.getError());
+        DogLog.log("WristState", wrist.getState().toString());
     }
 }
