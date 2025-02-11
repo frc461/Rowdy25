@@ -57,8 +57,8 @@ public class RobotContainer {
      * Right Button: Reset position to coral right side
      *
      * Bumpers:
-     * Left: Hold - Align with then intake coral (ground)
-     * Right: Hold - Align with then intake algae (ground)
+     * Left: Click - wait until coral is in view then align with then intake coral (ground)
+     * Right: Click - wait until algae is in view then align with then intake algae (ground)
      *
      * Buttons:
      *
@@ -128,7 +128,7 @@ public class RobotContainer {
         drive forward with left joystick negative Y (forward),
         drive left with left joystick negative X (left),
         rotate counterclockwise with right joystick negative X (left) */
-        swerve.setDefaultCommand(
+        swerve.setDefaultCommand( // TODO: CONTROL MAX SPEED
                 swerve.driveFieldCentric(
                         driverXbox::getLeftY,
                         driverXbox::getLeftX,
@@ -141,7 +141,6 @@ public class RobotContainer {
                 )
         );
 
-        // TODO SHOP: TEST AXES
         elevator.setDefaultCommand(
                 new ElevatorCommand(
                         elevator,
@@ -163,12 +162,12 @@ public class RobotContainer {
 
     private void configureBindings() {
         // (set to ground state and if holding then wait until there's an object then drive to it)
-        driverXbox.leftBumper().and(driverXbox.leftTrigger().negate()).onTrue(new InstantCommand(robotStates::toggleGroundCoralState));
-        driverXbox.leftBumper().and(driverXbox.leftTrigger()).onTrue(new InstantCommand(robotStates::setStowState));
-        driverXbox.leftBumper().and(driverXbox.leftTrigger().negate()).debounce(2.0).whileTrue(
-                new WaitUntilCommand(VisionUtil.Photon.Color::hasCoralTargets)
+        driverXbox.leftBumper().and(driverXbox.leftTrigger().negate()).onTrue(
+                new InstantCommand(robotStates::toggleGroundCoralState)
+                        .andThen(new WaitUntilCommand(VisionUtil.Photon.Color::hasCoralTargets))
                         .andThen(swerve.directMoveToObject())
         );
+        driverXbox.leftBumper().and(driverXbox.leftTrigger()).onTrue(new InstantCommand(robotStates::setStowState));
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.

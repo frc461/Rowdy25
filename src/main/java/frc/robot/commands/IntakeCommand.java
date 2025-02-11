@@ -27,7 +27,7 @@ public class IntakeCommand extends Command {
                 if (!intake.hasAlgae() && !intake.hasCoral()) {
                     intake.setIdleState();
                 } else {
-                    intake.setIntakeSpeed(-0.5);
+                    intake.setIntakeSpeed(-0.8);
                 }
                 break;
             case HAS_ALGAE:

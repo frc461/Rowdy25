@@ -100,14 +100,6 @@ public class Intake extends SubsystemBase {
         setState(State.OUTTAKE);
     }
 
-    public void toggleIntakeState() { // TODO SHOP: REMOVE TOGGLING ONCE TESTING IS FINISHED
-        setState(currentState == State.INTAKE ? State.IDLE : State.INTAKE);
-    }
-
-    public void toggleOuttakeState() {
-        setState(currentState == State.OUTTAKE ? State.IDLE : State.OUTTAKE);
-    }
-
     public void setIntakeSpeed(double speed) {
         motor.set(speed);
     }
