@@ -64,6 +64,7 @@ public class Song {
     }
 
     public void play(Swerve swerve) {
+        swerve.song_timer.restart();
         swerve.orchestra.stop();
 
         List<ParentDevice> motors = new ArrayList<>();

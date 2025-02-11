@@ -17,6 +17,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
@@ -40,6 +41,8 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
     private final SwerveTelemetry swerveTelemetry = new SwerveTelemetry(this);
 
     public final Orchestra orchestra = new Orchestra();
+
+    public final Timer song_timer = new Timer();
 
     /* Swerve Command Requests */
     private final SwerveRequest.FieldCentric fieldCentric = new SwerveRequest.FieldCentric();
@@ -203,7 +206,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
 
         if (DriverStation.isDisabled() && !orchestra.isPlaying()) {
             Song.playRandom(this, Song.disableSongs);
-        } if (!DriverStation.isDisabled() && orchestra.isPlaying()) {
+        } if (!DriverStation.isDisabled() && orchestra.isPlaying() || song_timer.hasElapsed(10)) {
             orchestra.stop();
         }
 
