@@ -104,8 +104,12 @@ public class Elevator extends SubsystemBase {
         return false; // TODO WAIT (LIMIT SWITCH IS AVAILABLE): return !lowerSwitch.get();
     }
 
+    public boolean nearTarget() { // TODO SHOP: TEST THESE LESS STRICT TOLERANCES TO MAKE TRANSITIONS QUICKER
+        return error < Constants.ElevatorConstants.SAFE_TOLERANCE;
+    }
+
     public boolean isAtTarget() {
-        return error < Constants.ElevatorConstants.TOLERANCE;
+        return error < Constants.ElevatorConstants.AT_TARGET_TOLERANCE;
     }
 
 	private void setState(State state) {

@@ -131,7 +131,8 @@ public enum RobotIdentity {
         Constants.ElevatorConstants.D = DefaultConstants.ElevatorConstants.D;
         Constants.ElevatorConstants.EXPO_V = DefaultConstants.ElevatorConstants.EXPO_V;
         Constants.ElevatorConstants.EXPO_A = DefaultConstants.ElevatorConstants.EXPO_A;
-        Constants.ElevatorConstants.TOLERANCE = DefaultConstants.ElevatorConstants.TOLERANCE;
+        Constants.ElevatorConstants.SAFE_TOLERANCE = DefaultConstants.ElevatorConstants.SAFE_TOLERANCE;
+        Constants.ElevatorConstants.AT_TARGET_TOLERANCE = DefaultConstants.ElevatorConstants.AT_TARGET_TOLERANCE;
         Constants.ElevatorConstants.LOWER_LIMIT = DefaultConstants.ElevatorConstants.LOWER_LIMIT;
         Constants.ElevatorConstants.UPPER_LIMIT = DefaultConstants.ElevatorConstants.UPPER_LIMIT;
         Constants.ElevatorConstants.STOW = DefaultConstants.ElevatorConstants.STOW;
@@ -175,7 +176,8 @@ public enum RobotIdentity {
         Constants.PivotConstants.D = DefaultConstants.PivotConstants.D;
         Constants.PivotConstants.EXPO_V = DefaultConstants.PivotConstants.EXPO_V;
         Constants.PivotConstants.EXPO_A = DefaultConstants.PivotConstants.EXPO_A;
-        Constants.PivotConstants.TOLERANCE = DefaultConstants.PivotConstants.TOLERANCE;
+        Constants.PivotConstants.SAFE_TOLERANCE = DefaultConstants.PivotConstants.SAFE_TOLERANCE;
+        Constants.PivotConstants.AT_TARGET_TOLERANCE = DefaultConstants.PivotConstants.AT_TARGET_TOLERANCE;
         Constants.PivotConstants.LOWER_LIMIT = DefaultConstants.PivotConstants.LOWER_LIMIT;
         Constants.PivotConstants.UPPER_LIMIT = DefaultConstants.PivotConstants.UPPER_LIMIT;
         Constants.PivotConstants.STOW = DefaultConstants.PivotConstants.STOW;
@@ -210,7 +212,8 @@ public enum RobotIdentity {
         Constants.WristConstants.D = DefaultConstants.WristConstants.D;
         Constants.WristConstants.EXPO_V = DefaultConstants.WristConstants.EXPO_V;
         Constants.WristConstants.EXPO_A = DefaultConstants.WristConstants.EXPO_A;
-        Constants.WristConstants.TOLERANCE = DefaultConstants.WristConstants.TOLERANCE;
+        Constants.WristConstants.SAFE_TOLERANCE = DefaultConstants.WristConstants.SAFE_TOLERANCE;
+        Constants.WristConstants.AT_TARGET_TOLERANCE = DefaultConstants.WristConstants.AT_TARGET_TOLERANCE;
         Constants.WristConstants.LOWER_LIMIT = DefaultConstants.WristConstants.LOWER_LIMIT;
         Constants.WristConstants.UPPER_LIMIT = DefaultConstants.WristConstants.UPPER_LIMIT;
         Constants.WristConstants.STOW = DefaultConstants.WristConstants.STOW;

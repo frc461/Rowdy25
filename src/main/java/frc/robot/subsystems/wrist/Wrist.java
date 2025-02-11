@@ -97,8 +97,12 @@ public class Wrist extends SubsystemBase {
         return error;
     }
 
+    public boolean nearTarget() {
+        return error < Constants.WristConstants.SAFE_TOLERANCE;
+    }
+
     public boolean isAtTarget() {
-        return error < Constants.ElevatorConstants.TOLERANCE;
+        return error < Constants.WristConstants.AT_TARGET_TOLERANCE;
     }
 
     public void setTarget(double pivotPosition, double elevatorPosition) { // TODO WAIT (NEW MANIPULATOR): CHANGE UPPER LIMIT BACK TO DOUBLE SINCE MOTOR WON'T BE IN THE WAY ANYMORE

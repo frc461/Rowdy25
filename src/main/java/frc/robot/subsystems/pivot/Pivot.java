@@ -5,14 +5,12 @@ import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.GravityTypeValue;
 
 import com.revrobotics.servohub.ServoChannel;
 import com.revrobotics.servohub.ServoHub;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
-import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.util.ExpUtil;
 import frc.robot.util.Lights;
 
@@ -124,7 +122,7 @@ public class Pivot extends SubsystemBase {
     }
 
     public boolean validStartPosition() {
-        return Math.abs(getPosition() - Constants.PivotConstants.STOW) <= Constants.PivotConstants.TOLERANCE;
+        return Math.abs(getPosition() - Constants.PivotConstants.STOW) <= Constants.PivotConstants.SAFE_TOLERANCE;
     }
 
     public double getError() {
@@ -135,8 +133,12 @@ public class Pivot extends SubsystemBase {
         return ratchet.getPulseWidth();
     }
 
+    public boolean nearTarget() {
+        return error < Constants.PivotConstants.SAFE_TOLERANCE;
+    }
+
     public boolean isAtTarget() {
-        return error < Constants.ElevatorConstants.TOLERANCE;
+        return error < Constants.PivotConstants.AT_TARGET_TOLERANCE;
     }
 
     public void toggleRatchet() {

@@ -190,7 +190,8 @@ public final class DefaultConstants {
         public static final double D = 0.025;
         public static final double EXPO_V = V / 0.95; // 60% of the actual max velocity, as it will allocate 1 / 0.8 = 1.25 times the voltage to 1 rps
         public static final double EXPO_A = A / 0.04; // 1% of the actual max accel
-        public static final double TOLERANCE = 2.5;
+        public static final double SAFE_TOLERANCE = 5.0;
+        public static final double AT_TARGET_TOLERANCE = 2.5;
 
         // presets
         public static final double LOWER_LIMIT = 0;
@@ -250,7 +251,8 @@ public final class DefaultConstants {
         public static final double D = 0.01;
         public static final double EXPO_V = V / 0.75; // 75% of the actual max velocity, as it will allocate 1 / 0.8 = 1.25 times the voltage to 1 rps
         public static final double EXPO_A = A / 0.01; // 0.5% of the actual max acceleration
-        public static final double TOLERANCE = 2.5;
+        public static final double SAFE_TOLERANCE = 15.0;
+        public static final double AT_TARGET_TOLERANCE = 2.5;
 
         // presets
         public static final double LOWER_LIMIT = 0;
@@ -297,7 +299,8 @@ public final class DefaultConstants {
         public static final double D = 0.0;
         public static final double EXPO_V = V / 0.8; // 80% of the actual max velocity, as it will allocate 1 / 0.8 = 1.25 times the voltage to 1 rps
         public static final double EXPO_A = A / 0.05; // 5% of the actual max accel
-        public static final double TOLERANCE = 2.5;
+        public static final double SAFE_TOLERANCE = 25.0;
+        public static final double AT_TARGET_TOLERANCE = 2.5;
 
         // presets
         public static final Function<Double, Double> LOWER_LIMIT = (pivotPosition) -> (double) (pivotPosition < 45 ? 125 : 35);

@@ -1,6 +1,7 @@
 package frc.robot.subsystems.pivot;
 
 import dev.doglog.DogLog;
+import edu.wpi.first.networktables.BooleanPublisher;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.StringPublisher;
@@ -19,6 +20,7 @@ public class PivotTelemetry {
     private final DoublePublisher pivotErrorPub = pivotTelemetryTable.getDoubleTopic("Pivot Error").publish();
     private final DoublePublisher pivotRatchetPositionPub = pivotTelemetryTable.getDoubleTopic("Pivot Ratchet Position").publish();
     private final StringPublisher pivotIsRatcheted = pivotTelemetryTable.getStringTopic("Pivot Ratchet State").publish();
+    private final BooleanPublisher pivotAtTargetPub = pivotTelemetryTable.getBooleanTopic("Pivot At Target").publish();
 
     public void publishValues() {
         pivotPositionPub.set(pivot.getPosition());
@@ -26,6 +28,7 @@ public class PivotTelemetry {
         pivotErrorPub.set(pivot.getError());
         pivotRatchetPositionPub.set(pivot.getRatchetStateValue());
         pivotIsRatcheted.set(pivot.getRatchetState().name());
+        pivotAtTargetPub.set(pivot.isAtTarget());
 
         logValues();
     }
@@ -36,5 +39,6 @@ public class PivotTelemetry {
         DogLog.log("PivotError", pivot.getError());
         DogLog.log("PivotRatchetPosition", pivot.getRatchetStateValue());
         DogLog.log("PivotRatchetedState", pivot.getRatchetState());
+        DogLog.log("PivotIsAtTarget", pivot.isAtTarget());
     }
 }
