@@ -6,7 +6,6 @@ import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.Orchestra;
-import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.swerve.*;
@@ -69,10 +68,6 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                 Constants.SwerveConstants.BACK_LEFT,
                 Constants.SwerveConstants.BACK_RIGHT
         );
-
-        if (Utils.isSimulation()) {
-            new SwerveSim(this).startSimThread();
-        }
 
         configureMusic();
 
