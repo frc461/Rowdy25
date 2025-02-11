@@ -52,7 +52,7 @@ public class Wrist extends SubsystemBase {
                         .withMagnetOffset(Constants.WristConstants.ENCODER_ABSOLUTE_OFFSET)));
 
         wrist = new TalonFX(Constants.WristConstants.MOTOR_ID);
-        wrist.getConfigurator().apply(new TalonFXConfiguration() // TODO SHOP: TEST WITHOUT VOLTAGE CONSTRAINT
+        wrist.getConfigurator().apply(new TalonFXConfiguration()
                 .withFeedback(new FeedbackConfigs().withRemoteCANcoder(encoder)
                         .withSensorToMechanismRatio(Constants.WristConstants.SENSOR_TO_DEGREE_RATIO))
                 .withMotorOutput(new MotorOutputConfigs()
@@ -64,7 +64,7 @@ public class Wrist extends SubsystemBase {
                         .withBeepOnBoot(false)
                         .withAllowMusicDurDisable(true))
                 .withSlot0(new Slot0Configs()
-                        .withKV(Constants.WristConstants.V) // TODO SHOP: NEED S??????
+                        .withKV(Constants.WristConstants.V)
                         .withKA(Constants.WristConstants.A)
                         .withKP(Constants.WristConstants.P)
                         .withKI(Constants.WristConstants.I)

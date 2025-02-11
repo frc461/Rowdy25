@@ -137,7 +137,6 @@ public final class Constants {
         public static int FOLLOWER_ID;
         public static int LOWER_LIMIT_SWITCH_ID;
         public static double CURRENT_LIMIT;
-        public static double PEAK_VOLTAGE;
         public static InvertedValue MOTOR_INVERT;
         public static NeutralModeValue NEUTRAL_MODE;
 
@@ -183,7 +182,6 @@ public final class Constants {
         public static int MOTOR_ID;
         public static int SENSOR_ID;
         public static double CURRENT_LIMIT;
-        public static double PEAK_VOLTAGE;
         public static InvertedValue MOTOR_INVERT;
         public static NeutralModeValue NEUTRAL_MODE;
     }
@@ -194,7 +192,6 @@ public final class Constants {
         public static int FOLLOWER_ID;
         public static int SERVO_HUB_ID;
         public static double CURRENT_LIMIT;
-        public static double PEAK_VOLTAGE;
         public static InvertedValue PIVOT_INVERT;
         public static NeutralModeValue NEUTRAL_MODE;
 
@@ -245,7 +242,6 @@ public final class Constants {
         // motor config
         public static int MOTOR_ID;
         public static double CURRENT_LIMIT;
-        public static double PEAK_VOLTAGE;
         public static InvertedValue MOTOR_INVERT;
         public static NeutralModeValue NEUTRAL_MODE;
 

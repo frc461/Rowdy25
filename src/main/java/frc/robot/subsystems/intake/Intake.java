@@ -35,7 +35,7 @@ public class Intake extends SubsystemBase {
     public Intake() {
         motor = new TalonFX(Constants.IntakeConstants.MOTOR_ID);
 
-        motor.getConfigurator().apply(new TalonFXConfiguration() // TODO SHOP: TEST WITHOUT VOLTAGE CONSTRAINT
+        motor.getConfigurator().apply(new TalonFXConfiguration()
                 .withMotorOutput(new MotorOutputConfigs()
                         .withInverted(Constants.IntakeConstants.MOTOR_INVERT)
                         .withNeutralMode(Constants.IntakeConstants.NEUTRAL_MODE))
@@ -65,7 +65,7 @@ public class Intake extends SubsystemBase {
     }
 
     public boolean hasCoral() {
-        return getProximity() < 0.2; // TODO SHOP: TUNE THIS
+        return getProximity() < 0.2;
     }
 
     public boolean hasAlgae() {

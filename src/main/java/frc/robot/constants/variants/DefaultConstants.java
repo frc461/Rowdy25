@@ -97,7 +97,7 @@ public final class DefaultConstants {
         public static final Function<Double, Matrix<N3, N1>> VISION_STD_DEV_FUNCTION =
                 dist -> dist < 2.0
                         ? VecBuilder.fill(0.15 * dist, 0.15 * dist, Units.degreesToRadians(10.0) * dist)
-                        : VecBuilder.fill(0.5 * dist, 0.5 * dist, Units.degreesToRadians(180.0) * dist); // TODO SHOP: TEST THIS LESS STRICT STD DEV FUNCTION
+                        : VecBuilder.fill(0.5 * dist, 0.5 * dist, Units.degreesToRadians(180.0) * dist); // TODO SHOP: TEST STD DEVS
 
         public static final class LimelightConstants {
             public static final String LIMELIGHT_NT_NAME = "limelight";
@@ -113,7 +113,6 @@ public final class DefaultConstants {
         }
 
         public static final class PhotonConstants {
-            // TODO SHOP: TEST CAMERAS TO CENTER OF ROBOT OFFSETS
             public static final String BW_TOP_RIGHT_NAME = "ArducamBW2";
             public static final double BW_TOP_RIGHT_FORWARD = 0.404;
             public static final double BW_TOP_RIGHT_LEFT = -0.291321;
@@ -168,7 +167,6 @@ public final class DefaultConstants {
         public static final int FOLLOWER_ID = 32;
         public static final int LOWER_LIMIT_SWITCH_ID = 0;
         public static final double CURRENT_LIMIT = 40;
-        public static final double PEAK_VOLTAGE = 6; // TODO SHOP: REMOVE IF NEEDED
         public static final InvertedValue MOTOR_INVERT = InvertedValue.Clockwise_Positive;
         public static final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Coast;
 
@@ -195,7 +193,7 @@ public final class DefaultConstants {
         public static final double TOLERANCE = 2.5;
 
         // presets
-        public static final double LOWER_LIMIT = 0; // TODO SHOP: TEST PRESETS
+        public static final double LOWER_LIMIT = 0;
         public static final double UPPER_LIMIT = 46;
         public static final double STOW = 0;
         public static final double CORAL_STATION = 0;
@@ -215,7 +213,6 @@ public final class DefaultConstants {
         public static final int MOTOR_ID = 41;
         public static final int SENSOR_ID = 42;
         public static final double CURRENT_LIMIT = 40;
-        public static final double PEAK_VOLTAGE = 6;
         public static final InvertedValue MOTOR_INVERT = InvertedValue.Clockwise_Positive;
         public static final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Coast;
     }
@@ -226,7 +223,6 @@ public final class DefaultConstants {
         public static final int FOLLOWER_ID = 52;
         public static final int SERVO_HUB_ID = 54;
         public static final double CURRENT_LIMIT = 40;
-        public static final double PEAK_VOLTAGE = 6; // TODO SHOP: REMOVE IF NEEDED
         public static final InvertedValue PIVOT_INVERT = InvertedValue.Clockwise_Positive;
         public static final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Coast;
 
@@ -257,7 +253,7 @@ public final class DefaultConstants {
         public static final double TOLERANCE = 2.5;
 
         // presets
-        public static final double LOWER_LIMIT = 0; // TODO SHOP: TEST PRESETS
+        public static final double LOWER_LIMIT = 0;
         public static final double UPPER_LIMIT = 105;
         public static final double STOW = 50;
         public static final double CORAL_STATION = 66.8;
@@ -277,7 +273,6 @@ public final class DefaultConstants {
         // motor config
         public static final int MOTOR_ID = 61;
         public static final double CURRENT_LIMIT = 40;
-        public static final double PEAK_VOLTAGE = 6; // TODO SHOP: REMOVE IF NEEDED
         public static final InvertedValue MOTOR_INVERT = InvertedValue.Clockwise_Positive;
         public static final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Coast;
 
@@ -290,7 +285,7 @@ public final class DefaultConstants {
 
         // encoder config
         public static final int ENCODER_ID = 62;
-        public static final double ENCODER_ABSOLUTE_OFFSET = -0.33154229058; // TODO SHOP: CONFIRM THIS IS ACCURATE
+        public static final double ENCODER_ABSOLUTE_OFFSET = -0.33154229058;
         public static final SensorDirectionValue ENCODER_INVERT = SensorDirectionValue.Clockwise_Positive;
 
         // pid & tolerance
@@ -305,7 +300,7 @@ public final class DefaultConstants {
         public static final double TOLERANCE = 2.5;
 
         // presets
-        public static final Function<Double, Double> LOWER_LIMIT = (pivotPosition) -> (double) (pivotPosition < 45 ? 125 : 35); // TODO SHOP: TEST PRESETS
+        public static final Function<Double, Double> LOWER_LIMIT = (pivotPosition) -> (double) (pivotPosition < 45 ? 125 : 35);
         public static final double UPPER_LIMIT = 320;
         public static final double STOW = 45;
         public static final double CORAL_STATION = 107.5;
