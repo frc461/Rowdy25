@@ -178,10 +178,9 @@ public class Elevator extends SubsystemBase {
 
     public void moveElevator(double axisValue) {
         checkLimitSwitch();
-        // TODO SHOP: TUNE CURBING VALUE
         elevator.set(axisValue > 0
-                ? axisValue * ExpUtil.output(Constants.ElevatorConstants.UPPER_LIMIT - getPosition(), 1, 5, 10)
-                : axisValue * ExpUtil.output(getPosition() - Constants.ElevatorConstants.LOWER_LIMIT, 1, 5, 10));
+                ? axisValue * ExpUtil.output(Constants.ElevatorConstants.UPPER_LIMIT - getPosition(), 1, 2, 10)
+                : axisValue * ExpUtil.output(getPosition() - Constants.ElevatorConstants.LOWER_LIMIT, 1, 2, 10));
     }
 
     @Override

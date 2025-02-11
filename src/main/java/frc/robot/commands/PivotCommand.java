@@ -8,7 +8,7 @@ import frc.robot.util.GravityGainsCalculator;
 
 import java.util.function.DoubleSupplier;
 
-public class PivotCommand extends Command { // TODO SHOP: TEST GRAVITY GAINS
+public class PivotCommand extends Command {
     private final Pivot pivot;
     private final DoubleSupplier manualAxisValue;
     private final DoubleSupplier elevatorPosition;

@@ -101,8 +101,12 @@ public class Wrist extends SubsystemBase {
         return error < Constants.ElevatorConstants.TOLERANCE;
     }
 
-    public void setTarget(double pivotPosition) {
-        this.target = Math.max(getState() == State.MANUAL ? lastManualPosition : getState().position, Constants.WristConstants.LOWER_LIMIT.apply(pivotPosition));
+    public void setTarget(double pivotPosition, double elevatorPosition) { // TODO WAIT (NEW MANIPULATOR): CHANGE UPPER LIMIT BACK TO DOUBLE SINCE MOTOR WON'T BE IN THE WAY ANYMORE
+        this.target = MathUtil.clamp(
+                getState() == State.MANUAL ? lastManualPosition : getState().position,
+                Constants.WristConstants.LOWER_LIMIT.apply(pivotPosition),
+                Constants.WristConstants.UPPER_LIMIT.apply(elevatorPosition)
+        );
     }
 
     private void setState(State newState) {
@@ -166,10 +170,9 @@ public class Wrist extends SubsystemBase {
         wrist.setControl(request.withPosition(target).withFeedForward(Constants.WristConstants.G.apply(getPosition(), pivotPosition)));
     }
 
-    public void moveWrist(double axisValue, double pivotPosition) {
-        // TODO SHOP: TUNE CURBING VALUE
+    public void moveWrist(double axisValue, double pivotPosition, double elevatorPosition) {
         wrist.set(axisValue > 0
-                ? axisValue * ExpUtil.output(Constants.WristConstants.UPPER_LIMIT - getPosition(), 1, 5, 10)
+                ? axisValue * ExpUtil.output(Constants.WristConstants.UPPER_LIMIT.apply(elevatorPosition) - getPosition(), 1, 5, 10)
                 : axisValue * ExpUtil.output(getPosition() - Constants.WristConstants.LOWER_LIMIT.apply(pivotPosition), 1, 5, 10));
     }
 

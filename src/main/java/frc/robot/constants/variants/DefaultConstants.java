@@ -301,7 +301,7 @@ public final class DefaultConstants {
 
         // presets
         public static final Function<Double, Double> LOWER_LIMIT = (pivotPosition) -> (double) (pivotPosition < 45 ? 125 : 35);
-        public static final double UPPER_LIMIT = 320;
+        public static final Function<Double, Double> UPPER_LIMIT = (elevatorPosition) -> (double) (elevatorPosition > 15 ? 320 : 200);
         public static final double STOW = 45;
         public static final double CORAL_STATION = 107.5;
         public static final double GROUND_CORAL = 128.5;

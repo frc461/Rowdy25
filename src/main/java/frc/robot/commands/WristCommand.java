@@ -11,11 +11,13 @@ public class WristCommand extends Command {
     private final Wrist wrist;
     private final DoubleSupplier manualAxisValue;
     private final DoubleSupplier pivotPosition;
+    private final DoubleSupplier elevatorPosition;
 
-    public WristCommand(Wrist wrist, DoubleSupplier manualAxisValue, DoubleSupplier pivotPosition) {
+    public WristCommand(Wrist wrist, DoubleSupplier manualAxisValue, DoubleSupplier pivotPosition, DoubleSupplier elevatorPosition) {
         this.wrist = wrist;
         this.manualAxisValue = manualAxisValue;
         this.pivotPosition = pivotPosition;
+        this.elevatorPosition = elevatorPosition;
         addRequirements(wrist);
     }
 
@@ -24,10 +26,10 @@ public class WristCommand extends Command {
         double axisValue = MathUtil.applyDeadband(manualAxisValue.getAsDouble(), Constants.DEADBAND) * 0.1;
         if (axisValue != 0.0) {
             wrist.setManualState();
-            wrist.moveWrist(axisValue, pivotPosition.getAsDouble());
+            wrist.moveWrist(axisValue, pivotPosition.getAsDouble(), elevatorPosition.getAsDouble());
         } else {
             wrist.holdTarget(pivotPosition.getAsDouble());
         }
-        wrist.setTarget(pivotPosition.getAsDouble());
+        wrist.setTarget(pivotPosition.getAsDouble(), elevatorPosition.getAsDouble());
     }
 }
