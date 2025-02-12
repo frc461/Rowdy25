@@ -180,7 +180,7 @@ public class FieldUtil {
 
         public static List<AprilTag> getAlgaeScoringTags() {
             return Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red ?
-                    List.of(AprilTag.ID_3, AprilTag.ID_5) : List.of(AprilTag.ID_14, AprilTag.ID_16);
+                    List.of(AprilTag.ID_3, AprilTag.ID_5, AprilTag.ID_15) : List.of(AprilTag.ID_4, AprilTag.ID_14, AprilTag.ID_16);
         }
 
         public static List<Pose2d> getAlgaeScoringTagPoses() {
@@ -198,7 +198,7 @@ public class FieldUtil {
         public static ScoringLocation getAlgaeScoringFromTag(AprilTag tag) {
             return switch (tag) {
                 case ID_3, ID_16 -> ScoringLocation.PROCESSOR;
-                case ID_5, ID_14 -> ScoringLocation.NET;
+                case ID_4, ID_5, ID_14, ID_15 -> ScoringLocation.NET;
                 default -> null;
             };
         }
