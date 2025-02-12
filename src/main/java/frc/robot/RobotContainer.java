@@ -39,7 +39,7 @@ public class RobotContainer {
     private final CommandXboxController driverXbox = new CommandXboxController(0);
     /* Driver Tentative:
      * POV buttons / D-pad:
-     * Up:
+     * Up: Outtake, stow
      * Down: Click - manually temp toggle disable all auto aligning
      * Left: Click - manually temp toggle between lower and higher algae reef intake level
      * Right: Click - manually temp toggle between processor and net height
@@ -61,29 +61,29 @@ public class RobotContainer {
      * Buttons:
      *
      * A:
-     *     No Coral: Click - Climb stage, Click Again - stow slowly
-     *     Coral: Click - L4 score stage, Click Again - outtake, stow
+     *     No Coral: Click - Climb state, Click Again - stow slowly
+     *     Coral: Click - L4 score state, Click Again - outtake, stow
      *
      * B:
-     *     No Coral: Click - Algae pickup stage (height determined by nearest reef, then camera, then stow automatically), stow automatically, Click Again - Stow
-     *     Coral: Click - L1 score stage, Click Again - outtake, stow
+     *     No Coral: Click - Algae pickup state (height determined by nearest reef, then camera, then stow automatically), stow automatically, Click Again - Stow
+     *     Coral: Click - L1 score state, Click Again - outtake, stow
      *
      * X:
-     *     No Coral: Click - Coral pickup stage, stow automatically, Click Again - Cancel
-     *     Coral: Click - L3 score stage, Click Again - outtake, stow
+     *     No Coral: Click - Coral pickup state, stow automatically, Click Again - Cancel
+     *     Coral: Click - L3 score state, Click Again - outtake, stow
      *
      * Y:
-     *     No Coral: Click - Algae score stage (net or processor, whichever is closer), Click again - Outtake, stow
-     *     Coral: Click - L2 score stage, Click Again - outtake, stow
+     *     No Coral: Click - Algae score state (net or processor, whichever is closer), Click again - Outtake, stow
+     *     Coral: Click - L2 score state, Click Again - outtake, stow
      */
 
     private final static CommandXboxController opXbox = new CommandXboxController(1);
     /* Currently Allocated For Operator:
      * POV buttons / D-pad:
-     * Up: Click - L2 score stage, Click Again - outtake, stow
-     * Down: Click - L4 score stage, Click Again - outtake, stow
-     * Left: Click - L3 score stage, Click Again - outtake, stow
-     * Right: Click - L1 score stage, Click Again - outtake, stow
+     * Up: Click - L2 score state, Click Again - outtake, stow
+     * Down: Click - L4 score state, Click Again - outtake, stow
+     * Left: Click - L3 score state, Click Again - outtake, stow
+     * Right: Click - L1 score state, Click Again - outtake, stow
      *
      * Triggers:
      * Left: Move elevator down
@@ -100,10 +100,10 @@ public class RobotContainer {
      * Right: Click - wait until algae is in view then align with then intake algae (ground)
      *
      * Buttons:
-     * A: Click - Climb stage, Click Again - stow slowly
-     * B: Click - Algae pickup stage (height determined by heading, then camera, then stow automatically), stow automatically, Click Again - Stow
-     * X: Click - Coral pickup stage, stow automatically, Click Again - Cancel
-     * Y: Click - Algae score stage (processor height if within 45 degrees of processor, otherwise net height), Click again - Outtake, stow
+     * A: Click - Climb state, Click Again - stow slowly
+     * B: Click - Algae pickup state (height determined by heading, then camera, then stow automatically), stow automatically, Click Again - Stow
+     * X: Click - Coral pickup state, stow automatically, Click Again - Cancel
+     * Y: Click - Algae score state (processor height if within 45 degrees of processor, otherwise net height), Click again - Outtake, stow
      */
 
     public RobotContainer() {
@@ -163,6 +163,8 @@ public class RobotContainer {
     private void configureBindings() {
         // IMPORTANT: WHEN BINDING DRIVER BUTTONS, TRIGGERS NEED TO BE ON FALSE ESPECIALLY WITH BINDINGS THAT INITIATE DRIVE AUTOMATION UPON HOLD DEBOUNCE
         // SO FIGURE OUT LOGIC CORRECTLY AND CAREFULLY
+
+        driverXbox.povUp().onTrue(new InstantCommand(robotStates::setOuttakeState));
 
         // (set to ground state and if holding then wait until there's an object then drive to it)
 //        driverXbox.leftBumper().negate().and(driverXbox.leftTrigger().negate()).onTrue(

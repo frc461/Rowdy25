@@ -90,7 +90,7 @@ public class DriveCommand extends Command {
 
     @Override
     public void execute() {
-        // TODO SHOP: FIGURE OUT AUTOMATION WITH SUPERSTRUCTURE, CONTROL MAX SPEED BASED ON ELEVATOR HEIGHT, PIVOT ANGLE
+        // TODO SHOP: AUTOMATION WITH SUPERSTRUCTURE & CONTROL MAX SPEED BASED ON ELEVATOR HEIGHT, PIVOT ANGLE
         Pose2d currentPose = swerve.localizer.getStrategyPose();
         driveMode = branchAlignment.getAsBoolean() ?
                         rot.getAsDouble() < -0.5 ? DriveMode.FAST_ROTATION : DriveMode.BRANCH_ALIGNMENT

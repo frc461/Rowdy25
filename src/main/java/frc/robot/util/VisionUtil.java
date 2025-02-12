@@ -137,7 +137,7 @@ public class VisionUtil {
                 return latestResult.hasTargets();
             }
 
-            // TODO SHOP: TEST ALGAE AND CORAL SPECIFIC TARGETING
+            // TODO WAIT (COLOR CAMERA): TEST ALGAE AND CORAL SPECIFIC TARGETING
             public static boolean hasAlgaeTargets () {
                 if (hasTargets()) {
                     for (PhotonTrackedTarget target : latestResult.getTargets()) {

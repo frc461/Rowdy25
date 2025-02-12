@@ -56,6 +56,10 @@ public class RobotStates {
         currentState = State.STOW;
     }
 
+    public void setOuttakeState() {
+        currentState = State.OUTTAKE;
+    }
+
     public void toggleCoralStationState() {
         currentState = currentState == State.CORAL_STATION ? State.STOW : State.CORAL_STATION;
     }
@@ -106,7 +110,7 @@ public class RobotStates {
         currentState = currentState == State.NET ? State.OUTTAKE : State.NET;
     }
 
-    public void configureToggleStateTriggers(Swerve swerve, Elevator elevator, Intake intake, Pivot pivot, Wrist wrist) { // TODO SHOP: TEST THIS
+    public void configureToggleStateTriggers(Swerve swerve, Elevator elevator, Intake intake, Pivot pivot, Wrist wrist) {
         stowState.onTrue(
                 new InstantCommand(intake::setIdleState)
                         .andThen(wrist::setStowState)
@@ -246,7 +250,7 @@ public class RobotStates {
                         .until(() -> !highReefAlgaeState.getAsBoolean())
         );
 
-        processorState.onTrue(
+        processorState.onTrue( // TODO: IMPLEMENT AUTO PROCESSOR OR NET DEPENDING ON WHICH IS CLOSER
                 new InstantCommand(wrist::setProcessorState)
                         .andThen(new WaitUntilCommand(wrist::nearTarget))
                         .andThen(elevator::setProcessorState)
@@ -271,7 +275,7 @@ public class RobotStates {
         );
     }
 
-    private Command resetState(Elevator elevator, Intake intake) {
+    private Command resetState(Elevator elevator, Intake intake) { // TODO: MINIMIZE THIS ACTION I.E., NO NEED TO RESET IF PIVOT DOESN'T MOVE
         return new InstantCommand(intake::setIdleState)
                         .andThen(elevator::setStowState)
                         .andThen(new WaitUntilCommand(elevator::nearTarget));
