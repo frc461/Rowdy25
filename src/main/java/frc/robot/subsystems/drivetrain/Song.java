@@ -1,12 +1,10 @@
 package frc.robot.subsystems.drivetrain;
 
-import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.swerve.SwerveModule;
 import frc.robot.constants.Constants;
-import frc.robot.util.Elastic;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -81,25 +79,6 @@ public class Song {
         IntStream.range(0, trackWeights.length).forEach(
                 weightIndex -> IntStream.range(0, trackWeights[weightIndex]).forEach(
                         i -> swerve.orchestra.addInstrument(motors.remove(0), weightIndex)
-                )
-        );
-
-        StatusCode status = swerve.orchestra.loadMusic(getPath());
-
-        Elastic.Notification.NotificationLevel notificationLevel;
-        if (status.isWarning()) {
-            notificationLevel = Elastic.Notification.NotificationLevel.WARNING;
-        } else if (status.isError()) {
-            notificationLevel = Elastic.Notification.NotificationLevel.ERROR;
-        } else {
-            notificationLevel = Elastic.Notification.NotificationLevel.INFO;
-        }
-
-        Elastic.sendNotification(
-                new Elastic.Notification(
-                        notificationLevel,
-                        "Orchestra status",
-                        status.getName() + ": " + status.getDescription()
                 )
         );
 
