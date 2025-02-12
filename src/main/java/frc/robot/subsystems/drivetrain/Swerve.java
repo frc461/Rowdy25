@@ -36,7 +36,6 @@ import frc.robot.util.FieldUtil;
 public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> implements Subsystem {
     /* An extension to the Swerve subsystem */
     public final Localizer localizer = new Localizer(this);
-
     private final SwerveTelemetry swerveTelemetry = new SwerveTelemetry(this);
 
     public final Orchestra orchestra = new Orchestra();

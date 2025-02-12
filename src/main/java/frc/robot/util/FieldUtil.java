@@ -173,6 +173,11 @@ public class FieldUtil {
     }
 
     public static class AlgaeScoring {
+        public enum ScoringLocation {
+            NET,
+            PROCESSOR
+        }
+
         public static List<AprilTag> getAlgaeScoringTags() {
             return Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red ?
                     List.of(AprilTag.ID_3, AprilTag.ID_5) : List.of(AprilTag.ID_14, AprilTag.ID_16);
@@ -185,5 +190,18 @@ public class FieldUtil {
         public static Pose2d getNearestAlgaeScoringTagPose(Pose2d currentPose) {
             return currentPose.nearest(getAlgaeScoringTagPoses());
         }
+
+        public static AprilTag getNearestAlgaeScoringTag(Pose2d currentPose) {
+            return TagManager.getPosesToTags().getOrDefault(getNearestAlgaeScoringTagPose(currentPose), AprilTag.INVALID);
+        }
+
+        public static ScoringLocation getAlgaeScoringFromTag(AprilTag tag) {
+            return switch (tag) {
+                case ID_3, ID_16 -> ScoringLocation.NET;
+                case ID_5, ID_14 -> ScoringLocation.PROCESSOR;
+                default -> null;
+            };
+        }
+
     }
 }

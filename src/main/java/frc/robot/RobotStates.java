@@ -102,6 +102,12 @@ public class RobotStates {
                 : currentState == State.LOW_REEF_ALGAE ? State.STOW : State.LOW_REEF_ALGAE;
     }
 
+    public void toggleNearestAlgaeScoringLocation(boolean net) {
+        currentState = net
+            ? currentState == State.NET ? State.STOW : State.NET
+            : currentState == State.PROCESSOR ? State.STOW : State.PROCESSOR;
+    }
+
     public void toggleProcessorState() {
         currentState = currentState == State.PROCESSOR ? State.OUTTAKE : State.PROCESSOR;
     }
@@ -230,7 +236,7 @@ public class RobotStates {
                         .andThen(wrist::setLowReefAlgaeState)
                         .andThen(new WaitUntilCommand(() -> intake.atIdleState() || intake.atHasAlgaeState()))
                         .andThen(this::setStowState)
-                        .until(() -> elevator.nearestAlgaeIsHigh(swerve.localizer.getStrategyPose()))
+                        .until(() -> swerve.localizer.nearestAlgaeIsHigh())
                         .andThen(this::toggleHighReefAlgaeState)
                         .until(() -> !lowReefAlgaeState.getAsBoolean())
         );
@@ -246,7 +252,7 @@ public class RobotStates {
                         .andThen(wrist::setHighReefAlgaeState)
                         .andThen(new WaitUntilCommand(() -> intake.atIdleState() || intake.atHasAlgaeState()))
                         .andThen(this::setStowState)
-                        .until(() -> !elevator.nearestAlgaeIsHigh(swerve.localizer.getStrategyPose()))
+                        .until(() -> !swerve.localizer.nearestAlgaeIsHigh())
                         .andThen(this::toggleLowReefAlgaeState)
                         .until(() -> !highReefAlgaeState.getAsBoolean())
         );

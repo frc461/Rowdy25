@@ -6,6 +6,7 @@ import com.pathplanner.lib.pathfinding.Pathfinding;
 
 import dev.doglog.DogLog;
 import dev.doglog.DogLogOptions;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -109,7 +110,7 @@ public class RobotContainer {
     public RobotContainer() {
         setDefaultCommands();
         configureBindings();
-        configureToggleStateTriggers();
+        configureToggleStateTriggers(); 
 
         Lights.configureLights();
 
@@ -173,7 +174,7 @@ public class RobotContainer {
 //        driverXbox.leftBumper().and(driverXbox.leftTrigger()).onTrue(new InstantCommand(robotStates::setStowState));
 
         driverXbox.b().onTrue(new InstantCommand(
-                () -> robotStates.toggleNearestReefAlgaeState(elevator.nearestAlgaeIsHigh(swerve.localizer.getStrategyPose()))
+                () -> robotStates.toggleNearestReefAlgaeState(swerve.localizer.nearestAlgaeIsHigh())
         ));
 
         opXbox.povRight().onTrue(new InstantCommand(robotStates::toggleL1CoralState));
@@ -188,8 +189,11 @@ public class RobotContainer {
         opXbox.rightBumper().onTrue(new InstantCommand(robotStates::toggleGroundAlgaeState));
 
         opXbox.b().onTrue(new InstantCommand(
-                () -> robotStates.toggleNearestReefAlgaeState(elevator.nearestAlgaeIsHigh(swerve.localizer.getStrategyPose()))
+                () -> robotStates.toggleNearestReefAlgaeState(swerve.localizer.nearestAlgaeIsHigh())
         ));
+
+        opXbox.y().onTrue(new InstantCommand(() -> robotStates.toggleNearestAlgaeScoringLocation(swerve.localizer.nearestAlgaeScoringIsNet())));
+
         opXbox.x().onTrue(new InstantCommand(robotStates::toggleCoralStationState));
 
         // Run SysId routines when holding back/start and X/Y.

@@ -116,7 +116,16 @@ public class Localizer {
 
     public double getNearestAlgaeScoringHeading() {
         return FieldUtil.AlgaeScoring.getNearestAlgaeScoringTagPose(getStrategyPose()).getRotation().getDegrees();
-    } 
+    }
+
+    public boolean nearestAlgaeIsHigh() {
+        return FieldUtil.Reef.getAlgaeReefLevelFromTag(FieldUtil.Reef.getNearestReefTag(getStrategyPose())) == FieldUtil.Reef.AlgaeLocation.HIGH;
+    }
+
+    public boolean nearestAlgaeScoringIsNet() {
+        return FieldUtil.AlgaeScoring.getAlgaeScoringFromTag(FieldUtil.AlgaeScoring.getNearestAlgaeScoringTag(getStrategyPose())) == FieldUtil.AlgaeScoring.ScoringLocation.NET;
+    }
+
 
     public void setLocalizationStrategyFromChooser() {
         LocalizationStrategy strategy = localizationChooser.getSelected();

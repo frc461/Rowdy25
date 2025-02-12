@@ -94,11 +94,7 @@ public class Elevator extends SubsystemBase {
     public double getTarget() {
         return getState() == State.MANUAL ? lastManualPosition : getState().position;
     }
-
-    public boolean nearestAlgaeIsHigh(Pose2d currentPose) {
-        return FieldUtil.Reef.getAlgaeReefLevelFromTag(FieldUtil.Reef.getNearestReefTag(currentPose)) == FieldUtil.Reef.AlgaeLocation.HIGH;
-    }
-
+ 
     public boolean lowerSwitchTriggered() {
         return false; // TODO WAIT (LIMIT SWITCH IS AVAILABLE): return !lowerSwitch.get();
     }
