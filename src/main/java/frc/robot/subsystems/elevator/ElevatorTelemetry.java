@@ -21,6 +21,8 @@ public class ElevatorTelemetry {
     private final DoublePublisher elevatorTargetPub = elevatorTelemetryTable.getDoubleTopic("Elevator Target").publish();
     private final StringPublisher elevatorStatePub = elevatorTelemetryTable.getStringTopic("Elevator State").publish();
     private final BooleanPublisher elevatorAtTargetPub = elevatorTelemetryTable.getBooleanTopic("Elevator At Target").publish();
+    private final BooleanPublisher elevatorNearTargetPub = elevatorTelemetryTable.getBooleanTopic("Elevator Near Target").publish();
+    private final BooleanPublisher elevatorSwitchTriggered = elevatorTelemetryTable.getBooleanTopic("Elevator Limit Switch Triggered").publish();
 
     public void publishValues() {
         elevatorPositionInchesPub.set(elevator.getPosition());
@@ -28,6 +30,8 @@ public class ElevatorTelemetry {
         elevatorTargetPub.set(elevator.getTarget());
         elevatorStatePub.set(elevator.getState().name());
         elevatorAtTargetPub.set(elevator.isAtTarget());
+        elevatorNearTargetPub.set(elevator.nearTarget());
+        elevatorSwitchTriggered.set(elevator.lowerSwitchTriggered());
 
         logValues();
     }
@@ -37,5 +41,7 @@ public class ElevatorTelemetry {
         DogLog.log("ElevatorTarget", elevator.getTarget());
         DogLog.log("ElevatorState", elevator.getState());
         DogLog.log("ElevatorIsAtTarget", elevator.isAtTarget());
+        DogLog.log("ElevatorNearTarget", elevator.nearTarget());
+        DogLog.log("ElevatorSwitchTriggered", elevator.lowerSwitchTriggered());
     }
 }

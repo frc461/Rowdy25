@@ -205,7 +205,7 @@ public final class DefaultConstants {
         public static final double L3_CORAL = 14.4;
         public static final double L4_CORAL = 40;
         public static final double LOW_REEF_ALGAE = 2.9;
-        public static final double HIGH_REEF_ALGAE = 14.5;
+        public static final double HIGH_REEF_ALGAE = 10.5;
         public static final double PROCESSOR = 0;
         public static final double NET = 44;
     }
@@ -304,7 +304,7 @@ public final class DefaultConstants {
 
         // presets
         public static final Function<Double, Double> LOWER_LIMIT = (pivotPosition) -> (double) (pivotPosition < 45 ? 125 : 35);
-        public static final Function<Double, Double> UPPER_LIMIT = (elevatorPosition) -> (double) (elevatorPosition > 15 ? 320 : 200);
+        public static final Function<Double, Double> UPPER_LIMIT = (elevatorPosition) -> (double) (elevatorPosition > 3 ? 320 : 200);
         public static final double STOW = 45;
         public static final double CORAL_STATION = 107.5;
         public static final double GROUND_CORAL = 128.5;

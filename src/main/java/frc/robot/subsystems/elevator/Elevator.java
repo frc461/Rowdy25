@@ -79,7 +79,6 @@ public class Elevator extends SubsystemBase {
 
         request = new MotionMagicExpoVoltage(0);
 
-        elevator.setPosition(0.0); // TODO WAIT (LIMIT SWITCH IS AVAILABLE): REMOVE THIS
         error = 0.0;
         lastManualPosition = State.STOW.position;
     }

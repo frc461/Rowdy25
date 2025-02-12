@@ -1,7 +1,10 @@
 package frc.robot;
 
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.StringPublisher;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.constants.Constants;
 import frc.robot.subsystems.drivetrain.Swerve;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.intake.Intake;
@@ -10,7 +13,6 @@ import frc.robot.subsystems.wrist.Wrist;
 import frc.robot.util.VisionUtil;
 
 public class RobotStates {
-
     public enum State { // TODO: IMPLEMENT CLIMBING
         STOW,
         OUTTAKE,
@@ -42,6 +44,9 @@ public class RobotStates {
     public final Trigger highReefAlgaeState = new Trigger(() -> currentState == State.HIGH_REEF_ALGAE);
     public final Trigger processorState = new Trigger(() -> currentState == State.PROCESSOR);
     public final Trigger netState = new Trigger(() -> currentState == State.NET);
+
+    private final NetworkTable robotStatesTelemetryTable = Constants.NT_INSTANCE.getTable("RobotStates");
+    private final StringPublisher robotStatesPub = robotStatesTelemetryTable.getStringTopic("Current Robot State").publish();
 
     public RobotStates() {
         currentState = State.STOW;
@@ -87,6 +92,12 @@ public class RobotStates {
         currentState = currentState == State.HIGH_REEF_ALGAE ? State.STOW : State.HIGH_REEF_ALGAE;
     }
 
+    public void toggleNearestReefAlgaeState(boolean high) {
+        currentState = high
+                ? currentState == State.HIGH_REEF_ALGAE ? State.STOW : State.HIGH_REEF_ALGAE
+                : currentState == State.LOW_REEF_ALGAE ? State.STOW : State.LOW_REEF_ALGAE;
+    }
+
     public void toggleProcessorState() {
         currentState = currentState == State.PROCESSOR ? State.OUTTAKE : State.PROCESSOR;
     }
@@ -118,9 +129,9 @@ public class RobotStates {
                         .andThen(elevator::setCoralStationState)
                         .andThen(new WaitUntilCommand(elevator::nearTarget))
                         .andThen(pivot::setCoralStationState)
-                        .raceWith(new WaitUntilCommand(() -> intake.atIdleState() || intake.atHasAlgaeState()))
+                        .andThen(new WaitUntilCommand(() -> intake.atIdleState() || intake.atHasAlgaeState()))
                         .andThen(this::setStowState)
-                        .raceWith(new WaitUntilCommand(() -> !coralStationState.getAsBoolean()))
+                        .until(() -> !coralStationState.getAsBoolean())
         );
 
         groundCoralState.onTrue(
@@ -132,9 +143,9 @@ public class RobotStates {
                         .andThen(pivot::setGroundCoralState)
                         .andThen(new WaitUntilCommand(VisionUtil.Photon.Color::hasCoralTargets))
                         .andThen(swerve.directMoveToObject().asProxy())
-                        .raceWith(new WaitUntilCommand(() -> intake.atIdleState() || intake.atHasAlgaeState()))
+                        .andThen(new WaitUntilCommand(() -> intake.atIdleState() || intake.atHasAlgaeState()))
                         .andThen(this::setStowState)
-                        .raceWith(new WaitUntilCommand(() -> !groundCoralState.getAsBoolean()))
+                        .until(() -> !groundCoralState.getAsBoolean())
         );
 
         groundAlgaeState.onTrue(
@@ -146,65 +157,65 @@ public class RobotStates {
                         .andThen(pivot::setGroundAlgaeState)
                         .andThen(new WaitUntilCommand(VisionUtil.Photon.Color::hasAlgaeTargets))
                         .andThen(swerve.directMoveToObject().asProxy()) // TODO: MOVE TO ALGAE VS CORAL
-                        .raceWith(new WaitUntilCommand(() -> intake.atIdleState() || intake.atHasAlgaeState()))
+                        .andThen(new WaitUntilCommand(() -> intake.atIdleState() || intake.atHasAlgaeState()))
                         .andThen(this::setStowState)
-                        .raceWith(new WaitUntilCommand(() -> !groundAlgaeState.getAsBoolean()))
+                        .until(() -> !groundAlgaeState.getAsBoolean())
         );
 
         l1CoralState.onTrue(
-                new InstantCommand(this::setStowState)
+                resetState(elevator, intake)
                         .andThen(new WaitUntilCommand(() -> elevator.nearTarget() && pivot.nearTarget() && wrist.nearTarget()))
                         .andThen(pivot::setL1CoralState)
                         .andThen(new WaitUntilCommand(pivot::nearTarget))
                         .andThen(elevator::setL1CoralState)
                         .andThen(new WaitUntilCommand(elevator::nearTarget))
                         .andThen(wrist::setL1CoralState)
-                        .raceWith(new WaitUntilCommand(() -> !intake.hasCoral() && !intake.hasAlgae()))
+                        .andThen(new WaitUntilCommand(() -> !intake.hasCoral() && !intake.hasAlgae()))
                         .andThen(this::setStowState)
-                        .raceWith(new WaitUntilCommand(() -> !l1CoralState.getAsBoolean()))
+                        .until(() -> !l1CoralState.getAsBoolean())
         );
 
         l2CoralState.onTrue(
-                new InstantCommand(this::setStowState)
+                resetState(elevator, intake)
                         .andThen(new WaitUntilCommand(() -> elevator.nearTarget() && pivot.nearTarget() && wrist.nearTarget()))
                         .andThen(pivot::setL2CoralState)
                         .andThen(new WaitUntilCommand(pivot::nearTarget))
                         .andThen(elevator::setL2CoralState)
                         .andThen(new WaitUntilCommand(elevator::nearTarget))
                         .andThen(wrist::setL2CoralState)
-                        .raceWith(new WaitUntilCommand(() -> !intake.hasCoral() && !intake.hasAlgae()))
+                        .andThen(new WaitUntilCommand(() -> !intake.hasCoral() && !intake.hasAlgae()))
                         .andThen(this::setStowState)
-                        .raceWith(new WaitUntilCommand(() -> !l2CoralState.getAsBoolean()))
+                        .until(() -> !l2CoralState.getAsBoolean())
         );
 
         l3CoralState.onTrue(
-                new InstantCommand(this::setStowState)
+                resetState(elevator, intake)
                         .andThen(new WaitUntilCommand(() -> elevator.nearTarget() && pivot.nearTarget() && wrist.nearTarget()))
                         .andThen(pivot::setL3CoralState)
                         .andThen(new WaitUntilCommand(pivot::nearTarget))
                         .andThen(elevator::setL3CoralState)
                         .andThen(new WaitUntilCommand(elevator::nearTarget))
                         .andThen(wrist::setL3CoralState)
-                        .raceWith(new WaitUntilCommand(() -> !intake.hasCoral() && !intake.hasAlgae()))
+                        .andThen(new WaitUntilCommand(() -> !intake.hasCoral() && !intake.hasAlgae()))
                         .andThen(this::setStowState)
-                        .raceWith(new WaitUntilCommand(() -> !l3CoralState.getAsBoolean()))
+                        .until(() -> !l3CoralState.getAsBoolean())
         );
 
         l4CoralState.onTrue(
-                new InstantCommand(this::setStowState)
+                resetState(elevator, intake)
                         .andThen(new WaitUntilCommand(() -> elevator.nearTarget() && pivot.nearTarget() && wrist.nearTarget()))
                         .andThen(pivot::setL4CoralState)
                         .andThen(new WaitUntilCommand(pivot::nearTarget))
                         .andThen(elevator::setL4CoralState)
                         .andThen(new WaitUntilCommand(elevator::nearTarget))
                         .andThen(wrist::setL4CoralState)
-                        .raceWith(new WaitUntilCommand(() -> !intake.hasCoral() && !intake.hasAlgae()))
+                        .andThen(new WaitUntilCommand(() -> !intake.hasCoral() && !intake.hasAlgae()))
                         .andThen(this::setStowState)
-                        .raceWith(new WaitUntilCommand(() -> !l4CoralState.getAsBoolean()))
+                        .until(() -> !l4CoralState.getAsBoolean())
         );
 
         lowReefAlgaeState.onTrue(
-                new InstantCommand(this::setStowState)
+                resetState(elevator, intake)
                         .andThen(new WaitUntilCommand(() -> elevator.nearTarget() && pivot.nearTarget() && wrist.nearTarget()))
                         .andThen(intake::setIntakeState)
                         .andThen(pivot::setLowReefAlgaeState)
@@ -212,15 +223,15 @@ public class RobotStates {
                         .andThen(elevator::setLowReefAlgaeState)
                         .andThen(new WaitUntilCommand(elevator::nearTarget))
                         .andThen(wrist::setLowReefAlgaeState)
-                        .raceWith(new WaitUntilCommand(() -> intake.atIdleState() || intake.atHasAlgaeState()))
+                        .andThen(new WaitUntilCommand(() -> intake.atIdleState() || intake.atHasAlgaeState()))
                         .andThen(this::setStowState)
-                        .raceWith(new WaitUntilCommand(() -> elevator.nearestAlgaeIsHigh(swerve.localizer.getStrategyPose())))
+                        .until(() -> elevator.nearestAlgaeIsHigh(swerve.localizer.getStrategyPose()))
                         .andThen(this::toggleHighReefAlgaeState)
-                        .raceWith(new WaitUntilCommand(() -> !lowReefAlgaeState.getAsBoolean()))
+                        .until(() -> !lowReefAlgaeState.getAsBoolean())
         );
 
         highReefAlgaeState.onTrue(
-                new InstantCommand(this::setStowState)
+                resetState(elevator, intake)
                         .andThen(new WaitUntilCommand(() -> elevator.nearTarget() && pivot.nearTarget() && wrist.nearTarget()))
                         .andThen(intake::setIntakeState)
                         .andThen(pivot::setHighReefAlgaeState)
@@ -228,11 +239,11 @@ public class RobotStates {
                         .andThen(elevator::setHighReefAlgaeState)
                         .andThen(new WaitUntilCommand(elevator::nearTarget))
                         .andThen(wrist::setHighReefAlgaeState)
-                        .raceWith(new WaitUntilCommand(() -> intake.atIdleState() || intake.atHasAlgaeState()))
+                        .andThen(new WaitUntilCommand(() -> intake.atIdleState() || intake.atHasAlgaeState()))
                         .andThen(this::setStowState)
-                        .raceWith(new WaitUntilCommand(() -> !elevator.nearestAlgaeIsHigh(swerve.localizer.getStrategyPose())))
-                        .andThen(this::toggleHighReefAlgaeState)
-                        .raceWith(new WaitUntilCommand(() -> !highReefAlgaeState.getAsBoolean()))
+                        .until(() -> !elevator.nearestAlgaeIsHigh(swerve.localizer.getStrategyPose()))
+                        .andThen(this::toggleLowReefAlgaeState)
+                        .until(() -> !highReefAlgaeState.getAsBoolean())
         );
 
         processorState.onTrue(
@@ -241,22 +252,32 @@ public class RobotStates {
                         .andThen(elevator::setProcessorState)
                         .andThen(new WaitUntilCommand(elevator::nearTarget))
                         .andThen(pivot::setProcessorState)
-                        .raceWith(new WaitUntilCommand(() -> !intake.hasCoral() && !intake.hasAlgae()))
+                        .andThen(new WaitUntilCommand(() -> !intake.hasCoral() && !intake.hasAlgae()))
                         .andThen(this::setStowState)
-                        .raceWith(new WaitUntilCommand(() -> !processorState.getAsBoolean()))
+                        .until(() -> !processorState.getAsBoolean())
         );
 
         netState.onTrue(
-                new InstantCommand(this::setStowState)
+                resetState(elevator, intake)
                         .andThen(new WaitUntilCommand(() -> elevator.nearTarget() && pivot.nearTarget() && wrist.nearTarget()))
                         .andThen(pivot::setNetState)
                         .andThen(new WaitUntilCommand(pivot::nearTarget))
                         .andThen(elevator::setNetState)
                         .andThen(new WaitUntilCommand(elevator::nearTarget))
                         .andThen(wrist::setNetState)
-                        .raceWith(new WaitUntilCommand(() -> !intake.hasCoral() && !intake.hasAlgae()))
+                        .andThen(new WaitUntilCommand(() -> !intake.hasCoral() && !intake.hasAlgae()))
                         .andThen(this::setStowState)
-                        .raceWith(new WaitUntilCommand(() -> !netState.getAsBoolean()))
+                        .until(() -> !netState.getAsBoolean())
         );
+    }
+
+    private Command resetState(Elevator elevator, Intake intake) {
+        return new InstantCommand(intake::setIdleState)
+                        .andThen(elevator::setStowState)
+                        .andThen(new WaitUntilCommand(elevator::nearTarget));
+    }
+
+    public void publishValues() {
+        robotStatesPub.set(currentState.name());
     }
 }

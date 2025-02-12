@@ -165,10 +165,10 @@ public class RobotContainer {
         // SO FIGURE OUT LOGIC CORRECTLY AND CAREFULLY
 
         // (set to ground state and if holding then wait until there's an object then drive to it)
-        driverXbox.leftBumper().negate().and(driverXbox.leftTrigger().negate()).onTrue(
-                new InstantCommand(robotStates::toggleGroundCoralState)
-        );
-        driverXbox.leftBumper().and(driverXbox.leftTrigger()).onTrue(new InstantCommand(robotStates::setStowState));
+//        driverXbox.leftBumper().negate().and(driverXbox.leftTrigger().negate()).onTrue(
+//                new InstantCommand(robotStates::toggleGroundCoralState)
+//        );
+//        driverXbox.leftBumper().and(driverXbox.leftTrigger()).onTrue(new InstantCommand(robotStates::setStowState));
 
         driverXbox.b().onTrue(elevator.nearestAlgaeIsHigh(swerve.localizer.getStrategyPose())
                 ? new InstantCommand(robotStates::toggleHighReefAlgaeState) 
@@ -183,10 +183,9 @@ public class RobotContainer {
         opXbox.leftBumper().onTrue(new InstantCommand(robotStates::toggleGroundCoralState));
         opXbox.rightBumper().onTrue(new InstantCommand(robotStates::toggleGroundAlgaeState));
 
-        opXbox.b().onTrue(elevator.nearestAlgaeIsHigh(swerve.localizer.getStrategyPose())
-                ? new InstantCommand(robotStates::toggleHighReefAlgaeState)
-                : new InstantCommand(robotStates::toggleLowReefAlgaeState)
-        );
+        opXbox.b().onTrue(new InstantCommand(
+                () -> robotStates.toggleNearestReefAlgaeState(elevator.nearestAlgaeIsHigh(swerve.localizer.getStrategyPose()))
+        ));
         opXbox.x().onTrue(new InstantCommand(robotStates::toggleCoralStationState));
 
         // Run SysId routines when holding back/start and X/Y.
@@ -196,6 +195,10 @@ public class RobotContainer {
 
     private void configureToggleStateTriggers() {
         robotStates.configureToggleStateTriggers(swerve, elevator, intake, pivot, wrist);
+    }
+
+    public void logCurrentState() {
+        robotStates.publishValues();
     }
 
     public Command getAutonomousCommand() {
