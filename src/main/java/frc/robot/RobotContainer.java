@@ -170,10 +170,9 @@ public class RobotContainer {
 //        );
 //        driverXbox.leftBumper().and(driverXbox.leftTrigger()).onTrue(new InstantCommand(robotStates::setStowState));
 
-        driverXbox.b().onTrue(elevator.nearestAlgaeIsHigh(swerve.localizer.getStrategyPose())
-                ? new InstantCommand(robotStates::toggleHighReefAlgaeState) 
-                : new InstantCommand(robotStates::toggleLowReefAlgaeState)
-        );
+        driverXbox.b().onTrue(new InstantCommand(
+                () -> robotStates.toggleNearestReefAlgaeState(elevator.nearestAlgaeIsHigh(swerve.localizer.getStrategyPose()))
+        ));
 
         opXbox.povRight().onTrue(new InstantCommand(robotStates::toggleL1CoralState));
         opXbox.povUp().onTrue(new InstantCommand(robotStates::toggleL2CoralState));
