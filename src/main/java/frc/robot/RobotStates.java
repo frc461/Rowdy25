@@ -135,6 +135,7 @@ public class RobotStates {
                         .andThen(pivot::setCoralStationState)
                         .andThen(new WaitUntilCommand(() -> intake.atIdleState() || intake.atHasAlgaeState()))
                         .andThen(this::setStowState)
+                        .until(() -> intake.hasCoral() || intake.hasAlgae()) // TODO SHOP: TEST THIS AUTOMATIC CHECKER (IF IT WORKS, ADD IT TO EVERY INTAKE STATE, AND ADD THE INVERSE TO EVERY OUTTAKE STATE)
                         .until(() -> !coralStationState.getAsBoolean())
         );
 
