@@ -39,7 +39,7 @@ public class RobotContainer {
     private final CommandXboxController driverXbox = new CommandXboxController(0);
     /* Driver Tentative:
      * POV buttons / D-pad:
-     * Up: Outtake, stow
+     * Up:
      * Down: Click - manually temp toggle disable all auto aligning
      * Left: Click - manually temp toggle between lower and higher algae reef intake level
      * Right: Click - manually temp toggle between processor and net height
@@ -50,7 +50,7 @@ public class RobotContainer {
      *
      * Joysticks:
      * Left: Translation
-     * Right:
+     * Right: Flick up - outtake then stow, Flick down - stow
      * Left Button: Reset position to coral left side, Hold: Reset gyro
      * Right Button: Reset position to coral right side
      *
@@ -86,11 +86,11 @@ public class RobotContainer {
      * Right: Click - L1 score state, Click Again - outtake, stow
      *
      * Triggers:
-     * Left: Move elevator down
-     * Right: Move elevator up
+     * Left: Outtake
+     * Right: Stow
      *
      * Joysticks:
-     * Left: Rotate pivot
+     * Left: Move elevator (x), rotate pivot (y)
      * Right: Rotate wrist
      * Left Button: Click - manually temp toggle between lower and higher algae reef intake level
      * Right Button: Click - manually temp toggle between processor and net height
@@ -144,7 +144,7 @@ public class RobotContainer {
         elevator.setDefaultCommand(
                 new ElevatorCommand(
                         elevator,
-                        () -> opXbox.getRightTriggerAxis() - opXbox.getLeftTriggerAxis(),
+                        () -> -opXbox.getLeftX(),
                         pivot::getPosition
                 )
         );
@@ -180,6 +180,9 @@ public class RobotContainer {
         opXbox.povUp().onTrue(new InstantCommand(robotStates::toggleL2CoralState));
         opXbox.povLeft().onTrue(new InstantCommand(robotStates::toggleL3CoralState));
         opXbox.povDown().onTrue(new InstantCommand(robotStates::toggleL4CoralState));
+
+        opXbox.leftTrigger().onTrue(new InstantCommand(robotStates::setOuttakeState));
+        opXbox.leftTrigger().onTrue(new InstantCommand(robotStates::setStowState));
 
         opXbox.leftBumper().onTrue(new InstantCommand(robotStates::toggleGroundCoralState));
         opXbox.rightBumper().onTrue(new InstantCommand(robotStates::toggleGroundAlgaeState));
