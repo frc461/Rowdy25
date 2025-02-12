@@ -197,8 +197,8 @@ public class FieldUtil {
 
         public static ScoringLocation getAlgaeScoringFromTag(AprilTag tag) {
             return switch (tag) {
-                case ID_3, ID_16 -> ScoringLocation.NET;
-                case ID_5, ID_14 -> ScoringLocation.PROCESSOR;
+                case ID_3, ID_16 -> ScoringLocation.PROCESSOR;
+                case ID_5, ID_14 -> ScoringLocation.NET;
                 default -> null;
             };
         }
