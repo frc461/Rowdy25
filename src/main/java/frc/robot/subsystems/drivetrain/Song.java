@@ -4,6 +4,7 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.swerve.SwerveModule;
+import edu.wpi.first.wpilibj.Timer;
 import frc.robot.constants.Constants;
 
 import java.util.ArrayList;
@@ -13,7 +14,8 @@ import java.util.stream.IntStream;
 
 public class Song {
     private static final Random random = new Random();
-    public final int[] trackWeights;
+    private static final Timer songTimer = new Timer();
+    private final int[] trackWeights;
     private final String filename;
 
     public static final Song[] startupSongs = new Song[] {
@@ -40,13 +42,6 @@ public class Song {
             new Song("nggyu.chrp", new int[] {6, 2}),
     };
 
-    public static void playRandom(Swerve swerve, Song[] songs) {
-        Song song;
-        song = songs[random.nextInt(songs.length)];
-
-        song.play(swerve);
-    }
-
     public Song(String filename) {
         this(filename, new int[] {8});
     }
@@ -56,12 +51,22 @@ public class Song {
         this.filename = filename;
     }
 
-
-    public String getPath() {
+    private String getPath() {
         return "sound/" + filename;
     }
 
-    public void play(Swerve swerve) {
+    public static boolean tenSeconds() {
+        return songTimer.hasElapsed(10);
+    }
+
+    public static void playRandom(Swerve swerve, Song[] songs) {
+        Song song;
+        song = songs[random.nextInt(songs.length)];
+        song.play(swerve);
+    }
+
+    private void play(Swerve swerve) {
+        songTimer.restart();
         swerve.orchestra.stop();
 
         List<ParentDevice> motors = new ArrayList<>();
