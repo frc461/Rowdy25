@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
 import frc.robot.util.ExpUtil;
+import frc.robot.util.GravityGainsCalculator;
 import frc.robot.util.Lights;
 
 public class Pivot extends SubsystemBase { // TODO SHOP: INVESTIGATE CANCODER REPORTING 0 POSITION
@@ -54,7 +55,21 @@ public class Pivot extends SubsystemBase { // TODO SHOP: INVESTIGATE CANCODER RE
     private final TalonFX pivot;
     private final ServoChannel ratchet;
     private final MotionMagicExpoVoltage request;
-    private double error, lastManualPosition;
+
+    private final GravityGainsCalculator gravityGainsCalculator = new GravityGainsCalculator(
+            Constants.PivotConstants.AXIS_POSITION,
+            Constants.WristConstants.AXIS_POSITION,
+            Constants.WristConstants.AXIS_TO_ZERO_COM,
+            Constants.ElevatorConstants.ZERO_UPRIGHT_COM,
+            Constants.ElevatorConstants.COM_TO_STAGE_2_RATIO,
+            Constants.ElevatorConstants.STAGE_2_LIMIT,
+            Constants.ElevatorConstants.COM_TO_STAGE_3_RATIO,
+            Constants.ElevatorConstants.MASS_LBS,
+            Constants.WristConstants.MASS_LBS,
+            Constants.PivotConstants.G
+    );
+
+    private double error, currentG, lastManualPosition;
 
     private final PivotTelemetry pivotTelemetry = new PivotTelemetry(this);
 
@@ -102,6 +117,7 @@ public class Pivot extends SubsystemBase { // TODO SHOP: INVESTIGATE CANCODER RE
         request = new MotionMagicExpoVoltage(getTarget());
 
         error = 0.0;
+        currentG = Constants.PivotConstants.G;
         lastManualPosition = State.STOW.position;
     }
 
@@ -127,6 +143,10 @@ public class Pivot extends SubsystemBase { // TODO SHOP: INVESTIGATE CANCODER RE
 
     public double getError() {
         return error;
+    }
+
+    public double getCurrentGravityGains() {
+        return currentG;
     }
 
     public double getRatchetStateValue() {
@@ -203,8 +223,9 @@ public class Pivot extends SubsystemBase { // TODO SHOP: INVESTIGATE CANCODER RE
         setState(State.NET);
     }
 
-    public void holdTarget(double gravityGainsToApply) {
-        pivot.setControl(request.withPosition(getTarget()).withFeedForward(gravityGainsToApply));
+    public void holdTarget(double elevatorPosition, double wristPosition) {
+        currentG = gravityGainsCalculator.calculateGFromPositions(getPosition(), wristPosition, elevatorPosition);
+        pivot.setControl(request.withPosition(getTarget()).withFeedForward(currentG));
     }
 
 

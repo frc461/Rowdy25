@@ -8,7 +8,9 @@ TODO:
 - [x] Test wrist CANCoder offset
 - [x] Tune elevator
 - [x] Test pivot gravity gains
-- [ ] Remove voltage constraints if everything works
-- [ ] Test manual controls
+- [x] Remove voltage constraints if everything works
+- [x] Test manual controls
 - [ ] Tune canandcolor for intake
-- [ ] Test presets
+- [x] Test presets
+- [ ] Pivot cancoder issues
+- [ ] SysID for elevator, pivot, wrist
