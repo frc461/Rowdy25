@@ -14,7 +14,7 @@ import frc.robot.constants.Constants;
 import frc.robot.util.ExpUtil;
 import frc.robot.util.Lights;
 
-public class Pivot extends SubsystemBase {
+public class Pivot extends SubsystemBase { // TODO SHOP: INVESTIGATE CANCODER REPORTING 0 POSITION
     public enum State {
         MANUAL(Constants.PivotConstants.LOWER_LIMIT),
         STOW(Constants.PivotConstants.STOW),
