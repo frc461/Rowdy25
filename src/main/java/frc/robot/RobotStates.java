@@ -12,6 +12,8 @@ import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.wrist.Wrist;
 import frc.robot.util.VisionUtil;
 
+import java.util.function.BooleanSupplier;
+
 public class RobotStates {
     public enum State { // TODO: IMPLEMENT CLIMBING
         STOW,
@@ -122,6 +124,7 @@ public class RobotStates {
     }
 
     public void configureToggleStateTriggers(Swerve swerve, Elevator elevator, Intake intake, Pivot pivot, Wrist wrist) {
+        
         stowState.onTrue(
                 new InstantCommand(intake::setIdleState)
                         .andThen(wrist::setStowState)
@@ -181,7 +184,7 @@ public class RobotStates {
         );
 
         l1CoralState.onTrue(
-                resetState(elevator, intake)
+                safeTransition(elevator, pivot::nearTarget)
                         .andThen(new WaitUntilCommand(() -> elevator.nearTarget() && pivot.nearTarget() && wrist.nearTarget()))
                         .andThen(pivot::setL1CoralState)
                         .andThen(new WaitUntilCommand(pivot::nearTarget))
@@ -192,7 +195,7 @@ public class RobotStates {
         );
 
         l2CoralState.onTrue(
-                resetState(elevator, intake)
+                safeTransition(elevator, pivot::nearTarget)
                         .andThen(new WaitUntilCommand(() -> elevator.nearTarget() && pivot.nearTarget() && wrist.nearTarget()))
                         .andThen(pivot::setL2CoralState)
                         .andThen(new WaitUntilCommand(pivot::nearTarget))
@@ -203,7 +206,7 @@ public class RobotStates {
         );
 
         l3CoralState.onTrue(
-                resetState(elevator, intake)
+                safeTransition(elevator, pivot::nearTarget)
                         .andThen(new WaitUntilCommand(() -> elevator.nearTarget() && pivot.nearTarget() && wrist.nearTarget()))
                         .andThen(pivot::setL3CoralState)
                         .andThen(new WaitUntilCommand(pivot::nearTarget))
@@ -214,7 +217,7 @@ public class RobotStates {
         );
 
         l4CoralState.onTrue(
-                resetState(elevator, intake)
+                safeTransition(elevator, pivot::nearTarget)
                         .andThen(new WaitUntilCommand(() -> elevator.nearTarget() && pivot.nearTarget() && wrist.nearTarget()))
                         .andThen(pivot::setL4CoralState)
                         .andThen(new WaitUntilCommand(pivot::nearTarget))
@@ -225,7 +228,7 @@ public class RobotStates {
         );
 
         lowReefAlgaeState.onTrue(
-                resetState(elevator, intake)
+                safeTransition(elevator, pivot::nearTarget)
                         .andThen(new WaitUntilCommand(() -> elevator.nearTarget() && pivot.nearTarget() && wrist.nearTarget()))
                         .andThen(intake::setIntakeState)
                         .andThen(pivot::setLowReefAlgaeState)
@@ -242,7 +245,7 @@ public class RobotStates {
         );
 
         highReefAlgaeState.onTrue(
-                resetState(elevator, intake)
+                safeTransition(elevator, pivot::nearTarget)
                         .andThen(new WaitUntilCommand(() -> elevator.nearTarget() && pivot.nearTarget() && wrist.nearTarget()))
                         .andThen(intake::setIntakeState)
                         .andThen(pivot::setHighReefAlgaeState)
@@ -268,7 +271,7 @@ public class RobotStates {
         );
 
         netState.onTrue(
-                resetState(elevator, intake)
+                safeTransition(elevator, pivot::nearTarget)
                         .andThen(new WaitUntilCommand(() -> elevator.nearTarget() && pivot.nearTarget() && wrist.nearTarget()))
                         .andThen(pivot::setNetState)
                         .andThen(new WaitUntilCommand(pivot::nearTarget))
@@ -279,10 +282,12 @@ public class RobotStates {
         );
     }
 
-    private Command resetState(Elevator elevator, Intake intake) { // TODO: MINIMIZE THIS ACTION I.E., NO NEED TO RESET IF PIVOT DOESN'T MOVE
-        return new InstantCommand(intake::setIdleState)
-                        .andThen(elevator::setStowState)
-                        .andThen(new WaitUntilCommand(elevator::nearTarget));
+    private Command safeTransition(Elevator elevator, BooleanSupplier pivotNearTarget) { // TODO: MINIMIZE THIS ACTION I.E., NO NEED TO RESET IF PIVOT DOESN'T MOVE
+        if (!pivotNearTarget.getAsBoolean()) {
+            return new InstantCommand(elevator::setStowState)
+                    .andThen(new WaitUntilCommand(elevator::nearTarget));
+        }
+        return Commands.none();
     }
 
     public void publishValues() {

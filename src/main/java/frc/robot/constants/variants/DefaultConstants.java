@@ -91,11 +91,11 @@ public final class DefaultConstants {
     public static final class VisionConstants {
         public static final Matrix<N3, N1> ODOM_STD_DEV = VecBuilder.fill(0.01, 0.01, Units.degreesToRadians(0.01));
         public static final Function<Double, Matrix<N3, N1>> VISION_STD_DEV_MULTITAG_FUNCTION =
-                dist -> dist < 2.0
+                dist -> dist < 3.0
                         ? VecBuilder.fill(Math.min(0.1, 0.1 * dist), Math.min(0.1, 0.1 * dist), Units.degreesToRadians(1.0))
                         : VecBuilder.fill(0.15 * dist, 0.15 * dist, Units.degreesToRadians(180.0) * dist);
         public static final Function<Double, Matrix<N3, N1>> VISION_STD_DEV_FUNCTION =
-                dist -> dist < 2.0
+                dist -> dist < 3.0
                         ? VecBuilder.fill(0.15 * dist, 0.15 * dist, Units.degreesToRadians(10.0) * dist)
                         : VecBuilder.fill(0.5 * dist, 0.5 * dist, Units.degreesToRadians(180.0) * dist); // TODO SHOP: TEST STD DEVS
 
@@ -250,7 +250,7 @@ public final class DefaultConstants {
         public static final double I = 0;
         public static final double D = 0.01;
         public static final double EXPO_V = V / 0.75; // 75% of the actual max velocity, as it will allocate 1 / 0.8 = 1.25 times the voltage to 1 rps
-        public static final double EXPO_A = A / 0.01; // 0.5% of the actual max acceleration
+        public static final double EXPO_A = A / 0.01; // 1% of the actual max acceleration // TODO SHOP: SMOOTHEN THE MOTION
         public static final double SAFE_TOLERANCE = 15.0;
         public static final double AT_TARGET_TOLERANCE = 2.5;
 
@@ -259,8 +259,8 @@ public final class DefaultConstants {
         public static final double UPPER_LIMIT = 105;
         public static final double STOW = 50;
         public static final double CORAL_STATION = 64.2;
-        public static final double GROUND_CORAL = 6.5;
-        public static final double GROUND_ALGAE = 6.5;
+        public static final double GROUND_CORAL = 3.5; // TODO SHOP: INVESTIGATE GRAVITY GAINS
+        public static final double GROUND_ALGAE = 4.5;
         public static final double L1_CORAL = 55;
         public static final double L2_CORAL = 72.5;
         public static final double L3_CORAL = 80;
@@ -298,18 +298,18 @@ public final class DefaultConstants {
         public static final double I = 0.0;
         public static final double D = 0.0;
         public static final double EXPO_V = V / 0.8; // 80% of the actual max velocity, as it will allocate 1 / 0.8 = 1.25 times the voltage to 1 rps
-        public static final double EXPO_A = A / 0.05; // 5% of the actual max accel
+        public static final double EXPO_A = A / 0.05; // 5% of the actual max accel // TODO SHOP: SMOOTHEN THE MOTION
         public static final double SAFE_TOLERANCE = 25.0;
         public static final double AT_TARGET_TOLERANCE = 2.5;
 
-        // presets
+        // presets // TODO SHOP: FIX THESE PRESETS (AND MAYBE TROUBLESHOOT WRIST POSITIONS)
         public static final Function<Double, Double> LOWER_LIMIT = (pivotPosition) -> (double) (pivotPosition < 45 ? 125 : 35);
         public static final Function<Double, Double> UPPER_LIMIT = (elevatorPosition) -> (double) (elevatorPosition > 3 ? 320 : 200);
         public static final double STOW = 45;
         public static final double CORAL_STATION = 79.7;
         public static final double GROUND_CORAL = 128.5;
         public static final double GROUND_ALGAE = 140;
-        public static final double L1_CORAL = 195; // TODO SHOP: SHOOT IT!
+        public static final double L1_CORAL = 195; // TODO WAIT (WORKING INTAKE): SHOOT IT!
         public static final double L2_CORAL = 291.5;
         public static final double L3_CORAL = 281.6;
         public static final double L4_CORAL = 284.3;
