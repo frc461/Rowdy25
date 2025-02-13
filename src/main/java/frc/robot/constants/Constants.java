@@ -40,6 +40,7 @@ public final class Constants {
 
     // kSpeedAt12Volts desired top speed
     public static double MAX_VEL;
+    public static Function<Double, Double> MAX_CONTROLLED_VEL;
     // 1.96664381049 rotations per second tuned max angular velocity
     public static double MAX_ANGULAR_VEL;
     public static double MAX_CONTROLLED_ANGULAR_VEL;

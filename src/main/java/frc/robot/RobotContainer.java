@@ -6,6 +6,7 @@ import com.pathplanner.lib.pathfinding.Pathfinding;
 
 import dev.doglog.DogLog;
 import dev.doglog.DogLogOptions;
+import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -45,8 +46,8 @@ public class RobotContainer {
      * Right: Click - manually temp toggle between processor and net height
      *
      * Triggers:
-     * Left: Rotate CCW (with bumper - FAST)
-     * Right: Rotate CW (with bumper - FAST)
+     * Left: Rotate CCW (hold or double click - FAST)
+     * Right: Rotate CW (hold or double click - FAST)
      *
      * Joysticks:
      * Left: Translation
@@ -130,14 +131,13 @@ public class RobotContainer {
         rotate counterclockwise with right joystick negative X (left) */
         swerve.setDefaultCommand(
                 swerve.driveFieldCentric(
+                        elevator::getPosition,
                         driverXbox::getLeftY,
                         driverXbox::getLeftX,
                         driverXbox::getLeftTriggerAxis,
                         driverXbox::getRightTriggerAxis,
-                        () -> driverXbox.leftBumper().getAsBoolean(),
-                        () -> driverXbox.rightBumper().getAsBoolean(),
-                        () -> driverXbox.x().getAsBoolean(),
-                        () -> driverXbox.y().getAsBoolean()
+                        () -> driverXbox.leftTrigger(0.9).debounce(1.5).getAsBoolean(),
+                        () -> driverXbox.rightTrigger(0.5).debounce(1.5).getAsBoolean() // TODO: DOUBLE-CLICK USING DEBOUNCER FALLING
                 )
         );
 
@@ -160,6 +160,7 @@ public class RobotContainer {
         // TODO: ON FALSE TRIGGERS FOR DRIVER ONLY BINDINGS
 
         driverXbox.povUp().onTrue(new InstantCommand(robotStates::setOuttakeState));
+        driverXbox.povDown().onTrue(new InstantCommand(swerve::toggleAutoHeading));
 
         // (set to ground state and if holding then wait until there's an object then drive to it)
 //        driverXbox.leftBumper().negate().and(driverXbox.leftTrigger().negate()).onTrue(

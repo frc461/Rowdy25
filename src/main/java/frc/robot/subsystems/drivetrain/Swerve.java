@@ -34,6 +34,19 @@ import frc.robot.util.FieldUtil;
  * Subsystem so it can easily be used in command-based projects.
  */
 public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> implements Subsystem {
+    public enum DriveMode {
+        IDLE,
+        ROTATING,
+        FAST_ROTATING,
+        TRANSLATING,
+        BRANCH_HEADING,
+        OBJECT_HEADING,
+        CORAL_STATION_HEADING,
+        ALGAE_SCORING_HEADING
+    }
+
+    private DriveMode currentMode;
+
     /* An extension to the Swerve subsystem */
     public final Localizer localizer = new Localizer(this);
     private final SwerveTelemetry swerveTelemetry = new SwerveTelemetry(this);
@@ -45,9 +58,9 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
     private final SwerveRequest.RobotCentric robotCentric = new SwerveRequest.RobotCentric();
     private final SwerveRequest.SwerveDriveBrake xMode = new SwerveRequest.SwerveDriveBrake();
 
-
-    private boolean hasAppliedDefaultRotation = false; // Keep track if we've ever applied the operator perspective before or not
-    public double consistentHeading = 0.0; // Heading to keep while translating without rotating
+    private boolean hasAppliedDefaultRotation; // Keep track if we've ever applied the operator perspective before or not
+    private boolean autoHeading;
+    public double consistentHeading; // Heading to keep while translating without rotating
 
     /**
      * Constructs a CTRE SwerveDrivetrain using the specified constants.
@@ -67,6 +80,8 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                 Constants.SwerveConstants.BACK_LEFT,
                 Constants.SwerveConstants.BACK_RIGHT
         );
+
+        currentMode = DriveMode.IDLE;
 
         Song.playRandom(this, Song.startupSongs);
 
@@ -95,6 +110,10 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                 () -> Constants.ALLIANCE_SUPPLIER.get() == Alliance.Red,
                 this
         );
+
+        hasAppliedDefaultRotation = false;
+        autoHeading = true;
+        consistentHeading = 0.0;
     }
 
     /**
@@ -108,26 +127,26 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
     }
 
     public Command driveFieldCentric(
+            DoubleSupplier elevatorHeight,
             DoubleSupplier straight,
             DoubleSupplier strafe,
             DoubleSupplier rotLeft,
             DoubleSupplier rotRight,
-            BooleanSupplier tagTurret,
-            BooleanSupplier objectTurret,
-            BooleanSupplier coralStationTurret,
-            BooleanSupplier algaeScoringTurret
+            BooleanSupplier fastRotLeft,
+            BooleanSupplier fastRotRight
     ) {
         return new DriveCommand(
                 this,
                 fieldCentric,
+                elevatorHeight,
                 straight,
                 strafe,
                 rotLeft,
                 rotRight,
-                tagTurret,
-                objectTurret,
-                coralStationTurret,
-                algaeScoringTurret
+                fastRotLeft,
+                fastRotRight,
+                () -> currentMode,
+                () -> autoHeading
         );
     }
 
@@ -162,8 +181,15 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
         return new DirectMoveToNearestBranchCommand(this, fieldCentric);
     }
 
-    public Command xMode() {
-        return applyRequest(() -> xMode);
+    public DriveMode getDriveMode() {
+        return currentMode;
+    }
+
+    public boolean isFullyTeleop() {
+        return currentMode == DriveMode.IDLE
+                || currentMode == DriveMode.ROTATING
+                || currentMode == DriveMode.FAST_ROTATING
+                || currentMode == DriveMode.TRANSLATING;
     }
 
     public void resetGyro() {
@@ -176,6 +202,42 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                 .withVelocityX(0.0)
                 .withVelocityY(0.0)
                 .withRotationalRate(0.0));
+    }
+
+    public void toggleAutoHeading() {
+        autoHeading = !autoHeading;
+    }
+
+    public void setIdleMode() {
+        currentMode = DriveMode.IDLE;
+    }
+
+    public void setRotatingMode() {
+        currentMode = DriveMode.ROTATING;
+    }
+
+    public void setFastRotatingMode() {
+        currentMode = DriveMode.FAST_ROTATING;
+    }
+
+    public void setTranslatingMode() {
+        currentMode = DriveMode.TRANSLATING;
+    }
+
+    public void setBranchHeadingMode() {
+        currentMode = DriveMode.BRANCH_HEADING;
+    }
+
+    public void setObjectHeadingMode() {
+        currentMode = DriveMode.OBJECT_HEADING;
+    }
+
+    public void setCoralStationHeadingMode() {
+        currentMode = DriveMode.CORAL_STATION_HEADING;
+    }
+
+    public void setAlgaeScoringHeadingMode() {
+        currentMode = DriveMode.ALGAE_SCORING_HEADING;
     }
 
     @Override
