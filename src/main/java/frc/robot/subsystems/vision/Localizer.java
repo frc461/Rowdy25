@@ -129,7 +129,7 @@ public class Localizer {
 
     public void setLocalizationStrategyFromChooser() {
         LocalizationStrategy strategy = localizationChooser.getSelected();
-        if (strategy != this.strategy) {
+        if (this.strategy != strategy) {
             this.strategy = strategy;
         }
     }

@@ -2,6 +2,7 @@ package frc.robot;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.StringPublisher;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.Constants;
@@ -12,6 +13,7 @@ import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.wrist.Wrist;
 import frc.robot.util.VisionUtil;
 
+import java.util.Arrays;
 import java.util.function.BooleanSupplier;
 
 public class RobotStates {
@@ -33,6 +35,7 @@ public class RobotStates {
     }
 
     private State currentState;
+    private final SendableChooser<State> stateChooser = new SendableChooser<>();
 
     public final Trigger stowState = new Trigger(() -> currentState == State.STOW);
     public final Trigger outtakeState = new Trigger(() -> currentState == State.OUTTAKE);
@@ -53,6 +56,8 @@ public class RobotStates {
 
     public RobotStates() {
         currentState = State.STOW;
+        Arrays.stream(State.values()).forEach(state -> stateChooser.addOption(state.name(), state));
+        stateChooser.onChange(state -> currentState = stateChooser.getSelected()); // TODO SHOP: TEST CHOOSER
     }
 
     public void setStowState() {
@@ -292,5 +297,9 @@ public class RobotStates {
 
     public void publishValues() {
         robotStatesPub.set(currentState.name());
+    }
+
+    public void applyValues() {
+
     }
 }

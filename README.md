@@ -10,7 +10,12 @@ TODO:
 - [x] Test pivot gravity gains
 - [x] Remove voltage constraints if everything works
 - [x] Test manual controls
-- [ ] Tune canandcolor for intake
+- [ ] Tune canandcolor for intake (coral + algae)
 - [x] Test presets
 - [ ] Pivot cancoder issues
+- [ ] Test robot state selector
 - [ ] SysID for elevator, pivot, wrist
+- [ ] Swerve automation pt. 1 - rotational alignment
+- [ ] Swerve automation pt.2 - pathfinding/translation alignment
+- [ ] Auto
+- [ ] Fine tune for efficiency

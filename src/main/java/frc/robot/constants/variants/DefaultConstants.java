@@ -302,7 +302,7 @@ public final class DefaultConstants {
         public static final double SAFE_TOLERANCE = 25.0;
         public static final double AT_TARGET_TOLERANCE = 2.5;
 
-        // presets // TODO SHOP: FIX THESE PRESETS (AND MAYBE TROUBLESHOOT WRIST POSITIONS)
+        // presets // TODO SHOP: FIX THESE PRESETS (AND MAYBE TROUBLESHOOT WRIST CANCODER)
         public static final Function<Double, Double> LOWER_LIMIT = (pivotPosition) -> (double) (pivotPosition < 45 ? 125 : 35);
         public static final Function<Double, Double> UPPER_LIMIT = (elevatorPosition) -> (double) (elevatorPosition > 3 ? 320 : 200);
         public static final double STOW = 45;
