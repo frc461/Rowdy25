@@ -142,22 +142,16 @@ public class RobotContainer {
                 )
         );
 
-        elevator.setDefaultCommand(
-                new ElevatorCommand(
-                        elevator,
-                        () -> -opXbox.getLeftX(),
-                        pivot::getPosition
-                )
-        );
+        elevator.setDefaultCommand(new ElevatorCommand(elevator, opXbox::getLeftX, pivot::getPosition, robotStates));
 
         intake.setDefaultCommand(new IntakeCommand(intake));
 
         pivot.setDefaultCommand(
-                new PivotCommand(pivot, () -> -opXbox.getLeftY(), elevator::getPosition, wrist::getPosition)
+                new PivotCommand(pivot, () -> -opXbox.getLeftY(), elevator::getPosition, wrist::getPosition, robotStates)
         );
 
         wrist.setDefaultCommand(
-                new WristCommand(wrist, () -> -opXbox.getRightY(), pivot::getPosition, elevator::getPosition)
+                new WristCommand(wrist, () -> -opXbox.getRightY(), pivot::getPosition, elevator::getPosition, robotStates)
         );
     }
 

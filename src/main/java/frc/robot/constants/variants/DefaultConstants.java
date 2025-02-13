@@ -203,7 +203,7 @@ public final class DefaultConstants {
         public static final double L1_CORAL = 0;
         public static final double L2_CORAL = 5.0;
         public static final double L3_CORAL = 14.4;
-        public static final double L4_CORAL = 40;
+        public static final double L4_CORAL = 41;
         public static final double LOW_REEF_ALGAE = 2.9;
         public static final double HIGH_REEF_ALGAE = 10.5;
         public static final double PROCESSOR = 0;
@@ -258,13 +258,13 @@ public final class DefaultConstants {
         public static final double LOWER_LIMIT = 0;
         public static final double UPPER_LIMIT = 105;
         public static final double STOW = 50;
-        public static final double CORAL_STATION = 66.8;
-        public static final double GROUND_CORAL = 2.5;
-        public static final double GROUND_ALGAE = 4.5;
+        public static final double CORAL_STATION = 64.2;
+        public static final double GROUND_CORAL = 6.5;
+        public static final double GROUND_ALGAE = 6.5;
         public static final double L1_CORAL = 55;
         public static final double L2_CORAL = 72.5;
         public static final double L3_CORAL = 80;
-        public static final double L4_CORAL = 84.1;
+        public static final double L4_CORAL = 85.6;
         public static final double LOW_REEF_ALGAE = 105;
         public static final double HIGH_REEF_ALGAE = 97.6;
         public static final double PROCESSOR = 22.1;
@@ -287,7 +287,7 @@ public final class DefaultConstants {
 
         // encoder config
         public static final int ENCODER_ID = 62;
-        public static final double ENCODER_ABSOLUTE_OFFSET = -0.33154229058;
+        public static final double ENCODER_ABSOLUTE_OFFSET =  -0.0959452311;
         public static final SensorDirectionValue ENCODER_INVERT = SensorDirectionValue.Clockwise_Positive;
 
         // pid & tolerance
@@ -306,13 +306,13 @@ public final class DefaultConstants {
         public static final Function<Double, Double> LOWER_LIMIT = (pivotPosition) -> (double) (pivotPosition < 45 ? 125 : 35);
         public static final Function<Double, Double> UPPER_LIMIT = (elevatorPosition) -> (double) (elevatorPosition > 3 ? 320 : 200);
         public static final double STOW = 45;
-        public static final double CORAL_STATION = 107.5;
+        public static final double CORAL_STATION = 79.7;
         public static final double GROUND_CORAL = 128.5;
         public static final double GROUND_ALGAE = 140;
         public static final double L1_CORAL = 195; // TODO SHOP: SHOOT IT!
         public static final double L2_CORAL = 291.5;
         public static final double L3_CORAL = 281.6;
-        public static final double L4_CORAL = 282.3;
+        public static final double L4_CORAL = 284.3;
         public static final double LOW_REEF_ALGAE = 256.3;
         public static final double HIGH_REEF_ALGAE = 248.5;
         public static final double PROCESSOR = 125;
@@ -340,14 +340,14 @@ public final class DefaultConstants {
         // The steer motor uses any SwerveModule.SteerRequestType control request with the
         // output type specified by SwerveModuleConstants.SteerMotorClosedLoopOutput
         private static final Slot0Configs STEER_GAINS = new Slot0Configs()
-                .withKP(75.0).withKI(0).withKD(0.5)
-                .withKS(0.1).withKV(2.66).withKA(0)
+                .withKP(16.756).withKI(0).withKD(0.28988)
+                .withKS(0.19849).withKV(2.4115).withKA(0.055522)
                 .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign);
         // When using closed-loop control, the drive motor uses the control
         // output type specified by SwerveModuleConstants.DriveMotorClosedLoopOutput
         private static final Slot0Configs DRIVE_GAINS = new Slot0Configs()
-                .withKP(0).withKI(0).withKD(0)
-                .withKS(0.149).withKV(0.1155).withKA(0);
+                .withKP(0.14678).withKI(0).withKD(0)
+                .withKS(0.070646).withKV(0.11413).withKA(0.016008);
 
         // The closed-loop output type to use for the steer motors;
         // This affects the PID/FF gains for the steer motors
