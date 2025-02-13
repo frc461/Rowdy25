@@ -159,7 +159,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                 ));
     }
 
-    public Command pathFindToNearestBranch() {
+    public Command pathFindToNearestBranch(DoubleSupplier elevatorHeight) {
         return Commands.defer(() -> {
             Pose2d nearestBranchPose = FieldUtil.Reef.getNearestBranchPose(localizer.getStrategyPose());
             return PathManager.pathFindToClosePose(
@@ -170,15 +170,15 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                     Constants.AutoConstants.DISTANCE_TOLERANCE_TO_DRIVE_INTO,
                     2.0
             );
-        }, Set.of(this)).andThen(directMoveToNearestBranch());
+        }, Set.of(this)).andThen(directMoveToNearestBranch(elevatorHeight));
     }
 
     public Command directMoveToObject() {
         return new DriveToObjectCommand(this, robotCentric);
     }
 
-    public Command directMoveToNearestBranch() {
-        return new DirectMoveToNearestBranchCommand(this, fieldCentric);
+    public Command directMoveToNearestBranch(DoubleSupplier elevatorHeight) {
+        return new DirectMoveToNearestBranchCommand(this, fieldCentric, elevatorHeight);
     }
 
     public DriveMode getDriveMode() {

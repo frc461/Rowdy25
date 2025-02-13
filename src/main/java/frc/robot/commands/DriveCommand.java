@@ -77,7 +77,7 @@ public class DriveCommand extends Command {
 
     @Override
     public void execute() {
-        // TODO: AUTOMATION WITH SUPERSTRUCTURE & CONTROL MAX SPEED BASED ON ELEVATOR HEIGHT, PIVOT ANGLE
+        // TODO: AUTOMATION WITH SUPERSTRUCTURE & CONTROL MAX SPEED BASED ON ELEVATOR HEIGHT
         // TODO SHOP: TEST AUTO ALIGNMENT
 
         updateMode();
@@ -87,11 +87,11 @@ public class DriveCommand extends Command {
                 : swerve.localizer.getStrategyPose().getRotation().getDegrees();
 
         swerve.setControl(
-                fieldCentric.withDeadband(Constants.MAX_VEL * Constants.DEADBAND)
+                fieldCentric.withDeadband(Constants.MAX_CONTROLLED_VEL.apply(elevatorHeight.getAsDouble()) * Constants.DEADBAND)
                         .withForwardPerspective(SwerveRequest.ForwardPerspectiveValue.OperatorPerspective)
                         .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
-                        .withVelocityX(-straight.getAsDouble() * Constants.MAX_VEL)
-                        .withVelocityY(-strafe.getAsDouble() * Constants.MAX_VEL)
+                        .withVelocityX(-straight.getAsDouble() * Constants.MAX_CONTROLLED_VEL.apply(elevatorHeight.getAsDouble()))
+                        .withVelocityY(-strafe.getAsDouble() * Constants.MAX_CONTROLLED_VEL.apply(elevatorHeight.getAsDouble()))
                         .withRotationalRate(determineRotationalRate())
         );
     }

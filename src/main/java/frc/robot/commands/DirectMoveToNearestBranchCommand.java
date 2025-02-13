@@ -11,15 +11,18 @@ import frc.robot.constants.Constants;
 import frc.robot.subsystems.drivetrain.Swerve;
 import frc.robot.util.FieldUtil;
 
+import java.util.function.DoubleSupplier;
+
 public class DirectMoveToNearestBranchCommand extends Command {
     private final Swerve swerve;
     private final SwerveRequest.FieldCentric fieldCentric;
     private final PIDController translationController;
     private final PIDController yawController;
+    private final DoubleSupplier elevatorHeight;
     private Pose2d targetPose;
     private boolean end;
 
-    public DirectMoveToNearestBranchCommand(Swerve swerve, SwerveRequest.FieldCentric fieldCentric) {
+    public DirectMoveToNearestBranchCommand(Swerve swerve, SwerveRequest.FieldCentric fieldCentric, DoubleSupplier elevatorHeight) {
         this.swerve = swerve;
         this.fieldCentric = fieldCentric;
 
@@ -35,6 +38,8 @@ public class DirectMoveToNearestBranchCommand extends Command {
                 Constants.SwerveConstants.ANGULAR_POSITION_D
         );
         yawController.enableContinuousInput(Constants.SwerveConstants.ANGULAR_MINIMUM_ANGLE, Constants.SwerveConstants.ANGULAR_MAXIMUM_ANGLE);
+
+        this.elevatorHeight = elevatorHeight;
 
         targetPose = new Pose2d();
         end = false;
@@ -63,8 +68,8 @@ public class DirectMoveToNearestBranchCommand extends Command {
         swerve.setControl(
                 fieldCentric.withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
                         .withForwardPerspective(SwerveRequest.ForwardPerspectiveValue.BlueAlliance)
-                        .withVelocityX(translationController.calculate(xError, 0) * Constants.MAX_VEL)
-                        .withVelocityY(translationController.calculate(yError, 0) * Constants.MAX_VEL)
+                        .withVelocityX(translationController.calculate(xError, 0) * Constants.MAX_CONTROLLED_VEL.apply(elevatorHeight.getAsDouble()))
+                        .withVelocityY(translationController.calculate(yError, 0) * Constants.MAX_CONTROLLED_VEL.apply(elevatorHeight.getAsDouble()))
                         .withRotationalRate(yawController.calculate(
                                 yawError,
                                 0.0
