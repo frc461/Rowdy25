@@ -150,10 +150,9 @@ public class RobotStates {
         coralStationState.onTrue(
                 new InstantCommand(swerve::setCoralStationHeadingMode)
                         .andThen(intake::setIntakeState)
-                        .andThen(wrist::setCoralStationState)
-                        .andThen(new WaitUntilCommand(wrist::nearTarget))
                         .andThen(elevator::setCoralStationState)
                         .andThen(new WaitUntilCommand(elevator::nearTarget))
+                        .andThen(wrist::setCoralStationState)
                         .andThen(pivot::setCoralStationState)
                         .andThen(new WaitUntilCommand(() -> intake.hasAlgae() || intake.hasCoral()))
                         .andThen(this::setStowState)
@@ -197,10 +196,9 @@ public class RobotStates {
                 new InstantCommand(swerve::setBranchHeadingMode)
                         .andThen(safeTransition(elevator, pivot::nearTarget))
                         .andThen(pivot::setL1CoralState)
+                        .andThen(wrist::setL1CoralState)
                         .andThen(new WaitUntilCommand(pivot::nearTarget))
                         .andThen(elevator::setL1CoralState)
-                        .andThen(new WaitUntilCommand(elevator::nearTarget))
-                        .andThen(wrist::setL1CoralState)
                         .until(() -> !l1CoralState.getAsBoolean())
         );
 
@@ -208,10 +206,9 @@ public class RobotStates {
                 new InstantCommand(swerve::setBranchHeadingMode)
                         .andThen(safeTransition(elevator, pivot::nearTarget))
                         .andThen(pivot::setL2CoralState)
+                        .andThen(wrist::setL2CoralState)
                         .andThen(new WaitUntilCommand(pivot::nearTarget))
                         .andThen(elevator::setL2CoralState)
-                        .andThen(new WaitUntilCommand(elevator::nearTarget))
-                        .andThen(wrist::setL2CoralState)
                         .until(() -> !l2CoralState.getAsBoolean())
         );
 
@@ -219,10 +216,9 @@ public class RobotStates {
                 new InstantCommand(swerve::setBranchHeadingMode)
                         .andThen(safeTransition(elevator, pivot::nearTarget))
                         .andThen(pivot::setL3CoralState)
+                        .andThen(wrist::setL3CoralState)
                         .andThen(new WaitUntilCommand(pivot::nearTarget))
                         .andThen(elevator::setL3CoralState)
-                        .andThen(new WaitUntilCommand(elevator::nearTarget))
-                        .andThen(wrist::setL3CoralState)
                         .until(() -> !l3CoralState.getAsBoolean())
         );
 
@@ -230,10 +226,9 @@ public class RobotStates {
                 new InstantCommand(swerve::setBranchHeadingMode)
                         .andThen(safeTransition(elevator, pivot::nearTarget))
                         .andThen(pivot::setL4CoralState)
+                        .andThen(wrist::setL4CoralState)
                         .andThen(new WaitUntilCommand(pivot::nearTarget))
                         .andThen(elevator::setL4CoralState)
-                        .andThen(new WaitUntilCommand(elevator::nearTarget))
-                        .andThen(wrist::setL4CoralState)
                         .until(() -> !l4CoralState.getAsBoolean())
         );
 
