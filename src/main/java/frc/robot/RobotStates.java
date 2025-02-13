@@ -131,7 +131,8 @@ public class RobotStates {
     public void configureToggleStateTriggers(Swerve swerve, Elevator elevator, Intake intake, Pivot pivot, Wrist wrist) {
         
         stowState.onTrue(
-                new InstantCommand(intake::setIdleState)
+                new InstantCommand(swerve::setIdleMode)
+                        .andThen(intake::setIdleState)
                         .andThen(wrist::setStowState)
                         .andThen(new WaitUntilCommand(wrist::nearTarget))
                         .andThen(elevator::setStowState)
@@ -140,13 +141,15 @@ public class RobotStates {
         );
 
         outtakeState.onTrue(
-                new InstantCommand(intake::setOuttakeState)
+                new InstantCommand(swerve::setIdleMode)
+                        .andThen(intake::setOuttakeState)
                         .andThen(new WaitUntilCommand(() -> !intake.hasAlgae() && !intake.hasCoral()))
                         .andThen(this::setStowState)
         );
 
         coralStationState.onTrue(
-                new InstantCommand(intake::setIntakeState)
+                new InstantCommand(swerve::setCoralStationHeadingMode)
+                        .andThen(intake::setIntakeState)
                         .andThen(wrist::setCoralStationState)
                         .andThen(new WaitUntilCommand(wrist::nearTarget))
                         .andThen(elevator::setCoralStationState)
@@ -159,7 +162,8 @@ public class RobotStates {
         );
 
         groundCoralState.onTrue(
-                new InstantCommand(intake::setIntakeState)
+                new InstantCommand(swerve::setObjectHeadingMode)
+                        .andThen(intake::setIntakeState)
                         .andThen(wrist::setGroundCoralState)
                         .andThen(new WaitUntilCommand(wrist::nearTarget))
                         .andThen(elevator::setGroundCoralState)
@@ -174,7 +178,8 @@ public class RobotStates {
         );
 
         groundAlgaeState.onTrue(
-                new InstantCommand(intake::setIntakeState)
+                new InstantCommand(swerve::setObjectHeadingMode)
+                        .andThen(intake::setIntakeState)
                         .andThen(wrist::setGroundAlgaeState)
                         .andThen(new WaitUntilCommand(wrist::nearTarget))
                         .andThen(elevator::setGroundAlgaeState)
@@ -189,8 +194,8 @@ public class RobotStates {
         );
 
         l1CoralState.onTrue(
-                safeTransition(elevator, pivot::nearTarget)
-                        .andThen(new WaitUntilCommand(() -> elevator.nearTarget() && pivot.nearTarget() && wrist.nearTarget()))
+                new InstantCommand(swerve::setBranchHeadingMode)
+                        .andThen(safeTransition(elevator, pivot::nearTarget))
                         .andThen(pivot::setL1CoralState)
                         .andThen(new WaitUntilCommand(pivot::nearTarget))
                         .andThen(elevator::setL1CoralState)
@@ -200,8 +205,8 @@ public class RobotStates {
         );
 
         l2CoralState.onTrue(
-                safeTransition(elevator, pivot::nearTarget)
-                        .andThen(new WaitUntilCommand(() -> elevator.nearTarget() && pivot.nearTarget() && wrist.nearTarget()))
+                new InstantCommand(swerve::setBranchHeadingMode)
+                        .andThen(safeTransition(elevator, pivot::nearTarget))
                         .andThen(pivot::setL2CoralState)
                         .andThen(new WaitUntilCommand(pivot::nearTarget))
                         .andThen(elevator::setL2CoralState)
@@ -211,8 +216,8 @@ public class RobotStates {
         );
 
         l3CoralState.onTrue(
-                safeTransition(elevator, pivot::nearTarget)
-                        .andThen(new WaitUntilCommand(() -> elevator.nearTarget() && pivot.nearTarget() && wrist.nearTarget()))
+                new InstantCommand(swerve::setBranchHeadingMode)
+                        .andThen(safeTransition(elevator, pivot::nearTarget))
                         .andThen(pivot::setL3CoralState)
                         .andThen(new WaitUntilCommand(pivot::nearTarget))
                         .andThen(elevator::setL3CoralState)
@@ -222,8 +227,8 @@ public class RobotStates {
         );
 
         l4CoralState.onTrue(
-                safeTransition(elevator, pivot::nearTarget)
-                        .andThen(new WaitUntilCommand(() -> elevator.nearTarget() && pivot.nearTarget() && wrist.nearTarget()))
+                new InstantCommand(swerve::setBranchHeadingMode)
+                        .andThen(safeTransition(elevator, pivot::nearTarget))
                         .andThen(pivot::setL4CoralState)
                         .andThen(new WaitUntilCommand(pivot::nearTarget))
                         .andThen(elevator::setL4CoralState)
@@ -233,7 +238,8 @@ public class RobotStates {
         );
 
         lowReefAlgaeState.onTrue(
-                safeTransition(elevator, pivot::nearTarget)
+                new InstantCommand(swerve::setReefTagHeadingMode)
+                        .andThen(safeTransition(elevator, pivot::nearTarget))
                         .andThen(new WaitUntilCommand(() -> elevator.nearTarget() && pivot.nearTarget() && wrist.nearTarget()))
                         .andThen(intake::setIntakeState)
                         .andThen(pivot::setLowReefAlgaeState)
@@ -250,8 +256,8 @@ public class RobotStates {
         );
 
         highReefAlgaeState.onTrue(
-                safeTransition(elevator, pivot::nearTarget)
-                        .andThen(new WaitUntilCommand(() -> elevator.nearTarget() && pivot.nearTarget() && wrist.nearTarget()))
+                new InstantCommand(swerve::setReefTagHeadingMode)
+                        .andThen(safeTransition(elevator, pivot::nearTarget))
                         .andThen(intake::setIntakeState)
                         .andThen(pivot::setHighReefAlgaeState)
                         .andThen(new WaitUntilCommand(pivot::nearTarget))
@@ -267,7 +273,8 @@ public class RobotStates {
         );
 
         processorState.onTrue(
-                new InstantCommand(wrist::setProcessorState)
+                new InstantCommand(swerve::setAlgaeScoringHeadingMode)
+                        .andThen(wrist::setProcessorState)
                         .andThen(new WaitUntilCommand(wrist::nearTarget))
                         .andThen(elevator::setProcessorState)
                         .andThen(new WaitUntilCommand(elevator::nearTarget))
@@ -276,8 +283,8 @@ public class RobotStates {
         );
 
         netState.onTrue(
-                safeTransition(elevator, pivot::nearTarget)
-                        .andThen(new WaitUntilCommand(() -> elevator.nearTarget() && pivot.nearTarget() && wrist.nearTarget()))
+                new InstantCommand(swerve::setAlgaeScoringHeadingMode)
+                        .andThen(safeTransition(elevator, pivot::nearTarget))
                         .andThen(pivot::setNetState)
                         .andThen(new WaitUntilCommand(pivot::nearTarget))
                         .andThen(elevator::setNetState)

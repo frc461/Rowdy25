@@ -77,8 +77,7 @@ public class DriveCommand extends Command {
 
     @Override
     public void execute() {
-        // TODO: AUTOMATION WITH SUPERSTRUCTURE & CONTROL MAX SPEED BASED ON ELEVATOR HEIGHT
-        // TODO SHOP: TEST AUTO ALIGNMENT
+        // TODO SHOP: TEST AUTO ALIGNMENT & CONTROLLED VELOCITY BASED ON ELEVATOR HEIGHT & AUTOMATION WITH SUPERSTRUCTURE
 
         updateMode();
 
@@ -121,6 +120,10 @@ public class DriveCommand extends Command {
             case BRANCH_HEADING -> yawController.calculate(
                     swerve.localizer.getStrategyPose().getRotation().getDegrees(),
                     swerve.localizer.getAngleToNearestBranch()
+            ) * Constants.MAX_CONTROLLED_ANGULAR_VEL;
+            case REEF_TAG_HEADING -> yawController.calculate(
+                    swerve.localizer.getStrategyPose().getRotation().getDegrees(),
+                    swerve.localizer.getAngleToNearestReefSide()
             ) * Constants.MAX_CONTROLLED_ANGULAR_VEL;
             case OBJECT_HEADING -> VisionUtil.Photon.Color.hasTargets()
                     ? objectDetectionController.calculate(
