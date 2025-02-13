@@ -157,6 +157,7 @@ public class RobotContainer {
     private void configureBindings() {
         // IMPORTANT: WHEN BINDING DRIVER BUTTONS, TRIGGERS NEED TO BE ON FALSE ESPECIALLY WITH BINDINGS THAT INITIATE DRIVE AUTOMATION UPON HOLD DEBOUNCE
         // SO FIGURE OUT LOGIC CORRECTLY AND CAREFULLY
+        // TODO: ON FALSE TRIGGERS FOR DRIVER ONLY BINDINGS
 
         driverXbox.povUp().onTrue(new InstantCommand(robotStates::setOuttakeState));
 

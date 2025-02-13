@@ -14,8 +14,9 @@ TODO:
 - [x] Test presets
 - [ ] Pivot cancoder issues
 - [ ] Test robot state selector
+- [ ] Driver only - work on OnFalse triggers instead of OnTrue because of debounce hold to pathfind/direct move to position then OnFalse will subsequently deploy the state properly and effectively
 - [ ] SysID for elevator, pivot, wrist
 - [ ] Swerve automation pt. 1 - rotational alignment
 - [ ] Swerve automation pt.2 - pathfinding/translation alignment
 - [ ] Auto
-- [ ] Fine tune for efficiency
+- [ ] Fine tune state transitions for efficiency
