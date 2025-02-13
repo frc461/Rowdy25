@@ -2,6 +2,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.RobotStates;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.wrist.Wrist;
 
@@ -12,12 +13,14 @@ public class WristCommand extends Command {
     private final DoubleSupplier manualAxisValue;
     private final DoubleSupplier pivotPosition;
     private final DoubleSupplier elevatorPosition;
+    private final RobotStates robotStates;
 
-    public WristCommand(Wrist wrist, DoubleSupplier manualAxisValue, DoubleSupplier pivotPosition, DoubleSupplier elevatorPosition) {
+    public WristCommand(Wrist wrist, DoubleSupplier manualAxisValue, DoubleSupplier pivotPosition, DoubleSupplier elevatorPosition, RobotStates robotStates) {
         this.wrist = wrist;
         this.manualAxisValue = manualAxisValue;
         this.pivotPosition = pivotPosition;
         this.elevatorPosition = elevatorPosition;
+        this.robotStates = robotStates;
         addRequirements(wrist);
     }
 
@@ -26,6 +29,7 @@ public class WristCommand extends Command {
         double axisValue = MathUtil.applyDeadband(manualAxisValue.getAsDouble(), Constants.DEADBAND) * 0.1;
         if (axisValue != 0.0) {
             wrist.setManualState();
+            robotStates.setManualState();
             wrist.moveWrist(axisValue, pivotPosition.getAsDouble(), elevatorPosition.getAsDouble());
         } else {
             wrist.holdTarget(pivotPosition.getAsDouble());

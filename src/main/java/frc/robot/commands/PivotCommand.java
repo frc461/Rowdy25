@@ -2,6 +2,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.RobotStates;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.util.GravityGainsCalculator;
@@ -13,6 +14,7 @@ public class PivotCommand extends Command {
     private final DoubleSupplier manualAxisValue;
     private final DoubleSupplier elevatorPosition;
     private final DoubleSupplier wristPosition;
+    private final RobotStates robotStates;
 
     private final GravityGainsCalculator gravityGainsCalculator = new GravityGainsCalculator(
             Constants.PivotConstants.AXIS_POSITION,
@@ -27,11 +29,12 @@ public class PivotCommand extends Command {
             Constants.PivotConstants.G
     );
 
-    public PivotCommand(Pivot pivot, DoubleSupplier manualAxisValue, DoubleSupplier elevatorPosition, DoubleSupplier wristPosition) {
+    public PivotCommand(Pivot pivot, DoubleSupplier manualAxisValue, DoubleSupplier elevatorPosition, DoubleSupplier wristPosition, RobotStates robotStates) {
         this.pivot = pivot;
         this.manualAxisValue = manualAxisValue;
         this.elevatorPosition = elevatorPosition;
         this.wristPosition = wristPosition;
+        this.robotStates = robotStates;
         addRequirements(pivot);
     }
 
@@ -40,6 +43,7 @@ public class PivotCommand extends Command {
         double axisValue = MathUtil.applyDeadband(manualAxisValue.getAsDouble(), Constants.DEADBAND) * 0.1;
         if (axisValue != 0.0) {
             pivot.setManualState();
+            robotStates.setManualState();
             pivot.movePivot(axisValue);
         } else {
             pivot.holdTarget(gravityGainsCalculator.calculateGFromPositions(pivot.getPosition(), wristPosition.getAsDouble(), elevatorPosition.getAsDouble()));
