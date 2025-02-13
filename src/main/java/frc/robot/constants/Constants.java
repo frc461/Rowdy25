@@ -289,18 +289,18 @@ public final class Constants {
     }
 
     public static final class SwerveConstants {
-        public static double PATH_TRANSLATION_CONTROLLER_P;
+        public static double PATH_TRANSLATION_CONTROLLER_P; // FOR PATHPLANNER
         public static double PATH_ROTATION_CONTROLLER_P;
 
-        public static double TRANSLATION_ALIGNMENT_CONTROLLER_P;
+        public static double TRANSLATION_ALIGNMENT_CONTROLLER_P; // FOR MANUAL MOVE
         public static double TRANSLATION_ALIGNMENT_CONTROLLER_D;
 
-        public static Function<Double, Double> PATH_MANUAL_TRANSLATION_CONTROLLER;
+        public static Function<Double, Double> PATH_MANUAL_TRANSLATION_CONTROLLER; // FOR SEARCHING
 
-        public static double ANGULAR_POSITION_P;
+        public static double ANGULAR_POSITION_P; // FOR ANGULAR ROTATION CONTROL
         public static double ANGULAR_POSITION_D;
 
-        public static double ANGULAR_OBJECT_DETECTION_P;
+        public static double ANGULAR_OBJECT_DETECTION_P; // FOR OBJECT DETECTION ROTATION CONTROL
         public static double ANGULAR_OBJECT_DETECTION_D;
 
         public static double ANGULAR_MINIMUM_ANGLE;

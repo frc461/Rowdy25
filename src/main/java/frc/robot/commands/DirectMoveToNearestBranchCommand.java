@@ -11,7 +11,7 @@ import frc.robot.constants.Constants;
 import frc.robot.subsystems.drivetrain.Swerve;
 import frc.robot.util.FieldUtil;
 
-public class DirectAlignToNearestBranchCommand extends Command {
+public class DirectMoveToNearestBranchCommand extends Command {
     private final Swerve swerve;
     private final SwerveRequest.FieldCentric fieldCentric;
     private final PIDController translationController;
@@ -19,7 +19,7 @@ public class DirectAlignToNearestBranchCommand extends Command {
     private Pose2d targetPose;
     private boolean end;
 
-    public DirectAlignToNearestBranchCommand(Swerve swerve, SwerveRequest.FieldCentric fieldCentric) {
+    public DirectMoveToNearestBranchCommand(Swerve swerve, SwerveRequest.FieldCentric fieldCentric) {
         this.swerve = swerve;
         this.fieldCentric = fieldCentric;
 
