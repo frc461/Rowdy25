@@ -288,7 +288,7 @@ public final class DefaultConstants {
 
         // encoder config
         public static final int ENCODER_ID = 62;
-        public static final double ENCODER_ABSOLUTE_OFFSET =  -0.0959452311;
+        public static final double ENCODER_ABSOLUTE_OFFSET =  0.27588094056;
         public static final SensorDirectionValue ENCODER_INVERT = SensorDirectionValue.Clockwise_Positive;
 
         // pid & tolerance
@@ -303,7 +303,7 @@ public final class DefaultConstants {
         public static final double SAFE_TOLERANCE = 25.0;
         public static final double AT_TARGET_TOLERANCE = 2.5;
 
-        // presets
+        // presets // TODO SHOP: TUNE PRESETS
         public static final Function<Double, Double> LOWER_LIMIT = (pivotPosition) -> (double) (pivotPosition < 45 ? 125 : 35);
         public static final Function<Double, Double> UPPER_LIMIT = (elevatorPosition) -> (double) (elevatorPosition > 3 ? 320 : 200);
         public static final double STOW = 45;
