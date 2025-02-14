@@ -117,7 +117,7 @@ public class DriveCommand extends Command {
             ) * Constants.MAX_CONTROLLED_ANGULAR_VEL;
             case BRANCH_HEADING -> yawController.calculate(
                     swerve.localizer.getStrategyPose().getRotation().getDegrees(),
-                    swerve.localizer.getAngleToNearestBranch()
+                    swerve.localizer.getNearestReefSideHeading()
             ) * Constants.MAX_CONTROLLED_ANGULAR_VEL;
             case REEF_TAG_HEADING -> yawController.calculate(
                     swerve.localizer.getStrategyPose().getRotation().getDegrees(),

@@ -2,6 +2,7 @@ package frc.robot.subsystems.vision;
 
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -94,6 +95,10 @@ public class Localizer {
         return getTranslationToNearestReefSide().getAngle().getDegrees();
     }
 
+    public double getNearestReefSideHeading() {
+        return FieldUtil.Reef.getNearestReefTagPose(getStrategyPose()).getRotation().rotateBy(Rotation2d.kPi).getDegrees();
+    }
+
     public Translation2d getTranslationToNearestBranch() {
         Pose2d currentPose = getStrategyPose();
         Translation2d nearestBranch = FieldUtil.Reef.getNearestBranchPose(currentPose).getTranslation();
@@ -125,7 +130,6 @@ public class Localizer {
     public boolean nearestAlgaeScoringIsNet() {
         return FieldUtil.AlgaeScoring.getAlgaeScoringFromTag(FieldUtil.AlgaeScoring.getNearestAlgaeScoringTag(getStrategyPose())) == FieldUtil.AlgaeScoring.ScoringLocation.NET;
     }
-
 
     public void setLocalizationStrategyFromChooser() {
         LocalizationStrategy strategy = localizationChooser.getSelected();
