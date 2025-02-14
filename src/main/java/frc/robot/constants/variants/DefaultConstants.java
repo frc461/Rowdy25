@@ -198,13 +198,13 @@ public final class DefaultConstants {
         public static final double LOWER_LIMIT = 0;
         public static final double UPPER_LIMIT = 46;
         public static final double STOW = 0;
-        public static final double CORAL_STATION = 0;
+        public static final double CORAL_STATION = 2.4;
         public static final double GROUND_CORAL = 0;
         public static final double GROUND_ALGAE = 0;
         public static final double L1_CORAL = 0;
-        public static final double L2_CORAL = 5.0;
-        public static final double L3_CORAL = 14.4;
-        public static final double L4_CORAL = 41;
+        public static final double L2_CORAL = 0;
+        public static final double L3_CORAL = 18.1;
+        public static final double L4_CORAL = 45;
         public static final double LOW_REEF_ALGAE = 2.9;
         public static final double HIGH_REEF_ALGAE = 10.5;
         public static final double PROCESSOR = 0;
@@ -259,13 +259,13 @@ public final class DefaultConstants {
         public static final double LOWER_LIMIT = 0;
         public static final double UPPER_LIMIT = 105;
         public static final double STOW = 50;
-        public static final double CORAL_STATION = 64.2;
+        public static final double CORAL_STATION = 54.5;
         public static final double GROUND_CORAL = 3.5;
         public static final double GROUND_ALGAE = 4.5;
-        public static final double L1_CORAL = 55;
-        public static final double L2_CORAL = 72.5;
-        public static final double L3_CORAL = 80;
-        public static final double L4_CORAL = 85.6;
+        public static final double L1_CORAL = 100.0;
+        public static final double L2_CORAL = 100.0;
+        public static final double L3_CORAL = 100.6;
+        public static final double L4_CORAL = 93.5;
         public static final double LOW_REEF_ALGAE = 105;
         public static final double HIGH_REEF_ALGAE = 97.6;
         public static final double PROCESSOR = 22.1;
@@ -288,14 +288,14 @@ public final class DefaultConstants {
 
         // encoder config
         public static final int ENCODER_ID = 62;
-        public static final double ENCODER_ABSOLUTE_OFFSET =  0.27588094056;
+        public static final double ENCODER_ABSOLUTE_OFFSET =  0.4062527125;
         public static final SensorDirectionValue ENCODER_INVERT = SensorDirectionValue.Clockwise_Positive;
 
         // pid & tolerance // TODO SHOP: RETUNE FEEDFORWARD/FEEDBACK
-        public static final BiFunction<Double, Double, Double> G = (wristDeg, pivotDeg) -> 0.2188 * Math.sin(Math.toRadians(wristDeg - (90 - pivotDeg)));
-        public static final double V = 0.75 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps) -> V / (rotor rps)
+        public static final BiFunction<Double, Double, Double> G = (wristDeg, pivotDeg) -> 0.15 * Math.sin(Math.toRadians(wristDeg - (90 - pivotDeg)));
+        public static final double V = 0.68 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps) -> V / (rotor rps)
         public static final double A = 0.025 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps^2) -> V / (rotor rps^2)
-        public static final double P = 0.1;
+        public static final double P = 0.2;
         public static final double I = 0.0;
         public static final double D = 0.0;
         public static final double EXPO_V = V / 0.8; // 80% of the actual max velocity, as it will allocate 1 / 0.8 = 1.25 times the voltage to 1 rps
@@ -304,16 +304,16 @@ public final class DefaultConstants {
         public static final double AT_TARGET_TOLERANCE = 2.5;
 
         // presets // TODO SHOP: RETUNE PRESETS
-        public static final Function<Double, Double> LOWER_LIMIT = (pivotPosition) -> (double) (pivotPosition < 45 ? 125 : 35);
+        public static final Function<Double, Double> LOWER_LIMIT = (pivotPosition) -> (double) (pivotPosition < 45 ? 125 : 40);
         public static final Function<Double, Double> UPPER_LIMIT = (elevatorPosition) -> (double) (elevatorPosition > 3 ? 320 : 200);
         public static final double STOW = 45;
-        public static final double CORAL_STATION = 107.5;
+        public static final double CORAL_STATION = 105.6;
         public static final double GROUND_CORAL = 128.5;
         public static final double GROUND_ALGAE = 140;
-        public static final double L1_CORAL = 195; // TODO WAIT (WORKING INTAKE): SHOOT IT!
-        public static final double L2_CORAL = 291.5;
-        public static final double L3_CORAL = 281.6;
-        public static final double L4_CORAL = 284.3;
+        public static final double L1_CORAL = 40; // TODO WAIT (WORKING INTAKE): SHOOT IT!
+        public static final double L2_CORAL = 40;
+        public static final double L3_CORAL = 54.4;
+        public static final double L4_CORAL = 50;
         public static final double LOW_REEF_ALGAE = 256.3;
         public static final double HIGH_REEF_ALGAE = 248.5;
         public static final double PROCESSOR = 125;

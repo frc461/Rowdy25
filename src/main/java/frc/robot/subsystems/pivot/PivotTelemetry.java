@@ -18,6 +18,7 @@ public class PivotTelemetry {
     private final DoublePublisher pivotPositionPub = pivotTelemetryTable.getDoubleTopic("Pivot Position").publish();
     private final DoublePublisher pivotTargetPub = pivotTelemetryTable.getDoubleTopic("Pivot Target").publish();
     private final DoublePublisher pivotErrorPub = pivotTelemetryTable.getDoubleTopic("Pivot Error").publish();
+    private final StringPublisher pivotStatePub = pivotTelemetryTable.getStringTopic("Pivot State").publish();
     private final DoublePublisher pivotGravityGainsPub = pivotTelemetryTable.getDoubleTopic("Pivot Gravity Gains").publish();
     private final DoublePublisher pivotRatchetPositionPub = pivotTelemetryTable.getDoubleTopic("Pivot Ratchet Position").publish();
     private final StringPublisher pivotIsRatcheted = pivotTelemetryTable.getStringTopic("Pivot Ratchet State").publish();
@@ -28,6 +29,7 @@ public class PivotTelemetry {
         pivotPositionPub.set(pivot.getPosition());
         pivotTargetPub.set(pivot.getTarget());
         pivotErrorPub.set(pivot.getError());
+        pivotStatePub.set(pivot.getState().name());
         pivotGravityGainsPub.set(pivot.getCurrentGravityGains());
         pivotRatchetPositionPub.set(pivot.getRatchetStateValue());
         pivotIsRatcheted.set(pivot.getRatchetState().name());
@@ -41,6 +43,7 @@ public class PivotTelemetry {
         DogLog.log("PivotPose", pivot.getPosition());
         DogLog.log("PivotTarget", pivot.getTarget());
         DogLog.log("PivotError", pivot.getError());
+        DogLog.log("PivotState", pivot.getState().name());
         DogLog.log("PivotGravityGains", pivot.getCurrentGravityGains());
         DogLog.log("PivotRatchetPosition", pivot.getRatchetStateValue());
         DogLog.log("PivotRatchetedState", pivot.getRatchetState());
