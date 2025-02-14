@@ -8,6 +8,8 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 import com.reduxrobotics.canand.CanandEventLoop;
 import com.reduxrobotics.sensors.canandcolor.Canandcolor;
+import com.reduxrobotics.sensors.canandcolor.ColorPeriod;
+import com.reduxrobotics.sensors.canandcolor.ProximityPeriod;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -48,6 +50,14 @@ public class Intake extends SubsystemBase {
 
         CanandEventLoop.getInstance();
         canandcolor = new Canandcolor(Constants.IntakeConstants.SENSOR_ID);
+        canandcolor.setSettings(
+                canandcolor.getSettings()
+                        .setAlignProximityFramesToIntegrationPeriod(true)
+                        .setProximityIntegrationPeriod(ProximityPeriod.k5ms)
+                        .setAlignColorFramesToIntegrationPeriod(true)
+                        .setColorIntegrationPeriod(ColorPeriod.k25ms)
+                        .setDigoutFramePeriod(0.02)
+        );
         canandcolor.setLampLEDBrightness(1.0);
         currentState = State.IDLE;
         pulseTimer.start();
