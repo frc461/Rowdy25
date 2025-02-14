@@ -1,5 +1,6 @@
 TODO:
 
+Alpha bot:
 - [x] Test swerve drive
 - [x] Test turret function
 - [x] Tune slippage current
@@ -10,13 +11,25 @@ TODO:
 - [x] Test pivot gravity gains
 - [x] Remove voltage constraints if everything works
 - [x] Test manual controls
-- [ ] Tune canandcolor for intake (coral + algae)
 - [x] Test presets
+- [x] Swerve automation pt. 1 - rotational alignment
+
+Friday, 2/14/2025 to test:
+- [ ] Wrist presets + tuning (change upper limit back to double if motor protection isn't necessary anymore)
 - [ ] Pivot cancoder issues
+- [ ] Decide on L1 position
 - [ ] Test robot state selector
+- [ ] Tune Canandcolor for intake (coral + algae)
+- [ ] Test localization trust filter
+
+Friday, 2/14/2025 software only:
 - [ ] Driver only - work on OnFalse triggers instead of OnTrue because of debounce hold to pathfind/direct move to position then OnFalse will subsequently deploy the state properly and effectively
-- [ ] SysID for elevator, pivot, wrist
-- [ ] Swerve automation pt. 1 - rotational alignment
-- [ ] Swerve automation pt.2 - pathfinding/translation alignment
+- [ ] Double click debouncer
+- [ ] Move to algae vs coral (drive to object overhaul)
+- [ ] Swerve automation pt. 2 - pathfinding/translation alignment
 - [ ] Auto
+
+Comp bot/later:
+- [ ] Implement climbing
+- [ ] SysID for elevator, pivot, wrist
 - [ ] Fine tune state transitions for efficiency

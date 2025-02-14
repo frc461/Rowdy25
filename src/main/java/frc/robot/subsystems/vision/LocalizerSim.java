@@ -11,7 +11,6 @@ import org.photonvision.simulation.VisionSystemSim;
 public class LocalizerSim {
     private final VisionSystemSim visionSim = new VisionSystemSim("main");
 
-    // TODO: TEST SIM
     public LocalizerSim() {
         visionSim.addAprilTags(FieldUtil.layout2025);
 
