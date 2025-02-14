@@ -9,6 +9,8 @@ import dev.doglog.DogLogOptions;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.autos.AutoChooser;
@@ -161,15 +163,54 @@ public class RobotContainer {
 
         driverXbox.povUp().onTrue(new InstantCommand(robotStates::setOuttakeState));
         driverXbox.povDown().onTrue(new InstantCommand(swerve::toggleAutoHeading));
+        driverXbox.leftBumper().onTrue(
+                swerve.pathFindToNearestBranch(elevator::getPosition).andThen(new InstantCommand(robotStates::toggleL4CoralState))
+                        .until(() -> !driverXbox.leftBumper().getAsBoolean())
+                        .andThen(new InstantCommand(robotStates::setStowState))
+        );
 
-        // (set to ground state and if holding then wait until there's an object then drive to it)
-//        driverXbox.leftBumper().negate().and(driverXbox.leftTrigger().negate()).onTrue(
-//                new InstantCommand(robotStates::toggleGroundCoralState)
-//        );
-//        driverXbox.leftBumper().and(driverXbox.leftTrigger()).onTrue(new InstantCommand(robotStates::setStowState));
+        driverXbox.a().onFalse(new ConditionalCommand(
+                new InstantCommand(robotStates::toggleL4CoralState),
+                Commands.none(),
+                intake::hasCoral
+        ));
+        driverXbox.a().debounce(1.5).whileTrue(new ConditionalCommand(
+                swerve.pathFindToNearestBranch(elevator::getPosition),
+                Commands.none(),
+                intake::hasCoral
+        ));
 
-        driverXbox.b().onTrue(new InstantCommand(
-                () -> robotStates.toggleNearestReefAlgaeState(swerve.localizer.nearestAlgaeIsHigh())
+        driverXbox.b().onFalse(new ConditionalCommand(
+                new InstantCommand(robotStates::toggleL1CoralState),
+                new InstantCommand(() -> robotStates.toggleNearestReefAlgaeState(swerve.localizer.nearestAlgaeIsHigh())),
+                intake::hasCoral
+        ));
+        driverXbox.b().debounce(1.5).whileTrue(new ConditionalCommand(
+                swerve.pathFindToNearestBranch(elevator::getPosition),
+                Commands.none(),
+                intake::hasCoral
+        ));
+
+        driverXbox.x().onFalse(new ConditionalCommand(
+                new InstantCommand(robotStates::toggleL3CoralState),
+                new InstantCommand(robotStates::toggleCoralStationState),
+                intake::hasCoral
+        ));
+        driverXbox.x().debounce(1.5).whileTrue(new ConditionalCommand(
+                swerve.pathFindToNearestBranch(elevator::getPosition),
+                Commands.none(),
+                intake::hasCoral
+        ));
+
+        driverXbox.y().onFalse(new ConditionalCommand(
+                new InstantCommand(robotStates::toggleL2CoralState),
+                new InstantCommand(() -> robotStates.toggleNearestAlgaeScoringLocation(swerve.localizer.nearestAlgaeScoringIsNet())),
+                intake::hasCoral
+        ));
+        driverXbox.y().debounce(1.5).whileTrue(new ConditionalCommand(
+                swerve.pathFindToNearestBranch(elevator::getPosition),
+                Commands.none(),
+                intake::hasCoral
         ));
 
         opXbox.povRight().onTrue(new InstantCommand(robotStates::toggleL1CoralState));
