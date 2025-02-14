@@ -291,7 +291,7 @@ public final class DefaultConstants {
         public static final double ENCODER_ABSOLUTE_OFFSET =  0.27588094056;
         public static final SensorDirectionValue ENCODER_INVERT = SensorDirectionValue.Clockwise_Positive;
 
-        // pid & tolerance
+        // pid & tolerance // TODO SHOP: RETUNE FEEDFORWARD/FEEDBACK
         public static final BiFunction<Double, Double, Double> G = (wristDeg, pivotDeg) -> 0.2188 * Math.sin(Math.toRadians(wristDeg - (90 - pivotDeg)));
         public static final double V = 0.75 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps) -> V / (rotor rps)
         public static final double A = 0.025 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps^2) -> V / (rotor rps^2)
@@ -303,7 +303,7 @@ public final class DefaultConstants {
         public static final double SAFE_TOLERANCE = 25.0;
         public static final double AT_TARGET_TOLERANCE = 2.5;
 
-        // presets // TODO SHOP: TUNE PRESETS
+        // presets // TODO SHOP: RETUNE PRESETS
         public static final Function<Double, Double> LOWER_LIMIT = (pivotPosition) -> (double) (pivotPosition < 45 ? 125 : 35);
         public static final Function<Double, Double> UPPER_LIMIT = (elevatorPosition) -> (double) (elevatorPosition > 3 ? 320 : 200);
         public static final double STOW = 45;

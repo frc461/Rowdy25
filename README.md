@@ -15,6 +15,7 @@ Alpha bot:
 - [x] Swerve automation pt. 1 - rotational alignment
 
 Friday, 2/14/2025 to test:
+- [ ] Retune wrist feedforward + feedback
 - [ ] Wrist presets + tuning (change upper limit back to double if motor protection isn't necessary anymore)
 - [ ] Pivot cancoder issues
 - [ ] Decide on L1 position

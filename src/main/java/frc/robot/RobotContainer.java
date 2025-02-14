@@ -226,6 +226,12 @@ public class RobotContainer {
         opXbox.leftBumper().onTrue(new InstantCommand(robotStates::toggleGroundCoralState));
         opXbox.rightBumper().onTrue(new InstantCommand(robotStates::toggleGroundAlgaeState));
 
+        opXbox.a().onTrue(new ConditionalCommand(
+                new InstantCommand(wrist::setStowState),
+                new InstantCommand(wrist::setCoralStationState),
+                () -> wrist.getState() == Wrist.State.CORAL_STATION
+        ));
+
         opXbox.b().onTrue(new InstantCommand(
                 () -> robotStates.toggleNearestReefAlgaeState(swerve.localizer.nearestAlgaeIsHigh())
         ));
