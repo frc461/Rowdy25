@@ -202,7 +202,6 @@ public class RobotContainer {
 
     public void periodic() {
         robotStates.publishValues();
-        robotStates.applyValues();
     }
 
     public Command getAutonomousCommand() {

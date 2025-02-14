@@ -3,6 +3,7 @@ package frc.robot;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.StringPublisher;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.Constants;
@@ -58,6 +59,7 @@ public class RobotStates {
         currentState = State.STOW;
         Arrays.stream(State.values()).forEach(state -> stateChooser.addOption(state.name(), state));
         stateChooser.onChange(state -> currentState = stateChooser.getSelected()); // TODO SHOP: TEST CHOOSER
+        SmartDashboard.putData(stateChooser);
     }
 
     public void setStowState() {
@@ -116,8 +118,8 @@ public class RobotStates {
 
     public void toggleNearestAlgaeScoringLocation(boolean net) {
         currentState = net
-            ? currentState == State.NET ? State.STOW : State.NET
-            : currentState == State.PROCESSOR ? State.STOW : State.PROCESSOR;
+            ? currentState == State.NET ? State.OUTTAKE : State.NET
+            : currentState == State.PROCESSOR ? State.OUTTAKE : State.PROCESSOR;
     }
 
     public void toggleProcessorState() {
@@ -299,9 +301,5 @@ public class RobotStates {
 
     public void publishValues() {
         robotStatesPub.set(currentState.name());
-    }
-
-    public void applyValues() {
-
     }
 }
