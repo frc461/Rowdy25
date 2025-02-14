@@ -68,8 +68,14 @@ public class DirectMoveToNearestBranchCommand extends Command {
         swerve.setControl(
                 fieldCentric.withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
                         .withForwardPerspective(SwerveRequest.ForwardPerspectiveValue.BlueAlliance)
-                        .withVelocityX(translationController.calculate(xError, 0) * Constants.MAX_CONTROLLED_VEL.apply(elevatorHeight.getAsDouble()))
-                        .withVelocityY(translationController.calculate(yError, 0) * Constants.MAX_CONTROLLED_VEL.apply(elevatorHeight.getAsDouble()))
+                        .withVelocityX(Math.min(
+                                2.0,
+                                translationController.calculate(xError, 0) * Constants.MAX_CONTROLLED_VEL.apply(elevatorHeight.getAsDouble())
+                        ))
+                        .withVelocityY(Math.min(
+                                2.0,
+                                translationController.calculate(yError, 0) * Constants.MAX_CONTROLLED_VEL.apply(elevatorHeight.getAsDouble())
+                        ))
                         .withRotationalRate(yawController.calculate(
                                 yawError,
                                 0.0
