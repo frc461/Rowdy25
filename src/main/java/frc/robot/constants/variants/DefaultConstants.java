@@ -279,12 +279,12 @@ public final class DefaultConstants {
         public static final InvertedValue MOTOR_INVERT = InvertedValue.Clockwise_Positive;
         public static final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Coast;
 
-        // mechanism characterization // TODO: RETUNE MASS, AXIS_TO_ZERO_COM
+        // mechanism characterization
         private static final double ROTOR_TO_MECHANISM_RATIO = 45.3704;
         public static final double SENSOR_TO_DEGREE_RATIO = 1 / 360.0;
-        public static final double MASS_LBS = 7.1301147;
+        public static final double MASS_LBS = 4.8121516;
         public static final Translation2d AXIS_POSITION = new Translation2d(-11.767377, 38.007139);
-        public static final Translation2d AXIS_TO_ZERO_COM = new Translation2d(0, -7.453525);
+        public static final Translation2d AXIS_TO_ZERO_COM = new Translation2d(3.014233, -4.015809);
 
         // encoder config
         public static final int ENCODER_ID = 62;

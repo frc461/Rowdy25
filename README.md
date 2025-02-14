@@ -21,13 +21,14 @@ Friday, 2/14/2025 to test:
 - [ ] Test robot state selector
 - [ ] Tune Canandcolor for intake (coral + algae)
 - [ ] Test localization trust filter
+- [ ] Ask tech about elevator springs for limit switch????
 
 Friday, 2/14/2025 software only:
 - [ ] Driver only - work on OnFalse triggers instead of OnTrue because of debounce hold to pathfind/direct move to position then OnFalse will subsequently deploy the state properly and effectively
 - [ ] Double click debouncer
 - [ ] Move to algae vs coral (drive to object overhaul)
 - [ ] Swerve automation pt. 2 - pathfinding/translation alignment
-- [ ] Auto
+- [ ] Auto - java structure first, then paths, then test with other mechanisms
 
 Comp bot/later:
 - [ ] Implement climbing
