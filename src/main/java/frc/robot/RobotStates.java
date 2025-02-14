@@ -142,6 +142,7 @@ public class RobotStates {
                 new InstantCommand(swerve::setIdleMode)
                         .andThen(intake::setIdleState)
                         .andThen(wrist::setStowState)
+                        .andThen(new WaitUntilCommand(wrist::nearTarget))
                         .andThen(elevator::setStowState)
                         .andThen(new WaitUntilCommand(elevator::nearTarget))
                         .andThen(pivot::setStowState)

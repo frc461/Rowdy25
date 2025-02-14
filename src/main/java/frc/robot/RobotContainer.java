@@ -220,7 +220,7 @@ public class RobotContainer {
         opXbox.povLeft().onTrue(new InstantCommand(robotStates::toggleL3CoralState));
         opXbox.povDown().onTrue(new InstantCommand(robotStates::toggleL4CoralState));
 
-        opXbox.leftTrigger().onTrue(new InstantCommand(robotStates::setOuttakeState));
+        opXbox.leftTrigger().onTrue(new InstantCommand(intake::setOuttakeState));
         opXbox.rightTrigger().onTrue(new InstantCommand(robotStates::setStowState));
 
         opXbox.leftBumper().onTrue(new InstantCommand(robotStates::toggleGroundCoralState));

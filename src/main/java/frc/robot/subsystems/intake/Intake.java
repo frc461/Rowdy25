@@ -86,11 +86,11 @@ public class Intake extends SubsystemBase {
     }
 
     public void setIdleState() {
-        setState(State.IDLE);
-    }
-
-    public void setHasAlgaeState() {
-        setState(State.HAS_ALGAE);
+        if (hasAlgae()) {
+            setState(State.HAS_ALGAE);
+        } else {
+            setState(State.IDLE);
+        }
     }
 
     public void setIntakeState() {
