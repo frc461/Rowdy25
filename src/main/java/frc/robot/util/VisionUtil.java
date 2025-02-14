@@ -160,6 +160,10 @@ public class VisionUtil {
                 return false;
             }
 
+            public static double getBestObjectClass() {
+                return hasTargets() ? latestResult.getBestTarget().getDetectedObjectClassID() : 0.0;
+            }
+
             public static double getBestObjectYaw() {
                 return hasTargets() ? latestResult.getBestTarget().getYaw() : 0.0;
             }
