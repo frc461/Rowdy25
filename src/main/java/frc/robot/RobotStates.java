@@ -17,6 +17,8 @@ import frc.robot.util.VisionUtil;
 import java.util.Arrays;
 import java.util.function.BooleanSupplier;
 
+import dev.doglog.DogLog;
+
 public class RobotStates {
     public enum State { // TODO: IMPLEMENT CLIMBING
         STOW,
@@ -315,5 +317,11 @@ public class RobotStates {
 
     public void publishValues() {
         robotStatesPub.set(currentState.name());
+
+        logValues();
+    }
+
+    private void logValues() {
+        DogLog.log("RobotState", currentState);
     }
 }
