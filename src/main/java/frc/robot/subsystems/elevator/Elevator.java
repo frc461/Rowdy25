@@ -96,7 +96,7 @@ public class Elevator extends SubsystemBase {
     }
  
     public boolean lowerSwitchTriggered() {
-        return false; // TODO WAIT (LIMIT SWITCH IS AVAILABLE): return !lowerSwitch.get();
+        return !lowerSwitch.get();
     }
 
     public boolean nearTarget() {
@@ -178,8 +178,8 @@ public class Elevator extends SubsystemBase {
     public void moveElevator(double axisValue) {
         checkLimitSwitch();
         elevator.set(axisValue > 0
-                ? axisValue * ExpUtil.output(Constants.ElevatorConstants.UPPER_LIMIT - getPosition(), 1, 2, 10)
-                : axisValue * ExpUtil.output(getPosition() - Constants.ElevatorConstants.LOWER_LIMIT, 1, 2, 10));
+                ? axisValue * ExpUtil.output(Constants.ElevatorConstants.UPPER_LIMIT - getPosition(), 1, 0.5, 10)
+                : axisValue * ExpUtil.output(getPosition() - Constants.ElevatorConstants.LOWER_LIMIT, 1, 0.5, 10));
     }
 
     @Override
