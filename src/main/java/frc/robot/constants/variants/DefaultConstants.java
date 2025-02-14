@@ -288,7 +288,7 @@ public final class DefaultConstants {
 
         // encoder config
         public static final int ENCODER_ID = 62;
-        public static final double ENCODER_ABSOLUTE_OFFSET =  0.4062527125;
+        public static final double ENCODER_ABSOLUTE_OFFSET =  0.3986850313;
         public static final SensorDirectionValue ENCODER_INVERT = SensorDirectionValue.Clockwise_Positive;
 
         // pid & tolerance // TODO SHOP: RETUNE FEEDFORWARD/FEEDBACK
@@ -304,16 +304,16 @@ public final class DefaultConstants {
         public static final double AT_TARGET_TOLERANCE = 2.5;
 
         // presets // TODO SHOP: RETUNE PRESETS
-        public static final Function<Double, Double> LOWER_LIMIT = (pivotPosition) -> (double) (pivotPosition < 45 ? 125 : 40);
+        public static final Function<Double, Double> LOWER_LIMIT = (pivotPosition) -> (double) (pivotPosition < 45 ? 125 : 45);
         public static final Function<Double, Double> UPPER_LIMIT = (elevatorPosition) -> (double) (elevatorPosition > 3 ? 320 : 200);
         public static final double STOW = 45;
-        public static final double CORAL_STATION = 105.6;
+        public static final double CORAL_STATION = 110;
         public static final double GROUND_CORAL = 128.5;
         public static final double GROUND_ALGAE = 140;
-        public static final double L1_CORAL = 40; // TODO WAIT (WORKING INTAKE): SHOOT IT!
+        public static final double L1_CORAL = 40;
         public static final double L2_CORAL = 40;
-        public static final double L3_CORAL = 54.4;
-        public static final double L4_CORAL = 50;
+        public static final double L3_CORAL = 55;
+        public static final double L4_CORAL = 45;
         public static final double LOW_REEF_ALGAE = 256.3;
         public static final double HIGH_REEF_ALGAE = 248.5;
         public static final double PROCESSOR = 125;

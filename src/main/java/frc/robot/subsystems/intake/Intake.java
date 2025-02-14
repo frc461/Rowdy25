@@ -21,6 +21,7 @@ public class Intake extends SubsystemBase {
         IDLE,
         HAS_ALGAE,
         INTAKE,
+        INTAKE_OUT,
         OUTTAKE
     }
 
@@ -94,6 +95,10 @@ public class Intake extends SubsystemBase {
 
     public void setIntakeState() {
         setState(State.INTAKE);
+    }
+
+    public void setIntakeOutState() {
+        setState(State.INTAKE_OUT);
     }
 
     public void setOuttakeState() {

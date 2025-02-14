@@ -22,6 +22,7 @@ public class RobotStates {
         STOW,
         MANUAL,
         OUTTAKE,
+        INTAKE_OUT,
         CORAL_STATION,
         GROUND_CORAL,
         GROUND_ALGAE,
@@ -40,6 +41,7 @@ public class RobotStates {
 
     public final Trigger stowState = new Trigger(() -> currentState == State.STOW);
     public final Trigger outtakeState = new Trigger(() -> currentState == State.OUTTAKE);
+    public final Trigger intakeOutState = new Trigger(() -> currentState == State.INTAKE_OUT);
     public final Trigger coralStationState = new Trigger(() -> currentState == State.CORAL_STATION);
     public final Trigger groundCoralState = new Trigger(() -> currentState == State.GROUND_CORAL);
     public final Trigger groundAlgaeState = new Trigger(() -> currentState == State.GROUND_ALGAE);
@@ -74,6 +76,10 @@ public class RobotStates {
         currentState = State.OUTTAKE;
     }
 
+    public void setIntakeOutState() {
+        currentState = State.INTAKE_OUT;
+    }
+
     public void toggleCoralStationState() {
         currentState = currentState == State.CORAL_STATION ? State.STOW : State.CORAL_STATION;
     }
@@ -87,19 +93,19 @@ public class RobotStates {
     }
 
     public void toggleL1CoralState() {
-        currentState = currentState == State.L1_CORAL ? State.OUTTAKE : State.L1_CORAL;
+        currentState = currentState == State.L1_CORAL ? State.INTAKE_OUT : State.L1_CORAL;
     }
 
     public void toggleL2CoralState() {
-        currentState = currentState == State.L2_CORAL ? State.OUTTAKE : State.L2_CORAL;
+        currentState = currentState == State.L2_CORAL ? State.INTAKE_OUT : State.L2_CORAL;
     }
 
     public void toggleL3CoralState() {
-        currentState = currentState == State.L3_CORAL ? State.OUTTAKE : State.L3_CORAL;
+        currentState = currentState == State.L3_CORAL ? State.INTAKE_OUT : State.L3_CORAL;
     }
 
     public void toggleL4CoralState() {
-        currentState = currentState == State.L4_CORAL ? State.OUTTAKE : State.L4_CORAL;
+        currentState = currentState == State.L4_CORAL ? State.INTAKE_OUT : State.L4_CORAL;
     }
 
     public void toggleLowReefAlgaeState() {
@@ -144,6 +150,13 @@ public class RobotStates {
         outtakeState.onTrue(
                 new InstantCommand(swerve::setIdleMode)
                         .andThen(intake::setOuttakeState)
+                        .andThen(new WaitUntilCommand(() -> !intake.hasAlgae() && !intake.hasCoral()))
+                        .andThen(this::setStowState)
+        );
+
+        intakeOutState.onTrue(
+                new InstantCommand(swerve::setIdleMode)
+                        .andThen(intake::setIntakeOutState)
                         .andThen(new WaitUntilCommand(() -> !intake.hasAlgae() && !intake.hasCoral()))
                         .andThen(this::setStowState)
         );
