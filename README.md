@@ -15,14 +15,12 @@ Alpha bot:
 - [x] Swerve automation pt. 1 - rotational alignment
 
 Friday, 2/14/2025 to test:
-- [ ] Retune wrist feedforward + feedback
-- [ ] Wrist presets + tuning (change upper limit back to double if motor protection isn't necessary anymore)
-- [ ] Pivot cancoder issues
-- [ ] Decide on L1 position
-- [ ] Test robot state selector
-- [ ] Tune Canandcolor for intake (coral + algae)
-- [ ] Test localization trust filter
-- [ ] Ask tech about elevator springs for limit switch????
+- [x] Retune wrist feedforward + feedback
+- [x] Wrist presets + tuning
+- [x] Pivot cancoder issues
+- [x] Decide on L1 position
+- [x] Tune Canandcolor for intake (coral)
+- [x] Elevator limit switch
 
 Friday, 2/14/2025 software only:
 - [ ] Driver only - work on OnFalse triggers instead of OnTrue because of debounce hold to pathfind/direct move to position then OnFalse will subsequently deploy the state properly and effectively
@@ -31,7 +29,12 @@ Friday, 2/14/2025 software only:
 - [ ] Swerve automation pt. 2 - pathfinding/translation alignment
 - [ ] Auto - java structure first, then paths, then test with other mechanisms
 
+Saturday, 2/15/2025 to test:
+- [ ] Test robot state 
+- [ ] Test localization trust filter
+
 Comp bot/later:
+- [ ] Tune Canandcolor for intake (both coral & algae)
 - [ ] Implement climbing
 - [ ] SysID for elevator, pivot, wrist
 - [ ] Fine tune state transitions for efficiency

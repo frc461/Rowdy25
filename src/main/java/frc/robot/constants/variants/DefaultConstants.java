@@ -308,15 +308,15 @@ public final class DefaultConstants {
         public static final Function<Double, Double> UPPER_LIMIT = (elevatorPosition) -> (double) (elevatorPosition > 3 ? 320 : 200);
         public static final double STOW = 45;
         public static final double CORAL_STATION = 109.7;
-        public static final double GROUND_CORAL = 128.5;
-        public static final double GROUND_ALGAE = 140;
+        public static final double GROUND_CORAL = 150;
+        public static final double GROUND_ALGAE = 150;
         public static final double L1_CORAL = 40;
         public static final double L2_CORAL = 40;
         public static final double L3_CORAL = 55;
         public static final double L4_CORAL = 265;
-        public static final double LOW_REEF_ALGAE = 256.3;
-        public static final double HIGH_REEF_ALGAE = 248.5;
-        public static final double PROCESSOR = 125;
+        public static final double LOW_REEF_ALGAE = 220;
+        public static final double HIGH_REEF_ALGAE = 220;
+        public static final double PROCESSOR = 150;
         public static final double NET = 175;
 
     }
