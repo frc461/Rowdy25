@@ -6,8 +6,8 @@ import edu.wpi.first.wpilibj.util.Color;
 
 public class Lights { 
 
-    private static AddressableLED lights = new AddressableLED(2);
-    private static AddressableLEDBuffer buffer = new AddressableLEDBuffer(12);
+    private static final AddressableLED lights = new AddressableLED(2);
+    private static final AddressableLEDBuffer buffer = new AddressableLEDBuffer(12);
 
     public static void configureLights() {
         lights.setLength(buffer.getLength());

@@ -42,7 +42,7 @@ public class RobotContainer {
     private final CommandXboxController driverXbox = new CommandXboxController(0);
     /* Driver Tentative:
      * POV buttons / D-pad:
-     * Up:
+     * Up: Click - outtake, stow
      * Down: Click - manually temp toggle disable all auto aligning
      * Left: Click - manually temp toggle between lower and higher algae reef intake level
      * Right: Click - manually temp toggle between processor and net height
@@ -53,9 +53,9 @@ public class RobotContainer {
      *
      * Joysticks:
      * Left: Translation
-     * Right: Flick up - outtake then stow, Flick down - stow
-     * Left Button: Reset position to coral left side, Hold: Reset gyro
-     * Right Button: Reset position to coral right side
+     * Right:
+     * Left Button: Reset position to coral left-far side, Hold: Reset gyro
+     * Right Button: Reset position to coral right-far side
      *
      * Bumpers:
      * Left: Click - wait until coral is in view then align with then intake coral (ground)
@@ -161,8 +161,10 @@ public class RobotContainer {
         // SO FIGURE OUT LOGIC CORRECTLY AND CAREFULLY
         // TODO: ON FALSE TRIGGERS FOR DRIVER ONLY BINDINGS
 
-        driverXbox.povUp().onTrue(new InstantCommand(robotStates::setOuttakeState));
-        driverXbox.povDown().onTrue(new InstantCommand(swerve::toggleAutoHeading));
+        driverXbox.povUp().onFalse(new InstantCommand(robotStates::setOuttakeState));
+        driverXbox.povDown().onFalse(new InstantCommand(swerve::toggleAutoHeading));
+
+
         driverXbox.leftBumper().onTrue(
                 swerve.pathFindToNearestBranch(elevator::getPosition).andThen(new InstantCommand(robotStates::toggleL4CoralState))
                         .until(() -> !driverXbox.leftBumper().getAsBoolean())

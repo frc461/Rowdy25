@@ -77,8 +77,6 @@ public class DriveCommand extends Command {
 
     @Override
     public void execute() {
-        // TODO SHOP: TEST AUTO ALIGNMENT & CONTROLLED VELOCITY BASED ON ELEVATOR HEIGHT & AUTOMATION WITH SUPERSTRUCTURE
-
         updateMode();
 
         swerve.consistentHeading = driveMode.get() == Swerve.DriveMode.TRANSLATING

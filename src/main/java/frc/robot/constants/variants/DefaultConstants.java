@@ -260,7 +260,7 @@ public final class DefaultConstants {
         public static final double UPPER_LIMIT = 105;
         public static final double STOW = 50;
         public static final double CORAL_STATION = 64.2;
-        public static final double GROUND_CORAL = 3.5; // TODO SHOP: INVESTIGATE GRAVITY GAINS
+        public static final double GROUND_CORAL = 3.5;
         public static final double GROUND_ALGAE = 4.5;
         public static final double L1_CORAL = 55;
         public static final double L2_CORAL = 72.5;
@@ -279,7 +279,7 @@ public final class DefaultConstants {
         public static final InvertedValue MOTOR_INVERT = InvertedValue.Clockwise_Positive;
         public static final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Coast;
 
-        // mechanism characterization
+        // mechanism characterization // TODO: RETUNE MASS, AXIS_TO_ZERO_COM
         private static final double ROTOR_TO_MECHANISM_RATIO = 45.3704;
         public static final double SENSOR_TO_DEGREE_RATIO = 1 / 360.0;
         public static final double MASS_LBS = 7.1301147;
