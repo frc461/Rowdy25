@@ -1,6 +1,6 @@
 plugins {
     id "java"
-    id "edu.wpi.first.GradleRIO" version "2025.2.1"
+    id "edu.wpi.first.GradleRIO" version "2025.3.1"
 }
 
 java {
@@ -34,7 +34,7 @@ deploy {
                     files = project.fileTree('src/main/deploy')
                     directory = '/home/lvuser/deploy'
                     deleteOldFiles = true // Change to true to delete files on roboRIO that no
-                                           // longer exist in deploy directory on roboRIO
+                                          // longer exist in deploy directory on roboRIO
                 }
             }
         }
