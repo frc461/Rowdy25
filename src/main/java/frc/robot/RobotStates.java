@@ -105,7 +105,7 @@ public class RobotStates {
     }
 
     public void toggleL4CoralState() {
-        currentState = currentState == State.L4_CORAL ? State.INTAKE_OUT : State.L4_CORAL;
+        currentState = currentState == State.L4_CORAL ? State.OUTTAKE : State.L4_CORAL;
     }
 
     public void toggleLowReefAlgaeState() {

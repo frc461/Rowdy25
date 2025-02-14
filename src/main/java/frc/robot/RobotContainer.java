@@ -8,10 +8,7 @@ import dev.doglog.DogLog;
 import dev.doglog.DogLogOptions;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.wpilibj.PowerDistribution;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.autos.AutoChooser;
 import frc.robot.commands.*;
@@ -220,12 +217,13 @@ public class RobotContainer {
         opXbox.povLeft().onTrue(new InstantCommand(robotStates::toggleL3CoralState));
         opXbox.povDown().onTrue(new InstantCommand(robotStates::toggleL4CoralState));
 
-        opXbox.leftTrigger().onTrue(new InstantCommand(intake::setOuttakeState));
+        opXbox.leftTrigger().onTrue(new InstantCommand(intake::setOuttakeState).andThen(new WaitUntilCommand(() -> !opXbox.leftTrigger().getAsBoolean())).andThen(intake::setIdleState));
         opXbox.rightTrigger().onTrue(new InstantCommand(robotStates::setStowState));
 
         opXbox.leftBumper().onTrue(new InstantCommand(robotStates::toggleGroundCoralState));
         opXbox.rightBumper().onTrue(new InstantCommand(robotStates::toggleGroundAlgaeState));
 
+        opXbox.a().onTrue(new InstantCommand(intake::setIntakeState).andThen(new WaitUntilCommand(() -> !opXbox.a().getAsBoolean())).andThen(intake::setIdleState));
         opXbox.b().onTrue(new InstantCommand(
                 () -> robotStates.toggleNearestReefAlgaeState(swerve.localizer.nearestAlgaeIsHigh())
         ));
