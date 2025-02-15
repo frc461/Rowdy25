@@ -226,7 +226,7 @@ public class RobotContainer {
         opXbox.povDown().onTrue(new InstantCommand(robotStates::toggleL4CoralState));
 
         opXbox.leftTrigger().onTrue(new InstantCommand(intake::setOuttakeState).andThen(new WaitUntilCommand(() -> !opXbox.leftTrigger().getAsBoolean())).andThen(intake::setIdleState));
-        opXbox.rightTrigger().onTrue(new InstantCommand(intake::setIntakeState).andThen(new WaitUntilCommand(() -> !opXbox.a().getAsBoolean())).andThen(intake::setIdleState));
+        opXbox.rightTrigger().onTrue(new InstantCommand(intake::setIntakeState).andThen(new WaitUntilCommand(() -> !opXbox.rightTrigger().getAsBoolean())).andThen(intake::setIdleState));
 
         opXbox.leftStick().onTrue(new InstantCommand(robotStates::toggleNetState));
         opXbox.rightStick().onTrue(new InstantCommand(robotStates::toggleProcessorState));
@@ -235,7 +235,7 @@ public class RobotContainer {
 //        opXbox.rightBumper().onTrue(new InstantCommand(robotStates::toggleGroundAlgaeState));
         opXbox.rightBumper().onTrue(new InstantCommand(robotStates::setStowState));
 
-        opXbox.a().onTrue(Commands.none());
+        opXbox.a().onTrue(new InstantCommand(pivot::toggleRatchet));
         opXbox.b().onTrue(new InstantCommand(robotStates::toggleHighReefAlgaeState));
         opXbox.x().onTrue(new InstantCommand(robotStates::toggleLowReefAlgaeState));
         opXbox.y().onTrue(new InstantCommand(robotStates::toggleCoralStationState));
