@@ -174,7 +174,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
             return PathManager.pathFindToClosePose(
                     nearestBranchPose,
                     Constants.AutoConstants.DISTANCE_TOLERANCE_TO_DRIVE_INTO,
-                    2.0
+                    1.0
             );
         }, Set.of(this)).andThen(directMoveToNearestBranch(elevatorHeight));
     }

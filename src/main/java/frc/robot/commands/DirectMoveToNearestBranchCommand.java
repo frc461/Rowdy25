@@ -51,14 +51,10 @@ public class DirectMoveToNearestBranchCommand extends Command {
     @Override
     public void initialize() {
         Pose2d nearestBranchPose = FieldUtil.Reef.getNearestBranchPose(swerve.localizer.getStrategyPose());
-        Pose2d targetPose = nearestBranchPose.plus(new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Units.Meters), 0, Rotation2d.kZero).div(2));
         this.targetPose = new Pose2d(
-                targetPose.getTranslation(),
-                targetPose.getRotation().rotateBy(Rotation2d.kPi)
+                nearestBranchPose.getTranslation(),
+                nearestBranchPose.getRotation().rotateBy(Rotation2d.kPi)
         );
-
-        end = swerve.localizer.getStrategyPose().getTranslation().getDistance(this.targetPose.getTranslation())
-                > Constants.AutoConstants.DISTANCE_TOLERANCE_TO_DRIVE_INTO + 0.75;
     }
 
     @Override
@@ -72,11 +68,11 @@ public class DirectMoveToNearestBranchCommand extends Command {
                 fieldCentric.withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
                         .withForwardPerspective(SwerveRequest.ForwardPerspectiveValue.BlueAlliance)
                         .withVelocityX(Math.min(
-                                2.0,
+                                1.0,
                                 translationController.calculate(xError, 0) * Constants.MAX_CONTROLLED_VEL.apply(elevatorHeight.getAsDouble())
                         ))
                         .withVelocityY(Math.min(
-                                2.0,
+                                1.0,
                                 translationController.calculate(yError, 0) * Constants.MAX_CONTROLLED_VEL.apply(elevatorHeight.getAsDouble())
                         ))
                         .withRotationalRate(yawController.calculate(
@@ -88,7 +84,6 @@ public class DirectMoveToNearestBranchCommand extends Command {
                 && Math.abs(yawError) < Constants.AutoConstants.DEGREE_TOLERANCE_TO_ACCEPT) {
             swerve.forceStop();
             swerve.consistentHeading = currentPose.getRotation().getDegrees();
-            System.out.println(swerve.consistentHeading);
             end = true;
         }
     }
