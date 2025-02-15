@@ -25,7 +25,7 @@ Friday, 2/14/2025 to test:
 Friday, 2/14/2025 software only:
 - [x] Driver only - work on OnFalse triggers instead of OnTrue because of debounce hold to pathfind/direct move to position then OnFalse will subsequently deploy the state properly and effectively
 - [x] Double click debouncer
-- [ ] Move to algae vs coral (drive to object overhaul)
+- [x] Move to algae vs coral (drive to object overhaul)
 - [ ] Swerve automation pt. 2 - pathfinding/translation alignment
 - [ ] Auto - java structure first, then paths, then test with other mechanisms
 

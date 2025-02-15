@@ -15,14 +15,16 @@ public class DirectMoveToObjectCommand extends Command {
     private final SwerveRequest.RobotCentric robotCentric;
     private final PIDController objectDetectionController;
     private final BooleanSupplier objectObtained;
+    private final VisionUtil.Photon.Color.TargetClass objectClass;
     private boolean rotationComplete;
     private boolean translationComplete;
     private boolean end;
 
-    public DirectMoveToObjectCommand(Swerve swerve, SwerveRequest.RobotCentric robotCentric, BooleanSupplier objectObtained) {
+    public DirectMoveToObjectCommand(Swerve swerve, SwerveRequest.RobotCentric robotCentric, BooleanSupplier objectObtained, VisionUtil.Photon.Color.TargetClass objectClass) {
         this.swerve = swerve;
         this.robotCentric = robotCentric;
         this.objectObtained = objectObtained;
+        this.objectClass = objectClass;
 
         objectDetectionController = new PIDController(
                 Constants.SwerveConstants.ANGULAR_OBJECT_DETECTION_P,
@@ -43,9 +45,9 @@ public class DirectMoveToObjectCommand extends Command {
 
     @Override
     public void execute() {
-        boolean targetValid = VisionUtil.Photon.Color.hasTargets();
-        double currentYaw = VisionUtil.Photon.Color.getBestObjectYaw();
-        double currentPitch = VisionUtil.Photon.Color.getBestObjectPitch();
+        boolean targetValid = VisionUtil.Photon.Color.hasTargets(objectClass);
+        double currentYaw = VisionUtil.Photon.Color.getBestObjectYaw(objectClass);
+        double currentPitch = VisionUtil.Photon.Color.getBestObjectPitch(objectClass);
         if (targetValid && !rotationComplete) {
             double yawError = Math.abs(currentYaw);
 

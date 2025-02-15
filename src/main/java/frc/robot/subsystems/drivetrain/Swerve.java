@@ -1,5 +1,6 @@
 package frc.robot.subsystems.drivetrain;
 
+import java.lang.annotation.Target;
 import java.util.Set;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
@@ -28,6 +29,7 @@ import frc.robot.commands.DriveCommand;
 import frc.robot.commands.DirectMoveToObjectCommand;
 import frc.robot.subsystems.vision.Localizer;
 import frc.robot.util.FieldUtil;
+import frc.robot.util.VisionUtil;
 
 /**
  * Class that extends the Phoenix 6 SwerveDrivetrain class and implements
@@ -154,7 +156,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
 
     public Command pathFindFindScoreAlgae(BooleanSupplier algaeObtained) {
         return new SearchForAlgaeCommand(this, fieldCentric)
-                .andThen(new DirectMoveToObjectCommand(this, robotCentric, algaeObtained))
+                .andThen(directMoveToObject(algaeObtained, VisionUtil.Photon.Color.TargetClass.ALGAE))
                 .andThen(Commands.defer(
                         () -> PathManager.pathFindToNearestScoringLocation(localizer.getStrategyPose()),
                         Set.of(this)
@@ -175,8 +177,8 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
         }, Set.of(this)).andThen(directMoveToNearestBranch(elevatorHeight));
     }
 
-    public Command directMoveToObject(BooleanSupplier objectObtained) {
-        return new DirectMoveToObjectCommand(this, robotCentric, objectObtained);
+    public Command directMoveToObject(BooleanSupplier objectObtained, VisionUtil.Photon.Color.TargetClass objectLabelClass) {
+        return new DirectMoveToObjectCommand(this, robotCentric, objectObtained, objectLabelClass);
     }
 
     public Command directMoveToNearestBranch(DoubleSupplier elevatorHeight) {

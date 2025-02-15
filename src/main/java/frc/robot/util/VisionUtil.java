@@ -130,6 +130,25 @@ public class VisionUtil {
         }
 
         public static final class Color {
+            public enum TargetClass {
+                ALGAE(0),
+                CORAL(1),
+                NONE(-1);
+
+                public final int id;
+                TargetClass(int id) {
+                    this.id = id;
+                }
+
+                public static TargetClass fromID(int id) {
+                    return switch (id) {
+                        case 0 -> ALGAE;
+                        case 1 -> CORAL;
+                        default -> NONE;
+                    };
+                }
+            }
+
             private static final PhotonCamera COLOR = new PhotonCamera(Constants.NT_INSTANCE, "ArducamColor");
             private static PhotonPipelineResult latestResult = new PhotonPipelineResult();
 
@@ -137,31 +156,28 @@ public class VisionUtil {
                 return latestResult.hasTargets();
             }
 
-            // TODO WAIT (COLOR CAMERA): TEST ALGAE AND CORAL SPECIFIC TARGETING
-            public static boolean hasAlgaeTargets () {
+            public static boolean hasTargets(TargetClass targetClass) {
                 if (hasTargets()) {
                     for (PhotonTrackedTarget target : latestResult.getTargets()) {
-                        if (target.getDetectedObjectClassID() == 0) {
+                        if (target.getDetectedObjectClassID() == targetClass.id) {
                             return true;
                         }
                     }
                 }
                 return false;
+            }
+
+            // TODO WAIT (COLOR CAMERA): TEST ALGAE AND CORAL SPECIFIC TARGETING
+            public static boolean hasAlgaeTargets () {
+                return hasTargets(TargetClass.ALGAE);
             }
 
             public static boolean hasCoralTargets () {
-                if (hasTargets()) {
-                    for (PhotonTrackedTarget target : latestResult.getTargets()) {
-                        if (target.getDetectedObjectClassID() == 1) {
-                            return true;
-                        }
-                    }
-                }
-                return false;
+                return hasTargets(TargetClass.CORAL);
             }
 
-            public static double getBestObjectClass() {
-                return hasTargets() ? latestResult.getBestTarget().getDetectedObjectClassID() : 0.0;
+            public static TargetClass getBestObjectClass() {
+                return hasTargets() ? TargetClass.fromID(latestResult.getBestTarget().getDetectedObjectClassID()) : TargetClass.NONE;
             }
 
             public static double getBestObjectYaw() {
@@ -172,10 +188,10 @@ public class VisionUtil {
                 return hasTargets() ? latestResult.getBestTarget().getPitch() : 0.0;
             }
 
-            public static double getBestAlgaeYaw() {
-                if (hasAlgaeTargets()) {
+            public static double getBestObjectYaw(TargetClass targetClass) {
+                if (hasTargets(targetClass)) {
                     for (PhotonTrackedTarget target : latestResult.getTargets()) {
-                        if (target.getDetectedObjectClassID() == 0) {
+                        if (target.getDetectedObjectClassID() == targetClass.id) {
                             return target.getYaw();
                         }
                     }
@@ -183,32 +199,10 @@ public class VisionUtil {
                 return 0.0;
             }
 
-            public static double getBestAlgaePitch() {
-                if (hasAlgaeTargets()) {
+            public static double getBestObjectPitch(TargetClass targetClass) {
+                if (hasTargets(targetClass)) {
                     for (PhotonTrackedTarget target : latestResult.getTargets()) {
-                        if (target.getDetectedObjectClassID() == 0) {
-                            return target.getPitch();
-                        }
-                    }
-                }
-                return 0.0;
-            }
-
-            public static double getBestCoralYaw() {
-                if (hasCoralTargets()) {
-                    for (PhotonTrackedTarget target : latestResult.getTargets()) {
-                        if (target.getDetectedObjectClassID() == 1) {
-                            return target.getYaw();
-                        }
-                    }
-                }
-                return 0.0;
-            }
-
-            public static double getBestCoralPitch() {
-                if (hasCoralTargets()) {
-                    for (PhotonTrackedTarget target : latestResult.getTargets()) {
-                        if (target.getDetectedObjectClassID() == 1) {
+                        if (target.getDetectedObjectClassID() == targetClass.id) {
                             return target.getPitch();
                         }
                     }

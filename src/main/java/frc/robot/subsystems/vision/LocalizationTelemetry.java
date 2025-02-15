@@ -34,7 +34,7 @@ public class LocalizationTelemetry {
 
     private final BooleanPublisher photonColorHasAlgaeTargetPub = photonTelemetryTable.getBooleanTopic("Photon Color Has Algae Target").publish();
     private final BooleanPublisher photonColorHasCoralTargetPub = photonTelemetryTable.getBooleanTopic("Photon Color Has Coral Target").publish();
-    private final DoublePublisher photonColorBestObjectClass = photonTelemetryTable.getDoubleTopic("Photon Color Best Object Class").publish();
+    private final StringPublisher photonColorBestObjectClass = photonTelemetryTable.getStringTopic("Photon Color Best Object Class").publish();
     private final StringPublisher photonTopRightPosePrettyPub = photonTelemetryTable.getStringTopic("Photon Top Right Pose").publish();
     private final StringPublisher photonTopLeftPosePrettyPub = photonTelemetryTable.getStringTopic("Photon Top Left Pose").publish();
     private final StringPublisher photonBackPosePrettyPub = photonTelemetryTable.getStringTopic("Photon Back Pose").publish();
@@ -67,7 +67,7 @@ public class LocalizationTelemetry {
 
         photonColorHasAlgaeTargetPub.set(VisionUtil.Photon.Color.hasAlgaeTargets());
         photonColorHasCoralTargetPub.set(VisionUtil.Photon.Color.hasCoralTargets());
-        photonColorBestObjectClass.set(VisionUtil.Photon.Color.getBestObjectClass());
+        photonColorBestObjectClass.set(VisionUtil.Photon.Color.getBestObjectClass().name());
         canAddTopRightMeasurementsPub.set(VisionUtil.Photon.BW.isTagClear(VisionUtil.Photon.BW.BWCamera.TOP_RIGHT));
         canAddTopLeftMeasurementsPub.set(VisionUtil.Photon.BW.isTagClear(VisionUtil.Photon.BW.BWCamera.TOP_LEFT));
         canAddBackMeasurementsPub.set(VisionUtil.Photon.BW.isTagClear(VisionUtil.Photon.BW.BWCamera.BACK));
