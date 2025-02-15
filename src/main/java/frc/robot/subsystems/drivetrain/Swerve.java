@@ -172,10 +172,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
         return Commands.defer(() -> {
             Pose2d nearestBranchPose = FieldUtil.Reef.getNearestBranchPose(localizer.getStrategyPose());
             return PathManager.pathFindToClosePose(
-                    localizer.getStrategyPose(),
                     nearestBranchPose,
-                    nearestBranchPose.getRotation().rotateBy(Rotation2d.fromDegrees(-80)),
-                    nearestBranchPose.getRotation().rotateBy(Rotation2d.fromDegrees(80)),
                     Constants.AutoConstants.DISTANCE_TOLERANCE_TO_DRIVE_INTO,
                     2.0
             );
