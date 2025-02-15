@@ -7,6 +7,7 @@ import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.Orchestra;
+import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.swerve.*;
@@ -88,6 +89,10 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
         currentMode = DriveMode.IDLE;
 
         Song.playRandom(this, Song.startupSongs);
+
+        if (Utils.isSimulation()) {
+            new SwerveSim(this).startSimThread();
+        }
 
         AutoBuilder.configure(
                 localizer::getStrategyPose,
