@@ -4,22 +4,27 @@ import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.autos.PathManager;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.drivetrain.Swerve;
 import frc.robot.util.VisionUtil;
 
-public class DriveToObjectCommand extends Command {
+import java.util.function.BooleanSupplier;
+
+public class DirectMoveToObjectCommand extends Command {
     private final Swerve swerve;
     private final SwerveRequest.RobotCentric robotCentric;
     private final PIDController objectDetectionController;
+    private final BooleanSupplier objectObtained;
+    private final VisionUtil.Photon.Color.TargetClass objectClass;
     private boolean rotationComplete;
     private boolean translationComplete;
     private boolean end;
 
-    public DriveToObjectCommand(Swerve swerve, SwerveRequest.RobotCentric robotCentric) {
+    public DirectMoveToObjectCommand(Swerve swerve, SwerveRequest.RobotCentric robotCentric, BooleanSupplier objectObtained, VisionUtil.Photon.Color.TargetClass objectClass) {
         this.swerve = swerve;
         this.robotCentric = robotCentric;
+        this.objectObtained = objectObtained;
+        this.objectClass = objectClass;
 
         objectDetectionController = new PIDController(
                 Constants.SwerveConstants.ANGULAR_OBJECT_DETECTION_P,
@@ -40,11 +45,11 @@ public class DriveToObjectCommand extends Command {
 
     @Override
     public void execute() {
-        boolean targetValid = VisionUtil.Photon.Color.hasTargets();
-        double currentYaw = VisionUtil.Photon.Color.getBestObjectYaw();
-        double currentPitch = VisionUtil.Photon.Color.getBestObjectPitch();
+        boolean targetValid = VisionUtil.Photon.Color.hasTargets(objectClass);
+        double currentYaw = VisionUtil.Photon.Color.getBestObjectYaw(objectClass);
+        double currentPitch = VisionUtil.Photon.Color.getBestObjectPitch(objectClass);
         if (targetValid && !rotationComplete) {
-            double degreeError = Math.abs(currentYaw);
+            double yawError = Math.abs(currentYaw);
 
             swerve.setControl(
                     robotCentric.withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
@@ -55,11 +60,12 @@ public class DriveToObjectCommand extends Command {
                                     0.0
                             ) * Constants.MAX_CONTROLLED_ANGULAR_VEL)
             );
-            if (degreeError < Constants.AutoConstants.DEGREE_TOLERANCE_TO_ACCEPT) {
+            if (yawError < Constants.AutoConstants.DEGREE_TOLERANCE_TO_ACCEPT) {
                 rotationComplete = true;
             }
         } else if (targetValid && !translationComplete) {
-            double degreeError = Math.abs(currentPitch - Constants.VisionConstants.PhotonConstants.OBJECT_GOAL_PITCH);
+            double yawError = Math.abs(currentYaw);
+            double pitchError = Math.abs(currentPitch - Constants.VisionConstants.PhotonConstants.OBJECT_GOAL_PITCH);
 
             swerve.setControl(
                     robotCentric.withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
@@ -73,15 +79,25 @@ public class DriveToObjectCommand extends Command {
                             ))
                             .withRotationalRate(0.0)
             );
-            if (degreeError < Constants.AutoConstants.DEGREE_TOLERANCE_TO_ACCEPT) {
+            if (yawError > Constants.AutoConstants.DEGREE_TOLERANCE_TO_ACCEPT) {
+                rotationComplete = false;
+            } else if (pitchError < Constants.AutoConstants.DEGREE_TOLERANCE_TO_ACCEPT) {
                 translationComplete = true;
                 end = true;
             }
         } else {
-            // TODO WAIT (2/11): MORE ROBUST CHECKING I.E., IF OBJECT IN INTAKE, OTHERWISE METHOD TO INTAKE OBJECT OR GIVE UP, DEPENDING ON AUTO OR TELEOP
-            swerve.forceStop();
+            // TODO: MORE ROBUST CHECKING I.E., IF OBJECT INTAKE
             end = true;
         }
+
+        if (objectObtained.getAsBoolean()) {
+            end = true;
+        }
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        swerve.forceStop();
     }
 
     @Override

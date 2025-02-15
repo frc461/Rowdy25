@@ -47,8 +47,13 @@ public enum RobotIdentity {
         Constants.CAN_BUS = DefaultConstants.CAN_BUS;
         Constants.BLUE_DEFAULT_ROTATION = DefaultConstants.BLUE_DEFAULT_ROTATION;
         Constants.RED_DEFAULT_ROTATION = DefaultConstants.RED_DEFAULT_ROTATION;
+        Constants.ROBOT_LENGTH_WITH_BUMPERS = DefaultConstants.ROBOT_LENGTH_WITH_BUMPERS;
+        Constants.ROBOT_WIDTH_WITH_BUMPERS = DefaultConstants.ROBOT_WIDTH_WITH_BUMPERS;
         Constants.ALLIANCE_SUPPLIER = DefaultConstants.ALLIANCE_SUPPLIER;
+        Constants.FAR_LEFT_CORAL_STATION = DefaultConstants.FAR_LEFT_CORAL_STATION;
+        Constants.FAR_RIGHT_CORAL_STATION = DefaultConstants.FAR_RIGHT_CORAL_STATION;
         Constants.MAX_VEL = DefaultConstants.MAX_VEL;
+        Constants.MAX_CONTROLLED_VEL = DefaultConstants.MAX_CONTROLLED_VEL;
         Constants.MAX_ANGULAR_VEL = DefaultConstants.MAX_ANGULAR_VEL;
         Constants.MAX_CONTROLLED_ANGULAR_VEL = DefaultConstants.MAX_CONTROLLED_ANGULAR_VEL;
         Constants.MAX_ACCEL = DefaultConstants.MAX_ACCEL;
@@ -115,7 +120,6 @@ public enum RobotIdentity {
         Constants.ElevatorConstants.FOLLOWER_ID = DefaultConstants.ElevatorConstants.FOLLOWER_ID;
         Constants.ElevatorConstants.LOWER_LIMIT_SWITCH_ID = DefaultConstants.ElevatorConstants.LOWER_LIMIT_SWITCH_ID;
         Constants.ElevatorConstants.CURRENT_LIMIT = DefaultConstants.ElevatorConstants.CURRENT_LIMIT;
-        Constants.ElevatorConstants.PEAK_VOLTAGE = DefaultConstants.ElevatorConstants.PEAK_VOLTAGE;
         Constants.ElevatorConstants.MOTOR_INVERT = DefaultConstants.ElevatorConstants.MOTOR_INVERT;
         Constants.ElevatorConstants.NEUTRAL_MODE = DefaultConstants.ElevatorConstants.NEUTRAL_MODE;
         Constants.ElevatorConstants.ROTOR_TO_INCH_RATIO = DefaultConstants.ElevatorConstants.ROTOR_TO_INCH_RATIO;
@@ -132,7 +136,8 @@ public enum RobotIdentity {
         Constants.ElevatorConstants.D = DefaultConstants.ElevatorConstants.D;
         Constants.ElevatorConstants.EXPO_V = DefaultConstants.ElevatorConstants.EXPO_V;
         Constants.ElevatorConstants.EXPO_A = DefaultConstants.ElevatorConstants.EXPO_A;
-        Constants.ElevatorConstants.TOLERANCE = DefaultConstants.ElevatorConstants.TOLERANCE;
+        Constants.ElevatorConstants.SAFE_TOLERANCE = DefaultConstants.ElevatorConstants.SAFE_TOLERANCE;
+        Constants.ElevatorConstants.AT_TARGET_TOLERANCE = DefaultConstants.ElevatorConstants.AT_TARGET_TOLERANCE;
         Constants.ElevatorConstants.LOWER_LIMIT = DefaultConstants.ElevatorConstants.LOWER_LIMIT;
         Constants.ElevatorConstants.UPPER_LIMIT = DefaultConstants.ElevatorConstants.UPPER_LIMIT;
         Constants.ElevatorConstants.STOW = DefaultConstants.ElevatorConstants.STOW;
@@ -151,7 +156,6 @@ public enum RobotIdentity {
         Constants.IntakeConstants.MOTOR_ID = DefaultConstants.IntakeConstants.MOTOR_ID;
         Constants.IntakeConstants.SENSOR_ID = DefaultConstants.IntakeConstants.SENSOR_ID;
         Constants.IntakeConstants.CURRENT_LIMIT = DefaultConstants.IntakeConstants.CURRENT_LIMIT;
-        Constants.IntakeConstants.PEAK_VOLTAGE = DefaultConstants.IntakeConstants.PEAK_VOLTAGE;
         Constants.IntakeConstants.MOTOR_INVERT = DefaultConstants.IntakeConstants.MOTOR_INVERT;
         Constants.IntakeConstants.NEUTRAL_MODE = DefaultConstants.IntakeConstants.NEUTRAL_MODE;
 
@@ -159,7 +163,6 @@ public enum RobotIdentity {
         Constants.PivotConstants.FOLLOWER_ID = DefaultConstants.PivotConstants.FOLLOWER_ID;
         Constants.PivotConstants.SERVO_HUB_ID = DefaultConstants.PivotConstants.SERVO_HUB_ID;
         Constants.PivotConstants.CURRENT_LIMIT = DefaultConstants.PivotConstants.CURRENT_LIMIT;
-        Constants.PivotConstants.PEAK_VOLTAGE = DefaultConstants.PivotConstants.PEAK_VOLTAGE;
         Constants.PivotConstants.PIVOT_INVERT = DefaultConstants.PivotConstants.PIVOT_INVERT;
         Constants.PivotConstants.NEUTRAL_MODE = DefaultConstants.PivotConstants.NEUTRAL_MODE;
         Constants.PivotConstants.SENSOR_TO_DEGREE_RATIO = DefaultConstants.PivotConstants.SENSOR_TO_DEGREE_RATIO;
@@ -178,7 +181,8 @@ public enum RobotIdentity {
         Constants.PivotConstants.D = DefaultConstants.PivotConstants.D;
         Constants.PivotConstants.EXPO_V = DefaultConstants.PivotConstants.EXPO_V;
         Constants.PivotConstants.EXPO_A = DefaultConstants.PivotConstants.EXPO_A;
-        Constants.PivotConstants.TOLERANCE = DefaultConstants.PivotConstants.TOLERANCE;
+        Constants.PivotConstants.SAFE_TOLERANCE = DefaultConstants.PivotConstants.SAFE_TOLERANCE;
+        Constants.PivotConstants.AT_TARGET_TOLERANCE = DefaultConstants.PivotConstants.AT_TARGET_TOLERANCE;
         Constants.PivotConstants.LOWER_LIMIT = DefaultConstants.PivotConstants.LOWER_LIMIT;
         Constants.PivotConstants.UPPER_LIMIT = DefaultConstants.PivotConstants.UPPER_LIMIT;
         Constants.PivotConstants.STOW = DefaultConstants.PivotConstants.STOW;
@@ -196,7 +200,6 @@ public enum RobotIdentity {
 
         Constants.WristConstants.MOTOR_ID = DefaultConstants.WristConstants.MOTOR_ID;
         Constants.WristConstants.CURRENT_LIMIT = DefaultConstants.WristConstants.CURRENT_LIMIT;
-        Constants.WristConstants.PEAK_VOLTAGE = DefaultConstants.WristConstants.PEAK_VOLTAGE;
         Constants.WristConstants.MOTOR_INVERT = DefaultConstants.WristConstants.MOTOR_INVERT;
         Constants.WristConstants.NEUTRAL_MODE = DefaultConstants.WristConstants.NEUTRAL_MODE;
         Constants.WristConstants.SENSOR_TO_DEGREE_RATIO = DefaultConstants.WristConstants.SENSOR_TO_DEGREE_RATIO;
@@ -214,7 +217,8 @@ public enum RobotIdentity {
         Constants.WristConstants.D = DefaultConstants.WristConstants.D;
         Constants.WristConstants.EXPO_V = DefaultConstants.WristConstants.EXPO_V;
         Constants.WristConstants.EXPO_A = DefaultConstants.WristConstants.EXPO_A;
-        Constants.WristConstants.TOLERANCE = DefaultConstants.WristConstants.TOLERANCE;
+        Constants.WristConstants.SAFE_TOLERANCE = DefaultConstants.WristConstants.SAFE_TOLERANCE;
+        Constants.WristConstants.AT_TARGET_TOLERANCE = DefaultConstants.WristConstants.AT_TARGET_TOLERANCE;
         Constants.WristConstants.LOWER_LIMIT = DefaultConstants.WristConstants.LOWER_LIMIT;
         Constants.WristConstants.UPPER_LIMIT = DefaultConstants.WristConstants.UPPER_LIMIT;
         Constants.WristConstants.STOW = DefaultConstants.WristConstants.STOW;

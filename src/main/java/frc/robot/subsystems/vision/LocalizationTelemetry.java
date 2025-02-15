@@ -2,12 +2,7 @@ package frc.robot.subsystems.vision;
 
 import dev.doglog.DogLog;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.networktables.BooleanPublisher;
-import edu.wpi.first.networktables.DoubleArrayPublisher;
-import edu.wpi.first.networktables.DoublePublisher;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.StringPublisher;
-import edu.wpi.first.networktables.StructPublisher;
+import edu.wpi.first.networktables.*;
 import frc.robot.constants.Constants;
 import frc.robot.util.VisionUtil;
 
@@ -39,12 +34,13 @@ public class LocalizationTelemetry {
 
     private final BooleanPublisher photonColorHasAlgaeTargetPub = photonTelemetryTable.getBooleanTopic("Photon Color Has Algae Target").publish();
     private final BooleanPublisher photonColorHasCoralTargetPub = photonTelemetryTable.getBooleanTopic("Photon Color Has Coral Target").publish();
+    private final StringPublisher photonColorBestObjectClass = photonTelemetryTable.getStringTopic("Photon Color Best Object Class").publish();
     private final StringPublisher photonTopRightPosePrettyPub = photonTelemetryTable.getStringTopic("Photon Top Right Pose").publish();
     private final StringPublisher photonTopLeftPosePrettyPub = photonTelemetryTable.getStringTopic("Photon Top Left Pose").publish();
     private final StringPublisher photonBackPosePrettyPub = photonTelemetryTable.getStringTopic("Photon Back Pose").publish();
-    private final BooleanPublisher canAddTopRightMeasurementsPub = photonTelemetryTable.getBooleanTopic("Adding Photon Measurements").publish();
-    private final BooleanPublisher canAddTopLeftMeasurementsPub = photonTelemetryTable.getBooleanTopic("Adding Photon Measurements").publish();
-    private final BooleanPublisher canAddBackMeasurementsPub = photonTelemetryTable.getBooleanTopic("Adding Photon Measurements").publish();
+    private final BooleanPublisher canAddTopRightMeasurementsPub = photonTelemetryTable.getBooleanTopic("Adding Photon Top Right Measurements").publish();
+    private final BooleanPublisher canAddTopLeftMeasurementsPub = photonTelemetryTable.getBooleanTopic("Adding Photon Top Left Measurements").publish();
+    private final BooleanPublisher canAddBackMeasurementsPub = photonTelemetryTable.getBooleanTopic("Adding Photon Back Measurements").publish();
 
     private final NetworkTable robotPoseTable = Constants.NT_INSTANCE.getTable("Pose");
     private final StringPublisher fieldTypePub = robotPoseTable.getStringTopic(".type").publish();
@@ -71,6 +67,7 @@ public class LocalizationTelemetry {
 
         photonColorHasAlgaeTargetPub.set(VisionUtil.Photon.Color.hasAlgaeTargets());
         photonColorHasCoralTargetPub.set(VisionUtil.Photon.Color.hasCoralTargets());
+        photonColorBestObjectClass.set(VisionUtil.Photon.Color.getBestObjectClass().name());
         canAddTopRightMeasurementsPub.set(VisionUtil.Photon.BW.isTagClear(VisionUtil.Photon.BW.BWCamera.TOP_RIGHT));
         canAddTopLeftMeasurementsPub.set(VisionUtil.Photon.BW.isTagClear(VisionUtil.Photon.BW.BWCamera.TOP_LEFT));
         canAddBackMeasurementsPub.set(VisionUtil.Photon.BW.isTagClear(VisionUtil.Photon.BW.BWCamera.BACK));

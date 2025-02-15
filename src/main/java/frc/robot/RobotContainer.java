@@ -2,6 +2,7 @@ package frc.robot;
 
 import java.util.function.Supplier;
 
+import com.pathplanner.lib.auto.CommandUtil;
 import com.pathplanner.lib.commands.PathfindingCommand;
 import com.pathplanner.lib.pathfinding.LocalADStar;
 import com.pathplanner.lib.pathfinding.Pathfinding;
@@ -9,137 +10,116 @@ import com.pathplanner.lib.pathfinding.Pathfinding;
 import dev.doglog.DogLog;
 import dev.doglog.DogLogOptions;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.wpilibj.AnalogTrigger;
 import edu.wpi.first.wpilibj.PowerDistribution;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.autos.AutoChooser;
 import frc.robot.commands.*;
+import frc.robot.constants.Constants;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.drivetrain.Swerve;
 import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.wrist.Wrist;
+import frc.robot.util.DoubleTrueTrigger;
 import frc.robot.util.SysID;
 import frc.robot.util.Lights;
 
 public class RobotContainer {
     /* Subsystems */
     private final Swerve swerve = new Swerve();
+    private final Elevator elevator = new Elevator();
     private final Intake intake = new Intake();
     private final Pivot pivot = new Pivot();
-    private final Elevator elevator = new Elevator();
     private final Wrist wrist = new Wrist();
-    
-    private final AutoChooser autoChooser = new AutoChooser(swerve);
+
+    /* Superstructure */
+    private final RobotStates robotStates = new RobotStates();
+
+    private final AutoChooser autoChooser = new AutoChooser(swerve, intake);
 
     /* Sys ID */
     private final SysID sysID = new SysID(swerve);
 
     private final CommandXboxController driverXbox = new CommandXboxController(0);
-    /* Currently Allocated For Driver:
-     * POV buttons / D-pad:
-     * Up: Rotate then translate to a game element (if applicable)
-     * Down:
-     * Left:
-     * Right:
-     *
-     * Triggers:
-     * Left: Rotate CCW (with bumper - FAST)
-     * Right: Rotate CW (with bumper - FAST)
-     *
-     * Joysticks:
-     * Left: Translation
-     * Right:
-     * Left Button:
-     * Right Button:
-     *
-     * Bumpers:
-     * Left: Tag alignment
-     * Right: Game element alignment
-     *
-     * Buttons:
-     *
-     * A: Manual-configure Quest (if applicable)
-     *
-     * B: Toggle localization strategy
-     *
-     * X:
-     *
-     * Y: Reset gyro
-     */
-
     /* Driver Tentative:
      * POV buttons / D-pad:
-     * Up:
-     * Down:
-     * Left: Click - manually temp toggle between lower and higher algae reef intake level
-     * Right: Click - manually temp toggle between processor and net height
+     * Up: Click - outtake, stow
+     * Down: Click - manually temp toggle disable all auto aligning
+     * Left: Click - Net algae score state, Click again - Outtake, stow
+     * Right: Click - Processor algae score state, Click again - Outtake, stow
      *
      * Triggers:
-     * Left: Rotate CCW (with bumper - FAST)
-     * Right: Rotate CW (with bumper - FAST)
+     * Left: Rotate CCW (hold or double click - FAST)
+     * Right: Rotate CW (hold or double click - FAST)
      *
      * Joysticks:
      * Left: Translation
      * Right:
-     * Left Button: Reset position to coral left side, Hold: Reset gyro
-     * Right Button: Reset position to coral right side
+     * Left Button: Reset position to coral left-far side, Hold: Reset gyro
+     * Right Button: Reset position to coral right-far side
      *
      * Bumpers:
-     * Left: Hold - Align with then intake coral (ground)
-     * Right: Hold - Align with then intake algae (ground)
+     * Left: Click - wait until coral is in view then align with then intake coral (ground)
+     * Right: Click - wait until algae is in view then align with then intake algae (ground)
      *
      * Buttons:
      *
      * A:
-     *     No Coral: Click - Climb stage, Click Again - stow slowly
-     *     Coral: Click - L4 score stage, Click Again - outtake, stow
+     *     No Coral: Click - Climb state, Click Again - stow slowly
+     *     Coral: Click - L4 score state, Click Again - outtake, stow
      *
      * B:
-     *     No Coral: Click - Algae pickup stage (height determined by heading, then camera, then stow automatically), stow automatically, Click Again - Stow
-     *     Coral: Click - L1 score stage, Click Again - outtake, stow
+     *     No Coral: Click - Higher algae pickup state, stow automatically, Click Again - stow
+     *     Coral: Click - L1 score state, Click Again - outtake, stow
      *
      * X:
-     *     No Coral: Click - Coral pickup stage, stow automatically, Click Again - Cancel
-     *     Coral: Click - L3 score stage, Click Again - outtake, stow
+     *     No Coral: Click - Lower algae pickup state, stow automatically, Click Again - stow
+     *     Coral: Click - L3 score state, Click Again - outtake, stow
      *
      * Y:
-     *     No Coral: Click - Algae score stage (processor height if within 45 degrees of processor, otherwise net height), Click again - Outtake, stow
-     *     Coral: Click - L2 score stage, Click Again - outtake, stow
+     *     No Coral: Click - Coral pickup state, stow automatically, Click Again - Cancel
+     *     Coral: Click - L2 score state, Click Again - outtake, stow
      */
 
     private final static CommandXboxController opXbox = new CommandXboxController(1);
     /* Currently Allocated For Operator:
      * POV buttons / D-pad:
-     * Up: Click - L2 score stage, Click Again - outtake, stow
-     * Down: Click - L4 score stage, Click Again - outtake, stow
-     * Left: Click - L3 score stage, Click Again - outtake, stow
-     * Right: Click - L1 score stage, Click Again - outtake, stow
+     * Up: Click - L2 score state, Click Again - outtake, stow
+     * Down: Click - L4 score state, Click Again - outtake, stow
+     * Left: Click - L3 score state, Click Again - outtake, stow
+     * Right: Click - L1 score state, Click Again - outtake, stow
      *
      * Triggers:
-     * Left: Rotate wrist down
-     * Right: Rotate wrist up
+     * Left: Hold - Outtake
+     * Right: Hold - intake
      *
      * Joysticks:
-     * Left: Rotate elevator
-     * Right: Rotate pivot
+     * Left: Move elevator (x), rotate pivot (y)
+     * Right: Rotate wrist
+     * Left Button: Click - Net algae score state, Click again - Outtake, stow
+     * Right Button: Click - Processor algae score state, Click again - Outtake, stow
      *
      * Bumpers:
-     * Left: Click - manually temp toggle between lower and higher algae reef intake level
-     * Right: Click - manually temp toggle between processor and net height
+     * Left: Click - wait until coral is in view then align with then intake coral (ground)
+     * Right: Click - Stow
+     * TENTATIVE: Right: Click - wait until algae is in view then align with then intake algae (ground)
      *
      * Buttons:
-     * A: Click - Climb stage, Click Again - stow slowly
-     * B: Click - Algae pickup stage (height determined by heading, then camera, then stow automatically), stow automatically, Click Again - Stow
-     * X: Click - Coral pickup stage, stow automatically, Click Again - Cancel
-     * Y: Click - Algae score stage (processor height if within 45 degrees of processor, otherwise net height), Click again - Outtake, stow
+     * A: Click - Climb state, Click Again - stow slowly
+     * B: Click - Higher algae pickup state, stow automatically, Click Again - Stow
+     * X: Click - Lower algae pickup state, stow automatically, Click again - Stow
+     * Y: Click - Coral pickup state, stow automatically, Click Again - Cancel
      */
 
     public RobotContainer() {
         setDefaultCommands();
         configureBindings();
+        configureToggleStateTriggers();
 
         Lights.configureLights();
 
@@ -160,85 +140,122 @@ public class RobotContainer {
         rotate counterclockwise with right joystick negative X (left) */
         swerve.setDefaultCommand(
                 swerve.driveFieldCentric(
+                        elevator::getPosition,
                         driverXbox::getLeftY,
                         driverXbox::getLeftX,
                         driverXbox::getLeftTriggerAxis,
                         driverXbox::getRightTriggerAxis,
-                        () -> driverXbox.leftBumper().getAsBoolean(),
-                        () -> driverXbox.rightBumper().getAsBoolean(),
-                        () -> driverXbox.x().getAsBoolean(),
-                        () -> driverXbox.y().getAsBoolean()
+                        DoubleTrueTrigger.doubleTrue(driverXbox.leftTrigger(0.5), 0.5),
+                        DoubleTrueTrigger.doubleTrue(driverXbox.rightTrigger(0.5), 0.5) // TODO TEST: TEST DOUBLE-CLICK
                 )
         );
+
+        elevator.setDefaultCommand(new ElevatorCommand(elevator, opXbox::getLeftX, pivot::getPosition, robotStates));
 
         intake.setDefaultCommand(new IntakeCommand(intake));
 
-        // TODO SHOP: TEST AXES
-        elevator.setDefaultCommand(
-                new ElevatorCommand(
-                        elevator,
-                        () -> opXbox.getRightTriggerAxis() - opXbox.getLeftTriggerAxis(),
-                        pivot::getPosition
-                )
-        );
-
         pivot.setDefaultCommand(
-                new PivotCommand(pivot, () -> -opXbox.getLeftY(), elevator::getPosition, wrist::getPosition)
+                new PivotCommand(pivot, () -> -opXbox.getLeftY(), elevator::getPosition, wrist::getPosition, robotStates)
         );
 
         wrist.setDefaultCommand(
-                new WristCommand(wrist, () -> -opXbox.getRightY(), pivot::getPosition)
+                new WristCommand(wrist, () -> -opXbox.getRightY(), pivot::getPosition, elevator::getPosition, robotStates)
         );
     }
 
     private void configureBindings() {
+        // IMPORTANT: WHEN BINDING DRIVER BUTTONS, TRIGGERS NEED TO BE ON FALSE ESPECIALLY WITH BINDINGS THAT INITIATE DRIVE AUTOMATION UPON HOLD DEBOUNCE
+        // SO FIGURE OUT LOGIC CORRECTLY AND CAREFULLY
+        // TODO: ON FALSE TRIGGERS FOR DRIVER ONLY BINDINGS
 
-        driverXbox.a().onTrue(new InstantCommand(swerve.localizer::configureQuestOffset));
+        driverXbox.povUp().onFalse(new InstantCommand(robotStates::setOuttakeState));
+        driverXbox.povDown().onFalse(new InstantCommand(swerve::toggleAutoHeading));
+        driverXbox.povLeft().onFalse(new InstantCommand(robotStates::toggleNetState));
+        driverXbox.povRight().onFalse(new InstantCommand(robotStates::toggleProcessorState));
 
-        driverXbox.b().onTrue(new InstantCommand(swerve.localizer::toggleLocalizationStrategy));
+        driverXbox.leftStick().onFalse(new InstantCommand(() -> swerve.localizer.setPoses(Constants.FAR_LEFT_CORAL_STATION)));
+        driverXbox.rightStick().onFalse(new InstantCommand(() -> swerve.localizer.setPoses(Constants.FAR_RIGHT_CORAL_STATION)));
 
-        // reset the field-centric heading on left joystick press
-        driverXbox.leftStick().onTrue(new InstantCommand(swerve::resetGyro));
+        driverXbox.leftBumper().onFalse(new InstantCommand(robotStates::toggleGroundCoralState));
+        driverXbox.rightBumper().onFalse(new InstantCommand(robotStates::toggleGroundAlgaeState));
 
-        driverXbox.povLeft().whileTrue(swerve.directMoveToObject());
+        driverXbox.a().onFalse(new ConditionalCommand(
+                new InstantCommand(robotStates::toggleL4CoralState),
+                Commands.none(),
+                intake::hasCoral
+        ));
+        driverXbox.a().debounce(1.5).whileTrue(new ConditionalCommand(
+                swerve.pathFindToNearestBranch(elevator::getPosition),
+                Commands.none(),
+                intake::hasCoral
+        ));
 
-        driverXbox.povRight().whileTrue(swerve.pathFindToNearestBranch());
+        driverXbox.b().onFalse(new ConditionalCommand(
+                new InstantCommand(robotStates::toggleL1CoralState),
+                new InstantCommand(robotStates::toggleHighReefAlgaeState),
+                intake::hasCoral
+        ));
+        driverXbox.b().debounce(1.5).whileTrue(new ConditionalCommand(
+                swerve.pathFindToNearestBranch(elevator::getPosition),
+                Commands.none(),
+                intake::hasCoral
+        ));
 
-        // test presets on the operator xbox controller before setting final bindings
-        // FOR OPERATOR PRACTICE, JUST USE THE TWO JOYSTICKS & THE TRIGGERS (LT+RT) FOR MOVING PIVOT, ELEVATOR, WRIST, AND INTAKE
+        driverXbox.x().onFalse(new ConditionalCommand(
+                new InstantCommand(robotStates::toggleL3CoralState),
+                new InstantCommand(robotStates::toggleLowReefAlgaeState),
+                intake::hasCoral
+        ));
+        driverXbox.x().debounce(1.5).whileTrue(new ConditionalCommand(
+                swerve.pathFindToNearestBranch(elevator::getPosition),
+                Commands.none(),
+                intake::hasCoral
+        ));
 
-        opXbox.rightBumper().onTrue(new InstantCommand(intake::toggleIntakeState));
-        opXbox.leftBumper().onTrue(
-                new InstantCommand(intake::toggleOuttakeState)
-                        .andThen(new WaitUntilCommand(intake::isIdle))
-                        .andThen(pivot::setStowState)
-                        .andThen(new WaitUntilCommand(pivot::isAtTarget))
-                        .andThen(elevator::setStowState)
-                        .andThen(new WaitUntilCommand(elevator::isAtTarget))
-                        .andThen(wrist::setStowState)
-        );
+        driverXbox.y().onFalse(new ConditionalCommand(
+                new InstantCommand(robotStates::toggleL2CoralState),
+                new InstantCommand(robotStates::toggleCoralStationState),
+                intake::hasCoral
+        ));
+        driverXbox.y().debounce(1.5).whileTrue(new ConditionalCommand(
+                swerve.pathFindToNearestBranch(elevator::getPosition),
+                Commands.none(),
+                intake::hasCoral
+        ));
 
-//        opXbox.povLeft().onTrue(new InstantCommand(elevator::toggleL2CoralState));
-//        opXbox.povLeft().onTrue(new InstantCommand(pivot::toggleL2CoralState));
-//        opXbox.povLeft().onTrue(new InstantCommand(wrist::toggleGroundCoralState));
+        opXbox.povRight().onTrue(new InstantCommand(robotStates::toggleL1CoralState));
+        opXbox.povUp().onTrue(new InstantCommand(robotStates::toggleL2CoralState));
+        opXbox.povLeft().onTrue(new InstantCommand(robotStates::toggleL3CoralState));
+        opXbox.povDown().onTrue(new InstantCommand(robotStates::toggleL4CoralState));
 
-//        opXbox.povUp().onTrue(new InstantCommand(elevator::toggleL4CoralState));
-//        opXbox.povUp().onTrue(new InstantCommand(pivot::toggleL4CoralState));
-//        opXbox.povUp().onTrue(new InstantCommand(wrist::toggleGroundAlgaeState));
+        opXbox.leftTrigger().onTrue(new InstantCommand(intake::setOuttakeState).andThen(new WaitUntilCommand(() -> !opXbox.leftTrigger().getAsBoolean())).andThen(intake::setIdleState));
+        opXbox.rightTrigger().onTrue(new InstantCommand(intake::setIntakeState).andThen(new WaitUntilCommand(() -> !opXbox.rightTrigger().getAsBoolean())).andThen(intake::setIdleState));
 
-//        opXbox.povRight().onTrue(new InstantCommand(elevator::toggleL3CoralState));
-//        opXbox.povRight().onTrue(new InstantCommand(pivot::toggleL3CoralState));
-//        opXbox.povRight().onTrue(new InstantCommand(wrist::toggleCoralStationState));
+        opXbox.leftStick().onTrue(new InstantCommand(robotStates::toggleNetState));
+        opXbox.rightStick().onTrue(new InstantCommand(robotStates::toggleProcessorState));
 
-//        opXbox.povDown().onTrue(new InstantCommand(elevator::setStowState));
-//        opXbox.povDown().onTrue(new InstantCommand(pivot::setStowState));
-//        opXbox.povDown().onTrue(new InstantCommand(pivot::toggleRatchet));
-//        opXbox.povDown().onTrue(new InstantCommand(wrist::setStowState));
+        opXbox.leftBumper().onTrue(new InstantCommand(robotStates::toggleGroundCoralState));
+//        opXbox.rightBumper().onTrue(new InstantCommand(robotStates::toggleGroundAlgaeState));
+        opXbox.rightBumper().onTrue(new InstantCommand(robotStates::setStowState));
+
+        opXbox.a().onTrue(new InstantCommand(pivot::toggleRatchet));
+        opXbox.b().onTrue(new InstantCommand(robotStates::toggleHighReefAlgaeState));
+        opXbox.x().onTrue(new InstantCommand(robotStates::toggleLowReefAlgaeState));
+        opXbox.y().onTrue(new InstantCommand(robotStates::toggleCoralStationState));
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
         sysID.configureBindings(opXbox);
     }
+
+    private void configureToggleStateTriggers() {
+        robotStates.configureToggleStateTriggers(swerve, elevator, intake, pivot, wrist);
+    }
+
+    public void periodic() {
+        robotStates.publishValues();
+    }
+
     public Supplier<Pose2d> poseSupplier;
     public Command getAutonomousCommand() {
         return autoChooser.getFinalAutoCommand(poseSupplier);

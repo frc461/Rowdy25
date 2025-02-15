@@ -75,7 +75,7 @@ public final class AutoChooser {
         AutoEventLooper starter = new AutoEventLooper("Dynamic Auto");
 
         starter.active().onTrue(generatePathCommand(poseSupplier.get(), sidePriority, levelPriority));
-        
+
 
         return Commands.none();
     }

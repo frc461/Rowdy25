@@ -13,7 +13,7 @@ import frc.robot.constants.Constants;
 import java.util.*;
 
 public class FieldUtil {
-    public static final AprilTagFieldLayout layout2025 = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
+    public static final AprilTagFieldLayout layout2025 = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeAndyMark);
     public static final double FIELD_LENGTH = layout2025.getFieldLength();
     public static final double FIELD_WIDTH = layout2025.getFieldWidth();
     public static final Pose3d ORIGIN = layout2025.getOrigin();
@@ -121,8 +121,8 @@ public class FieldUtil {
     }
 
     public static class Reef {
-        public static final Transform2d LEFT_BRANCH_OFFSET_FROM_TAG = new Transform2d(Units.inchesToMeters(6.0), Units.inchesToMeters(-6.468878), new Rotation2d());
-        public static final Transform2d RIGHT_BRANCH_OFFSET_FROM_TAG = new Transform2d(Units.inchesToMeters(6.0), Units.inchesToMeters(6.468878), new Rotation2d());
+        public static final Transform2d LEFT_BRANCH_OFFSET_FROM_TAG = new Transform2d(Units.inchesToMeters(-3.0), Units.inchesToMeters(-6.468878), new Rotation2d());
+        public static final Transform2d RIGHT_BRANCH_OFFSET_FROM_TAG = new Transform2d(Units.inchesToMeters(-3.0), Units.inchesToMeters(6.468878), new Rotation2d());
 
         public static List<AprilTag> getReefTags() {
             return Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red ?
@@ -155,8 +155,8 @@ public class FieldUtil {
         }
 
         public enum AlgaeLocation {
-            LOWER,
-            UPPER
+            LOW,
+            HIGH
         }
 
         public static AprilTag getNearestReefTag(Pose2d currentPose) {
@@ -165,25 +165,53 @@ public class FieldUtil {
 
         public static AlgaeLocation getAlgaeReefLevelFromTag(AprilTag tag) {
             return switch (tag) {
-                case ID_7, ID_9, ID_11, ID_18, ID_20, ID_22 -> Reef.AlgaeLocation.UPPER;
-                case ID_6, ID_8, ID_10, ID_17, ID_19, ID_21  -> Reef.AlgaeLocation.LOWER;
+                case ID_7, ID_9, ID_11, ID_18, ID_20, ID_22 -> Reef.AlgaeLocation.HIGH;
+                case ID_6, ID_8, ID_10, ID_17, ID_19, ID_21  -> Reef.AlgaeLocation.LOW;
                 default -> null;
             };
         }
     }
 
     public static class AlgaeScoring {
+        public enum ScoringLocation {
+            NET,
+            PROCESSOR
+        }
+
         public static List<AprilTag> getAlgaeScoringTags() {
             return Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red ?
-                    List.of(AprilTag.ID_3, AprilTag.ID_5) : List.of(AprilTag.ID_14, AprilTag.ID_16);
+                    List.of(AprilTag.ID_3, AprilTag.ID_5, AprilTag.ID_15) : List.of(AprilTag.ID_4, AprilTag.ID_14, AprilTag.ID_16);
         }
 
         public static List<Pose2d> getAlgaeScoringTagPoses() {
             return TagManager.getTagLocations2d(getAlgaeScoringTags());
         }
 
+        public static Pose2d getProcessorTagPose() {
+            return Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red ?
+                    AprilTag.ID_3.pose2d : AprilTag.ID_16.pose2d;
+        }
+
+        public static Pose2d getNetTagPose() {
+            return Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red ?
+                    AprilTag.ID_5.pose2d : AprilTag.ID_14.pose2d;
+        }
+
         public static Pose2d getNearestAlgaeScoringTagPose(Pose2d currentPose) {
             return currentPose.nearest(getAlgaeScoringTagPoses());
         }
+
+        public static AprilTag getNearestAlgaeScoringTag(Pose2d currentPose) {
+            return TagManager.getPosesToTags().getOrDefault(getNearestAlgaeScoringTagPose(currentPose), AprilTag.INVALID);
+        }
+
+        public static ScoringLocation getAlgaeScoringFromTag(AprilTag tag) {
+            return switch (tag) {
+                case ID_3, ID_16 -> ScoringLocation.PROCESSOR;
+                case ID_4, ID_5, ID_14, ID_15 -> ScoringLocation.NET;
+                default -> null;
+            };
+        }
+
     }
 }

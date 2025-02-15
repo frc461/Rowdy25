@@ -8,7 +8,8 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 import com.reduxrobotics.canand.CanandEventLoop;
 import com.reduxrobotics.sensors.canandcolor.Canandcolor;
-import edu.wpi.first.wpilibj.DriverStation;
+import com.reduxrobotics.sensors.canandcolor.ColorPeriod;
+import com.reduxrobotics.sensors.canandcolor.ProximityPeriod;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -22,13 +23,14 @@ public class Intake extends SubsystemBase {
         IDLE,
         HAS_ALGAE,
         INTAKE,
+        INTAKE_OUT,
         OUTTAKE
     }
 
     private State currentState;
 
     private final TalonFX motor;
-    private final Canandcolor canandcolor; // TODO SHOP: TUNE
+    private final Canandcolor canandcolor;
     private final Timer pulseTimer = new Timer();
 
     private final IntakeTelemetry intakeTelemetry = new IntakeTelemetry(this);
@@ -36,7 +38,7 @@ public class Intake extends SubsystemBase {
     public Intake() {
         motor = new TalonFX(Constants.IntakeConstants.MOTOR_ID);
 
-        motor.getConfigurator().apply(new TalonFXConfiguration() // TODO SHOP: TEST WITHOUT VOLTAGE CONSTRAINT
+        motor.getConfigurator().apply(new TalonFXConfiguration()
                 .withMotorOutput(new MotorOutputConfigs()
                         .withInverted(Constants.IntakeConstants.MOTOR_INVERT)
                         .withNeutralMode(Constants.IntakeConstants.NEUTRAL_MODE))
@@ -48,6 +50,14 @@ public class Intake extends SubsystemBase {
 
         CanandEventLoop.getInstance();
         canandcolor = new Canandcolor(Constants.IntakeConstants.SENSOR_ID);
+        canandcolor.setSettings(
+                canandcolor.getSettings()
+                        .setAlignProximityFramesToIntegrationPeriod(true)
+                        .setProximityIntegrationPeriod(ProximityPeriod.k5ms)
+                        .setAlignColorFramesToIntegrationPeriod(true)
+                        .setColorIntegrationPeriod(ColorPeriod.k25ms)
+                        .setDigoutFramePeriod(0.02)
+        );
         canandcolor.setLampLEDBrightness(1.0);
         currentState = State.IDLE;
         pulseTimer.start();
@@ -66,15 +76,19 @@ public class Intake extends SubsystemBase {
     }
 
     public boolean hasCoral() {
-        return getProximity() < 0.2; // TODO SHOP: TUNE THIS
+        return getProximity() < 0.05;
     }
 
     public boolean hasAlgae() {
         return canandcolor.getColor().toWpilibColor().equals(Color.kAqua); // TODO SHOP: TUNE THIS
     }
 
-    public boolean isIdle() {
+    public boolean atIdleState() {
         return currentState == State.IDLE;
+    }
+
+    public boolean atHasAlgaeState() {
+        return currentState == State.HAS_ALGAE;
     }
 
     private void setState(State newState) {
@@ -82,20 +96,26 @@ public class Intake extends SubsystemBase {
     }
 
     public void setIdleState() {
-        setState(State.IDLE);
+        if (hasAlgae()) {
+            setState(State.HAS_ALGAE);
+        } else {
+            setState(State.IDLE);
+        }
     }
 
-    public void setHasAlgaeState() {
-        setState(State.HAS_ALGAE);
+    public void setIntakeState() {
+        setState(State.INTAKE);
     }
 
-    public void toggleIntakeState() {
-        setState(currentState == State.INTAKE ? State.IDLE : State.INTAKE);
+    public void setIntakeOutState() {
+        setState(State.INTAKE_OUT);
     }
 
-    public void toggleOuttakeState() {
-        setState(currentState == State.OUTTAKE ? State.IDLE : State.OUTTAKE);
+    public void setOuttakeState() {
+        setState(State.OUTTAKE);
     }
+
+
 
     public void setIntakeSpeed(double speed) {
         motor.set(speed);

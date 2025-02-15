@@ -5,13 +5,14 @@ import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
 import frc.robot.util.ExpUtil;
 
 public class Wrist extends SubsystemBase {
     public enum State {
-        MANUAL(Constants.WristConstants.LOWER_LIMIT),
+        MANUAL(Constants.WristConstants.LOWER_LIMIT.apply(50.0)),
         STOW(Constants.WristConstants.STOW),
         CORAL_STATION(Constants.WristConstants.CORAL_STATION),
         GROUND_CORAL(Constants.WristConstants.GROUND_CORAL),
@@ -37,7 +38,7 @@ public class Wrist extends SubsystemBase {
 
     private final TalonFX wrist;
     private final MotionMagicExpoVoltage request;
-    private double error, lastManualPosition;
+    private double target, error, lastManualPosition;
 
     private final WristTelemetry wristTelemetry = new WristTelemetry(this);
 
@@ -51,7 +52,7 @@ public class Wrist extends SubsystemBase {
                         .withMagnetOffset(Constants.WristConstants.ENCODER_ABSOLUTE_OFFSET)));
 
         wrist = new TalonFX(Constants.WristConstants.MOTOR_ID);
-        wrist.getConfigurator().apply(new TalonFXConfiguration() // TODO SHOP: TEST WITHOUT VOLTAGE CONSTRAINT
+        wrist.getConfigurator().apply(new TalonFXConfiguration()
                 .withFeedback(new FeedbackConfigs().withRemoteCANcoder(encoder)
                         .withSensorToMechanismRatio(Constants.WristConstants.SENSOR_TO_DEGREE_RATIO))
                 .withMotorOutput(new MotorOutputConfigs()
@@ -63,7 +64,7 @@ public class Wrist extends SubsystemBase {
                         .withBeepOnBoot(false)
                         .withAllowMusicDurDisable(true))
                 .withSlot0(new Slot0Configs()
-                        .withKV(Constants.WristConstants.V) // TODO SHOP: NEED S??????
+                        .withKV(Constants.WristConstants.V)
                         .withKA(Constants.WristConstants.A)
                         .withKP(Constants.WristConstants.P)
                         .withKI(Constants.WristConstants.I)
@@ -75,6 +76,7 @@ public class Wrist extends SubsystemBase {
 
         request = new MotionMagicExpoVoltage(0);
 
+        target = State.STOW.position;
         error = 0.0;
         lastManualPosition = State.STOW.position;
     }
@@ -83,20 +85,32 @@ public class Wrist extends SubsystemBase {
         return currentState;
     }
 
-    public double getPosition() { 
-        return wrist.getPosition().getValueAsDouble();
+    public double getTarget() {
+        return target;
     }
 
-    public double getTarget() {
-        return getState() == State.MANUAL ? lastManualPosition : getState().position;
+    public double getPosition() {
+        return wrist.getPosition().getValueAsDouble();
     }
 
     public double getError() {
         return error;
     }
 
+    public boolean nearTarget() {
+        return error < Constants.WristConstants.SAFE_TOLERANCE;
+    }
+
     public boolean isAtTarget() {
-        return error < Constants.ElevatorConstants.TOLERANCE;
+        return error < Constants.WristConstants.AT_TARGET_TOLERANCE;
+    }
+
+    public void setTarget(double pivotPosition, double elevatorPosition) { // TODO WAIT (NEW MANIPULATOR): CHANGE UPPER LIMIT BACK TO DOUBLE SINCE MOTOR WON'T BE IN THE WAY ANYMORE
+        this.target = MathUtil.clamp(
+                getState() == State.MANUAL ? lastManualPosition : getState().position,
+                Constants.WristConstants.LOWER_LIMIT.apply(pivotPosition),
+                Constants.WristConstants.UPPER_LIMIT.apply(elevatorPosition)
+        );
     }
 
     private void setState(State newState) {
@@ -112,65 +126,64 @@ public class Wrist extends SubsystemBase {
         setState(State.STOW);
     }
 
-    public void toggleCoralStationState() {
-        setState(currentState == State.CORAL_STATION ? State.STOW : State.CORAL_STATION);
+    public void setCoralStationState() {
+        setState(State.CORAL_STATION);
     }
 
-    public void toggleGroundCoralState() {
-        setState(currentState == State.GROUND_CORAL ? State.STOW : State.GROUND_CORAL);
+    public void setGroundCoralState() {
+        setState(State.GROUND_CORAL);
     }
 
-    public void toggleGroundAlgaeState() {
-        setState(currentState == State.GROUND_ALGAE ? State.STOW : State.GROUND_ALGAE);
+    public void setGroundAlgaeState() {
+        setState(State.GROUND_ALGAE);
     }
 
-    public void toggleL1CoralState() {
-        setState(currentState == State.L1_CORAL ? State.STOW : State.L1_CORAL);
+    public void setL1CoralState() {
+        setState(State.L1_CORAL);
     }
 
-    public void toggleL2CoralState() {
-        setState(currentState == State.L2_CORAL ? State.STOW : State.L2_CORAL);
+    public void setL2CoralState() {
+        setState(State.L2_CORAL);
     }
 
-    public void toggleL3CoralState() {
-        setState(currentState == State.L3_CORAL ? State.STOW : State.L3_CORAL);
+    public void setL3CoralState() {
+        setState(State.L3_CORAL);
     }
 
-    public void toggleL4CoralState() {
-        setState(currentState == State.L4_CORAL ? State.STOW : State.L4_CORAL);
+    public void setL4CoralState() {
+        setState(State.L4_CORAL);
     }
 
-    public void toggleLowReefAlgaeState() {
-        setState(currentState == State.LOW_REEF_ALGAE ? State.STOW : State.LOW_REEF_ALGAE);
+    public void setLowReefAlgaeState() {
+        setState(State.LOW_REEF_ALGAE);
     }
 
-    public void toggleHighReefAlgaeState() {
-        setState(currentState == State.HIGH_REEF_ALGAE ? State.STOW : State.HIGH_REEF_ALGAE);
+    public void setHighReefAlgaeState() {
+        setState(State.HIGH_REEF_ALGAE);
     }
 
-    public void toggleProcessorState() {
-        setState(currentState == State.PROCESSOR ? State.STOW : State.PROCESSOR);
+    public void setProcessorState() {
+        setState(State.PROCESSOR);
     }
 
-    public void toggleNetState() {
-        setState(currentState == State.NET ? State.STOW : State.NET);
+    public void setNetState() {
+        setState(State.NET);
     }
 
     public void holdTarget(double pivotPosition) {
-        wrist.setControl(request.withPosition(getTarget()).withFeedForward(Constants.WristConstants.G.apply(getPosition(), pivotPosition)));
+        wrist.setControl(request.withPosition(target).withFeedForward(Constants.WristConstants.G.apply(getPosition(), pivotPosition)));
     }
 
-    public void moveWrist(double axisValue) {
-        // TODO SHOP: TUNE CURBING VALUE
+    public void moveWrist(double axisValue, double pivotPosition, double elevatorPosition) {
         wrist.set(axisValue > 0
-                ? axisValue * ExpUtil.output(Constants.WristConstants.UPPER_LIMIT - getPosition(), 1, 5, 10)
-                : axisValue * ExpUtil.output(getPosition() - Constants.WristConstants.LOWER_LIMIT, 1, 5, 10));
+                ? axisValue * ExpUtil.output(Constants.WristConstants.UPPER_LIMIT.apply(elevatorPosition) - getPosition(), 1, 5, 10)
+                : axisValue * ExpUtil.output(getPosition() - Constants.WristConstants.LOWER_LIMIT.apply(pivotPosition), 1, 5, 10));
     }
 
     @Override
     public void periodic() {
         wristTelemetry.publishValues();
 
-        error = Math.abs(getTarget() - getPosition());
+        error = Math.abs(target - getPosition());
     }
 }

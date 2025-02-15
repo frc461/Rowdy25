@@ -79,7 +79,6 @@ public class Elevator extends SubsystemBase {
 
         request = new MotionMagicExpoVoltage(0);
 
-        elevator.setPosition(0.0); // TODO WAIT (LIMIT SWITCH IS AVAILABLE): REMOVE THIS
         error = 0.0;
         lastManualPosition = State.STOW.position;
     }
@@ -95,18 +94,17 @@ public class Elevator extends SubsystemBase {
     public double getTarget() {
         return getState() == State.MANUAL ? lastManualPosition : getState().position;
     }
-
-    public double getAlgaeHeight(Pose2d currentPose) { // TODO: CHANGE STATE BASED ON CLOSEST ALGAE HEIGHT
-        return FieldUtil.Reef.getAlgaeReefLevelFromTag(FieldUtil.Reef.getNearestReefTag(currentPose)) == FieldUtil.Reef.AlgaeLocation.UPPER
-                ? Constants.ElevatorConstants.HIGH_REEF_ALGAE : Constants.ElevatorConstants.LOW_REEF_ALGAE;
+ 
+    public boolean lowerSwitchTriggered() {
+        return !lowerSwitch.get();
     }
 
-    public boolean lowerSwitchTriggered() {
-        return false; // TODO WAIT (LIMIT SWITCH IS AVAILABLE): return !lowerSwitch.get();
+    public boolean nearTarget() {
+        return error < Constants.ElevatorConstants.SAFE_TOLERANCE;
     }
 
     public boolean isAtTarget() {
-        return error < Constants.ElevatorConstants.TOLERANCE;
+        return error < Constants.ElevatorConstants.AT_TARGET_TOLERANCE;
     }
 
 	private void setState(State state) {
@@ -122,48 +120,48 @@ public class Elevator extends SubsystemBase {
         setState(State.STOW);
     }
 
-    public void toggleCoralStationState() {
-        setState(getState() == State.CORAL_STATION ? State.STOW : State.CORAL_STATION);
+    public void setCoralStationState() {
+        setState(State.CORAL_STATION);
     }
 
-    public void toggleGroundCoralState() {
-        setState(getState() == State.GROUND_CORAL ? State.STOW : State.GROUND_CORAL);
+    public void setGroundCoralState() {
+        setState(State.GROUND_CORAL);
     }
 
-    public void toggleGroundAlgaeState() {
-        setState(getState() == State.GROUND_ALGAE ? State.STOW : State.GROUND_ALGAE);
+    public void setGroundAlgaeState() {
+        setState(State.GROUND_ALGAE);
     }
 
-    public void toggleL1CoralState() {
-        setState(getState() == State.L1_CORAL ? State.STOW : State.L1_CORAL);
+    public void setL1CoralState() {
+        setState(State.L1_CORAL);
     }
 
-    public void toggleL2CoralState() {
-        setState(getState() == State.L2_CORAL ? State.MANUAL : State.L2_CORAL);
+    public void setL2CoralState() {
+        setState(State.L2_CORAL);
     }
 
-    public void toggleL3CoralState() {
-        setState(getState() == State.L3_CORAL ? State.STOW : State.L3_CORAL);
+    public void setL3CoralState() {
+        setState(State.L3_CORAL);
     }
 
-    public void toggleL4CoralState() {
-        setState(getState() == State.L4_CORAL ? State.STOW : State.L4_CORAL);
+    public void setL4CoralState() {
+        setState(State.L4_CORAL);
     }
 
-    public void toggleLowReefAlgaeState() {
-        setState(getState() == State.LOW_REEF_ALGAE ? State.STOW : State.LOW_REEF_ALGAE);
+    public void setLowReefAlgaeState() {
+        setState(State.LOW_REEF_ALGAE);
     }
 
-    public void toggleHighReefAlgaeState() {
-        setState(getState() == State.HIGH_REEF_ALGAE ? State.STOW : State.HIGH_REEF_ALGAE);
+    public void setHighReefAlgaeState() {
+        setState(State.HIGH_REEF_ALGAE);
     }
 
-    public void toggleProcessorState() {
-        setState(getState() == State.PROCESSOR ? State.STOW : State.PROCESSOR);
+    public void setProcessorState() {
+        setState(State.PROCESSOR);
     }
 
-    public void toggleNetState() {
-        setState(getState() == State.NET ? State.STOW : State.NET);
+    public void setNetState() {
+        setState(State.NET);
     }
 
     public void checkLimitSwitch() {
@@ -179,10 +177,9 @@ public class Elevator extends SubsystemBase {
 
     public void moveElevator(double axisValue) {
         checkLimitSwitch();
-        // TODO SHOP: TUNE CURBING VALUE
         elevator.set(axisValue > 0
-                ? axisValue * ExpUtil.output(Constants.ElevatorConstants.UPPER_LIMIT - getPosition(), 1, 5, 10)
-                : axisValue * ExpUtil.output(getPosition() - Constants.ElevatorConstants.LOWER_LIMIT, 1, 5, 10));
+                ? axisValue * ExpUtil.output(Constants.ElevatorConstants.UPPER_LIMIT - getPosition(), 1, 0.5, 10)
+                : axisValue * ExpUtil.output(getPosition() - Constants.ElevatorConstants.LOWER_LIMIT, 1, 0.5, 10));
     }
 
     @Override

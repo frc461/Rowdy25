@@ -5,7 +5,6 @@ import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.GravityTypeValue;
 
 import com.revrobotics.servohub.ServoChannel;
 import com.revrobotics.servohub.ServoHub;
@@ -13,9 +12,10 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
 import frc.robot.util.ExpUtil;
+import frc.robot.util.GravityGainsCalculator;
 import frc.robot.util.Lights;
 
-public class Pivot extends SubsystemBase {
+public class Pivot extends SubsystemBase { // TODO SHOP: INVESTIGATE CANCODER REPORTING 0 POSITION
     public enum State {
         MANUAL(Constants.PivotConstants.LOWER_LIMIT),
         STOW(Constants.PivotConstants.STOW),
@@ -55,7 +55,21 @@ public class Pivot extends SubsystemBase {
     private final TalonFX pivot;
     private final ServoChannel ratchet;
     private final MotionMagicExpoVoltage request;
-    private double error, lastManualPosition;
+
+    private final GravityGainsCalculator gravityGainsCalculator = new GravityGainsCalculator(
+            Constants.PivotConstants.AXIS_POSITION,
+            Constants.WristConstants.AXIS_POSITION,
+            Constants.WristConstants.AXIS_TO_ZERO_COM,
+            Constants.ElevatorConstants.ZERO_UPRIGHT_COM,
+            Constants.ElevatorConstants.COM_TO_STAGE_2_RATIO,
+            Constants.ElevatorConstants.STAGE_2_LIMIT,
+            Constants.ElevatorConstants.COM_TO_STAGE_3_RATIO,
+            Constants.ElevatorConstants.MASS_LBS,
+            Constants.WristConstants.MASS_LBS,
+            Constants.PivotConstants.G
+    );
+
+    private double error, currentG, lastManualPosition;
 
     private final PivotTelemetry pivotTelemetry = new PivotTelemetry(this);
 
@@ -103,6 +117,7 @@ public class Pivot extends SubsystemBase {
         request = new MotionMagicExpoVoltage(getTarget());
 
         error = 0.0;
+        currentG = Constants.PivotConstants.G;
         lastManualPosition = State.STOW.position;
     }
 
@@ -123,19 +138,27 @@ public class Pivot extends SubsystemBase {
     }
 
     public boolean validStartPosition() {
-        return Math.abs(getPosition() - Constants.PivotConstants.STOW) <= Constants.PivotConstants.TOLERANCE;
+        return Math.abs(getPosition() - Constants.PivotConstants.STOW) <= Constants.PivotConstants.SAFE_TOLERANCE;
     }
 
     public double getError() {
         return error;
     }
 
+    public double getCurrentGravityGains() {
+        return currentG;
+    }
+
     public double getRatchetStateValue() {
         return ratchet.getPulseWidth();
     }
 
+    public boolean nearTarget() {
+        return error < Constants.PivotConstants.SAFE_TOLERANCE;
+    }
+
     public boolean isAtTarget() {
-        return error < Constants.ElevatorConstants.TOLERANCE;
+        return error < Constants.PivotConstants.AT_TARGET_TOLERANCE;
     }
 
     public void toggleRatchet() {
@@ -156,60 +179,60 @@ public class Pivot extends SubsystemBase {
         setState(State.STOW);
     }
 
-    public void toggleCoralStationState() {
-        setState(currentState == State.CORAL_STATION ? State.STOW : State.CORAL_STATION);
+    public void setCoralStationState() {
+        setState(State.CORAL_STATION);
     }
 
-    public void toggleGroundCoralState() {
-        setState(currentState == State.GROUND_CORAL ? State.STOW : State.GROUND_CORAL);
+    public void setGroundCoralState() {
+        setState(State.GROUND_CORAL);
     }
 
-    public void toggleGroundAlgaeState() {
-        setState(currentState == State.GROUND_ALGAE ? State.STOW : State.GROUND_ALGAE);
+    public void setGroundAlgaeState() {
+        setState(State.GROUND_ALGAE);
     }
 
-    public void toggleL1CoralState() {
-        setState(currentState == State.L1_CORAL ? State.STOW : State.L1_CORAL);
+    public void setL1CoralState() {
+        setState(State.L1_CORAL);
     }
 
-    public void toggleL2CoralState() {
-        setState(currentState == State.L2_CORAL ? State.STOW : State.L2_CORAL);
+    public void setL2CoralState() {
+        setState(State.L2_CORAL);
     }
 
-    public void toggleL3CoralState() {
-        setState(currentState == State.L3_CORAL ? State.STOW : State.L3_CORAL);
+    public void setL3CoralState() {
+        setState(State.L3_CORAL);
     }
 
-    public void toggleL4CoralState() {
-        setState(currentState == State.L4_CORAL ? State.STOW : State.L4_CORAL);
+    public void setL4CoralState() {
+        setState(State.L4_CORAL);
     }
 
-    public void toggleLowReefAlgaeState() {
-        setState(currentState == State.LOW_REEF_ALGAE ? State.STOW : State.LOW_REEF_ALGAE);
+    public void setLowReefAlgaeState() {
+        setState(State.LOW_REEF_ALGAE);
     }
 
-    public void toggleHighReefAlgaeState() {
-        setState(currentState == State.HIGH_REEF_ALGAE ? State.STOW : State.HIGH_REEF_ALGAE);
+    public void setHighReefAlgaeState() {
+        setState(State.HIGH_REEF_ALGAE);
     }
 
-    public void toggleProcessorState() {
-        setState(currentState == State.PROCESSOR ? State.STOW : State.PROCESSOR);
+    public void setProcessorState() {
+        setState(State.PROCESSOR);
     }
 
-    public void toggleNetState() {
-        setState(currentState == State.NET ? State.STOW : State.NET);
+    public void setNetState() {
+        setState(State.NET);
     }
 
-    public void holdTarget(double gravityGainsToApply) {
-        pivot.setControl(request.withPosition(getTarget()).withFeedForward(gravityGainsToApply));
+    public void holdTarget(double elevatorPosition, double wristPosition) {
+        currentG = gravityGainsCalculator.calculateGFromPositions(getPosition(), wristPosition, elevatorPosition);
+        pivot.setControl(request.withPosition(getTarget()).withFeedForward(currentG));
     }
 
 
     public void movePivot(double axisValue) {
-        // TODO SHOP: TUNE CURBING VALUE
         pivot.set(axisValue > 0
-                ? axisValue * ExpUtil.output(Constants.PivotConstants.UPPER_LIMIT - getPosition(), 1, 10, 10)
-                : axisValue * ExpUtil.output(getPosition() - Constants.PivotConstants.LOWER_LIMIT, 1, 10, 10));
+                ? axisValue * ExpUtil.output(Constants.PivotConstants.UPPER_LIMIT - getPosition(), 1, 5, 10)
+                : axisValue * ExpUtil.output(getPosition() - Constants.PivotConstants.LOWER_LIMIT, 1, 5, 10));
     }
 
     @Override

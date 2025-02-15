@@ -14,11 +14,13 @@ import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.path.PathConstraints;
 
 import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DriverStation;
 
 import java.util.function.BiFunction;
@@ -36,10 +38,17 @@ public final class Constants {
     /* Red alliance sees forward as 180 degrees (toward blue alliance wall) */
     public static Rotation2d RED_DEFAULT_ROTATION;
 
+    public static Distance ROBOT_LENGTH_WITH_BUMPERS;
+    public static Distance ROBOT_WIDTH_WITH_BUMPERS;
+
     public static Supplier<DriverStation.Alliance> ALLIANCE_SUPPLIER;
+
+    public static Pose2d FAR_LEFT_CORAL_STATION;
+    public static Pose2d FAR_RIGHT_CORAL_STATION;
 
     // kSpeedAt12Volts desired top speed
     public static double MAX_VEL;
+    public static Function<Double, Double> MAX_CONTROLLED_VEL;
     // 1.96664381049 rotations per second tuned max angular velocity
     public static double MAX_ANGULAR_VEL;
     public static double MAX_CONTROLLED_ANGULAR_VEL;
@@ -137,7 +146,6 @@ public final class Constants {
         public static int FOLLOWER_ID;
         public static int LOWER_LIMIT_SWITCH_ID;
         public static double CURRENT_LIMIT;
-        public static double PEAK_VOLTAGE;
         public static InvertedValue MOTOR_INVERT;
         public static NeutralModeValue NEUTRAL_MODE;
 
@@ -158,7 +166,8 @@ public final class Constants {
         public static double D;
         public static double EXPO_V;
         public static double EXPO_A;
-        public static double TOLERANCE;
+        public static double SAFE_TOLERANCE;
+        public static double AT_TARGET_TOLERANCE;
 
         // presets
         public static double LOWER_LIMIT;
@@ -183,7 +192,6 @@ public final class Constants {
         public static int MOTOR_ID;
         public static int SENSOR_ID;
         public static double CURRENT_LIMIT;
-        public static double PEAK_VOLTAGE;
         public static InvertedValue MOTOR_INVERT;
         public static NeutralModeValue NEUTRAL_MODE;
     }
@@ -194,7 +202,6 @@ public final class Constants {
         public static int FOLLOWER_ID;
         public static int SERVO_HUB_ID;
         public static double CURRENT_LIMIT;
-        public static double PEAK_VOLTAGE;
         public static InvertedValue PIVOT_INVERT;
         public static NeutralModeValue NEUTRAL_MODE;
 
@@ -221,7 +228,8 @@ public final class Constants {
         public static double D;
         public static double EXPO_V;
         public static double EXPO_A;
-        public static double TOLERANCE;
+        public static double SAFE_TOLERANCE;
+        public static double AT_TARGET_TOLERANCE;
 
         // presets
         public static double LOWER_LIMIT;
@@ -245,7 +253,6 @@ public final class Constants {
         // motor config
         public static int MOTOR_ID;
         public static double CURRENT_LIMIT;
-        public static double PEAK_VOLTAGE;
         public static InvertedValue MOTOR_INVERT;
         public static NeutralModeValue NEUTRAL_MODE;
 
@@ -269,11 +276,12 @@ public final class Constants {
         public static double D;
         public static double EXPO_V;
         public static double EXPO_A;
-        public static double TOLERANCE;
+        public static double SAFE_TOLERANCE;
+        public static double AT_TARGET_TOLERANCE;
 
         // presets
-        public static double LOWER_LIMIT;
-        public static double UPPER_LIMIT;
+        public static Function<Double, Double> LOWER_LIMIT;
+        public static Function<Double, Double> UPPER_LIMIT;
         public static double STOW;
         public static double CORAL_STATION;
         public static double GROUND_CORAL;
@@ -290,18 +298,18 @@ public final class Constants {
     }
 
     public static final class SwerveConstants {
-        public static double PATH_TRANSLATION_CONTROLLER_P;
+        public static double PATH_TRANSLATION_CONTROLLER_P; // FOR PATHPLANNER
         public static double PATH_ROTATION_CONTROLLER_P;
 
-        public static double TRANSLATION_ALIGNMENT_CONTROLLER_P;
+        public static double TRANSLATION_ALIGNMENT_CONTROLLER_P; // FOR MANUAL MOVE
         public static double TRANSLATION_ALIGNMENT_CONTROLLER_D;
 
-        public static Function<Double, Double> PATH_MANUAL_TRANSLATION_CONTROLLER;
+        public static Function<Double, Double> PATH_MANUAL_TRANSLATION_CONTROLLER; // FOR SEARCHING
 
-        public static double ANGULAR_POSITION_P;
+        public static double ANGULAR_POSITION_P; // FOR ANGULAR ROTATION CONTROL
         public static double ANGULAR_POSITION_D;
 
-        public static double ANGULAR_OBJECT_DETECTION_P;
+        public static double ANGULAR_OBJECT_DETECTION_P; // FOR OBJECT DETECTION ROTATION CONTROL
         public static double ANGULAR_OBJECT_DETECTION_D;
 
         public static double ANGULAR_MINIMUM_ANGLE;

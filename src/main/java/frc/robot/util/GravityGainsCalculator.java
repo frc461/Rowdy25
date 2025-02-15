@@ -92,6 +92,6 @@ public class GravityGainsCalculator {
             kG
         );
 
-        System.out.println(calculator.calculateGFromPositions(50, 290, 46));
+        System.out.println(calculator.calculateGFromPositions(5, 150, 40));
     }
 }

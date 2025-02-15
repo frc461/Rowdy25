@@ -19,7 +19,9 @@ import com.pathplanner.lib.path.PathConstraints;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
@@ -28,6 +30,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.units.measure.*;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.util.ExpUtil;
+import frc.robot.util.FieldUtil;
 import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
@@ -46,10 +49,28 @@ public final class DefaultConstants {
     /* Red alliance sees forward as 180 degrees (toward blue alliance wall) */
     public static final Rotation2d RED_DEFAULT_ROTATION = Rotation2d.fromDegrees(180);
 
+    public static final Distance ROBOT_LENGTH_WITH_BUMPERS = Inches.of(38.5);
+    public static final Distance ROBOT_WIDTH_WITH_BUMPERS = Inches.of(32.5);
+
     public static final Supplier<DriverStation.Alliance> ALLIANCE_SUPPLIER = () -> DriverStation.getAlliance().orElse(null);
+
+    public static final Pose2d FAR_LEFT_CORAL_STATION =
+            ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red
+                    ? new Pose2d(Units.inchesToMeters(623.86), 0, FieldUtil.AprilTag.ID_1.pose2d.getRotation())
+                            .plus(new Transform2d(ROBOT_LENGTH_WITH_BUMPERS.div(2).in(Meters), ROBOT_WIDTH_WITH_BUMPERS.div(2).unaryMinus().in(Meters), Rotation2d.kZero))
+                    : new Pose2d(Units.inchesToMeters(67.02), Units.inchesToMeters(317), FieldUtil.AprilTag.ID_13.pose2d.getRotation())
+                            .plus(new Transform2d(ROBOT_LENGTH_WITH_BUMPERS.div(2).in(Meters), ROBOT_WIDTH_WITH_BUMPERS.div(2).unaryMinus().in(Meters), Rotation2d.kZero));
+
+    public static final Pose2d FAR_RIGHT_CORAL_STATION =
+            ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red
+                    ? new Pose2d(Units.inchesToMeters(623.86), Units.inchesToMeters(317), FieldUtil.AprilTag.ID_2.pose2d.getRotation())
+                            .plus(new Transform2d(ROBOT_LENGTH_WITH_BUMPERS.div(2).in(Meters), ROBOT_WIDTH_WITH_BUMPERS.div(2).in(Meters), Rotation2d.fromDegrees(0)))
+                    : new Pose2d(Units.inchesToMeters(67.02), Units.inchesToMeters(0), FieldUtil.AprilTag.ID_12.pose2d.getRotation())
+                            .plus(new Transform2d(ROBOT_LENGTH_WITH_BUMPERS.div(2).in(Meters), ROBOT_WIDTH_WITH_BUMPERS.div(2).in(Meters), Rotation2d.fromDegrees(0)));
 
     // kSpeedAt12Volts desired top speed
     public static final double MAX_VEL = SwerveConstants.SPEED_AT_12_VOLTS.in(MetersPerSecond);
+    public static final Function<Double, Double> MAX_CONTROLLED_VEL = elevatorHeight -> MAX_VEL - 0.1 * elevatorHeight;
     // 1.96664381049 rotations per second tuned max angular velocity
     public static final double MAX_ANGULAR_VEL = RotationsPerSecond.of(1.96664381049).in(RadiansPerSecond);
     public static final double MAX_CONTROLLED_ANGULAR_VEL = RotationsPerSecond.of(0.75).in(RadiansPerSecond);
@@ -85,19 +106,19 @@ public final class DefaultConstants {
         public static final double OBJECT_SEARCH_DEGREE_SLANT = 30.0;
         public static final double DEGREE_TOLERANCE_TO_DRIVE_INTO = 2.5;
         public static final double TRANSLATION_TOLERANCE_TO_ACCEPT = 0.2;
-        public static final double DISTANCE_TOLERANCE_TO_DRIVE_INTO = 1.25;
+        public static final double DISTANCE_TOLERANCE_TO_DRIVE_INTO = 1.0;
     }
 
     public static final class VisionConstants {
         public static final Matrix<N3, N1> ODOM_STD_DEV = VecBuilder.fill(0.01, 0.01, Units.degreesToRadians(0.01));
         public static final Function<Double, Matrix<N3, N1>> VISION_STD_DEV_MULTITAG_FUNCTION =
-                dist -> dist < 2.0
+                dist -> dist < 3.0
                         ? VecBuilder.fill(Math.min(0.1, 0.1 * dist), Math.min(0.1, 0.1 * dist), Units.degreesToRadians(1.0))
                         : VecBuilder.fill(0.15 * dist, 0.15 * dist, Units.degreesToRadians(180.0) * dist);
         public static final Function<Double, Matrix<N3, N1>> VISION_STD_DEV_FUNCTION =
-                dist -> dist < 2.0
+                dist -> dist < 3.0
                         ? VecBuilder.fill(0.15 * dist, 0.15 * dist, Units.degreesToRadians(10.0) * dist)
-                        : VecBuilder.fill(0.5 * dist, 0.5 * dist, Units.degreesToRadians(180.0) * dist); // TODO SHOP: TEST THIS LESS STRICT STD DEV FUNCTION
+                        : VecBuilder.fill(0.5 * dist, 0.5 * dist, Units.degreesToRadians(180.0) * dist); // TODO SHOP: TEST STD DEVS
 
         public static final class LimelightConstants {
             public static final String LIMELIGHT_NT_NAME = "limelight";
@@ -113,7 +134,6 @@ public final class DefaultConstants {
         }
 
         public static final class PhotonConstants {
-            // TODO SHOP: TEST CAMERAS TO CENTER OF ROBOT OFFSETS
             public static final String BW_TOP_RIGHT_NAME = "ArducamBW2";
             public static final double BW_TOP_RIGHT_FORWARD = 0.404;
             public static final double BW_TOP_RIGHT_LEFT = -0.291321;
@@ -168,7 +188,6 @@ public final class DefaultConstants {
         public static final int FOLLOWER_ID = 32;
         public static final int LOWER_LIMIT_SWITCH_ID = 0;
         public static final double CURRENT_LIMIT = 40;
-        public static final double PEAK_VOLTAGE = 6; // TODO SHOP: REMOVE IF NEEDED
         public static final InvertedValue MOTOR_INVERT = InvertedValue.Clockwise_Positive;
         public static final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Coast;
 
@@ -192,21 +211,22 @@ public final class DefaultConstants {
         public static final double D = 0.025;
         public static final double EXPO_V = V / 0.95; // 60% of the actual max velocity, as it will allocate 1 / 0.8 = 1.25 times the voltage to 1 rps
         public static final double EXPO_A = A / 0.04; // 1% of the actual max accel
-        public static final double TOLERANCE = 2.5;
+        public static final double SAFE_TOLERANCE = 5.0;
+        public static final double AT_TARGET_TOLERANCE = 2.5;
 
         // presets
-        public static final double LOWER_LIMIT = 0; // TODO SHOP: TEST PRESETS
+        public static final double LOWER_LIMIT = 0;
         public static final double UPPER_LIMIT = 46;
         public static final double STOW = 0;
         public static final double CORAL_STATION = 0;
         public static final double GROUND_CORAL = 0;
         public static final double GROUND_ALGAE = 0;
         public static final double L1_CORAL = 0;
-        public static final double L2_CORAL = 5.5;
-        public static final double L3_CORAL = 17.5;
-        public static final double L4_CORAL = 42;
-        public static final double LOW_REEF_ALGAE = 5.5;
-        public static final double HIGH_REEF_ALGAE = 24;
+        public static final double L2_CORAL = 0;
+        public static final double L3_CORAL = 18.1;
+        public static final double L4_CORAL = 41.5;
+        public static final double LOW_REEF_ALGAE = 2.9;
+        public static final double HIGH_REEF_ALGAE = 10.5;
         public static final double PROCESSOR = 0;
         public static final double NET = 44;
     }
@@ -215,7 +235,6 @@ public final class DefaultConstants {
         public static final int MOTOR_ID = 41;
         public static final int SENSOR_ID = 42;
         public static final double CURRENT_LIMIT = 40;
-        public static final double PEAK_VOLTAGE = 6;
         public static final InvertedValue MOTOR_INVERT = InvertedValue.Clockwise_Positive;
         public static final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Coast;
     }
@@ -226,7 +245,6 @@ public final class DefaultConstants {
         public static final int FOLLOWER_ID = 52;
         public static final int SERVO_HUB_ID = 54;
         public static final double CURRENT_LIMIT = 40;
-        public static final double PEAK_VOLTAGE = 6; // TODO SHOP: REMOVE IF NEEDED
         public static final InvertedValue PIVOT_INVERT = InvertedValue.Clockwise_Positive;
         public static final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Coast;
 
@@ -253,23 +271,24 @@ public final class DefaultConstants {
         public static final double I = 0;
         public static final double D = 0.01;
         public static final double EXPO_V = V / 0.75; // 75% of the actual max velocity, as it will allocate 1 / 0.8 = 1.25 times the voltage to 1 rps
-        public static final double EXPO_A = A / 0.01; // 0.5% of the actual max acceleration
-        public static final double TOLERANCE = 2.5;
+        public static final double EXPO_A = A / 0.005; // 0.5% of the actual max acceleration
+        public static final double SAFE_TOLERANCE = 15.0;
+        public static final double AT_TARGET_TOLERANCE = 2.5;
 
         // presets
-        public static final double LOWER_LIMIT = 0; // TODO SHOP: TEST PRESETS
+        public static final double LOWER_LIMIT = 0;
         public static final double UPPER_LIMIT = 105;
         public static final double STOW = 50;
-        public static final double CORAL_STATION = 65;
-        public static final double GROUND_CORAL = 4;
-        public static final double GROUND_ALGAE = 4;
-        public static final double L1_CORAL = 55;
-        public static final double L2_CORAL = 75;
-        public static final double L3_CORAL = 75;
-        public static final double L4_CORAL = 85;
-        public static final double LOW_REEF_ALGAE = 70;
-        public static final double HIGH_REEF_ALGAE = 80;
-        public static final double PROCESSOR = 4;
+        public static final double CORAL_STATION = 55.5;
+        public static final double GROUND_CORAL = 3.5;
+        public static final double GROUND_ALGAE = 4.5;
+        public static final double L1_CORAL = 100.0;
+        public static final double L2_CORAL = 100.0;
+        public static final double L3_CORAL = 100.6;
+        public static final double L4_CORAL = 90.5;
+        public static final double LOW_REEF_ALGAE = 105;
+        public static final double HIGH_REEF_ALGAE = 97.6;
+        public static final double PROCESSOR = 22.1;
         public static final double NET = 90;
     }
 
@@ -277,48 +296,48 @@ public final class DefaultConstants {
         // motor config
         public static final int MOTOR_ID = 61;
         public static final double CURRENT_LIMIT = 40;
-        public static final double PEAK_VOLTAGE = 6; // TODO SHOP: REMOVE IF NEEDED
         public static final InvertedValue MOTOR_INVERT = InvertedValue.Clockwise_Positive;
         public static final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Coast;
 
         // mechanism characterization
         private static final double ROTOR_TO_MECHANISM_RATIO = 45.3704;
         public static final double SENSOR_TO_DEGREE_RATIO = 1 / 360.0;
-        public static final double MASS_LBS = 7.1301147;
+        public static final double MASS_LBS = 4.8121516;
         public static final Translation2d AXIS_POSITION = new Translation2d(-11.767377, 38.007139);
-        public static final Translation2d AXIS_TO_ZERO_COM = new Translation2d(0, -7.453525);
+        public static final Translation2d AXIS_TO_ZERO_COM = new Translation2d(3.014233, -4.015809);
 
         // encoder config
         public static final int ENCODER_ID = 62;
-        public static final double ENCODER_ABSOLUTE_OFFSET = -0.33154229058; // TODO SHOP: CONFIRM THIS IS ACCURATE
+        public static final double ENCODER_ABSOLUTE_OFFSET =  0.3986850313;
         public static final SensorDirectionValue ENCODER_INVERT = SensorDirectionValue.Clockwise_Positive;
 
-        // pid & tolerance
-        public static final BiFunction<Double, Double, Double> G = (wristDeg, pivotDeg) -> 0.2188 * Math.sin(Math.toRadians(wristDeg - (90 - pivotDeg)));
-        public static final double V = 0.75 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps) -> V / (rotor rps)
+        // pid & tolerance // TODO SHOP: RETUNE FEEDFORWARD/FEEDBACK
+        public static final BiFunction<Double, Double, Double> G = (wristDeg, pivotDeg) -> 0.15 * Math.sin(Math.toRadians(wristDeg - (90 - pivotDeg)));
+        public static final double V = 0.68 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps) -> V / (rotor rps)
         public static final double A = 0.025 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps^2) -> V / (rotor rps^2)
-        public static final double P = 0.1;
+        public static final double P = 0.2;
         public static final double I = 0.0;
         public static final double D = 0.0;
         public static final double EXPO_V = V / 0.8; // 80% of the actual max velocity, as it will allocate 1 / 0.8 = 1.25 times the voltage to 1 rps
-        public static final double EXPO_A = A / 0.05; // 5% of the actual max accel
-        public static final double TOLERANCE = 2.5;
+        public static final double EXPO_A = A / 0.025; // 2.5% of the actual max accel
+        public static final double SAFE_TOLERANCE = 25.0;
+        public static final double AT_TARGET_TOLERANCE = 2.5;
 
-        // presets
-        public static final double LOWER_LIMIT = 35; // TODO SHOP: TEST PRESETS
-        public static final double UPPER_LIMIT = 320;
+        // presets // TODO SHOP: RETUNE PRESETS
+        public static final Function<Double, Double> LOWER_LIMIT = (pivotPosition) -> (double) (pivotPosition < 45 ? 125 : 45);
+        public static final Function<Double, Double> UPPER_LIMIT = (elevatorPosition) -> (double) (elevatorPosition > 3 ? 320 : 200);
         public static final double STOW = 45;
-        public static final double CORAL_STATION = 75;
-        public static final double GROUND_CORAL = 125;
-        public static final double GROUND_ALGAE = 135;
-        public static final double L1_CORAL = 195; // TODO SHOP: SHOOT IT!
-        public static final double L2_CORAL = 285;
-        public static final double L3_CORAL = 275;
-        public static final double L4_CORAL = 300;
-        public static final double LOW_REEF_ALGAE = 265;
-        public static final double HIGH_REEF_ALGAE = 265;
-        public static final double PROCESSOR = 135;
-        public static final double NET = 180;
+        public static final double CORAL_STATION = 109.7;
+        public static final double GROUND_CORAL = 150;
+        public static final double GROUND_ALGAE = 150;
+        public static final double L1_CORAL = 40;
+        public static final double L2_CORAL = 40;
+        public static final double L3_CORAL = 55;
+        public static final double L4_CORAL = 265;
+        public static final double LOW_REEF_ALGAE = 220;
+        public static final double HIGH_REEF_ALGAE = 220;
+        public static final double PROCESSOR = 150;
+        public static final double NET = 175;
 
     }
 
@@ -342,14 +361,14 @@ public final class DefaultConstants {
         // The steer motor uses any SwerveModule.SteerRequestType control request with the
         // output type specified by SwerveModuleConstants.SteerMotorClosedLoopOutput
         private static final Slot0Configs STEER_GAINS = new Slot0Configs()
-                .withKP(75.0).withKI(0).withKD(0.5)
-                .withKS(0.1).withKV(2.66).withKA(0)
+                .withKP(16.756).withKI(0).withKD(0.28988)
+                .withKS(0.19849).withKV(2.4115).withKA(0.055522)
                 .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign);
         // When using closed-loop control, the drive motor uses the control
         // output type specified by SwerveModuleConstants.DriveMotorClosedLoopOutput
         private static final Slot0Configs DRIVE_GAINS = new Slot0Configs()
-                .withKP(0).withKI(0).withKD(0)
-                .withKS(0.149).withKV(0.1155).withKA(0);
+                .withKP(0.14678).withKI(0).withKD(0)
+                .withKS(0.070646).withKV(0.11413).withKA(0.016008);
 
         // The closed-loop output type to use for the steer motors;
         // This affects the PID/FF gains for the steer motors

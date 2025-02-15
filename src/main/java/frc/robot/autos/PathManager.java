@@ -76,6 +76,20 @@ public final class PathManager {
     }
 
     public static Command pathFindToClosePose(
+            Pose2d targetPose,
+            double distance,
+            double goalEndVelocity
+    ) {
+        return pathFindToPose(
+                new Pose2d(
+                        targetPose.getTranslation().plus(new Translation2d(distance, targetPose.getRotation())),
+                        targetPose.getRotation().rotateBy(Rotation2d.kPi)
+                ),
+                goalEndVelocity
+        );
+    }
+
+    public static Command pathFindToClosePose(
             Pose2d currentPose,
             Pose2d targetPose,
             double distance
