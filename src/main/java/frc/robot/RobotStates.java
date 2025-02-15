@@ -263,8 +263,6 @@ public class RobotStates {
                         .andThen(wrist::setLowReefAlgaeState)
                         .andThen(new WaitUntilCommand(() -> intake.hasAlgae() || intake.hasCoral()))
                         .andThen(this::setStowState)
-                        .until(swerve.localizer::nearestAlgaeIsHigh)
-                        .andThen(this::toggleHighReefAlgaeState)
                         .onlyIf(() -> !intake.hasAlgae() && !intake.hasCoral())
                         .until(() -> !lowReefAlgaeState.getAsBoolean())
         );
@@ -280,8 +278,6 @@ public class RobotStates {
                         .andThen(wrist::setHighReefAlgaeState)
                         .andThen(new WaitUntilCommand(() -> intake.hasAlgae() || intake.hasCoral()))
                         .andThen(this::setStowState)
-                        .until(() -> !swerve.localizer.nearestAlgaeIsHigh())
-                        .andThen(this::toggleLowReefAlgaeState)
                         .onlyIf(() -> !intake.hasAlgae() && !intake.hasCoral())
                         .until(() -> !highReefAlgaeState.getAsBoolean())
         );

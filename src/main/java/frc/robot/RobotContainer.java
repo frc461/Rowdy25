@@ -87,7 +87,7 @@ public class RobotContainer {
      *
      * Triggers:
      * Left: Hold - Outtake
-     * Right: Click - Stow
+     * Right: Hold - intake
      *
      * Joysticks:
      * Left: Move elevator (x), rotate pivot (y)
@@ -97,7 +97,7 @@ public class RobotContainer {
      *
      * Bumpers:
      * Left: Click - wait until coral is in view then align with then intake coral (ground)
-     * Right: Hold - intake
+     * Right: Click - Stow
      * TENTATIVE: Right: Click - wait until algae is in view then align with then intake algae (ground)
      *
      * Buttons:
@@ -219,21 +219,19 @@ public class RobotContainer {
         opXbox.povDown().onTrue(new InstantCommand(robotStates::toggleL4CoralState));
 
         opXbox.leftTrigger().onTrue(new InstantCommand(intake::setOuttakeState).andThen(new WaitUntilCommand(() -> !opXbox.leftTrigger().getAsBoolean())).andThen(intake::setIdleState));
-        opXbox.rightTrigger().onTrue(new InstantCommand(robotStates::setStowState));
+        opXbox.rightTrigger().onTrue(new InstantCommand(intake::setIntakeState).andThen(new WaitUntilCommand(() -> !opXbox.a().getAsBoolean())).andThen(intake::setIdleState));
+
+        opXbox.leftStick().onTrue(new InstantCommand(robotStates::toggleNetState));
+        opXbox.rightStick().onTrue(new InstantCommand(robotStates::toggleProcessorState));
 
         opXbox.leftBumper().onTrue(new InstantCommand(robotStates::toggleGroundCoralState));
 //        opXbox.rightBumper().onTrue(new InstantCommand(robotStates::toggleGroundAlgaeState));
-        opXbox.rightBumper().onTrue(new InstantCommand(intake::setIntakeState).andThen(new WaitUntilCommand(() -> !opXbox.a().getAsBoolean())).andThen(intake::setIdleState));
+        opXbox.rightBumper().onTrue(new InstantCommand(robotStates::setStowState));
 
-
-
-        opXbox.b().onTrue(new InstantCommand(
-                () -> robotStates.toggleNearestReefAlgaeState(swerve.localizer.nearestAlgaeIsHigh())
-        ));
-
-        opXbox.y().onTrue(new InstantCommand(() -> robotStates.toggleNearestAlgaeScoringLocation(swerve.localizer.nearestAlgaeScoringIsNet())));
-
-        opXbox.x().onTrue(new InstantCommand(robotStates::toggleCoralStationState));
+        opXbox.a().onTrue(Commands.none());
+        opXbox.b().onTrue(new InstantCommand(robotStates::toggleHighReefAlgaeState));
+        opXbox.x().onTrue(new InstantCommand(robotStates::toggleLowReefAlgaeState));
+        opXbox.y().onTrue(new InstantCommand(robotStates::toggleCoralStationState));
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
