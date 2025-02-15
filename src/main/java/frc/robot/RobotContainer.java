@@ -1,15 +1,19 @@
 package frc.robot;
 
+import com.pathplanner.lib.auto.CommandUtil;
 import com.pathplanner.lib.commands.PathfindingCommand;
 import com.pathplanner.lib.pathfinding.LocalADStar;
 import com.pathplanner.lib.pathfinding.Pathfinding;
 
 import dev.doglog.DogLog;
 import dev.doglog.DogLogOptions;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.wpilibj.AnalogTrigger;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.autos.AutoChooser;
 import frc.robot.commands.*;
 import frc.robot.constants.Constants;
@@ -18,6 +22,7 @@ import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.drivetrain.Swerve;
 import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.wrist.Wrist;
+import frc.robot.util.DoubleTrueTrigger;
 import frc.robot.util.SysID;
 import frc.robot.util.Lights;
 
@@ -137,8 +142,8 @@ public class RobotContainer {
                         driverXbox::getLeftX,
                         driverXbox::getLeftTriggerAxis,
                         driverXbox::getRightTriggerAxis,
-                        driverXbox.leftTrigger(0.5).debounce(1.5),
-                        driverXbox.rightTrigger(0.5).debounce(1.5) // TODO: DOUBLE-CLICK USING DEBOUNCER FALLING
+                        DoubleTrueTrigger.doubleTrue(driverXbox.leftTrigger(0.5), 0.5),
+                        DoubleTrueTrigger.doubleTrue(driverXbox.rightTrigger(0.5), 0.5) // TODO TEST: TEST DOUBLE-CLICK
                 )
         );
 

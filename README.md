@@ -23,14 +23,14 @@ Friday, 2/14/2025 to test:
 - [x] Elevator limit switch
 
 Friday, 2/14/2025 software only:
-- [ ] Driver only - work on OnFalse triggers instead of OnTrue because of debounce hold to pathfind/direct move to position then OnFalse will subsequently deploy the state properly and effectively
-- [ ] Double click debouncer
+- [x] Driver only - work on OnFalse triggers instead of OnTrue because of debounce hold to pathfind/direct move to position then OnFalse will subsequently deploy the state properly and effectively
+- [x] Double click debouncer
 - [ ] Move to algae vs coral (drive to object overhaul)
 - [ ] Swerve automation pt. 2 - pathfinding/translation alignment
 - [ ] Auto - java structure first, then paths, then test with other mechanisms
 
 Saturday, 2/15/2025 to test:
-- [ ] Test robot state 
+- [ ] Test robot state chooser
 - [ ] Test localization trust filter
 
 Comp bot/later:
