@@ -2,6 +2,7 @@ package frc.robot.commands;
 
 import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.Constants;
@@ -86,8 +87,8 @@ public class DriveCommand extends Command {
                 fieldCentric.withDeadband(Constants.MAX_CONTROLLED_VEL.apply(elevatorHeight.getAsDouble()) * Constants.DEADBAND)
                         .withForwardPerspective(SwerveRequest.ForwardPerspectiveValue.OperatorPerspective)
                         .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
-                        .withVelocityX(-straight.getAsDouble() * Constants.MAX_CONTROLLED_VEL.apply(elevatorHeight.getAsDouble()))
-                        .withVelocityY(-strafe.getAsDouble() * Constants.MAX_CONTROLLED_VEL.apply(elevatorHeight.getAsDouble()))
+                        .withVelocityX(determineTranslationalRate(-straight.getAsDouble()))
+                        .withVelocityY(determineTranslationalRate(-strafe.getAsDouble()))
                         .withRotationalRate(determineRotationalRate())
         );
     }
@@ -104,6 +105,18 @@ public class DriveCommand extends Command {
                 swerve.setTranslatingMode();
             }
         }
+    }
+
+    private double determineTranslationalRate(double axis) {
+        return switch (driveMode.get()) {
+            case BRANCH_HEADING, REEF_TAG_HEADING, CORAL_STATION_HEADING, PROCESSOR_HEADING, NET_HEADING ->
+                MathUtil.clamp(axis * Constants.MAX_CONTROLLED_VEL.apply(elevatorHeight.getAsDouble()), -1.0, 1.0);
+            case OBJECT_HEADING ->
+                VisionUtil.Photon.Color.hasTargets()
+                        ? MathUtil.clamp(axis * Constants.MAX_CONTROLLED_VEL.apply(elevatorHeight.getAsDouble()), -1.0, 1.0)
+                        : axis * Constants.MAX_CONTROLLED_VEL.apply(elevatorHeight.getAsDouble());
+            default -> axis * Constants.MAX_CONTROLLED_VEL.apply(elevatorHeight.getAsDouble());
+        };
     }
 
     private double determineRotationalRate() {
