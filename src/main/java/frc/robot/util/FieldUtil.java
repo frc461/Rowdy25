@@ -187,6 +187,16 @@ public class FieldUtil {
             return TagManager.getTagLocations2d(getAlgaeScoringTags());
         }
 
+        public static Pose2d getProcessorTagPose() {
+            return Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red ?
+                    AprilTag.ID_3.pose2d : AprilTag.ID_16.pose2d;
+        }
+
+        public static Pose2d getNetTagPose() {
+            return Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red ?
+                    AprilTag.ID_5.pose2d : AprilTag.ID_14.pose2d;
+        }
+
         public static Pose2d getNearestAlgaeScoringTagPose(Pose2d currentPose) {
             return currentPose.nearest(getAlgaeScoringTagPoses());
         }
