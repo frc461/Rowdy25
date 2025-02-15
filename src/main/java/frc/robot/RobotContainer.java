@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.autos.AutoChooser;
 import frc.robot.commands.*;
+import frc.robot.constants.Constants;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.drivetrain.Swerve;
@@ -164,8 +165,8 @@ public class RobotContainer {
         driverXbox.povLeft().onFalse(new InstantCommand(robotStates::toggleNetState));
         driverXbox.povRight().onFalse(new InstantCommand(robotStates::toggleProcessorState));
 
-        driverXbox.leftStick().onFalse(Commands.none());
-        driverXbox.rightStick().onFalse(Commands.none());
+        driverXbox.leftStick().onFalse(new InstantCommand(() -> swerve.localizer.setPoses(Constants.FAR_LEFT_CORAL_STATION)));
+        driverXbox.rightStick().onFalse(new InstantCommand(() -> swerve.localizer.setPoses(Constants.FAR_RIGHT_CORAL_STATION)));
 
         driverXbox.leftBumper().onFalse(new InstantCommand(robotStates::toggleGroundCoralState));
         driverXbox.rightBumper().onFalse(new InstantCommand(robotStates::toggleGroundAlgaeState));

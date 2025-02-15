@@ -14,6 +14,7 @@ import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.path.PathConstraints;
 
 import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
@@ -37,6 +38,9 @@ public final class Constants {
     public static Rotation2d RED_DEFAULT_ROTATION;
 
     public static Supplier<DriverStation.Alliance> ALLIANCE_SUPPLIER;
+
+    public static Pose2d FAR_LEFT_CORAL_STATION;
+    public static Pose2d FAR_RIGHT_CORAL_STATION;
 
     // kSpeedAt12Volts desired top speed
     public static double MAX_VEL;

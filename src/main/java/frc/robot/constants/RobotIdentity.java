@@ -48,6 +48,8 @@ public enum RobotIdentity {
         Constants.BLUE_DEFAULT_ROTATION = DefaultConstants.BLUE_DEFAULT_ROTATION;
         Constants.RED_DEFAULT_ROTATION = DefaultConstants.RED_DEFAULT_ROTATION;
         Constants.ALLIANCE_SUPPLIER = DefaultConstants.ALLIANCE_SUPPLIER;
+        Constants.FAR_LEFT_CORAL_STATION = DefaultConstants.FAR_LEFT_CORAL_STATION;
+        Constants.FAR_RIGHT_CORAL_STATION = DefaultConstants.FAR_RIGHT_CORAL_STATION;
         Constants.MAX_VEL = DefaultConstants.MAX_VEL;
         Constants.MAX_CONTROLLED_VEL = DefaultConstants.MAX_CONTROLLED_VEL;
         Constants.MAX_ANGULAR_VEL = DefaultConstants.MAX_ANGULAR_VEL;

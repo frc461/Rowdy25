@@ -19,7 +19,9 @@ import com.pathplanner.lib.path.PathConstraints;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
@@ -28,6 +30,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.units.measure.*;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.util.ExpUtil;
+import frc.robot.util.FieldUtil;
 import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
@@ -46,7 +49,24 @@ public final class DefaultConstants {
     /* Red alliance sees forward as 180 degrees (toward blue alliance wall) */
     public static final Rotation2d RED_DEFAULT_ROTATION = Rotation2d.fromDegrees(180);
 
+    public static final Distance ROBOT_LENGTH_WITH_BUMPERS = Inches.of(38.5);
+    public static final Distance ROBOT_WIDTH_WITH_BUMPERS = Inches.of(32.5);
+
     public static final Supplier<DriverStation.Alliance> ALLIANCE_SUPPLIER = () -> DriverStation.getAlliance().orElse(null);
+
+    public static final Pose2d FAR_LEFT_CORAL_STATION =
+            ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red
+                    ? new Pose2d(Units.inchesToMeters(623.86), 0, FieldUtil.AprilTag.ID_1.pose2d.getRotation())
+                            .plus(new Transform2d(ROBOT_LENGTH_WITH_BUMPERS.div(2).in(Meters), ROBOT_WIDTH_WITH_BUMPERS.div(2).unaryMinus().in(Meters), Rotation2d.fromDegrees(0)))
+                    : new Pose2d(Units.inchesToMeters(67.02), Units.inchesToMeters(317), FieldUtil.AprilTag.ID_13.pose2d.getRotation())
+                            .plus(new Transform2d(ROBOT_LENGTH_WITH_BUMPERS.div(2).in(Meters), ROBOT_WIDTH_WITH_BUMPERS.div(2).unaryMinus().in(Meters), Rotation2d.fromDegrees(0)));
+
+    public static final Pose2d FAR_RIGHT_CORAL_STATION =
+            ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red
+                    ? new Pose2d(Units.inchesToMeters(623.86), Units.inchesToMeters(317), FieldUtil.AprilTag.ID_2.pose2d.getRotation())
+                            .plus(new Transform2d(ROBOT_LENGTH_WITH_BUMPERS.div(2).in(Meters), ROBOT_WIDTH_WITH_BUMPERS.div(2).in(Meters), Rotation2d.fromDegrees(0)))
+                    : new Pose2d(Units.inchesToMeters(67.02), Units.inchesToMeters(0), FieldUtil.AprilTag.ID_12.pose2d.getRotation())
+                            .plus(new Transform2d(ROBOT_LENGTH_WITH_BUMPERS.div(2).in(Meters), ROBOT_WIDTH_WITH_BUMPERS.div(2).in(Meters), Rotation2d.fromDegrees(0)));
 
     // kSpeedAt12Volts desired top speed
     public static final double MAX_VEL = SwerveConstants.SPEED_AT_12_VOLTS.in(MetersPerSecond);
