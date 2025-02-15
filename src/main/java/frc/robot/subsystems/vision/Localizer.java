@@ -120,7 +120,15 @@ public class Localizer {
     }
 
     public double getNearestAlgaeScoringHeading() {
-        return FieldUtil.AlgaeScoring.getNearestAlgaeScoringTagPose(getStrategyPose()).getRotation().getDegrees();
+        return FieldUtil.AlgaeScoring.getNearestAlgaeScoringTagPose(getStrategyPose()).getRotation().rotateBy(Rotation2d.kPi).getDegrees();
+    }
+
+    public double getProcessorScoringHeading() {
+        return FieldUtil.AlgaeScoring.getProcessorTagPose().getRotation().rotateBy(Rotation2d.kPi).getDegrees();
+    }
+
+    public double getNetScoringHeading() {
+        return FieldUtil.AlgaeScoring.getNetTagPose().getRotation().rotateBy(Rotation2d.kPi).getDegrees();
     }
 
     public boolean nearestAlgaeIsHigh() {
