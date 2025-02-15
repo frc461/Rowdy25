@@ -156,6 +156,7 @@ public class Localizer {
 
     public void setPoses(Pose2d pose) {
         poseEstimator.resetPose(pose);
+        swerve.resetGyro();
         VisionUtil.QuestNav.setQuestPose(pose);
     }
 
