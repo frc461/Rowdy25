@@ -6,6 +6,8 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.drivetrain.Swerve;
@@ -49,13 +51,14 @@ public class DirectMoveToNearestBranchCommand extends Command {
     @Override
     public void initialize() {
         Pose2d nearestBranchPose = FieldUtil.Reef.getNearestBranchPose(swerve.localizer.getStrategyPose());
-        targetPose = new Pose2d(
-                nearestBranchPose.getTranslation(),
-                nearestBranchPose.getRotation().rotateBy(Rotation2d.kPi)
+        Pose2d targetPose = nearestBranchPose.plus(new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Units.Meters), 0, Rotation2d.kZero).div(2));
+        this.targetPose = new Pose2d(
+                targetPose.getTranslation(),
+                targetPose.getRotation().rotateBy(Rotation2d.kPi)
         );
 
-        end = swerve.localizer.getStrategyPose().getTranslation().getDistance(targetPose.getTranslation())
-                > Constants.AutoConstants.DISTANCE_TOLERANCE_TO_DRIVE_INTO + 0.5;
+        end = swerve.localizer.getStrategyPose().getTranslation().getDistance(this.targetPose.getTranslation())
+                > Constants.AutoConstants.DISTANCE_TOLERANCE_TO_DRIVE_INTO + 0.75;
     }
 
     @Override
@@ -69,11 +72,11 @@ public class DirectMoveToNearestBranchCommand extends Command {
                 fieldCentric.withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
                         .withForwardPerspective(SwerveRequest.ForwardPerspectiveValue.BlueAlliance)
                         .withVelocityX(Math.min(
-                                1.0,
+                                2.0,
                                 translationController.calculate(xError, 0) * Constants.MAX_CONTROLLED_VEL.apply(elevatorHeight.getAsDouble())
                         ))
                         .withVelocityY(Math.min(
-                                1.0,
+                                2.0,
                                 translationController.calculate(yError, 0) * Constants.MAX_CONTROLLED_VEL.apply(elevatorHeight.getAsDouble())
                         ))
                         .withRotationalRate(yawController.calculate(

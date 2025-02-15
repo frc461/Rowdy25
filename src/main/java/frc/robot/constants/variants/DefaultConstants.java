@@ -57,9 +57,9 @@ public final class DefaultConstants {
     public static final Pose2d FAR_LEFT_CORAL_STATION =
             ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red
                     ? new Pose2d(Units.inchesToMeters(623.86), 0, FieldUtil.AprilTag.ID_1.pose2d.getRotation())
-                            .plus(new Transform2d(ROBOT_LENGTH_WITH_BUMPERS.div(2).in(Meters), ROBOT_WIDTH_WITH_BUMPERS.div(2).unaryMinus().in(Meters), Rotation2d.fromDegrees(0)))
+                            .plus(new Transform2d(ROBOT_LENGTH_WITH_BUMPERS.div(2).in(Meters), ROBOT_WIDTH_WITH_BUMPERS.div(2).unaryMinus().in(Meters), Rotation2d.kZero))
                     : new Pose2d(Units.inchesToMeters(67.02), Units.inchesToMeters(317), FieldUtil.AprilTag.ID_13.pose2d.getRotation())
-                            .plus(new Transform2d(ROBOT_LENGTH_WITH_BUMPERS.div(2).in(Meters), ROBOT_WIDTH_WITH_BUMPERS.div(2).unaryMinus().in(Meters), Rotation2d.fromDegrees(0)));
+                            .plus(new Transform2d(ROBOT_LENGTH_WITH_BUMPERS.div(2).in(Meters), ROBOT_WIDTH_WITH_BUMPERS.div(2).unaryMinus().in(Meters), Rotation2d.kZero));
 
     public static final Pose2d FAR_RIGHT_CORAL_STATION =
             ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red
@@ -106,7 +106,7 @@ public final class DefaultConstants {
         public static final double OBJECT_SEARCH_DEGREE_SLANT = 30.0;
         public static final double DEGREE_TOLERANCE_TO_DRIVE_INTO = 2.5;
         public static final double TRANSLATION_TOLERANCE_TO_ACCEPT = 0.2;
-        public static final double DISTANCE_TOLERANCE_TO_DRIVE_INTO = 1.25;
+        public static final double DISTANCE_TOLERANCE_TO_DRIVE_INTO = 1.0;
     }
 
     public static final class VisionConstants {
