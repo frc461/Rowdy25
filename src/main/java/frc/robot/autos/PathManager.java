@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.autos.routines.AutoEventLooper;
 import frc.robot.constants.Constants;
 import org.json.simple.parser.ParseException;
 
@@ -30,6 +31,14 @@ public final class PathManager {
         } catch (IOException | ParseException e) {
             DriverStation.reportError("Failed to load paths: " + e.getMessage(), e.getStackTrace());
         }
+    }
+
+    public static AutoEventLooper generateAutoEventLooper(
+            AutoChooser.StartPosition startPosition,
+            AutoChooser.SidePriority sidePriority,
+            AutoChooser.LevelPriority levelPriority
+    ) {
+        return new AutoEventLooper("AutoEventLooper");
     }
 
     // TODO: TEST & UPDATE SCORING LOCATIONS

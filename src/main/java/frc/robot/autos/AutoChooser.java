@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.autos.routines.AutoEventLooper;
 import frc.robot.constants.Constants;
-import frc.robot.subsystems.drivetrain.Swerve;
 import frc.robot.util.FieldUtil;
 
 public final class AutoChooser {
@@ -43,19 +42,20 @@ public final class AutoChooser {
         L4;
     }
 
-    public enum Stage {
-        SCORE,
-        PICKUP
-    }
-
+    public StartPosition startPosition;
     public SidePriority sidePriority;
     public LevelPriority levelPriority;
-    public Stage currentStage = Stage.SCORE;
 
+    private final SendableChooser<StartPosition> startPositionChooser = new SendableChooser<>();
     private final SendableChooser<SidePriority> reefSideChooser = new SendableChooser<>();
     private final SendableChooser<LevelPriority> reefLevelChooser = new SendableChooser<>();
 
-    public AutoChooser(Swerve swerve) {
+    public AutoChooser() {
+        for (StartPosition position : StartPosition.values()) {
+            startPositionChooser.addOption(position.name(), position);
+        }
+        SmartDashboard.putData("Start Position", startPositionChooser);
+
         for (SidePriority priority : SidePriority.values()) {
             reefSideChooser.addOption(priority.name(), priority);
         }
@@ -69,25 +69,10 @@ public final class AutoChooser {
 
 
     public Command getFinalAutoCommand(Supplier<Pose2d> poseSupplier) {
+        startPosition = startPositionChooser.getSelected();
         sidePriority = reefSideChooser.getSelected();
         levelPriority = reefLevelChooser.getSelected();
 
-        AutoEventLooper starter = new AutoEventLooper("Dynamic Auto");
-
-        starter.active().onTrue(generatePathCommand(poseSupplier.get(), sidePriority, levelPriority));
-
-
-        return Commands.none();
-    }
-
-    // TODO: FIX ALONG WITH PATH MANAGER
-    public Command generatePathCommand(Pose2d currentPose, SidePriority sidePriority, LevelPriority levelPriority) {
-        Pose2d targetPose;
-        if (currentStage.equals(Stage.SCORE)) {
-            targetPose = FieldUtil.Reef.getNearestBranchPose(currentPose);
-        } else {
-            targetPose = FieldUtil.CoralStation.getNearestCoralStationTagPose(currentPose);
-        }
-        return PathManager.pathFindToNearestBranchWithSide(currentPose, sidePriority);
+        return PathManager.generateAutoEventLooper(startPosition, sidePriority, levelPriority).cmd();
     }
 }

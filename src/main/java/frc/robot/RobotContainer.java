@@ -2,7 +2,6 @@ package frc.robot;
 
 import java.util.function.Supplier;
 
-import com.pathplanner.lib.auto.CommandUtil;
 import com.pathplanner.lib.commands.PathfindingCommand;
 import com.pathplanner.lib.pathfinding.LocalADStar;
 import com.pathplanner.lib.pathfinding.Pathfinding;
@@ -10,13 +9,9 @@ import com.pathplanner.lib.pathfinding.Pathfinding;
 import dev.doglog.DogLog;
 import dev.doglog.DogLogOptions;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.filter.Debouncer;
-import edu.wpi.first.wpilibj.AnalogTrigger;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.autos.AutoChooser;
 import frc.robot.commands.*;
 import frc.robot.constants.Constants;
@@ -40,7 +35,7 @@ public class RobotContainer {
     /* Superstructure */
     private final RobotStates robotStates = new RobotStates();
 
-    private final AutoChooser autoChooser = new AutoChooser(swerve, intake);
+    private final AutoChooser autoChooser = new AutoChooser();
 
     /* Sys ID */
     private final SysID sysID = new SysID(swerve);
