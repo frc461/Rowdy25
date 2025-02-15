@@ -135,8 +135,8 @@ public class RobotContainer {
                         driverXbox::getLeftX,
                         driverXbox::getLeftTriggerAxis,
                         driverXbox::getRightTriggerAxis,
-                        () -> driverXbox.leftTrigger(0.9).debounce(1.5).getAsBoolean(),
-                        () -> driverXbox.rightTrigger(0.5).debounce(1.5).getAsBoolean() // TODO: DOUBLE-CLICK USING DEBOUNCER FALLING
+                        driverXbox.leftTrigger(0.9).debounce(1.5),
+                        driverXbox.rightTrigger(0.5).debounce(1.5) // TODO: DOUBLE-CLICK USING DEBOUNCER FALLING
                 )
         );
 
