@@ -47,6 +47,8 @@ public enum RobotIdentity {
         Constants.CAN_BUS = DefaultConstants.CAN_BUS;
         Constants.BLUE_DEFAULT_ROTATION = DefaultConstants.BLUE_DEFAULT_ROTATION;
         Constants.RED_DEFAULT_ROTATION = DefaultConstants.RED_DEFAULT_ROTATION;
+        Constants.ROBOT_LENGTH_WITH_BUMPERS = DefaultConstants.ROBOT_LENGTH_WITH_BUMPERS;
+        Constants.ROBOT_WIDTH_WITH_BUMPERS = DefaultConstants.ROBOT_WIDTH_WITH_BUMPERS;
         Constants.ALLIANCE_SUPPLIER = DefaultConstants.ALLIANCE_SUPPLIER;
         Constants.FAR_LEFT_CORAL_STATION = DefaultConstants.FAR_LEFT_CORAL_STATION;
         Constants.FAR_RIGHT_CORAL_STATION = DefaultConstants.FAR_RIGHT_CORAL_STATION;

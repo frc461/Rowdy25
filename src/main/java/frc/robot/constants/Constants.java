@@ -20,6 +20,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DriverStation;
 
 import java.util.function.BiFunction;
@@ -36,6 +37,9 @@ public final class Constants {
     public static Rotation2d BLUE_DEFAULT_ROTATION;
     /* Red alliance sees forward as 180 degrees (toward blue alliance wall) */
     public static Rotation2d RED_DEFAULT_ROTATION;
+
+    public static Distance ROBOT_LENGTH_WITH_BUMPERS;
+    public static Distance ROBOT_WIDTH_WITH_BUMPERS;
 
     public static Supplier<DriverStation.Alliance> ALLIANCE_SUPPLIER;
 
