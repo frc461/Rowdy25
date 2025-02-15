@@ -210,6 +210,7 @@ public class RobotStates {
 
         l1CoralState.onTrue(
                 new InstantCommand(swerve::setBranchHeadingMode)
+                        .andThen(intake::setIdleState)
                         .andThen(transition(elevator, wrist, pivot::nearTarget))
                         .andThen(pivot::setL1CoralState)
                         .andThen(new WaitUntilCommand(pivot::nearTarget))
@@ -221,6 +222,7 @@ public class RobotStates {
 
         l2CoralState.onTrue(
                 new InstantCommand(swerve::setBranchHeadingMode)
+                        .andThen(intake::setIdleState)
                         .andThen(transition(elevator, wrist, pivot::nearTarget))
                         .andThen(pivot::setL2CoralState)
                         .andThen(new WaitUntilCommand(pivot::nearTarget))
@@ -232,6 +234,7 @@ public class RobotStates {
 
         l3CoralState.onTrue(
                 new InstantCommand(swerve::setBranchHeadingMode)
+                        .andThen(intake::setIdleState)
                         .andThen(transition(elevator, wrist, pivot::nearTarget))
                         .andThen(pivot::setL3CoralState)
                         .andThen(new WaitUntilCommand(pivot::nearTarget))
@@ -243,6 +246,7 @@ public class RobotStates {
 
         l4CoralState.onTrue(
                 new InstantCommand(swerve::setBranchHeadingMode)
+                        .andThen(intake::setIdleState)
                         .andThen(transition(elevator, wrist, pivot::nearTarget))
                         .andThen(pivot::setL4CoralState)
                         .andThen(new WaitUntilCommand(pivot::nearTarget))
@@ -284,6 +288,7 @@ public class RobotStates {
 
         processorState.onTrue(
                 new InstantCommand(swerve::setProcessorHeadingMode)
+                        .andThen(intake::setIdleState)
                         .andThen(wrist::setProcessorState)
                         .andThen(elevator::setProcessorState)
                         .andThen(new WaitUntilCommand(elevator::nearTarget))
@@ -293,6 +298,7 @@ public class RobotStates {
 
         netState.onTrue(
                 new InstantCommand(swerve::setNetHeadingMode)
+                        .andThen(intake::setIdleState)
                         .andThen(transition(elevator, wrist, pivot::nearTarget))
                         .andThen(pivot::setNetState)
                         .andThen(new WaitUntilCommand(pivot::nearTarget))
