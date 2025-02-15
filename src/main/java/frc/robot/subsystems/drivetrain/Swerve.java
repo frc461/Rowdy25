@@ -43,7 +43,8 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
         REEF_TAG_HEADING,
         OBJECT_HEADING,
         CORAL_STATION_HEADING,
-        ALGAE_SCORING_HEADING
+        PROCESSOR_HEADING,
+        NET_HEADING
     }
 
     private DriveMode currentMode;
@@ -241,8 +242,12 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
         currentMode = DriveMode.CORAL_STATION_HEADING;
     }
 
-    public void setAlgaeScoringHeadingMode() {
-        currentMode = DriveMode.ALGAE_SCORING_HEADING;
+    public void setProcessorHeadingMode() {
+        currentMode = DriveMode.PROCESSOR_HEADING;
+    }
+
+    public void setNetHeadingMode() {
+        currentMode = DriveMode.NET_HEADING;
     }
 
     @Override

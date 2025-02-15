@@ -3,7 +3,6 @@ package frc.robot.commands;
 import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.drivetrain.Swerve;
@@ -133,9 +132,13 @@ public class DriveCommand extends Command {
                     swerve.localizer.getStrategyPose().getRotation().getDegrees(),
                     swerve.localizer.getNearestCoralStationHeading()
             ) * Constants.MAX_CONTROLLED_ANGULAR_VEL;
-            case ALGAE_SCORING_HEADING -> yawController.calculate(
+            case PROCESSOR_HEADING -> yawController.calculate(
                     swerve.localizer.getStrategyPose().getRotation().getDegrees(),
-                    swerve.localizer.getNearestAlgaeScoringHeading()
+                    swerve.localizer.getProcessorScoringHeading()
+            ) * Constants.MAX_CONTROLLED_ANGULAR_VEL;
+            case NET_HEADING -> yawController.calculate(
+                    swerve.localizer.getStrategyPose().getRotation().getDegrees(),
+                    swerve.localizer.getNetScoringHeading()
             ) * Constants.MAX_CONTROLLED_ANGULAR_VEL;
         };
     }

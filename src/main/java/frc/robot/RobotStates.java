@@ -287,7 +287,7 @@ public class RobotStates {
         );
 
         processorState.onTrue(
-                new InstantCommand(swerve::setAlgaeScoringHeadingMode)
+                new InstantCommand(swerve::setProcessorHeadingMode)
                         .andThen(wrist::setProcessorState)
                         .andThen(elevator::setProcessorState)
                         .andThen(new WaitUntilCommand(elevator::nearTarget))
@@ -296,7 +296,7 @@ public class RobotStates {
         );
 
         netState.onTrue(
-                new InstantCommand(swerve::setAlgaeScoringHeadingMode)
+                new InstantCommand(swerve::setNetHeadingMode)
                         .andThen(transition(elevator, wrist, pivot::nearTarget))
                         .andThen(pivot::setNetState)
                         .andThen(new WaitUntilCommand(pivot::nearTarget))
