@@ -63,7 +63,7 @@ public class RobotStates {
         currentState = State.STOW;
         Arrays.stream(State.values()).forEach(state -> stateChooser.addOption(state.name(), state));
         stateChooser.onChange(state -> currentState = stateChooser.getSelected()); // TODO SHOP: TEST CHOOSER
-        SmartDashboard.putData(stateChooser);
+        SmartDashboard.putData("Robot State Chooser", stateChooser);
     }
 
     public void setStowState() {
