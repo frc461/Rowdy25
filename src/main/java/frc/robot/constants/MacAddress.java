@@ -10,7 +10,7 @@ public class MacAddress {
     // TODO WAIT (2/11): GET MAC ADDRESS OF ROBOTS
     public static final String TEST = "00-80-2F-18-50-1F";
     public static final String ALPHA = "00-80-2F-34-07-F0";
-    public static final String ROWDY = "00-00-00-00-00-00";
+    public static final String ROWDY = "00-80-2F-33-9F-37";
 
     public static String getMACAddress() {
         try {
