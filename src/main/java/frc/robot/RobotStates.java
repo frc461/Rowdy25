@@ -186,8 +186,7 @@ public class RobotStates {
                         .andThen(new WaitUntilCommand(elevator::nearTarget))
                         .andThen(pivot::setGroundCoralState)
                         .andThen(new WaitUntilCommand(VisionUtil.Photon.Color::hasCoralTargets))
-                        .andThen(swerve.directMoveToObject().asProxy())
-                        .andThen(new WaitUntilCommand(() -> intake.hasAlgae() || intake.hasCoral()))
+                        .andThen(swerve.directMoveToObject(() -> intake.hasAlgae() || intake.hasCoral()).asProxy())
                         .andThen(this::setStowState)
                         .onlyIf(() -> !intake.hasAlgae() && !intake.hasCoral())
                         .until(() -> !groundCoralState.getAsBoolean())
@@ -201,8 +200,7 @@ public class RobotStates {
                         .andThen(new WaitUntilCommand(elevator::nearTarget))
                         .andThen(pivot::setGroundAlgaeState)
                         .andThen(new WaitUntilCommand(VisionUtil.Photon.Color::hasAlgaeTargets))
-                        .andThen(swerve.directMoveToObject().asProxy()) // TODO: MOVE TO ALGAE VS CORAL
-                        .andThen(new WaitUntilCommand(() -> intake.hasAlgae() || intake.hasCoral()))
+                        .andThen(swerve.directMoveToObject(() -> intake.hasAlgae() || intake.hasCoral()).asProxy()) // TODO: MOVE TO ALGAE VS CORAL
                         .andThen(this::setStowState)
                         .onlyIf(() -> !intake.hasAlgae() && !intake.hasCoral())
                         .until(() -> !groundAlgaeState.getAsBoolean())

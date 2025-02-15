@@ -6,14 +6,15 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.autos.PathManager;
 import frc.robot.commands.auto.FollowPathRequiringAlgaeCommand;
 import frc.robot.subsystems.drivetrain.Swerve;
+import frc.robot.subsystems.intake.Intake;
 
 public class DynamicRoutineTest {
     private final AutoEventLooper starter = new AutoEventLooper("DynamicRoutineTest");
 
-    public DynamicRoutineTest(Swerve swerve) {
+    public DynamicRoutineTest(Swerve swerve, Intake intake) {
         AutoTrigger oneStartToSixRight = starter.addTrigger("1,6right", () -> new FollowPathRequiringAlgaeCommand(PathManager.ONE_START_TO_SIX_RIGHT, false, swerve));
         AutoTrigger sixRightToStation = starter.addTrigger("6right,station", () -> new FollowPathRequiringAlgaeCommand(PathManager.SIX_RIGHT_TO_STATION, false, swerve));
-        AutoTrigger findAlgae = starter.addTrigger("FindAlgae", swerve::pathFindFindScoreAlgae);
+        AutoTrigger findAlgae = starter.addTrigger("FindAlgae", () -> swerve.pathFindFindScoreAlgae(intake::hasAlgae));
         Command stop = Commands.runOnce(swerve::forceStop);
 
         starter.active().onTrue(oneStartToSixRight.cmd());

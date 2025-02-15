@@ -25,7 +25,7 @@ import frc.robot.commands.DirectMoveToNearestBranchCommand;
 import frc.robot.commands.auto.SearchForAlgaeCommand;
 import frc.robot.constants.Constants;
 import frc.robot.commands.DriveCommand;
-import frc.robot.commands.DriveToObjectCommand;
+import frc.robot.commands.DirectMoveToObjectCommand;
 import frc.robot.subsystems.vision.Localizer;
 import frc.robot.util.FieldUtil;
 
@@ -152,9 +152,9 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
         );
     }
 
-    public Command pathFindFindScoreAlgae() {
+    public Command pathFindFindScoreAlgae(BooleanSupplier algaeObtained) {
         return new SearchForAlgaeCommand(this, fieldCentric)
-                .andThen(new DriveToObjectCommand(this, robotCentric))
+                .andThen(new DirectMoveToObjectCommand(this, robotCentric, algaeObtained))
                 .andThen(Commands.defer(
                         () -> PathManager.pathFindToNearestScoringLocation(localizer.getStrategyPose()),
                         Set.of(this)
@@ -175,8 +175,8 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
         }, Set.of(this)).andThen(directMoveToNearestBranch(elevatorHeight));
     }
 
-    public Command directMoveToObject() {
-        return new DriveToObjectCommand(this, robotCentric);
+    public Command directMoveToObject(BooleanSupplier objectObtained) {
+        return new DirectMoveToObjectCommand(this, robotCentric, objectObtained);
     }
 
     public Command directMoveToNearestBranch(DoubleSupplier elevatorHeight) {

@@ -6,12 +6,13 @@ import edu.wpi.first.wpilibj2.command.Command;
 
 import frc.robot.autos.routines.DynamicRoutineTest;
 import frc.robot.subsystems.drivetrain.Swerve;
+import frc.robot.subsystems.intake.Intake;
 
 public final class AutoChooser {
     private final SendableChooser<Command> autoChooser = new SendableChooser<>();
 
-    public AutoChooser(Swerve swerve) {
-        autoChooser.addOption("DynamicAutoTest", new DynamicRoutineTest(swerve).cmd());
+    public AutoChooser(Swerve swerve, Intake intake) {
+        autoChooser.addOption("DynamicAutoTest", new DynamicRoutineTest(swerve, intake).cmd());
 
         SmartDashboard.putData("Auto Chooser", autoChooser);
     }

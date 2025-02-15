@@ -108,7 +108,7 @@ public class SearchForAlgaeCommand extends Command {
             end = true;
         }
 
-        if (VisionUtil.Photon.Color.hasTargets()) {
+        if (VisionUtil.Photon.Color.hasAlgaeTargets()) {
             end = true;
         }
     }

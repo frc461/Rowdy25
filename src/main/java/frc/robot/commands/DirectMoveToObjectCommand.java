@@ -4,22 +4,25 @@ import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.autos.PathManager;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.drivetrain.Swerve;
 import frc.robot.util.VisionUtil;
 
-public class DriveToObjectCommand extends Command {
+import java.util.function.BooleanSupplier;
+
+public class DirectMoveToObjectCommand extends Command {
     private final Swerve swerve;
     private final SwerveRequest.RobotCentric robotCentric;
     private final PIDController objectDetectionController;
+    private final BooleanSupplier objectObtained;
     private boolean rotationComplete;
     private boolean translationComplete;
     private boolean end;
 
-    public DriveToObjectCommand(Swerve swerve, SwerveRequest.RobotCentric robotCentric) {
+    public DirectMoveToObjectCommand(Swerve swerve, SwerveRequest.RobotCentric robotCentric, BooleanSupplier objectObtained) {
         this.swerve = swerve;
         this.robotCentric = robotCentric;
+        this.objectObtained = objectObtained;
 
         objectDetectionController = new PIDController(
                 Constants.SwerveConstants.ANGULAR_OBJECT_DETECTION_P,
@@ -82,9 +85,17 @@ public class DriveToObjectCommand extends Command {
             }
         } else {
             // TODO: MORE ROBUST CHECKING I.E., IF OBJECT INTAKE
-            swerve.forceStop();
             end = true;
         }
+
+        if (objectObtained.getAsBoolean()) {
+            end = true;
+        }
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        swerve.forceStop();
     }
 
     @Override

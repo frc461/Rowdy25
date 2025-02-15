@@ -37,7 +37,7 @@ public class RobotContainer {
     /* Superstructure */
     private final RobotStates robotStates = new RobotStates();
 
-    private final AutoChooser autoChooser = new AutoChooser(swerve);
+    private final AutoChooser autoChooser = new AutoChooser(swerve, intake);
 
     /* Sys ID */
     private final SysID sysID = new SysID(swerve);
