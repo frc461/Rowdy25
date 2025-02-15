@@ -41,8 +41,8 @@ public class RobotContainer {
      * POV buttons / D-pad:
      * Up: Click - outtake, stow
      * Down: Click - manually temp toggle disable all auto aligning
-     * Left: Click - manually temp toggle between lower and higher algae reef intake level
-     * Right: Click - manually temp toggle between processor and net height
+     * Left: Click - Net algae score state, Click again - Outtake, stow
+     * Right: Click - Processor algae score state, Click again - Outtake, stow
      *
      * Triggers:
      * Left: Rotate CCW (hold or double click - FAST)
@@ -65,15 +65,15 @@ public class RobotContainer {
      *     Coral: Click - L4 score state, Click Again - outtake, stow
      *
      * B:
-     *     No Coral: Click - Algae pickup state (height determined by nearest reef, then camera, then stow automatically), stow automatically, Click Again - Stow
+     *     No Coral: Click - Higher algae pickup state, stow automatically, Click Again - stow
      *     Coral: Click - L1 score state, Click Again - outtake, stow
      *
      * X:
-     *     No Coral: Click - Coral pickup state, stow automatically, Click Again - Cancel
+     *     No Coral: Click - Lower algae pickup state, stow automatically, Click Again - stow
      *     Coral: Click - L3 score state, Click Again - outtake, stow
      *
      * Y:
-     *     No Coral: Click - Algae score state (net or processor, whichever is closer), Click again - Outtake, stow
+     *     No Coral: Click - Coral pickup state, stow automatically, Click Again - Cancel
      *     Coral: Click - L2 score state, Click Again - outtake, stow
      */
 
@@ -86,24 +86,25 @@ public class RobotContainer {
      * Right: Click - L1 score state, Click Again - outtake, stow
      *
      * Triggers:
-     * Left: Outtake
-     * Right: Stow
+     * Left: Hold - Outtake
+     * Right: Click - Stow
      *
      * Joysticks:
      * Left: Move elevator (x), rotate pivot (y)
      * Right: Rotate wrist
-     * Left Button: Click - manually temp toggle between lower and higher algae reef intake level
-     * Right Button: Click - manually temp toggle between processor and net height
+     * Left Button: Click - Net algae score state, Click again - Outtake, stow
+     * Right Button: Click - Processor algae score state, Click again - Outtake, stow
      *
      * Bumpers:
      * Left: Click - wait until coral is in view then align with then intake coral (ground)
-     * Right: Click - wait until algae is in view then align with then intake algae (ground)
+     * Right: Hold - intake
+     * TENTATIVE: Right: Click - wait until algae is in view then align with then intake algae (ground)
      *
      * Buttons:
      * A: Click - Climb state, Click Again - stow slowly
-     * B: Click - Algae pickup state (height determined by heading, then camera, then stow automatically), stow automatically, Click Again - Stow
-     * X: Click - Coral pickup state, stow automatically, Click Again - Cancel
-     * Y: Click - Algae score state (processor height if within 45 degrees of processor, otherwise net height), Click again - Outtake, stow
+     * B: Click - Higher algae pickup state, stow automatically, Click Again - Stow
+     * X: Click - Lower algae pickup state, stow automatically, Click again - Stow
+     * Y: Click - Coral pickup state, stow automatically, Click Again - Cancel
      */
 
     public RobotContainer() {
@@ -135,7 +136,7 @@ public class RobotContainer {
                         driverXbox::getLeftX,
                         driverXbox::getLeftTriggerAxis,
                         driverXbox::getRightTriggerAxis,
-                        driverXbox.leftTrigger(0.9).debounce(1.5),
+                        driverXbox.leftTrigger(0.5).debounce(1.5),
                         driverXbox.rightTrigger(0.5).debounce(1.5) // TODO: DOUBLE-CLICK USING DEBOUNCER FALLING
                 )
         );
@@ -221,9 +222,11 @@ public class RobotContainer {
         opXbox.rightTrigger().onTrue(new InstantCommand(robotStates::setStowState));
 
         opXbox.leftBumper().onTrue(new InstantCommand(robotStates::toggleGroundCoralState));
-        opXbox.rightBumper().onTrue(new InstantCommand(robotStates::toggleGroundAlgaeState));
+//        opXbox.rightBumper().onTrue(new InstantCommand(robotStates::toggleGroundAlgaeState));
+        opXbox.rightBumper().onTrue(new InstantCommand(intake::setIntakeState).andThen(new WaitUntilCommand(() -> !opXbox.a().getAsBoolean())).andThen(intake::setIdleState));
 
-        opXbox.a().onTrue(new InstantCommand(intake::setIntakeState).andThen(new WaitUntilCommand(() -> !opXbox.a().getAsBoolean())).andThen(intake::setIdleState));
+
+
         opXbox.b().onTrue(new InstantCommand(
                 () -> robotStates.toggleNearestReefAlgaeState(swerve.localizer.nearestAlgaeIsHigh())
         ));
