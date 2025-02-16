@@ -18,8 +18,6 @@ import java.util.Arrays;
 import java.util.List;
 
 public final class PathManager {
-    // TODO: CREATE 2025 PATHS
-
     // ONE START
     public static PathPlannerPath ONE_START_TO_A;
     public static PathPlannerPath ONE_START_TO_B;
@@ -118,6 +116,34 @@ public final class PathManager {
     public static PathPlannerPath K_TO_TWO_STATION;
     public static PathPlannerPath L_TO_TWO_STATION;
 
+    // ONE STATION TO BRANCH
+    public static PathPlannerPath ONE_STATION_TO_A;
+    public static PathPlannerPath ONE_STATION_TO_B;
+    public static PathPlannerPath ONE_STATION_TO_C;
+    public static PathPlannerPath ONE_STATION_TO_D;
+    public static PathPlannerPath ONE_STATION_TO_E;
+    public static PathPlannerPath ONE_STATION_TO_F;
+    public static PathPlannerPath ONE_STATION_TO_G;
+    public static PathPlannerPath ONE_STATION_TO_H;
+    public static PathPlannerPath ONE_STATION_TO_I;
+    public static PathPlannerPath ONE_STATION_TO_J;
+    public static PathPlannerPath ONE_STATION_TO_K;
+    public static PathPlannerPath ONE_STATION_TO_L;
+
+    // TWO STATION TO BRANCH
+    public static PathPlannerPath TWO_STATION_TO_A;
+    public static PathPlannerPath TWO_STATION_TO_B;
+    public static PathPlannerPath TWO_STATION_TO_C;
+    public static PathPlannerPath TWO_STATION_TO_D;
+    public static PathPlannerPath TWO_STATION_TO_E;
+    public static PathPlannerPath TWO_STATION_TO_F;
+    public static PathPlannerPath TWO_STATION_TO_G;
+    public static PathPlannerPath TWO_STATION_TO_H;
+    public static PathPlannerPath TWO_STATION_TO_I;
+    public static PathPlannerPath TWO_STATION_TO_J;
+    public static PathPlannerPath TWO_STATION_TO_K;
+    public static PathPlannerPath TWO_STATION_TO_L;
+
     static {
         try {
             ONE_START_TO_D = PathPlannerPath.fromPathFile("1,D");
@@ -129,9 +155,14 @@ public final class PathManager {
             THREE_START_TO_D = PathPlannerPath.fromPathFile("3,D");
             THREE_START_TO_E = PathPlannerPath.fromPathFile("3,E");
 
+            FOUR_START_TO_A = PathPlannerPath.fromPathFile("4,A");
+            FOUR_START_TO_B = PathPlannerPath.fromPathFile("4,B");
+            FOUR_START_TO_C = PathPlannerPath.fromPathFile("4,C");
             FOUR_START_TO_D = PathPlannerPath.fromPathFile("4,D");
             FOUR_START_TO_E = PathPlannerPath.fromPathFile("4,E");
+            FOUR_START_TO_F = PathPlannerPath.fromPathFile("4,F");
             FOUR_START_TO_G = PathPlannerPath.fromPathFile("4,G");
+            FOUR_START_TO_H = PathPlannerPath.fromPathFile("4,H");
             FOUR_START_TO_I = PathPlannerPath.fromPathFile("4,I");
             FOUR_START_TO_J = PathPlannerPath.fromPathFile("4,J");
             FOUR_START_TO_K = PathPlannerPath.fromPathFile("4,K");
