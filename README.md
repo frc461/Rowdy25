@@ -26,15 +26,22 @@ Friday, 2/14/2025 software only:
 - [x] Driver only - work on OnFalse triggers instead of OnTrue because of debounce hold to pathfind/direct move to position then OnFalse will subsequently deploy the state properly and effectively
 - [x] Double click debouncer
 - [x] Move to algae vs coral (drive to object overhaul)
-- [ ] Swerve automation pt. 2 - pathfinding/translation alignment
-- [ ] Auto - java structure first, then paths, then test with other mechanisms
+- [x] Swerve automation pt. 2 - pathfinding/translation alignment
 
 Saturday, 2/15/2025 to test:
-- [ ] Test robot state chooser
+- [x] Test robot state chooser
+
+Saturday, 2/15/2025 software only:
+- [ ] Auto - java structure (chooser), paths (pathmanager), commands
 - [ ] Test localization trust filter
+
+Monday, 2/17/2025 to test:
+- [ ] Fix pivot cancoder issues
+- [ ] Faster wrist
 
 Comp bot/later:
 - [ ] Tune Canandcolor for intake (both coral & algae)
 - [ ] Implement climbing
 - [ ] SysID for elevator, pivot, wrist
 - [ ] Fine tune state transitions for efficiency
+- [ ] Ground intake/object detection
