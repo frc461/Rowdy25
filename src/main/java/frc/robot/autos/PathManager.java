@@ -19,15 +19,129 @@ import java.util.List;
 
 public final class PathManager {
     // TODO: CREATE 2025 PATHS
-    public static PathPlannerPath ONE_START_TO_SIX_RIGHT;
-    public static PathPlannerPath SIX_RIGHT_TO_STATION;
-    public static PathPlannerPath STATION_TO_FIVE_LEFT;
+
+    // ONE START
+    public static PathPlannerPath ONE_START_TO_A;
+    public static PathPlannerPath ONE_START_TO_B;
+    public static PathPlannerPath ONE_START_TO_C;
+    public static PathPlannerPath ONE_START_TO_D;
+    public static PathPlannerPath ONE_START_TO_E;
+    public static PathPlannerPath ONE_START_TO_F;
+    public static PathPlannerPath ONE_START_TO_G;
+    public static PathPlannerPath ONE_START_TO_H;
+    public static PathPlannerPath ONE_START_TO_I;
+    public static PathPlannerPath ONE_START_TO_J;
+    public static PathPlannerPath ONE_START_TO_K;
+    public static PathPlannerPath ONE_START_TO_L;
+
+    // TWO START
+    public static PathPlannerPath TWO_START_TO_A;
+    public static PathPlannerPath TWO_START_TO_B;
+    public static PathPlannerPath TWO_START_TO_C;
+    public static PathPlannerPath TWO_START_TO_D;
+    public static PathPlannerPath TWO_START_TO_E;
+    public static PathPlannerPath TWO_START_TO_F;
+    public static PathPlannerPath TWO_START_TO_G;
+    public static PathPlannerPath TWO_START_TO_H;
+    public static PathPlannerPath TWO_START_TO_I;
+    public static PathPlannerPath TWO_START_TO_J;
+    public static PathPlannerPath TWO_START_TO_K;
+    public static PathPlannerPath TWO_START_TO_L;
+
+    // THREE START 
+    public static PathPlannerPath THREE_START_TO_A;
+    public static PathPlannerPath THREE_START_TO_B;
+    public static PathPlannerPath THREE_START_TO_C;
+    public static PathPlannerPath THREE_START_TO_D;
+    public static PathPlannerPath THREE_START_TO_E;
+    public static PathPlannerPath THREE_START_TO_F;
+    public static PathPlannerPath THREE_START_TO_G;
+    public static PathPlannerPath THREE_START_TO_H;
+    public static PathPlannerPath THREE_START_TO_I;
+    public static PathPlannerPath THREE_START_TO_J;
+    public static PathPlannerPath THREE_START_TO_K;
+    public static PathPlannerPath THREE_START_TO_L;
+
+    // FOUR START
+    public static PathPlannerPath FOUR_START_TO_A;
+    public static PathPlannerPath FOUR_START_TO_B;
+    public static PathPlannerPath FOUR_START_TO_C;
+    public static PathPlannerPath FOUR_START_TO_D;
+    public static PathPlannerPath FOUR_START_TO_E;
+    public static PathPlannerPath FOUR_START_TO_F;
+    public static PathPlannerPath FOUR_START_TO_G;
+    public static PathPlannerPath FOUR_START_TO_H;
+    public static PathPlannerPath FOUR_START_TO_I;
+    public static PathPlannerPath FOUR_START_TO_J;
+    public static PathPlannerPath FOUR_START_TO_K;
+    public static PathPlannerPath FOUR_START_TO_L;
+
+    // FIVE START
+    public static PathPlannerPath FIVE_START_TO_A;
+    public static PathPlannerPath FIVE_START_TO_B;
+    public static PathPlannerPath FIVE_START_TO_C;
+    public static PathPlannerPath FIVE_START_TO_D;
+    public static PathPlannerPath FIVE_START_TO_E;
+    public static PathPlannerPath FIVE_START_TO_F;
+    public static PathPlannerPath FIVE_START_TO_G;
+    public static PathPlannerPath FIVE_START_TO_H;
+    public static PathPlannerPath FIVE_START_TO_I;
+    public static PathPlannerPath FIVE_START_TO_J;
+    public static PathPlannerPath FIVE_START_TO_K;
+    public static PathPlannerPath FIVE_START_TO_L;
+
+    // BRANCH TO ONE STATION
+    public static PathPlannerPath A_TO_ONE_STATION;
+    public static PathPlannerPath B_TO_ONE_STATION;
+    public static PathPlannerPath C_TO_ONE_STATION;
+    public static PathPlannerPath D_TO_ONE_STATION;
+    public static PathPlannerPath E_TO_ONE_STATION;
+    public static PathPlannerPath F_TO_ONE_STATION;
+    public static PathPlannerPath G_TO_ONE_STATION;
+    public static PathPlannerPath H_TO_ONE_STATION;
+    public static PathPlannerPath I_TO_ONE_STATION;
+    public static PathPlannerPath J_TO_ONE_STATION;
+    public static PathPlannerPath K_TO_ONE_STATION;
+    public static PathPlannerPath L_TO_ONE_STATION;
+
+    // BRANCH TO TWO STATION
+    public static PathPlannerPath A_TO_TWO_STATION;
+    public static PathPlannerPath B_TO_TWO_STATION;
+    public static PathPlannerPath C_TO_TWO_STATION;
+    public static PathPlannerPath D_TO_TWO_STATION;
+    public static PathPlannerPath E_TO_TWO_STATION;
+    public static PathPlannerPath F_TO_TWO_STATION;
+    public static PathPlannerPath G_TO_TWO_STATION;
+    public static PathPlannerPath H_TO_TWO_STATION;
+    public static PathPlannerPath I_TO_TWO_STATION;
+    public static PathPlannerPath J_TO_TWO_STATION;
+    public static PathPlannerPath K_TO_TWO_STATION;
+    public static PathPlannerPath L_TO_TWO_STATION;
 
     static {
         try {
-            ONE_START_TO_SIX_RIGHT = PathPlannerPath.fromPathFile("1,6right");
-            SIX_RIGHT_TO_STATION = PathPlannerPath.fromPathFile("6right,station");
-            STATION_TO_FIVE_LEFT = PathPlannerPath.fromPathFile("station,5left");
+            ONE_START_TO_D = PathPlannerPath.fromPathFile("1,D");
+            ONE_START_TO_E = PathPlannerPath.fromPathFile("1,E");
+
+            TWO_START_TO_D = PathPlannerPath.fromPathFile("2,D");
+            TWO_START_TO_E = PathPlannerPath.fromPathFile("2,E");
+
+            THREE_START_TO_D = PathPlannerPath.fromPathFile("3,D");
+            THREE_START_TO_E = PathPlannerPath.fromPathFile("3,E");
+
+            FOUR_START_TO_D = PathPlannerPath.fromPathFile("4,D");
+            FOUR_START_TO_E = PathPlannerPath.fromPathFile("4,E");
+            FOUR_START_TO_G = PathPlannerPath.fromPathFile("4,G");
+            FOUR_START_TO_I = PathPlannerPath.fromPathFile("4,I");
+            FOUR_START_TO_J = PathPlannerPath.fromPathFile("4,J");
+            FOUR_START_TO_K = PathPlannerPath.fromPathFile("4,K");
+            FOUR_START_TO_L = PathPlannerPath.fromPathFile("4,L");
+
+            FIVE_START_TO_B = PathPlannerPath.fromPathFile("5,B");
+            FIVE_START_TO_D = PathPlannerPath.fromPathFile("5,D");
+            FIVE_START_TO_E = PathPlannerPath.fromPathFile("5,E");
+
+            D_TO_TWO_STATION = PathPlannerPath.fromPathFile("D,2-station");
         } catch (IOException | ParseException e) {
             DriverStation.reportError("Failed to load paths: " + e.getMessage(), e.getStackTrace());
         }
