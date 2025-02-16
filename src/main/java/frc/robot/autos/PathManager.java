@@ -141,6 +141,13 @@ public final class PathManager {
             FIVE_START_TO_D = PathPlannerPath.fromPathFile("5,D");
             FIVE_START_TO_E = PathPlannerPath.fromPathFile("5,E");
 
+            A_TO_ONE_STATION = PathPlannerPath.fromPathFile("A,1-station");
+            B_TO_ONE_STATION = PathPlannerPath.fromPathFile("B,1-station");
+            C_TO_ONE_STATION = PathPlannerPath.fromPathFile("C,1-station");
+            D_TO_ONE_STATION = PathPlannerPath.fromPathFile("D,1-station");
+            E_TO_ONE_STATION = PathPlannerPath.fromPathFile("E,1-station");
+            F_TO_ONE_STATION = PathPlannerPath.fromPathFile("F,1-station");
+            
             D_TO_TWO_STATION = PathPlannerPath.fromPathFile("D,2-station");
         } catch (IOException | ParseException e) {
             DriverStation.reportError("Failed to load paths: " + e.getMessage(), e.getStackTrace());
