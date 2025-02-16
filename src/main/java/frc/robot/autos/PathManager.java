@@ -10,11 +10,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.autos.routines.AutoEventLooper;
 import frc.robot.constants.Constants;
+import frc.robot.util.FieldUtil;
 import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public final class PathManager {
@@ -187,32 +186,9 @@ public final class PathManager {
 
     public static AutoEventLooper generateAutoEventLooper(
             AutoChooser.StartPosition startPosition,
-            AutoChooser.SidePriority sidePriority,
-            AutoChooser.LevelPriority levelPriority
+            List<AutoChooser.ScoringPositions> scoringLocations
     ) {
         return new AutoEventLooper("AutoEventLooper");
-    }
-
-    // TODO: TEST & UPDATE SCORING LOCATIONS
-    public enum ScoringLocations {
-        AMP,
-        STAGE,
-        OPPONENT_SOURCE;
-
-        // TODO: IMPLEMENT RED SIDE POSES
-        public static Pose2d getScoringPose(ScoringLocations location) {
-            return switch (location) {
-                case AMP -> new Pose2d(3.3, 6.35, Rotation2d.fromDegrees(-170));
-                case STAGE -> new Pose2d(4.6, 4.85, Rotation2d.fromDegrees(166));
-                case OPPONENT_SOURCE -> new Pose2d(2.7, 3.0, Rotation2d.fromDegrees(145));
-            };
-        }
-
-        public static List<Pose2d> getScoringPoses() {
-            List<Pose2d> poses = new ArrayList<>();
-            Arrays.asList(ScoringLocations.values()).forEach(location -> poses.add(getScoringPose(location)));
-            return poses;
-        }
     }
 
     private static Command pathFindToPose(Pose2d targetPose, double goalEndVelocity) {
@@ -227,13 +203,28 @@ public final class PathManager {
         return pathFindToPose(targetPose, 0.0);
     }
 
-    public static Command pathFindToNearestScoringLocation(Pose2d currentPose) {
-        return pathFindToPose(currentPose.nearest(ScoringLocations.getScoringPoses()));
+    public static Command pathFindToNearestAlgaeScoringLocation(Pose2d currentPose) {
+        Pose2d nearestAlgaeScoringPose = FieldUtil.AlgaeScoring.getNearestAlgaeScoringTagPose(currentPose);
+        return PathManager.pathFindToClosePose(
+                new Pose2d(
+                        nearestAlgaeScoringPose.getTranslation(),
+                        nearestAlgaeScoringPose.getRotation().rotateBy(Rotation2d.kPi)
+                ),
+                Constants.AutoConstants.DISTANCE_TOLERANCE_TO_DRIVE_INTO,
+                1.0
+        );
     }
 
-    // TODO: PATH FIND TO NEAREST BRANCH
-    public static Command pathFindToNearestBranchWithSide(Pose2d currentPose, AutoChooser.SidePriority priority) {
-        return Commands.none();
+    public static Command pathFindToNearestCoralScoringLocation(Pose2d currentPose) {
+        Pose2d nearestCoralScoringPose = FieldUtil.Reef.getNearestBranchPose(currentPose);
+        return PathManager.pathFindToClosePose(
+                new Pose2d(
+                        nearestCoralScoringPose.getTranslation(),
+                        nearestCoralScoringPose.getRotation().rotateBy(Rotation2d.kPi)
+                ),
+                Constants.AutoConstants.DISTANCE_TOLERANCE_TO_DRIVE_INTO,
+                1.0
+        );
     }
 
     public static Command pathFindToClosePose(
@@ -243,8 +234,8 @@ public final class PathManager {
     ) {
         return pathFindToPose(
                 new Pose2d(
-                        targetPose.getTranslation().plus(new Translation2d(distance, targetPose.getRotation())),
-                        targetPose.getRotation().rotateBy(Rotation2d.kPi)
+                        targetPose.getTranslation().minus(new Translation2d(distance, targetPose.getRotation())),
+                        targetPose.getRotation()
                 ),
                 goalEndVelocity
         );

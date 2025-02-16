@@ -1,5 +1,6 @@
 package frc.robot.autos;
 
+import java.util.List;
 import java.util.function.Supplier;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -11,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.autos.routines.AutoEventLooper;
 import frc.robot.constants.Constants;
 import frc.robot.util.FieldUtil;
+import frc.robot.util.MultipleChooser;
 
 public final class AutoChooser {
     // TODO: CONFIGURE THESE VALUES, ADD ANOTHER CHOOSER
@@ -20,35 +22,26 @@ public final class AutoChooser {
         RIGHT
     }
 
-    public enum SidePriority {
-        ONE(Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red ? FieldUtil.AprilTag.ID_7 : FieldUtil.AprilTag.ID_18),
-        TWO(Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red ? FieldUtil.AprilTag.ID_6 : FieldUtil.AprilTag.ID_19),
-        THREE(Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red ? FieldUtil.AprilTag.ID_11 : FieldUtil.AprilTag.ID_20),
-        FOUR(Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red ? FieldUtil.AprilTag.ID_10 : FieldUtil.AprilTag.ID_21),
-        FIVE(Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red ? FieldUtil.AprilTag.ID_9 : FieldUtil.AprilTag.ID_22),
-        SIX(Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red ? FieldUtil.AprilTag.ID_8 : FieldUtil.AprilTag.ID_17),;
-
-        public final FieldUtil.AprilTag tag;
-
-        SidePriority(FieldUtil.AprilTag tag) {
-            this.tag = tag;
-        }
-    }
-
-    public enum LevelPriority {
-        L1,
-        L2,
-        L3,
-        L4;
+    public enum ScoringPositions {
+        A1, A2, A3, A4,
+        B1, B2, B3, B4,
+        C1, C2, C3, C4,
+        D1, D2, D3, D4,
+        E1, E2, E3, E4,
+        F1, F2, F3, F4,
+        G1, G2, G3, G4,
+        H1, H2, H3, H4,
+        I1, I2, I3, I4,
+        J1, J2, J3, J4,
+        K1, K2, K3, K4,
+        L1, L2, L3, L4
     }
 
     public StartPosition startPosition;
-    public SidePriority sidePriority;
-    public LevelPriority levelPriority;
+    public List<ScoringPositions> scoringLocations;
 
     private final SendableChooser<StartPosition> startPositionChooser = new SendableChooser<>();
-    private final SendableChooser<SidePriority> reefSideChooser = new SendableChooser<>();
-    private final SendableChooser<LevelPriority> reefLevelChooser = new SendableChooser<>();
+    private final MultipleChooser<ScoringPositions> scoringLocationsChooser = new MultipleChooser<>();
 
     public AutoChooser() {
         for (StartPosition position : StartPosition.values()) {
@@ -56,23 +49,17 @@ public final class AutoChooser {
         }
         SmartDashboard.putData("Start Position", startPositionChooser);
 
-        for (SidePriority priority : SidePriority.values()) {
-            reefSideChooser.addOption(priority.name(), priority);
+        for (ScoringPositions position : ScoringPositions.values()) {
+            scoringLocationsChooser.addOption(position.name(), position);
         }
-        SmartDashboard.putData("Reef Side Priority", reefSideChooser);
-
-        for(LevelPriority priority : LevelPriority.values()) {
-            reefLevelChooser.addOption(priority.name(), priority);
-        }
-        SmartDashboard.putData("Reef Level Priority", reefLevelChooser);
+        SmartDashboard.putData("Scoring Locations", scoringLocationsChooser);
     }
 
 
     public Command getFinalAutoCommand(Supplier<Pose2d> poseSupplier) {
         startPosition = startPositionChooser.getSelected();
-        sidePriority = reefSideChooser.getSelected();
-        levelPriority = reefLevelChooser.getSelected();
+        scoringLocations = scoringLocationsChooser.getSelected();
 
-        return PathManager.generateAutoEventLooper(startPosition, sidePriority, levelPriority).cmd();
+        return PathManager.generateAutoEventLooper(startPosition, scoringLocations).cmd();
     }
 }

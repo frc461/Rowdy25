@@ -15,6 +15,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -161,20 +162,16 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
         return new SearchForAlgaeCommand(this, fieldCentric)
                 .andThen(directMoveToObject(algaeObtained, VisionUtil.Photon.Color.TargetClass.ALGAE))
                 .andThen(Commands.defer(
-                        () -> PathManager.pathFindToNearestScoringLocation(localizer.getStrategyPose()),
+                        () -> PathManager.pathFindToNearestAlgaeScoringLocation(localizer.getStrategyPose()),
                         Set.of(this)
                 ));
     }
 
     public Command pathFindToNearestBranch(DoubleSupplier elevatorHeight) {
-        return Commands.defer(() -> {
-            Pose2d nearestBranchPose = FieldUtil.Reef.getNearestBranchPose(localizer.getStrategyPose());
-            return PathManager.pathFindToClosePose(
-                    nearestBranchPose,
-                    Constants.AutoConstants.DISTANCE_TOLERANCE_TO_DRIVE_INTO,
-                    1.0
-            );
-        }, Set.of(this)).andThen(directMoveToNearestBranch(elevatorHeight));
+        return Commands.defer(
+                () -> PathManager.pathFindToNearestCoralScoringLocation(localizer.getStrategyPose()),
+                Set.of(this)
+        ).andThen(directMoveToNearestBranch(elevatorHeight));
     }
 
     public Command directMoveToObject(BooleanSupplier objectObtained, VisionUtil.Photon.Color.TargetClass objectLabelClass) {
