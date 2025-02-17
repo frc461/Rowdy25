@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.2107581967213117,
-        "y": 6.991956967213114
+        "x": 3.1168032786890127,
+        "y": 4.162858606551048
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.7263675379973717,
-        "y": 6.648712591062986
+        "x": 3.6324126199650726,
+        "y": 3.8196142304009193
       },
       "isLocked": false,
       "linkedName": "station-1"
@@ -33,7 +33,7 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "prepare",
+      "name": "outtake",
       "waypointRelativePos": 0.577878577686916,
       "endWaypointRelativePos": null,
       "command": null
@@ -55,7 +55,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -54.0
+    "rotation": 1.3803540726821188
   },
   "useDefaultConstraints": true
 }

@@ -9,7 +9,7 @@
       "prevControl": null,
       "nextControl": {
         "x": 3.8004097945601845,
-        "y": 0.5212934027777769
+        "y": 0.5212934027777768
       },
       "isLocked": false,
       "linkedName": "station-2"
@@ -33,7 +33,7 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "prepare",
+      "name": "outtake",
       "waypointRelativePos": 0.576473057827103,
       "endWaypointRelativePos": null,
       "command": null
