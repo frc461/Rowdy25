@@ -3,13 +3,18 @@ package frc.robot.autos;
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.constants.Constants;
 import frc.robot.util.FieldUtil;
 
 import java.util.List;
+
+import static edu.wpi.first.units.Units.Inches;
+import static edu.wpi.first.units.Units.Meters;
 
 public final class Pathfinder {
     private static Command pathFindToPose(Pose2d targetPose, double goalEndVelocity) {
@@ -148,5 +153,19 @@ public final class Pathfinder {
             return angle.getDegrees() > lowerAngleThreshold.getDegrees() || angle.getDegrees() < upperAngleThreshold.getDegrees();
         }
         return angle.getDegrees() > lowerAngleThreshold.getDegrees() && angle.getDegrees() < upperAngleThreshold.getDegrees();
+    }
+
+    public static void main(String[] args) {
+        Constants.ALLIANCE_SUPPLIER = () -> DriverStation.Alliance.Blue;
+        Constants.ROBOT_LENGTH_WITH_BUMPERS = Inches.of(38.5);
+        System.out.println("--------ROBOT POSES AT BRANCHES (A-L)--------");
+        for (Pose2d pose : FieldUtil.Reef.getRobotPosesAtEachBranch()) {
+            System.out.println("X: " + pose.getX() + ", Y: " + pose.getY() + ", Angle: " + pose.getRotation().getDegrees());
+        }
+        System.out.println("--------ROBOT POSES AT CORAL STATIONS--------");
+        for (Pose2d pose : FieldUtil.CoralStation.getCoralStationTagPoses()) {
+            pose = pose.plus(new Transform2d(new Translation2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0, 0), Rotation2d.kZero));
+            System.out.println("X: " + pose.getX() + ", Y: " + pose.getY() + ", Angle: " + pose.getRotation().getDegrees());
+        }
     }
 }

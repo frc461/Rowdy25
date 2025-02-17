@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.878115169625533,
-        "y": 2.5819554228531683
+        "x": 3.971745965601952,
+        "y": 2.7956292951195985
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.164754098360655,
-        "y": 1.9211577868852465
+        "x": 1.6678510273972607,
+        "y": 2.0641481164383557
       },
       "isLocked": false,
       "linkedName": "D"
     },
     {
       "anchor": {
-        "x": 1.2242018338796254,
-        "y": 7.006423691156748
+        "x": 1.1487115991084047,
+        "y": 7.018691140600368
       },
       "prevControl": {
-        "x": 1.2663607736962175,
-        "y": 6.749993779768382
+        "x": 3.2451861350917923,
+        "y": 7.605867620676497
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "1-station"
     }
   ],
   "rotationTargets": [],
@@ -33,7 +33,7 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "prepare",
+      "name": "intake",
       "waypointRelativePos": 0.5,
       "endWaypointRelativePos": null,
       "command": null
@@ -49,7 +49,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 124.31027262958592
+    "rotation": -54.0
   },
   "reversed": false,
   "folder": null,

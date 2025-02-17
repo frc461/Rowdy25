@@ -127,7 +127,7 @@ public class RobotContainer {
 
     private void configurePathPlannerNamedCommands() {
         NamedCommands.registerCommand(
-                "prepare",
+                "outtake",
                 new InstantCommand(robotStates::toggleAutoLevelCoralState)
         );
 

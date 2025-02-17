@@ -41,6 +41,12 @@ Monday, 2/17/2025 to test:
 - [ ] Test localization trust filter
 - [ ] Retest pathfinding to reef, taking into account tolerances and pids
 
+Monday, 2/17/2025 software only:
+- [ ] finish paths
+- [ ] check for correct event markers
+- [ ] perfect/tune the control points (consistent in transitioning between paths)
+- [ ] coral station optimization
+
 Comp bot/later:
 - [ ] Tune Canandcolor for intake (both coral & algae)
 - [ ] Implement climbing

@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 5.062505511233681,
-        "y": 2.671451894860519
+        "x": 5.006900034398046,
+        "y": 2.7956292951195985
       },
       "prevControl": {
-        "x": 4.782981376575619,
-        "y": 2.709389403840555
+        "x": 4.727375899739984,
+        "y": 2.8335668040996347
       },
       "nextControl": null,
       "isLocked": false,
@@ -33,7 +33,7 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "prepare",
+      "name": "outtake",
       "waypointRelativePos": 0.5,
       "endWaypointRelativePos": null,
       "command": null

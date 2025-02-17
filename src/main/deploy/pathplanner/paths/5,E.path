@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 5.062505511233681,
-        "y": 2.671451894860519
+        "x": 5.006900034398046,
+        "y": 2.7956292951195985
       },
       "prevControl": {
-        "x": 6.041803278688524,
-        "y": 3.083965163934426
+        "x": 6.048308668583837,
+        "y": 3.031573204814872
       },
       "nextControl": null,
       "isLocked": false,
@@ -33,7 +33,7 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "prepare",
+      "name": "outtake",
       "waypointRelativePos": 0.5,
       "endWaypointRelativePos": null,
       "command": null
@@ -55,7 +55,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 178.19126977990885
+    "rotation": -0.8612539682568029
   },
   "useDefaultConstraints": true
 }

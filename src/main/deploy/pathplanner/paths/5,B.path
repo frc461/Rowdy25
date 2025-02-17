@@ -16,11 +16,11 @@
     },
     {
       "anchor": {
-        "x": 3.0773200637415834,
+        "x": 3.16865,
         "y": 3.851172617862099
       },
       "prevControl": {
-        "x": 2.3604396052262997,
+        "x": 2.4517695414847163,
         "y": 7.1450407435444125
       },
       "nextControl": null,
@@ -33,7 +33,7 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "prepare",
+      "name": "outtake",
       "waypointRelativePos": 0.5,
       "endWaypointRelativePos": null,
       "command": null
@@ -49,13 +49,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.13577173523350664
+    "rotation": 0.0
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 178.19126977990885
+    "rotation": -0.8612539682568029
   },
   "useDefaultConstraints": true
 }
