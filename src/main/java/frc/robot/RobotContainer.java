@@ -1,5 +1,6 @@
 package frc.robot;
 
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathfindingCommand;
 import com.pathplanner.lib.pathfinding.LocalADStar;
 import com.pathplanner.lib.pathfinding.Pathfinding;
@@ -109,9 +110,10 @@ public class RobotContainer {
      */
 
     public RobotContainer() {
+        robotStates.configureToggleStateTriggers(swerve, elevator, intake, pivot, wrist);
+        configurePathPlannerNamedCommands();
         setDefaultCommands();
         configureBindings();
-        configureToggleStateTriggers();
 
         Lights.configureLights();
 
@@ -121,6 +123,18 @@ public class RobotContainer {
         
         Pathfinding.setPathfinder(new LocalADStar());
         PathfindingCommand.warmupCommand().schedule();
+    }
+
+    private void configurePathPlannerNamedCommands() {
+        NamedCommands.registerCommand(
+                "prepare",
+                new InstantCommand(robotStates::toggleAutoLevelCoralState)
+        );
+
+        NamedCommands.registerCommand(
+                "intake",
+                new InstantCommand(robotStates::toggleCoralStationState)
+        );
     }
 
     /* Each subsystem will execute their corresponding command periodically */
@@ -238,10 +252,6 @@ public class RobotContainer {
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
         sysID.configureBindings(opXbox);
-    }
-
-    private void configureToggleStateTriggers() {
-        robotStates.configureToggleStateTriggers(swerve, elevator, intake, pivot, wrist);
     }
 
     public void periodic() {
