@@ -5,16 +5,12 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.drivetrain.Swerve;
 import frc.robot.util.FieldUtil;
 
 import java.util.function.DoubleSupplier;
-
-import static edu.wpi.first.units.Units.Meters;
 
 public class DirectMoveToNearestBranchCommand extends Command {
     private final Swerve swerve;
@@ -51,11 +47,7 @@ public class DirectMoveToNearestBranchCommand extends Command {
 
     @Override
     public void initialize() {
-        Pose2d nearestBranchPose = FieldUtil.Reef.getNearestBranchPose(swerve.localizer.getStrategyPose());
-        this.targetPose = new Pose2d(
-                nearestBranchPose.getTranslation().plus(new Translation2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0, nearestBranchPose.getRotation())),
-                nearestBranchPose.getRotation().rotateBy(Rotation2d.kPi)
-        );
+        this.targetPose = FieldUtil.Reef.getNearestRobotPoseAtBranch(swerve.localizer.getStrategyPose());
     }
 
     @Override

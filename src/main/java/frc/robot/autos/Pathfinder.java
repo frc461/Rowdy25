@@ -37,7 +37,7 @@ public final class Pathfinder {
     }
 
     public static Command pathFindToNearestCoralScoringLocation(Pose2d currentPose) {
-        Pose2d nearestCoralScoringPose = FieldUtil.Reef.getNearestBranchPose(currentPose);
+        Pose2d nearestCoralScoringPose = FieldUtil.Reef.getNearestRobotPoseAtBranch(currentPose);
         return Pathfinder.pathFindToClosePose(
                 new Pose2d(
                         nearestCoralScoringPose.getTranslation(),

@@ -12,6 +12,8 @@ import frc.robot.constants.Constants;
 
 import java.util.*;
 
+import static edu.wpi.first.units.Units.Meters;
+
 public class FieldUtil {
     public static final AprilTagFieldLayout layout2025 = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeAndyMark);
     public static final double FIELD_LENGTH = layout2025.getFieldLength();
@@ -125,22 +127,25 @@ public class FieldUtil {
     }
 
     public static class Reef {
-        public static final Transform2d LEFT_BRANCH_OFFSET_FROM_TAG = new Transform2d(Units.inchesToMeters(-9.664797), Units.inchesToMeters(-6.469731), new Rotation2d());
-        public static final Transform2d RIGHT_BRANCH_OFFSET_FROM_TAG = new Transform2d(Units.inchesToMeters(-9.664797), Units.inchesToMeters(6.469731), new Rotation2d());
+        public static final Transform2d ROBOT_AT_LEFT_BRANCH_OFFSET_FROM_TAG = new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0, Units.inchesToMeters(-6.469731), Rotation2d.kPi);
+        public static final Transform2d ROBOT_AT_RIGHT_BRANCH_OFFSET_FROM_TAG = new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0, Units.inchesToMeters(6.469731), Rotation2d.kPi);
+
+        public static final Transform2d LEFT_BRANCH_OFFSET_FROM_TAG = new Transform2d(Units.inchesToMeters(-9.664797), Units.inchesToMeters(-6.469731), Rotation2d.kZero);
+        public static final Transform2d RIGHT_BRANCH_OFFSET_FROM_TAG = new Transform2d(Units.inchesToMeters(-9.664797), Units.inchesToMeters(6.469731), Rotation2d.kZero);
 
         public enum ScoringLocation {
-            A(getBranchPoses().get(0)),
-            B(getBranchPoses().get(1)),
-            C(getBranchPoses().get(2)),
-            D(getBranchPoses().get(3)),
-            E(getBranchPoses().get(4)),
-            F(getBranchPoses().get(5)),
-            G(getBranchPoses().get(6)),
-            H(getBranchPoses().get(7)),
-            I(getBranchPoses().get(8)),
-            J(getBranchPoses().get(9)),
-            K(getBranchPoses().get(10)),
-            L(getBranchPoses().get(11));
+            A(getRobotPosesAtEachBranch().get(0)),
+            B(getRobotPosesAtEachBranch().get(1)),
+            C(getRobotPosesAtEachBranch().get(2)),
+            D(getRobotPosesAtEachBranch().get(3)),
+            E(getRobotPosesAtEachBranch().get(4)),
+            F(getRobotPosesAtEachBranch().get(5)),
+            G(getRobotPosesAtEachBranch().get(6)),
+            H(getRobotPosesAtEachBranch().get(7)),
+            I(getRobotPosesAtEachBranch().get(8)),
+            J(getRobotPosesAtEachBranch().get(9)),
+            K(getRobotPosesAtEachBranch().get(10)),
+            L(getRobotPosesAtEachBranch().get(11));
 
             public final Pose2d pose;
             ScoringLocation(Pose2d pose) {
@@ -170,7 +175,16 @@ public class FieldUtil {
             return TagManager.getTagLocations2d(getReefTags());
         }
 
-        public static List<Pose2d> getBranchPoses() {
+        public static List<Pose2d> getRobotPosesAtEachBranch() { // Where robot should be to be centered at branches (to score)
+            List<Pose2d> robotPosesAtEachBranch = new ArrayList<>();
+            getReefTagPoses().forEach(reefTagPose -> {
+                robotPosesAtEachBranch.add(reefTagPose.plus(ROBOT_AT_LEFT_BRANCH_OFFSET_FROM_TAG));
+                robotPosesAtEachBranch.add(reefTagPose.plus(ROBOT_AT_RIGHT_BRANCH_OFFSET_FROM_TAG));
+            });
+            return robotPosesAtEachBranch;
+        }
+
+        public static List<Pose2d> getBranchPoses() { // Where branches are
             List<Pose2d> branchPoses = new ArrayList<>();
             getReefTagPoses().forEach(reefTagPose -> {
                 branchPoses.add(reefTagPose.plus(LEFT_BRANCH_OFFSET_FROM_TAG));
@@ -181,6 +195,10 @@ public class FieldUtil {
 
         public static Pose2d getNearestReefTagPose(Pose2d currentPose) {
             return currentPose.nearest(getReefTagPoses());
+        }
+
+        public static Pose2d getNearestRobotPoseAtBranch(Pose2d currentPose) {
+            return currentPose.nearest(getRobotPosesAtEachBranch());
         }
 
         public static Pose2d getNearestBranchPose(Pose2d currentPose) {
