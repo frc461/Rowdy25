@@ -8,7 +8,7 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.971998407736197,
+        "x": 4.971998407736196,
         "y": 7.082614078731746
       },
       "isLocked": false,
@@ -33,7 +33,7 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "",
+      "name": "outtake",
       "waypointRelativePos": 0.5,
       "endWaypointRelativePos": null,
       "command": null
