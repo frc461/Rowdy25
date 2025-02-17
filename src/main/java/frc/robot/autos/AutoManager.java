@@ -159,6 +159,6 @@ public final class AutoManager {
         double station2TotalDistance =
                 currentLocation.getTranslation().getDistance(FieldUtil.CoralStation.getCoralStationTags().get(1).pose2d.getTranslation())
                 + nextLocation.getTranslation().getDistance(FieldUtil.CoralStation.getCoralStationTags().get(1).pose2d.getTranslation());
-        return station1TotalDistance < station2TotalDistance ? "1-station" : "2-station";
+        return station1TotalDistance < station2TotalDistance ? "station-1" : "station-2";
     }
 }
