@@ -43,7 +43,7 @@ Monday, 2/17/2025 to test:
 
 Monday, 2/17/2025 software only:
 - [ ] finish paths
-- [ ] check for correct event markers
+- [ ] check for correct event markers & tune locations of each marker
 - [ ] perfect/tune the control points (consistent in transitioning between paths)
 - [ ] coral station optimization
 
