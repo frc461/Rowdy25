@@ -52,4 +52,4 @@ Comp bot/later:
 - [ ] Implement climbing
 - [ ] SysID for elevator, pivot, wrist
 - [ ] Fine tune state transitions for efficiency
-- [ ] Ground intake/object detection
+- [ ] Test ground intake/object detection

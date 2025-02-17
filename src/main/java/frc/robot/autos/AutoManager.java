@@ -91,7 +91,8 @@ public final class AutoManager {
 
         triggers.add(autoEventLooper.addTrigger(
                 "outtake",
-                () -> new InstantCommand(robotStates::toggleAutoLevelCoralState)
+                () -> new WaitUntilCommand(robotStates.atState)
+                        .andThen(robotStates::toggleAutoLevelCoralState)
                         .andThen(new WaitUntilCommand(robotStates.stowState))
         ));
 
@@ -136,7 +137,8 @@ public final class AutoManager {
 
             triggers.add(autoEventLooper.addTrigger(
                     "outtake",
-                    () -> new InstantCommand(robotStates::toggleAutoLevelCoralState)
+                    () -> new WaitUntilCommand(robotStates.atState)
+                            .andThen(robotStates::toggleAutoLevelCoralState)
                             .andThen(new WaitUntilCommand(robotStates.stowState))
             ));
         }
