@@ -58,7 +58,7 @@ public class DirectMoveToNearestBranchCommand extends Command {
         double yawError = MathUtil.inputModulus(currentPose.getRotation().getDegrees() - targetPose.getRotation().getDegrees(), -180, 180);
 
         swerve.setControl(
-                fieldCentric.withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
+                fieldCentric.withDriveRequestType(SwerveModule.DriveRequestType.Velocity) // TODO SHOP: TEST CLOSED LOOP
                         .withForwardPerspective(SwerveRequest.ForwardPerspectiveValue.BlueAlliance)
                         .withVelocityX(Math.min(
                                 1.0,

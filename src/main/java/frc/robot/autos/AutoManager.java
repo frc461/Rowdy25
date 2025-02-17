@@ -102,7 +102,7 @@ public final class AutoManager {
             String nearestCoralStation = getMostEfficientCoralStation(
                     currentScoringLocation.getFirst().pose,
                     nextScoringLocation.getFirst().pose
-            );
+            ); // TODO: IMPLEMENT A CORAL STATION PREFERENCE CHOOSER
             String toCoralStationPath = currentScoringLocation.getFirst().name() + "," + nearestCoralStation;
 
             triggers.add(autoEventLooper.addTrigger(
