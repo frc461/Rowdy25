@@ -52,7 +52,7 @@ public final class DefaultConstants {
     public static final Distance ROBOT_LENGTH_WITH_BUMPERS = Inches.of(38.5);
     public static final Distance ROBOT_WIDTH_WITH_BUMPERS = Inches.of(32.5);
 
-    public static final Supplier<DriverStation.Alliance> ALLIANCE_SUPPLIER = () -> DriverStation.getAlliance().orElse(null);
+    public static final Supplier<DriverStation.Alliance> ALLIANCE_SUPPLIER = () -> DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue);
 
     public static final Pose2d FAR_LEFT_CORAL_STATION =
             ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red
@@ -104,8 +104,8 @@ public final class DefaultConstants {
         );
 
         public static final double OBJECT_SEARCH_DEGREE_SLANT = 30.0;
-        public static final double DEGREE_TOLERANCE_TO_DRIVE_INTO = 2.5;
-        public static final double TRANSLATION_TOLERANCE_TO_ACCEPT = 0.2;
+        public static final double DEGREE_TOLERANCE_TO_ACCEPT = 2.5;
+        public static final double TRANSLATION_TOLERANCE_TO_ACCEPT = 0.03;
         public static final double DISTANCE_TOLERANCE_TO_DRIVE_INTO = 1.0;
     }
 

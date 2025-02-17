@@ -32,12 +32,14 @@ Saturday, 2/15/2025 to test:
 - [x] Test robot state chooser
 
 Saturday, 2/15/2025 software only:
-- [ ] Auto - java structure (chooser), paths (pathmanager), commands
-- [ ] Test localization trust filter
+- [x] Auto - java structure (chooser), paths (pathmanager), commands
 
 Monday, 2/17/2025 to test:
 - [ ] Fix pivot cancoder issues
 - [ ] Faster wrist
+- [ ] Redo L4 preset as needed
+- [ ] Test localization trust filter
+- [ ] Retest pathfinding to reef, taking into account tolerances and pids
 
 Comp bot/later:
 - [ ] Tune Canandcolor for intake (both coral & algae)

@@ -255,7 +255,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
          * Otherwise, only check and apply the operator perspective if the DS is disabled.
          * This ensures driving behavior doesn't change until an explicit disable event occurs during testing.
          */
-        if ((!hasAppliedDefaultRotation || DriverStation.isDisabled()) && Constants.ALLIANCE_SUPPLIER.get() != null) {
+        if (!hasAppliedDefaultRotation || DriverStation.isDisabled()) {
             setOperatorPerspectiveForward(
                     Constants.ALLIANCE_SUPPLIER.get() == Alliance.Blue
                             ? Constants.BLUE_DEFAULT_ROTATION

@@ -125,8 +125,8 @@ public class FieldUtil {
     }
 
     public static class Reef {
-        public static final Transform2d LEFT_BRANCH_OFFSET_FROM_TAG = new Transform2d(Units.inchesToMeters(-3.0), Units.inchesToMeters(-6.468878), new Rotation2d());
-        public static final Transform2d RIGHT_BRANCH_OFFSET_FROM_TAG = new Transform2d(Units.inchesToMeters(-3.0), Units.inchesToMeters(6.468878), new Rotation2d());
+        public static final Transform2d LEFT_BRANCH_OFFSET_FROM_TAG = new Transform2d(Units.inchesToMeters(-9.664797), Units.inchesToMeters(-6.469731), new Rotation2d());
+        public static final Transform2d RIGHT_BRANCH_OFFSET_FROM_TAG = new Transform2d(Units.inchesToMeters(-9.664797), Units.inchesToMeters(6.469731), new Rotation2d());
 
         public enum ScoringLocation {
             A(getBranchPoses().get(0)),
