@@ -11,32 +11,19 @@ import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.autos.AutoManager;
-import frc.robot.commands.*;
 import frc.robot.constants.Constants;
-import frc.robot.subsystems.elevator.Elevator;
-import frc.robot.subsystems.intake.Intake;
-import frc.robot.subsystems.drivetrain.Swerve;
-import frc.robot.subsystems.pivot.Pivot;
-import frc.robot.subsystems.wrist.Wrist;
-import frc.robot.util.DoubleTrueTrigger;
 import frc.robot.util.SysID;
 import frc.robot.util.Lights;
 
 public class RobotContainer {
-    /* Subsystems */
-    private final Swerve swerve = new Swerve();
-    private final Elevator elevator = new Elevator();
-    private final Intake intake = new Intake();
-    private final Pivot pivot = new Pivot();
-    private final Wrist wrist = new Wrist();
-
     /* Superstructure */
     private final RobotStates robotStates = new RobotStates();
 
+    /* Auto Chooser & Configurator */
     private final AutoManager autoManager = new AutoManager();
 
     /* Sys ID */
-    private final SysID sysID = new SysID(swerve);
+    private final SysID sysID = new SysID(robotStates.swerve);
 
     private final CommandXboxController driverXbox = new CommandXboxController(0);
     /* Driver Tentative:
@@ -79,7 +66,7 @@ public class RobotContainer {
      *     Coral: Click - L2 score state, Click Again - outtake, stow
      */
 
-    private final static CommandXboxController opXbox = new CommandXboxController(1);
+    private final CommandXboxController opXbox = new CommandXboxController(1);
     /* Currently Allocated For Operator:
      * POV buttons / D-pad:
      * Up: Click - L2 score state, Click Again - outtake, stow
@@ -110,10 +97,10 @@ public class RobotContainer {
      */
 
     public RobotContainer() {
-        robotStates.configureToggleStateTriggers(swerve, elevator, intake, pivot, wrist);
+        robotStates.configureToggleStateTriggers();
+        robotStates.setDefaultCommands(driverXbox, opXbox);
         configurePathPlannerNamedCommands();
-        setDefaultCommands();
-        configureBindings();
+        configureButtonBindings();
 
         Lights.configureLights();
 
@@ -137,50 +124,18 @@ public class RobotContainer {
         );
     }
 
-    /* Each subsystem will execute their corresponding command periodically */
-    private void setDefaultCommands() {
-        /* Note that X is defined as forward according to WPILib convention,
-        and Y is defined as to the left according to WPILib convention.
-        drive forward with left joystick negative Y (forward),
-        drive left with left joystick negative X (left),
-        rotate counterclockwise with right joystick negative X (left) */
-        swerve.setDefaultCommand(
-                swerve.driveFieldCentric(
-                        elevator::getPosition,
-                        driverXbox::getLeftY,
-                        driverXbox::getLeftX,
-                        driverXbox::getLeftTriggerAxis,
-                        driverXbox::getRightTriggerAxis,
-                        DoubleTrueTrigger.doubleTrue(driverXbox.leftTrigger(0.5), 0.5),
-                        DoubleTrueTrigger.doubleTrue(driverXbox.rightTrigger(0.5), 0.5) // TODO TEST: TEST DOUBLE-CLICK
-                )
-        );
-
-        elevator.setDefaultCommand(new ElevatorCommand(elevator, opXbox::getLeftX, pivot::getPosition, robotStates));
-
-        intake.setDefaultCommand(new IntakeCommand(intake));
-
-        pivot.setDefaultCommand(
-                new PivotCommand(pivot, () -> -opXbox.getLeftY(), elevator::getPosition, wrist::getPosition, robotStates)
-        );
-
-        wrist.setDefaultCommand(
-                new WristCommand(wrist, () -> -opXbox.getRightY(), pivot::getPosition, elevator::getPosition, robotStates)
-        );
-    }
-
-    private void configureBindings() {
+    private void configureButtonBindings() {
         // IMPORTANT: WHEN BINDING DRIVER BUTTONS, TRIGGERS NEED TO BE ON FALSE ESPECIALLY WITH BINDINGS THAT INITIATE DRIVE AUTOMATION UPON HOLD DEBOUNCE
         // SO FIGURE OUT LOGIC CORRECTLY AND CAREFULLY
         // TODO: ON FALSE TRIGGERS FOR DRIVER ONLY BINDINGS
 
         driverXbox.povUp().onFalse(new InstantCommand(robotStates::setOuttakeState));
-        driverXbox.povDown().onFalse(new InstantCommand(swerve::toggleAutoHeading));
+        driverXbox.povDown().onFalse(new InstantCommand(robotStates.swerve::toggleAutoHeading));
         driverXbox.povLeft().onFalse(new InstantCommand(robotStates::toggleNetState));
         driverXbox.povRight().onFalse(new InstantCommand(robotStates::toggleProcessorState));
 
-        driverXbox.leftStick().onFalse(new InstantCommand(() -> swerve.localizer.setPoses(Constants.FAR_LEFT_CORAL_STATION)));
-        driverXbox.rightStick().onFalse(new InstantCommand(() -> swerve.localizer.setPoses(Constants.FAR_RIGHT_CORAL_STATION)));
+        driverXbox.leftStick().onFalse(new InstantCommand(() -> robotStates.swerve.localizer.setPoses(Constants.FAR_LEFT_CORAL_STATION)));
+        driverXbox.rightStick().onFalse(new InstantCommand(() -> robotStates.swerve.localizer.setPoses(Constants.FAR_RIGHT_CORAL_STATION)));
 
         driverXbox.leftBumper().onFalse(new InstantCommand(robotStates::toggleGroundCoralState));
         driverXbox.rightBumper().onFalse(new InstantCommand(robotStates::toggleGroundAlgaeState));
@@ -188,45 +143,45 @@ public class RobotContainer {
         driverXbox.a().onFalse(new ConditionalCommand(
                 new InstantCommand(robotStates::toggleL4CoralState),
                 Commands.none(),
-                intake::hasCoral
+                robotStates.intake::hasCoral
         ));
         driverXbox.a().debounce(1.5).whileTrue(new ConditionalCommand(
-                swerve.pathFindToNearestBranch(elevator::getPosition),
+                robotStates.swerve.pathFindToNearestBranch(robotStates.elevator::getPosition),
                 Commands.none(),
-                intake::hasCoral
+                robotStates.intake::hasCoral
         ));
 
         driverXbox.b().onFalse(new ConditionalCommand(
                 new InstantCommand(robotStates::toggleL1CoralState),
                 new InstantCommand(robotStates::toggleHighReefAlgaeState),
-                intake::hasCoral
+                robotStates.intake::hasCoral
         ));
         driverXbox.b().debounce(1.5).whileTrue(new ConditionalCommand(
-                swerve.pathFindToNearestBranch(elevator::getPosition),
+                robotStates.swerve.pathFindToNearestBranch(robotStates.elevator::getPosition),
                 Commands.none(),
-                intake::hasCoral
+                robotStates.intake::hasCoral
         ));
 
         driverXbox.x().onFalse(new ConditionalCommand(
                 new InstantCommand(robotStates::toggleL3CoralState),
                 new InstantCommand(robotStates::toggleLowReefAlgaeState),
-                intake::hasCoral
+                robotStates.intake::hasCoral
         ));
         driverXbox.x().debounce(1.5).whileTrue(new ConditionalCommand(
-                swerve.pathFindToNearestBranch(elevator::getPosition),
+                robotStates.swerve.pathFindToNearestBranch(robotStates.elevator::getPosition),
                 Commands.none(),
-                intake::hasCoral
+                robotStates.intake::hasCoral
         ));
 
         driverXbox.y().onFalse(new ConditionalCommand(
                 new InstantCommand(robotStates::toggleL2CoralState),
                 new InstantCommand(robotStates::toggleCoralStationState),
-                intake::hasCoral
+                robotStates.intake::hasCoral
         ));
         driverXbox.y().debounce(1.5).whileTrue(new ConditionalCommand(
-                swerve.pathFindToNearestBranch(elevator::getPosition),
+                robotStates.swerve.pathFindToNearestBranch(robotStates.elevator::getPosition),
                 Commands.none(),
-                intake::hasCoral
+                robotStates.intake::hasCoral
         ));
 
         opXbox.povRight().onTrue(new InstantCommand(robotStates::toggleL1CoralState));
@@ -234,8 +189,8 @@ public class RobotContainer {
         opXbox.povLeft().onTrue(new InstantCommand(robotStates::toggleL3CoralState));
         opXbox.povDown().onTrue(new InstantCommand(robotStates::toggleL4CoralState));
 
-        opXbox.leftTrigger().onTrue(new InstantCommand(intake::setOuttakeState).andThen(new WaitUntilCommand(() -> !opXbox.leftTrigger().getAsBoolean())).andThen(intake::setIdleState));
-        opXbox.rightTrigger().onTrue(new InstantCommand(intake::setIntakeState).andThen(new WaitUntilCommand(() -> !opXbox.rightTrigger().getAsBoolean())).andThen(intake::setIdleState));
+        opXbox.leftTrigger().onTrue(new InstantCommand(robotStates.intake::setOuttakeState).andThen(new WaitUntilCommand(() -> !opXbox.leftTrigger().getAsBoolean())).andThen(robotStates.intake::setIdleState));
+        opXbox.rightTrigger().onTrue(new InstantCommand(robotStates.intake::setIntakeState).andThen(new WaitUntilCommand(() -> !opXbox.rightTrigger().getAsBoolean())).andThen(robotStates.intake::setIdleState));
 
         opXbox.leftStick().onTrue(new InstantCommand(robotStates::toggleNetState));
         opXbox.rightStick().onTrue(new InstantCommand(robotStates::toggleProcessorState));
@@ -244,7 +199,7 @@ public class RobotContainer {
 //        opXbox.rightBumper().onTrue(new InstantCommand(robotStates::toggleGroundAlgaeState));
         opXbox.rightBumper().onTrue(new InstantCommand(robotStates::setStowState));
 
-        opXbox.a().onTrue(new InstantCommand(pivot::toggleRatchet));
+        opXbox.a().onTrue(new InstantCommand(robotStates.pivot::toggleRatchet));
         opXbox.b().onTrue(new InstantCommand(robotStates::toggleHighReefAlgaeState));
         opXbox.x().onTrue(new InstantCommand(robotStates::toggleLowReefAlgaeState));
         opXbox.y().onTrue(new InstantCommand(robotStates::toggleCoralStationState));

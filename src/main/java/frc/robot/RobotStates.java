@@ -5,13 +5,19 @@ import edu.wpi.first.networktables.StringPublisher;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.ElevatorCommand;
+import frc.robot.commands.IntakeCommand;
+import frc.robot.commands.PivotCommand;
+import frc.robot.commands.WristCommand;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.drivetrain.Swerve;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.wrist.Wrist;
+import frc.robot.util.DoubleTrueTrigger;
 import frc.robot.util.FieldUtil;
 import frc.robot.util.VisionUtil;
 
@@ -38,6 +44,12 @@ public class RobotStates {
         PROCESSOR,
         NET
     }
+
+    public final Swerve swerve = new Swerve();
+    public final Elevator elevator = new Elevator();
+    public final Intake intake = new Intake();
+    public final Pivot pivot = new Pivot();
+    public final Wrist wrist = new Wrist();
 
     private State currentState;
     private FieldUtil.Reef.Level currentAutoLevel;
@@ -68,10 +80,6 @@ public class RobotStates {
         Arrays.stream(State.values()).forEach(state -> stateChooser.addOption(state.name(), state));
         stateChooser.onChange(state -> currentState = stateChooser.getSelected()); // TODO SHOP: TEST CHOOSER
         SmartDashboard.putData("Robot State Chooser", stateChooser);
-    }
-
-    public FieldUtil.Reef.Level getCurrentAutoLevel() {
-        return currentAutoLevel;
     }
 
     public void setCurrentAutoLevel(FieldUtil.Reef.Level level) {
@@ -163,8 +171,7 @@ public class RobotStates {
         currentState = currentState == State.NET ? State.OUTTAKE : State.NET;
     }
 
-    public void configureToggleStateTriggers(Swerve swerve, Elevator elevator, Intake intake, Pivot pivot, Wrist wrist) {
-        
+    public void configureToggleStateTriggers() {
         stowState.onTrue(
                 new InstantCommand(swerve::setIdleMode)
                         .andThen(intake::setIdleState)
@@ -338,10 +345,44 @@ public class RobotStates {
         );
     }
 
+    /* Each subsystem will execute their corresponding command periodically */
+    public void setDefaultCommands(CommandXboxController driverXbox, CommandXboxController opXbox) {
+        /* Note that X is defined as forward according to WPILib convention,
+        and Y is defined as to the left according to WPILib convention.
+        drive forward with left joystick negative Y (forward),
+        drive left with left joystick negative X (left),
+        rotate counterclockwise with right joystick negative X (left) */
+        swerve.setDefaultCommand(
+                swerve.driveFieldCentric(
+                        elevator::getPosition,
+                        driverXbox::getLeftY,
+                        driverXbox::getLeftX,
+                        driverXbox::getLeftTriggerAxis,
+                        driverXbox::getRightTriggerAxis,
+                        DoubleTrueTrigger.doubleTrue(driverXbox.leftTrigger(0.5), 0.5),
+                        DoubleTrueTrigger.doubleTrue(driverXbox.rightTrigger(0.5), 0.5)
+                )
+        );
+
+        elevator.setDefaultCommand(new ElevatorCommand(elevator, opXbox::getLeftX, pivot::getPosition, this));
+
+        intake.setDefaultCommand(new IntakeCommand(intake));
+
+        pivot.setDefaultCommand(
+                new PivotCommand(pivot, () -> -opXbox.getLeftY(), elevator::getPosition, wrist::getPosition, this)
+        );
+
+        wrist.setDefaultCommand(
+                new WristCommand(wrist, () -> -opXbox.getRightY(), pivot::getPosition, elevator::getPosition, this)
+        );
+    }
+
     private Command transition(Elevator elevator, Wrist wrist, BooleanSupplier pivotNearTarget) { // TODO SHOP: TEST SMOOTHER TRANSITIONS
         return new ConditionalCommand(
-                new InstantCommand(wrist::setStowState).andThen(elevator::setStowState).andThen(new WaitUntilCommand(elevator::nearTarget)),
-                new InstantCommand(wrist::setStowState),
+                new InstantCommand(wrist::setStowState)
+                        .andThen(new WaitUntilCommand(wrist::nearTarget)),
+                new InstantCommand(wrist::setStowState)
+                        .andThen(elevator::setStowState).andThen(new WaitUntilCommand(elevator::nearTarget)),
                 pivotNearTarget
         );
     }
