@@ -20,8 +20,8 @@
         "y": 4.222797131147541
       },
       "prevControl": {
-        "x": 2.5413934426229505,
-        "y": 4.222797131147541
+        "x": 2.132779880472132,
+        "y": 3.739684177089381
       },
       "nextControl": null,
       "isLocked": false,
@@ -34,7 +34,7 @@
   "eventMarkers": [
     {
       "name": "outtake",
-      "waypointRelativePos": 0,
+      "waypointRelativePos": 0.5033425365967605,
       "endWaypointRelativePos": null,
       "command": null
     }
