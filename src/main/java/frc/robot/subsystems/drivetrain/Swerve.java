@@ -14,21 +14,18 @@ import com.ctre.phoenix6.swerve.*;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
-import frc.robot.autos.PathManager;
+import frc.robot.autos.Pathfinder;
 import frc.robot.commands.DirectMoveToNearestBranchCommand;
 import frc.robot.commands.auto.SearchForAlgaeCommand;
 import frc.robot.constants.Constants;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.DirectMoveToObjectCommand;
 import frc.robot.subsystems.vision.Localizer;
-import frc.robot.util.FieldUtil;
 import frc.robot.util.VisionUtil;
 
 /**
@@ -162,14 +159,14 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
         return new SearchForAlgaeCommand(this, fieldCentric)
                 .andThen(directMoveToObject(algaeObtained, VisionUtil.Photon.Color.TargetClass.ALGAE))
                 .andThen(Commands.defer(
-                        () -> PathManager.pathFindToNearestAlgaeScoringLocation(localizer.getStrategyPose()),
+                        () -> Pathfinder.pathFindToNearestAlgaeScoringLocation(localizer.getStrategyPose()),
                         Set.of(this)
                 ));
     }
 
     public Command pathFindToNearestBranch(DoubleSupplier elevatorHeight) {
         return Commands.defer(
-                () -> PathManager.pathFindToNearestCoralScoringLocation(localizer.getStrategyPose()),
+                () -> Pathfinder.pathFindToNearestCoralScoringLocation(localizer.getStrategyPose()),
                 Set.of(this)
         ).andThen(directMoveToNearestBranch(elevatorHeight));
     }
