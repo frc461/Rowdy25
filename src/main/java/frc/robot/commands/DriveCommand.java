@@ -94,7 +94,7 @@ public class DriveCommand extends Command {
     }
 
     private void updateMode() {
-        if (swerve.isFullyTeleop() || !autoHeading.getAsBoolean()) {
+        if (swerve.isFullyTeleop()) {
             if (fastRotationLeft.getAsBoolean() || fastRotationRight.getAsBoolean()) {
                 swerve.setFastRotatingMode();
             } else if (Math.abs(rot.getAsDouble()) >= Constants.DEADBAND) {
@@ -127,32 +127,42 @@ public class DriveCommand extends Command {
                     swerve.localizer.getStrategyPose().getRotation().getDegrees(),
                     swerve.consistentHeading
             ) * Constants.MAX_CONTROLLED_ANGULAR_VEL;
-            case BRANCH_HEADING -> yawController.calculate(
-                    swerve.localizer.getStrategyPose().getRotation().getDegrees(),
-                    swerve.localizer.getNearestReefSideHeading()
-            ) * Constants.MAX_CONTROLLED_ANGULAR_VEL;
-            case REEF_TAG_HEADING -> yawController.calculate(
-                    swerve.localizer.getStrategyPose().getRotation().getDegrees(),
-                    swerve.localizer.getAngleToNearestReefSide()
-            ) * Constants.MAX_CONTROLLED_ANGULAR_VEL;
-            case OBJECT_HEADING -> VisionUtil.Photon.Color.hasTargets()
+            case BRANCH_HEADING -> autoHeading.getAsBoolean()
+                    ? yawController.calculate(
+                            swerve.localizer.getStrategyPose().getRotation().getDegrees(),
+                            swerve.localizer.getNearestReefSideHeading()
+                    ) * Constants.MAX_CONTROLLED_ANGULAR_VEL
+                    : -rot.getAsDouble() * Constants.MAX_CONTROLLED_ANGULAR_VEL;
+            case REEF_TAG_HEADING -> autoHeading.getAsBoolean()
+                    ? yawController.calculate(
+                            swerve.localizer.getStrategyPose().getRotation().getDegrees(),
+                            swerve.localizer.getAngleToNearestReefSide()
+                    ) * Constants.MAX_CONTROLLED_ANGULAR_VEL
+                    : -rot.getAsDouble() * Constants.MAX_CONTROLLED_ANGULAR_VEL;
+            case OBJECT_HEADING -> VisionUtil.Photon.Color.hasTargets() && autoHeading.getAsBoolean()
                     ? objectDetectionController.calculate(
                             VisionUtil.Photon.Color.getBestObjectYaw(),
                             0
                     ) * Constants.MAX_CONTROLLED_ANGULAR_VEL
                     : -rot.getAsDouble() * Constants.MAX_CONTROLLED_ANGULAR_VEL;
-            case CORAL_STATION_HEADING -> yawController.calculate(
-                    swerve.localizer.getStrategyPose().getRotation().getDegrees(),
-                    swerve.localizer.getNearestCoralStationHeading()
-            ) * Constants.MAX_CONTROLLED_ANGULAR_VEL;
-            case PROCESSOR_HEADING -> yawController.calculate(
-                    swerve.localizer.getStrategyPose().getRotation().getDegrees(),
-                    swerve.localizer.getProcessorScoringHeading()
-            ) * Constants.MAX_CONTROLLED_ANGULAR_VEL;
-            case NET_HEADING -> yawController.calculate(
-                    swerve.localizer.getStrategyPose().getRotation().getDegrees(),
-                    swerve.localizer.getNetScoringHeading()
-            ) * Constants.MAX_CONTROLLED_ANGULAR_VEL;
+            case CORAL_STATION_HEADING -> autoHeading.getAsBoolean()
+                    ? yawController.calculate(
+                            swerve.localizer.getStrategyPose().getRotation().getDegrees(),
+                            swerve.localizer.getNearestCoralStationHeading()
+                    ) * Constants.MAX_CONTROLLED_ANGULAR_VEL
+                    : -rot.getAsDouble() * Constants.MAX_CONTROLLED_ANGULAR_VEL;
+            case PROCESSOR_HEADING -> autoHeading.getAsBoolean()
+                    ? yawController.calculate(
+                            swerve.localizer.getStrategyPose().getRotation().getDegrees(),
+                            swerve.localizer.getProcessorScoringHeading()
+                    ) * Constants.MAX_CONTROLLED_ANGULAR_VEL
+                    : -rot.getAsDouble() * Constants.MAX_CONTROLLED_ANGULAR_VEL;
+            case NET_HEADING -> autoHeading.getAsBoolean()
+                    ? yawController.calculate(
+                            swerve.localizer.getStrategyPose().getRotation().getDegrees(),
+                            swerve.localizer.getNetScoringHeading()
+                    ) * Constants.MAX_CONTROLLED_ANGULAR_VEL
+                    : -rot.getAsDouble() * Constants.MAX_CONTROLLED_ANGULAR_VEL;
         };
     }
 }
