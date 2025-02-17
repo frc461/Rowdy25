@@ -251,8 +251,7 @@ public class RobotContainer {
         robotStates.publishValues();
     }
 
-    public Supplier<Pose2d> poseSupplier;
     public Command getAutonomousCommand() {
-        return autoChooser.getFinalAutoCommand(poseSupplier);
+        return autoChooser.getFinalAutoCommand(robotStates);
     }
 }

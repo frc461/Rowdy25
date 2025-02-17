@@ -108,7 +108,7 @@ public class FieldUtil {
     public static class CoralStation {
         public static List<AprilTag> getCoralStationTags() {
             return Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red ?
-                    List.of(AprilTag.ID_1, AprilTag.ID_2) : List.of(AprilTag.ID_12, AprilTag.ID_13);
+                    List.of(AprilTag.ID_1, AprilTag.ID_2) : List.of(AprilTag.ID_13, AprilTag.ID_12);
         }
 
         public static List<Pose2d> getCoralStationTagPoses() {
@@ -118,18 +118,51 @@ public class FieldUtil {
         public static Pose2d getNearestCoralStationTagPose(Pose2d currentPose) {
             return currentPose.nearest(getCoralStationTagPoses());
         }
+
+        public static AprilTag getNearestCoralStationTag(Pose2d currentPose) {
+            return TagManager.getPosesToTags().getOrDefault(getNearestCoralStationTagPose(currentPose), AprilTag.INVALID);
+        }
     }
 
     public static class Reef {
         public static final Transform2d LEFT_BRANCH_OFFSET_FROM_TAG = new Transform2d(Units.inchesToMeters(-3.0), Units.inchesToMeters(-6.468878), new Rotation2d());
         public static final Transform2d RIGHT_BRANCH_OFFSET_FROM_TAG = new Transform2d(Units.inchesToMeters(-3.0), Units.inchesToMeters(6.468878), new Rotation2d());
 
+        public enum ScoringLocation {
+            A(getBranchPoses().get(0)),
+            B(getBranchPoses().get(1)),
+            C(getBranchPoses().get(2)),
+            D(getBranchPoses().get(3)),
+            E(getBranchPoses().get(4)),
+            F(getBranchPoses().get(5)),
+            G(getBranchPoses().get(6)),
+            H(getBranchPoses().get(7)),
+            I(getBranchPoses().get(8)),
+            J(getBranchPoses().get(9)),
+            K(getBranchPoses().get(10)),
+            L(getBranchPoses().get(11));
+
+            public final Pose2d pose;
+            ScoringLocation(Pose2d pose) {
+                this.pose = pose;
+            }
+        }
+
+        public enum Level {
+            L1(1), L2(2), L3(3), L4(4);
+
+            public final int level;
+            Level(int level) {
+                this.level = level;
+            }
+        }
+
         public static List<AprilTag> getReefTags() {
             return Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red ?
                     List.of(
-                            AprilTag.ID_6, AprilTag.ID_7, AprilTag.ID_8, AprilTag.ID_9, AprilTag.ID_10, AprilTag.ID_11
+                            AprilTag.ID_7, AprilTag.ID_8, AprilTag.ID_9, AprilTag.ID_10, AprilTag.ID_11, AprilTag.ID_6
                     ) : List.of(
-                            AprilTag.ID_17, AprilTag.ID_18, AprilTag.ID_19, AprilTag.ID_20, AprilTag.ID_21, AprilTag.ID_22
+                            AprilTag.ID_18, AprilTag.ID_17, AprilTag.ID_22, AprilTag.ID_21, AprilTag.ID_20, AprilTag.ID_19
                     );
         }
 

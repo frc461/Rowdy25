@@ -2,193 +2,121 @@ package frc.robot.autos;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathPlannerPath;
+import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import frc.robot.RobotStates;
 import frc.robot.autos.routines.AutoEventLooper;
+import frc.robot.autos.routines.AutoTrigger;
 import frc.robot.constants.Constants;
 import frc.robot.util.FieldUtil;
 import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
+import java.sql.Array;
+import java.util.ArrayList;
 import java.util.List;
 
 public final class PathManager {
-    // ONE START
-    public static PathPlannerPath ONE_START_TO_A;
-    public static PathPlannerPath ONE_START_TO_B;
-    public static PathPlannerPath ONE_START_TO_C;
-    public static PathPlannerPath ONE_START_TO_D;
-    public static PathPlannerPath ONE_START_TO_E;
-    public static PathPlannerPath ONE_START_TO_F;
-    public static PathPlannerPath ONE_START_TO_G;
-    public static PathPlannerPath ONE_START_TO_H;
-    public static PathPlannerPath ONE_START_TO_I;
-    public static PathPlannerPath ONE_START_TO_J;
-    public static PathPlannerPath ONE_START_TO_K;
-    public static PathPlannerPath ONE_START_TO_L;
-
-    // TWO START
-    public static PathPlannerPath TWO_START_TO_A;
-    public static PathPlannerPath TWO_START_TO_B;
-    public static PathPlannerPath TWO_START_TO_C;
-    public static PathPlannerPath TWO_START_TO_D;
-    public static PathPlannerPath TWO_START_TO_E;
-    public static PathPlannerPath TWO_START_TO_F;
-    public static PathPlannerPath TWO_START_TO_G;
-    public static PathPlannerPath TWO_START_TO_H;
-    public static PathPlannerPath TWO_START_TO_I;
-    public static PathPlannerPath TWO_START_TO_J;
-    public static PathPlannerPath TWO_START_TO_K;
-    public static PathPlannerPath TWO_START_TO_L;
-
-    // THREE START 
-    public static PathPlannerPath THREE_START_TO_A;
-    public static PathPlannerPath THREE_START_TO_B;
-    public static PathPlannerPath THREE_START_TO_C;
-    public static PathPlannerPath THREE_START_TO_D;
-    public static PathPlannerPath THREE_START_TO_E;
-    public static PathPlannerPath THREE_START_TO_F;
-    public static PathPlannerPath THREE_START_TO_G;
-    public static PathPlannerPath THREE_START_TO_H;
-    public static PathPlannerPath THREE_START_TO_I;
-    public static PathPlannerPath THREE_START_TO_J;
-    public static PathPlannerPath THREE_START_TO_K;
-    public static PathPlannerPath THREE_START_TO_L;
-
-    // FOUR START
-    public static PathPlannerPath FOUR_START_TO_A;
-    public static PathPlannerPath FOUR_START_TO_B;
-    public static PathPlannerPath FOUR_START_TO_C;
-    public static PathPlannerPath FOUR_START_TO_D;
-    public static PathPlannerPath FOUR_START_TO_E;
-    public static PathPlannerPath FOUR_START_TO_F;
-    public static PathPlannerPath FOUR_START_TO_G;
-    public static PathPlannerPath FOUR_START_TO_H;
-    public static PathPlannerPath FOUR_START_TO_I;
-    public static PathPlannerPath FOUR_START_TO_J;
-    public static PathPlannerPath FOUR_START_TO_K;
-    public static PathPlannerPath FOUR_START_TO_L;
-
-    // FIVE START
-    public static PathPlannerPath FIVE_START_TO_A;
-    public static PathPlannerPath FIVE_START_TO_B;
-    public static PathPlannerPath FIVE_START_TO_C;
-    public static PathPlannerPath FIVE_START_TO_D;
-    public static PathPlannerPath FIVE_START_TO_E;
-    public static PathPlannerPath FIVE_START_TO_F;
-    public static PathPlannerPath FIVE_START_TO_G;
-    public static PathPlannerPath FIVE_START_TO_H;
-    public static PathPlannerPath FIVE_START_TO_I;
-    public static PathPlannerPath FIVE_START_TO_J;
-    public static PathPlannerPath FIVE_START_TO_K;
-    public static PathPlannerPath FIVE_START_TO_L;
-
-    // BRANCH TO ONE STATION
-    public static PathPlannerPath A_TO_ONE_STATION;
-    public static PathPlannerPath B_TO_ONE_STATION;
-    public static PathPlannerPath C_TO_ONE_STATION;
-    public static PathPlannerPath D_TO_ONE_STATION;
-    public static PathPlannerPath E_TO_ONE_STATION;
-    public static PathPlannerPath F_TO_ONE_STATION;
-    public static PathPlannerPath G_TO_ONE_STATION;
-    public static PathPlannerPath H_TO_ONE_STATION;
-    public static PathPlannerPath I_TO_ONE_STATION;
-    public static PathPlannerPath J_TO_ONE_STATION;
-    public static PathPlannerPath K_TO_ONE_STATION;
-    public static PathPlannerPath L_TO_ONE_STATION;
-
-    // BRANCH TO TWO STATION
-    public static PathPlannerPath A_TO_TWO_STATION;
-    public static PathPlannerPath B_TO_TWO_STATION;
-    public static PathPlannerPath C_TO_TWO_STATION;
-    public static PathPlannerPath D_TO_TWO_STATION;
-    public static PathPlannerPath E_TO_TWO_STATION;
-    public static PathPlannerPath F_TO_TWO_STATION;
-    public static PathPlannerPath G_TO_TWO_STATION;
-    public static PathPlannerPath H_TO_TWO_STATION;
-    public static PathPlannerPath I_TO_TWO_STATION;
-    public static PathPlannerPath J_TO_TWO_STATION;
-    public static PathPlannerPath K_TO_TWO_STATION;
-    public static PathPlannerPath L_TO_TWO_STATION;
-
-    // ONE STATION TO BRANCH
-    public static PathPlannerPath ONE_STATION_TO_A;
-    public static PathPlannerPath ONE_STATION_TO_B;
-    public static PathPlannerPath ONE_STATION_TO_C;
-    public static PathPlannerPath ONE_STATION_TO_D;
-    public static PathPlannerPath ONE_STATION_TO_E;
-    public static PathPlannerPath ONE_STATION_TO_F;
-    public static PathPlannerPath ONE_STATION_TO_G;
-    public static PathPlannerPath ONE_STATION_TO_H;
-    public static PathPlannerPath ONE_STATION_TO_I;
-    public static PathPlannerPath ONE_STATION_TO_J;
-    public static PathPlannerPath ONE_STATION_TO_K;
-    public static PathPlannerPath ONE_STATION_TO_L;
-
-    // TWO STATION TO BRANCH
-    public static PathPlannerPath TWO_STATION_TO_A;
-    public static PathPlannerPath TWO_STATION_TO_B;
-    public static PathPlannerPath TWO_STATION_TO_C;
-    public static PathPlannerPath TWO_STATION_TO_D;
-    public static PathPlannerPath TWO_STATION_TO_E;
-    public static PathPlannerPath TWO_STATION_TO_F;
-    public static PathPlannerPath TWO_STATION_TO_G;
-    public static PathPlannerPath TWO_STATION_TO_H;
-    public static PathPlannerPath TWO_STATION_TO_I;
-    public static PathPlannerPath TWO_STATION_TO_J;
-    public static PathPlannerPath TWO_STATION_TO_K;
-    public static PathPlannerPath TWO_STATION_TO_L;
-
-    static {
-        try {
-            ONE_START_TO_D = PathPlannerPath.fromPathFile("1,D");
-            ONE_START_TO_E = PathPlannerPath.fromPathFile("1,E");
-
-            TWO_START_TO_D = PathPlannerPath.fromPathFile("2,D");
-            TWO_START_TO_E = PathPlannerPath.fromPathFile("2,E");
-
-            THREE_START_TO_D = PathPlannerPath.fromPathFile("3,D");
-            THREE_START_TO_E = PathPlannerPath.fromPathFile("3,E");
-
-            FOUR_START_TO_A = PathPlannerPath.fromPathFile("4,A");
-            FOUR_START_TO_B = PathPlannerPath.fromPathFile("4,B");
-            FOUR_START_TO_C = PathPlannerPath.fromPathFile("4,C");
-            FOUR_START_TO_D = PathPlannerPath.fromPathFile("4,D");
-            FOUR_START_TO_E = PathPlannerPath.fromPathFile("4,E");
-            FOUR_START_TO_F = PathPlannerPath.fromPathFile("4,F");
-            FOUR_START_TO_G = PathPlannerPath.fromPathFile("4,G");
-            FOUR_START_TO_H = PathPlannerPath.fromPathFile("4,H");
-            FOUR_START_TO_I = PathPlannerPath.fromPathFile("4,I");
-            FOUR_START_TO_J = PathPlannerPath.fromPathFile("4,J");
-            FOUR_START_TO_K = PathPlannerPath.fromPathFile("4,K");
-            FOUR_START_TO_L = PathPlannerPath.fromPathFile("4,L");
-
-            FIVE_START_TO_B = PathPlannerPath.fromPathFile("5,B");
-            FIVE_START_TO_D = PathPlannerPath.fromPathFile("5,D");
-            FIVE_START_TO_E = PathPlannerPath.fromPathFile("5,E");
-
-            A_TO_ONE_STATION = PathPlannerPath.fromPathFile("A,1-station");
-            B_TO_ONE_STATION = PathPlannerPath.fromPathFile("B,1-station");
-            C_TO_ONE_STATION = PathPlannerPath.fromPathFile("C,1-station");
-            D_TO_ONE_STATION = PathPlannerPath.fromPathFile("D,1-station");
-            E_TO_ONE_STATION = PathPlannerPath.fromPathFile("E,1-station");
-            F_TO_ONE_STATION = PathPlannerPath.fromPathFile("F,1-station");
-            
-            D_TO_TWO_STATION = PathPlannerPath.fromPathFile("D,2-station");
-        } catch (IOException | ParseException e) {
-            DriverStation.reportError("Failed to load paths: " + e.getMessage(), e.getStackTrace());
-        }
-    }
-
     public static AutoEventLooper generateAutoEventLooper(
             AutoChooser.StartPosition startPosition,
-            List<AutoChooser.ScoringPositions> scoringLocations
+            List<Pair<FieldUtil.Reef.ScoringLocation, FieldUtil.Reef.Level>> scoringLocations,
+            RobotStates robotStates
     ) {
-        return new AutoEventLooper("AutoEventLooper");
+        AutoEventLooper autoEventLooper = new AutoEventLooper("AutoEventLooper");
+
+        List<AutoTrigger> triggers = new ArrayList<>();
+        Pair<FieldUtil.Reef.ScoringLocation, FieldUtil.Reef.Level> firstScoringLocation = scoringLocations.get(0);
+        String firstPath = startPosition.index + "," + firstScoringLocation.getFirst().name();
+
+        triggers.add(autoEventLooper.addTrigger(
+                firstPath,
+                () -> {
+                    try {
+                        return new InstantCommand(() -> robotStates.setCurrentAutoLevel(firstScoringLocation.getSecond()))
+                                .andThen(AutoBuilder.followPath(PathPlannerPath.fromPathFile(firstPath)));
+                    } catch (IOException | ParseException e) {
+                        DriverStation.reportError("Failed to load path: " + e.getMessage(), e.getStackTrace());
+                        return Commands.none();
+                    }
+                }
+        ));
+
+        triggers.add(autoEventLooper.addTrigger(
+                "outtake",
+                () -> new InstantCommand(robotStates::toggleAutoLevelCoralState)
+                        .andThen(new WaitUntilCommand(robotStates.stowState))
+        ));
+
+        while (!scoringLocations.isEmpty()) {
+            Pair<FieldUtil.Reef.ScoringLocation, FieldUtil.Reef.Level> currentScoringLocation = scoringLocations.removeFirst();
+            Pair<FieldUtil.Reef.ScoringLocation, FieldUtil.Reef.Level> nextScoringLocation = scoringLocations.getFirst();
+            String nearestCoralStation = getMostEfficientCoralStation(
+                    currentScoringLocation.getFirst().pose,
+                    nextScoringLocation.getFirst().pose
+            );
+            String toCoralStationPath = currentScoringLocation.getFirst().name() + "," + nearestCoralStation;
+
+            triggers.add(autoEventLooper.addTrigger(
+                    toCoralStationPath,
+                    () -> {
+                        try {
+                            return new InstantCommand(robotStates::resetCurrentAutoLevel)
+                                    .andThen(AutoBuilder.followPath(PathPlannerPath.fromPathFile(toCoralStationPath)));
+                        } catch (IOException | ParseException e) {
+                            DriverStation.reportError("Failed to load path: " + e.getMessage(), e.getStackTrace());
+                            return Commands.none();
+                        }
+                    }
+            ));
+
+            triggers.add(autoEventLooper.addTrigger("waitUntilHasObject", () -> new WaitUntilCommand(robotStates.stowState)));
+
+            String fromCoralStationPath = nearestCoralStation + "," + nextScoringLocation.getFirst().name();
+
+            triggers.add(autoEventLooper.addTrigger(
+                    fromCoralStationPath,
+                    () -> {
+                        try {
+                            return new InstantCommand(() -> robotStates.setCurrentAutoLevel(nextScoringLocation.getSecond()))
+                                    .andThen(AutoBuilder.followPath(PathPlannerPath.fromPathFile(fromCoralStationPath)));
+                        } catch (IOException | ParseException e) {
+                            DriverStation.reportError("Failed to load path: " + e.getMessage(), e.getStackTrace());
+                            return Commands.none();
+                        }
+                    }
+            ));
+
+            triggers.add(autoEventLooper.addTrigger(
+                    "outtake",
+                    () -> new InstantCommand(robotStates::toggleAutoLevelCoralState)
+                            .andThen(new WaitUntilCommand(robotStates.stowState))
+            ));
+        }
+
+        autoEventLooper.active().onTrue(triggers.get(0).cmd());
+
+        while (!triggers.isEmpty()) {
+            triggers.remove(0).done().onTrue(triggers.isEmpty() ? Commands.none() : triggers.get(0).cmd());
+        }
+
+        return autoEventLooper;
+    }
+
+    private static String getMostEfficientCoralStation(Pose2d currentLocation, Pose2d nextLocation) {
+        double station1TotalDistance =
+                currentLocation.getTranslation().getDistance(FieldUtil.CoralStation.getCoralStationTags().get(0).pose2d.getTranslation())
+                + nextLocation.getTranslation().getDistance(FieldUtil.CoralStation.getCoralStationTags().get(0).pose2d.getTranslation());
+        double station2TotalDistance =
+                currentLocation.getTranslation().getDistance(FieldUtil.CoralStation.getCoralStationTags().get(1).pose2d.getTranslation())
+                + nextLocation.getTranslation().getDistance(FieldUtil.CoralStation.getCoralStationTags().get(1).pose2d.getTranslation());
+        return station1TotalDistance < station2TotalDistance ? "1-station" : "2-station";
     }
 
     private static Command pathFindToPose(Pose2d targetPose, double goalEndVelocity) {

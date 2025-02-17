@@ -12,6 +12,7 @@ import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.wrist.Wrist;
+import frc.robot.util.FieldUtil;
 import frc.robot.util.VisionUtil;
 
 import java.util.Arrays;
@@ -39,6 +40,7 @@ public class RobotStates {
     }
 
     private State currentState;
+    private FieldUtil.Reef.Level currentAutoLevel;
     private final SendableChooser<State> stateChooser = new SendableChooser<>();
 
     public final Trigger stowState = new Trigger(() -> currentState == State.STOW);
@@ -61,9 +63,23 @@ public class RobotStates {
 
     public RobotStates() {
         currentState = State.STOW;
+        currentAutoLevel = FieldUtil.Reef.Level.L2;
+
         Arrays.stream(State.values()).forEach(state -> stateChooser.addOption(state.name(), state));
         stateChooser.onChange(state -> currentState = stateChooser.getSelected()); // TODO SHOP: TEST CHOOSER
         SmartDashboard.putData("Robot State Chooser", stateChooser);
+    }
+
+    public FieldUtil.Reef.Level getCurrentAutoLevel() {
+        return currentAutoLevel;
+    }
+
+    public void setCurrentAutoLevel(FieldUtil.Reef.Level level) {
+        currentAutoLevel = level;
+    }
+
+    public void resetCurrentAutoLevel() {
+        currentAutoLevel = FieldUtil.Reef.Level.L2;
     }
 
     public void setStowState() {
@@ -108,6 +124,15 @@ public class RobotStates {
 
     public void toggleL4CoralState() {
         currentState = currentState == State.L4_CORAL ? State.OUTTAKE : State.L4_CORAL;
+    }
+
+    public void toggleAutoLevelCoralState() {
+        switch (currentAutoLevel) {
+            case L1 -> toggleL1CoralState();
+            case L2 -> toggleL2CoralState();
+            case L3 -> toggleL3CoralState();
+            case L4 -> toggleL4CoralState();
+        }
     }
 
     public void toggleLowReefAlgaeState() {
