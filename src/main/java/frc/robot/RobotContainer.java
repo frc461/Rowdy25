@@ -145,7 +145,7 @@ public class RobotContainer {
                 Commands.none(),
                 robotStates.intake::hasCoral
         ));
-        driverXbox.a().debounce(1.5).whileTrue(new ConditionalCommand(
+        driverXbox.a().debounce(0.5).whileTrue(new ConditionalCommand( // TODO SHOP: TEST LESS TIME BEFORE PATHFINDING
                 robotStates.swerve.pathFindToNearestBranch(robotStates.elevator::getPosition),
                 Commands.none(),
                 robotStates.intake::hasCoral
@@ -156,7 +156,7 @@ public class RobotContainer {
                 new InstantCommand(robotStates::toggleHighReefAlgaeState),
                 robotStates.intake::hasCoral
         ));
-        driverXbox.b().debounce(1.5).whileTrue(new ConditionalCommand(
+        driverXbox.b().debounce(0.5).whileTrue(new ConditionalCommand(
                 robotStates.swerve.pathFindToNearestBranch(robotStates.elevator::getPosition),
                 Commands.none(),
                 robotStates.intake::hasCoral
@@ -167,7 +167,7 @@ public class RobotContainer {
                 new InstantCommand(robotStates::toggleLowReefAlgaeState),
                 robotStates.intake::hasCoral
         ));
-        driverXbox.x().debounce(1.5).whileTrue(new ConditionalCommand(
+        driverXbox.x().debounce(0.5).whileTrue(new ConditionalCommand(
                 robotStates.swerve.pathFindToNearestBranch(robotStates.elevator::getPosition),
                 Commands.none(),
                 robotStates.intake::hasCoral
@@ -178,7 +178,7 @@ public class RobotContainer {
                 new InstantCommand(robotStates::toggleCoralStationState),
                 robotStates.intake::hasCoral
         ));
-        driverXbox.y().debounce(1.5).whileTrue(new ConditionalCommand(
+        driverXbox.y().debounce(0.5).whileTrue(new ConditionalCommand(
                 robotStates.swerve.pathFindToNearestBranch(robotStates.elevator::getPosition),
                 Commands.none(),
                 robotStates.intake::hasCoral

@@ -39,10 +39,10 @@ Monday, 2/17/2025 to test:
 - [ ] Faster wrist
 - [ ] Redo L4 preset as needed
 - [ ] Test localization trust filter
-- [ ] Retest pathfinding to reef, taking into account tolerances and pids
+- [ ] Retest pathfinding to reef, taking into account tolerances and pids, test faster debounce
 - [ ] Test multiple chooser
 - [ ] Preliminary auto things
-- [ ] Decide on starting heading of robot
+- [ ] Decide on starting heading of robot for autos
 
 Monday, 2/17/2025 software only:
 - [ ] finish paths
