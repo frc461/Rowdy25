@@ -16,12 +16,17 @@
     },
     {
       "anchor": {
-        "x": 1.1487115991084047,
-        "y": 7.018691140600368
+        "x": 1.2107581967213117,
+        "y": 6.991956967213114
       },
       "prevControl": {
+<<<<<<< Updated upstream
         "x": 2.298929794520548,
         "y": 7.157855308219178
+=======
+        "x": 1.6397435154211262,
+        "y": 6.28968277866754
+>>>>>>> Stashed changes
       },
       "nextControl": null,
       "isLocked": false,
@@ -49,7 +54,7 @@
   },
   "goalEndState": {
     "velocity": 0.0,
-    "rotation": -54.0
+    "rotation": 125.52515775401355
   },
   "reversed": false,
   "folder": null,
