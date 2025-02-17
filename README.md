@@ -40,6 +40,8 @@ Monday, 2/17/2025 to test:
 - [ ] Redo L4 preset as needed
 - [ ] Test localization trust filter
 - [ ] Retest pathfinding to reef, taking into account tolerances and pids
+- [ ] Preliminary auto things
+- [ ] Decide on starting heading of robot
 
 Monday, 2/17/2025 software only:
 - [ ] finish paths
