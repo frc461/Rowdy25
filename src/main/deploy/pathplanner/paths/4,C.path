@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.560829500249914,
-        "y": 6.133313575950829
+        "x": 7.58502785011574,
+        "y": 6.192397280092592
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.1028688524590162,
-        "y": 6.955993852459016
+        "x": 8.58502785011574,
+        "y": 6.192397280092592
       },
       "isLocked": false,
       "linkedName": "4"
@@ -20,13 +20,8 @@
         "y": 2.9599604625195988
       },
       "prevControl": {
-<<<<<<< Updated upstream
-        "x": 2.5150639874246474,
-        "y": 3.2246604726009327
-=======
-        "x": 2.109836065573771,
-        "y": 3.203842213114754
->>>>>>> Stashed changes
+        "x": 5.621326316550925,
+        "y": 0.7572497106481482
       },
       "nextControl": null,
       "isLocked": false,
@@ -38,8 +33,8 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "prepare",
-      "waypointRelativePos": 0.5,
+      "name": "intake",
+      "waypointRelativePos": 0.5930016063084111,
       "endWaypointRelativePos": null,
       "command": null
     }
