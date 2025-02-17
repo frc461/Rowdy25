@@ -34,7 +34,7 @@
   "eventMarkers": [
     {
       "name": "outtake",
-      "waypointRelativePos": 0.5,
+      "waypointRelativePos": 0.09907810553363787,
       "endWaypointRelativePos": null,
       "command": null
     }
