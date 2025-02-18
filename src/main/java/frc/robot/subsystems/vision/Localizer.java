@@ -109,6 +109,12 @@ public class Localizer {
         return getTranslationToNearestBranch().getAngle().getDegrees();
     }
 
+    public boolean atBranch() {
+        return getStrategyPose().getTranslation().getDistance(
+                FieldUtil.Reef.getNearestRobotPoseAtBranch(getStrategyPose()).getTranslation()
+        ) < Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_ACCEPT;
+    }
+
     public Translation2d getTranslationToNearestAlgaeScoringLocation() {
         Pose2d currentPose = getStrategyPose();
         Translation2d tagTranslation = FieldUtil.AlgaeScoring.getNearestAlgaeScoringTagPose(currentPose).getTranslation();

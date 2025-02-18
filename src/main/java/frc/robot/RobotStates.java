@@ -254,6 +254,8 @@ public class RobotStates {
                         .andThen(elevator::setL1CoralState)
                         .andThen(new WaitUntilCommand(elevator::nearTarget))
                         .andThen(wrist::setL1CoralState)
+                        .andThen(new WaitUntilCommand(() -> atState.getAsBoolean() && swerve.localizer.atBranch()))
+                        .andThen(this::setIntakeOutState)
                         .until(() -> !l1CoralState.getAsBoolean())
         );
 
@@ -266,6 +268,8 @@ public class RobotStates {
                         .andThen(elevator::setL2CoralState)
                         .andThen(new WaitUntilCommand(elevator::nearTarget))
                         .andThen(wrist::setL2CoralState)
+                        .andThen(new WaitUntilCommand(() -> atState.getAsBoolean() && swerve.localizer.atBranch()))
+                        .andThen(this::setIntakeOutState)
                         .until(() -> !l2CoralState.getAsBoolean())
         );
 
@@ -278,6 +282,8 @@ public class RobotStates {
                         .andThen(elevator::setL3CoralState)
                         .andThen(new WaitUntilCommand(elevator::nearTarget))
                         .andThen(wrist::setL3CoralState)
+                        .andThen(new WaitUntilCommand(() -> atState.getAsBoolean() && swerve.localizer.atBranch()))
+                        .andThen(this::setIntakeOutState)
                         .until(() -> !l3CoralState.getAsBoolean())
         );
 
@@ -290,6 +296,8 @@ public class RobotStates {
                         .andThen(elevator::setL4CoralState)
                         .andThen(new WaitUntilCommand(elevator::nearTarget))
                         .andThen(wrist::setL4CoralState)
+                        .andThen(new WaitUntilCommand(() -> atState.getAsBoolean() && swerve.localizer.atBranch()))
+                        .andThen(this::setOuttakeState)
                         .until(() -> !l4CoralState.getAsBoolean())
         );
 

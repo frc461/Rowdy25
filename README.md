@@ -39,8 +39,9 @@ Tuesday, 2/18/2025 to test:
 - [ ] Faster wrist
 - [ ] Redo L4 preset as needed
 - [ ] Test localization trust filter
-- [ ] Retest pathfinding to reef, taking into account tolerances and pids, test faster debounce
-- [ ] If works, then test auto-align in superstructure branch (merge auto-paths testing into superstructure)
+- [ ] Retest pathfinding to reef, taking into account tolerances and pids, test faster debounce (try no pid but constant slow velocity)
+   - [ ] If works, then test auto-align in superstructure branch (merge auto-paths testing into superstructure)
+   - [ ] If that works, then implement auto-align for all other states
 - [ ] Test multiple chooser
 - [ ] Preliminary auto things
 
@@ -52,6 +53,7 @@ Tuesday, 2/18/2025 software only:
 
 Comp bot/later:
 - [ ] Tune Canandcolor for intake (both coral & algae)
+- [ ] Re-add automatic intake logic
 - [ ] Implement climbing
 - [ ] SysID for elevator, pivot, wrist
 - [ ] Fine tune state transitions for efficiency

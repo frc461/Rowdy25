@@ -12,7 +12,7 @@ public class IntakeCommand extends Command {
     }
 
     @Override
-    public void execute() {
+    public void execute() { // TODO WAIT (AUTOMATION IS READY): RE-ADD AUTOMATED CHECKS
         switch (intake.getState()) {
             case INTAKE:
                 intake.setIntakeSpeed(0.3);
@@ -21,7 +21,7 @@ public class IntakeCommand extends Command {
                 intake.setIntakeSpeed(0.5);
                 break;
             case OUTTAKE:
-                intake.setIntakeSpeed(-0.2);
+                intake.setIntakeSpeed(-0.2); // TODO SHOP: TRY FASTER OUTTAKE SPEED
                 break;
             case HAS_ALGAE:
                 intake.pulseIntake();
