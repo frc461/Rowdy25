@@ -205,8 +205,6 @@ public class RobotStates {
                         .andThen(elevator::setCoralStationState)
                         .andThen(new WaitUntilCommand(elevator::nearTarget))
                         .andThen(wrist::setCoralStationState)
-                        .andThen(new WaitUntilCommand(() -> intake.hasPartialCoral()))
-                        .andThen(intake::setSlowIntakeState) // TODO SHOP: TEST WITH AND WITHOUT PREVIOUS 2 LINES AND REMOVE IF THEY DO NOT HELP
                         .andThen(new WaitUntilCommand(() -> intake.hasAlgae() || intake.hasCoral()))
                         .andThen(this::setStowState)
                         .onlyIf(() -> !intake.hasAlgae() && !intake.hasCoral())
