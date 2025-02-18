@@ -2,7 +2,11 @@
   "robotWidth": 0.8255,
   "robotLength": 0.9779,
   "holonomicMode": true,
-  "pathFolders": [],
+  "pathFolders": [
+    "3. From Coral Station",
+    "1. Start",
+    "2. To Coral Station"
+  ],
   "autoFolders": [],
   "defaultMaxVel": 5.0,
   "defaultMaxAccel": 7.5,
