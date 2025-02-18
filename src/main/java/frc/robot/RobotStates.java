@@ -2,6 +2,7 @@ package frc.robot;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.StringPublisher;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
@@ -199,6 +200,7 @@ public class RobotStates {
 
         coralStationState.onTrue(
                 new InstantCommand(swerve::setCoralStationHeadingMode)
+                        .unless(DriverStation::isAutonomousEnabled)
                         .andThen(intake::setIntakeState)
                         .andThen(pivot::setCoralStationState)
                         .andThen(new WaitUntilCommand(pivot::nearTarget))
@@ -247,6 +249,7 @@ public class RobotStates {
 
         l1CoralState.onTrue(
                 new InstantCommand(swerve::setBranchHeadingMode)
+                        .unless(DriverStation::isAutonomousEnabled)
                         .andThen(intake::setIdleState)
                         .andThen(transition())
                         .andThen(pivot::setL1CoralState)
@@ -259,6 +262,7 @@ public class RobotStates {
 
         l2CoralState.onTrue(
                 new InstantCommand(swerve::setBranchHeadingMode)
+                        .unless(DriverStation::isAutonomousEnabled)
                         .andThen(intake::setIdleState)
                         .andThen(transition())
                         .andThen(pivot::setL2CoralState)
@@ -271,6 +275,7 @@ public class RobotStates {
 
         l3CoralState.onTrue(
                 new InstantCommand(swerve::setBranchHeadingMode)
+                        .unless(DriverStation::isAutonomousEnabled)
                         .andThen(intake::setIdleState)
                         .andThen(transition())
                         .andThen(pivot::setL3CoralState)
@@ -283,6 +288,7 @@ public class RobotStates {
 
         l4CoralState.onTrue(
                 new InstantCommand(swerve::setBranchHeadingMode)
+                        .unless(DriverStation::isAutonomousEnabled)
                         .andThen(intake::setIdleState)
                         .andThen(transition())
                         .andThen(pivot::setL4CoralState)
