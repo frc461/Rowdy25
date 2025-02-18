@@ -10,6 +10,8 @@ import com.reduxrobotics.canand.CanandEventLoop;
 import com.reduxrobotics.sensors.canandcolor.Canandcolor;
 import com.reduxrobotics.sensors.canandcolor.ColorPeriod;
 import com.reduxrobotics.sensors.canandcolor.ProximityPeriod;
+
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -23,6 +25,7 @@ public class Intake extends SubsystemBase {
         IDLE,
         HAS_ALGAE,
         INTAKE,
+        SLOW_INTAKE, //TODO SHOP: TEST AND REMOVE IF USELESS
         INTAKE_OUT,
         OUTTAKE
     }
@@ -31,6 +34,7 @@ public class Intake extends SubsystemBase {
 
     private final TalonFX motor;
     private final Canandcolor canandcolor;
+    private final DigitalInput beamBreak;
     private final Timer pulseTimer = new Timer();
 
     private final IntakeTelemetry intakeTelemetry = new IntakeTelemetry(this);
@@ -59,6 +63,7 @@ public class Intake extends SubsystemBase {
                         .setDigoutFramePeriod(0.02)
         );
         canandcolor.setLampLEDBrightness(1.0);
+        beamBreak = new DigitalInput(Constants.IntakeConstants.BEAM_BREAK_ID);
         currentState = State.IDLE;
         pulseTimer.start();
     }
@@ -75,14 +80,22 @@ public class Intake extends SubsystemBase {
         return canandcolor.getProximity();
     }
 
-    public boolean hasCoral() {
-        return getProximity() < 0.05;
+    public boolean getBeamBroken() {
+        return !beamBreak.get();
     }
+
+    public boolean hasCoral() {
+        return getBeamBroken();
+    }
+
+    public boolean hasPartialCoral() {
+        return getProximity() < 0.05;
+    } //TODO SHOP: TEST AND REMOVE IF USELESS
 
     public boolean hasAlgae() {
         return canandcolor.getColor().toWpilibColor().equals(Color.kAqua); // TODO SHOP: TUNE THIS
     }
-
+ 
     public boolean atIdleState() {
         return currentState == State.IDLE;
     }
@@ -107,6 +120,10 @@ public class Intake extends SubsystemBase {
         setState(State.INTAKE);
     }
 
+    public void setSlowIntakeState() {
+        setState(State.SLOW_INTAKE);
+    }
+
     public void setIntakeOutState() {
         setState(State.INTAKE_OUT);
     }
@@ -114,8 +131,6 @@ public class Intake extends SubsystemBase {
     public void setOuttakeState() {
         setState(State.OUTTAKE);
     }
-
-
 
     public void setIntakeSpeed(double speed) {
         motor.set(speed);

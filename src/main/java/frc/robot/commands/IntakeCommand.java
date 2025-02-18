@@ -20,6 +20,9 @@ public class IntakeCommand extends Command {
             case INTAKE_OUT:
                 intake.setIntakeSpeed(0.5);
                 break;
+            case SLOW_INTAKE:
+                intake.setIntakeSpeed(0.1); //TODO SHOP: TUNE THIS?
+                break;
             case OUTTAKE:
                 intake.setIntakeSpeed(-0.2); // TODO SHOP: TRY FASTER OUTTAKE SPEED
                 break;
