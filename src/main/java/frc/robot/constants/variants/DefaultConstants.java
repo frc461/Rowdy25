@@ -234,6 +234,7 @@ public final class DefaultConstants {
     public final static class IntakeConstants {
         public static final int MOTOR_ID = 41;
         public static final int SENSOR_ID = 42;
+        public static final int BEAMBREAK_ID = 1;
         public static final double CURRENT_LIMIT = 40;
         public static final InvertedValue MOTOR_INVERT = InvertedValue.Clockwise_Positive;
         public static final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Coast;
@@ -308,7 +309,7 @@ public final class DefaultConstants {
 
         // encoder config
         public static final int ENCODER_ID = 62;
-        public static final double ENCODER_ABSOLUTE_OFFSET =  0.3986850313;
+        public static final double ENCODER_ABSOLUTE_OFFSET =  0.1047397188;
         public static final SensorDirectionValue ENCODER_INVERT = SensorDirectionValue.Clockwise_Positive;
 
         // pid & tolerance // TODO SHOP: RETUNE FEEDFORWARD/FEEDBACK

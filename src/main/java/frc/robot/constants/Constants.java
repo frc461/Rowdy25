@@ -191,6 +191,7 @@ public final class Constants {
         // basic configs
         public static int MOTOR_ID;
         public static int SENSOR_ID;
+        public static int BEAMBREAK_ID;
         public static double CURRENT_LIMIT;
         public static InvertedValue MOTOR_INVERT;
         public static NeutralModeValue NEUTRAL_MODE;

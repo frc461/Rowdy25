@@ -10,6 +10,7 @@ import com.reduxrobotics.canand.CanandEventLoop;
 import com.reduxrobotics.sensors.canandcolor.Canandcolor;
 import com.reduxrobotics.sensors.canandcolor.ColorPeriod;
 import com.reduxrobotics.sensors.canandcolor.ProximityPeriod;
+import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -31,6 +32,7 @@ public class Intake extends SubsystemBase {
 
     private final TalonFX motor;
     private final Canandcolor canandcolor;
+    private final DigitalOutput beamBreak;
     private final Timer pulseTimer = new Timer();
 
     private final IntakeTelemetry intakeTelemetry = new IntakeTelemetry(this);
@@ -59,6 +61,7 @@ public class Intake extends SubsystemBase {
                         .setDigoutFramePeriod(0.02)
         );
         canandcolor.setLampLEDBrightness(1.0);
+        beamBreak = new DigitalOutput(Constants.IntakeConstants.BEAMBREAK_ID);
         currentState = State.IDLE;
         pulseTimer.start();
     }
@@ -76,7 +79,7 @@ public class Intake extends SubsystemBase {
     }
 
     public boolean hasCoral() {
-        return getProximity() < 0.05;
+        return !beamBreak.get();
     }
 
     public boolean hasAlgae() {
