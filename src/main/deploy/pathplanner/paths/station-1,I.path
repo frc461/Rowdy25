@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.655783834680144,
-        "y": 7.413622777716651
+        "x": 2.779751712328767,
+        "y": 6.947495719178082
       },
       "isLocked": false,
       "linkedName": "station-1"
@@ -20,8 +20,8 @@
         "y": 5.081679537480401
       },
       "prevControl": {
-        "x": 5.442758625902879,
-        "y": 5.755482705883179
+        "x": 5.213912671232877,
+        "y": 6.151134417808219
       },
       "nextControl": null,
       "isLocked": false,
@@ -34,7 +34,7 @@
   "eventMarkers": [
     {
       "name": "outtake",
-      "waypointRelativePos": 0.6113098714953271,
+      "waypointRelativePos": 0.30169491525423753,
       "endWaypointRelativePos": null,
       "command": null
     }

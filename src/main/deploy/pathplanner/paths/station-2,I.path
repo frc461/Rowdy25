@@ -8,11 +8,27 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.099593575270814,
-        "y": -0.485110460032949
+        "x": 3.0051369863013697,
+        "y": 1.6734803082191787
       },
       "isLocked": false,
       "linkedName": "station-2"
+    },
+    {
+      "anchor": {
+        "x": 2.9300085616438354,
+        "y": 5.505029965753424
+      },
+      "prevControl": {
+        "x": 2.029281775490273,
+        "y": 4.519328954491036
+      },
+      "nextControl": {
+        "x": 3.7263698630136988,
+        "y": 6.37651969178082
+      },
+      "isLocked": false,
+      "linkedName": null
     },
     {
       "anchor": {
@@ -20,8 +36,8 @@
         "y": 5.081679537480401
       },
       "prevControl": {
-        "x": 1.0877575408334321,
-        "y": 8.114114071623916
+        "x": 5.394220890410959,
+        "y": 5.865646404109588
       },
       "nextControl": null,
       "isLocked": false,
@@ -34,7 +50,7 @@
   "eventMarkers": [
     {
       "name": "outtake",
-      "waypointRelativePos": 0.44304906542056105,
+      "waypointRelativePos": 0.6508474576271185,
       "endWaypointRelativePos": null,
       "command": null
     }
