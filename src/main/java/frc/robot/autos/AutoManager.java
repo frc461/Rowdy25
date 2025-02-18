@@ -91,13 +91,18 @@ public final class AutoManager {
 
         triggers.add(autoEventLooper.addTrigger(
                 "outtake",
-                () -> new WaitUntilCommand(robotStates.atState)
+                () -> new WaitUntilCommand(robotStates.atState) // TODO WAIT (PATHFINDING WORKS): JUST WAIT UNTIL STOW STATE IF AUTO SCORING WORKS (ALSO L140)
                         .andThen(robotStates::toggleAutoLevelCoralState)
                         .andThen(new WaitUntilCommand(robotStates.stowState))
         ));
 
         while (!scoringLocations.isEmpty()) {
             Pair<FieldUtil.Reef.ScoringLocation, FieldUtil.Reef.Level> currentScoringLocation = scoringLocations.removeFirst();
+
+            if (scoringLocations.isEmpty()) {
+                break;
+            }
+
             Pair<FieldUtil.Reef.ScoringLocation, FieldUtil.Reef.Level> nextScoringLocation = scoringLocations.getFirst();
             String nearestCoralStation = getMostEfficientCoralStation(
                     currentScoringLocation.getFirst().pose,
@@ -146,19 +151,21 @@ public final class AutoManager {
         autoEventLooper.active().onTrue(triggers.get(0).cmd());
 
         while (!triggers.isEmpty()) {
-            triggers.remove(0).done().onTrue(triggers.isEmpty() ? Commands.none() : triggers.get(0).cmd());
+            AutoTrigger currentTrigger = triggers.remove(0);
+            currentTrigger.done().onTrue(triggers.isEmpty() ? Commands.none() : triggers.get(0).cmd());
         }
 
         return autoEventLooper;
     }
 
     private String getMostEfficientCoralStation(Pose2d currentLocation, Pose2d nextLocation) {
+        List<FieldUtil.AprilTag> tags = FieldUtil.CoralStation.getCoralStationTags();
         double station1TotalDistance =
-                currentLocation.getTranslation().getDistance(FieldUtil.CoralStation.getCoralStationTags().get(0).pose2d.getTranslation())
-                + nextLocation.getTranslation().getDistance(FieldUtil.CoralStation.getCoralStationTags().get(0).pose2d.getTranslation());
+                currentLocation.getTranslation().getDistance(tags.get(0).pose2d.getTranslation())
+                + nextLocation.getTranslation().getDistance(tags.get(0).pose2d.getTranslation());
         double station2TotalDistance =
-                currentLocation.getTranslation().getDistance(FieldUtil.CoralStation.getCoralStationTags().get(1).pose2d.getTranslation())
-                + nextLocation.getTranslation().getDistance(FieldUtil.CoralStation.getCoralStationTags().get(1).pose2d.getTranslation());
+                currentLocation.getTranslation().getDistance(tags.get(1).pose2d.getTranslation())
+                + nextLocation.getTranslation().getDistance(tags.get(1).pose2d.getTranslation());
         return station1TotalDistance < station2TotalDistance ? "station-1" : "station-2";
     }
 }
