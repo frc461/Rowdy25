@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.600204918032786,
-        "y": 4.0549692622950815
+        "x": 7.152226027397259,
+        "y": 4.04753852739726
       },
       "prevControl": null,
       "nextControl": {
-        "x": 8.043208411714222,
-        "y": 4.046421300962942
+        "x": 6.7793755614192674,
+        "y": 3.9950307377049183
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "3"
     },
     {
       "anchor": {
-        "x": 5.897950819670012,
-        "y": 3.85117827869076
+        "x": 5.809996,
+        "y": 3.8564888326000006
       },
       "prevControl": {
-        "x": 6.135500784615329,
-        "y": 3.929088574252249
+        "x": 6.162730111836838,
+        "y": 3.9025922319914326
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "G"
     }
   ],
   "rotationTargets": [],
@@ -34,7 +34,7 @@
   "eventMarkers": [
     {
       "name": "outtake",
-      "waypointRelativePos": 0,
+      "waypointRelativePos": 0.050847457627118654,
       "endWaypointRelativePos": null,
       "command": null
     }
