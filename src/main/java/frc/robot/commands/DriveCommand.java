@@ -4,9 +4,12 @@ import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.drivetrain.Swerve;
+import frc.robot.util.FieldUtil;
 import frc.robot.util.VisionUtil;
 
 import java.util.function.BooleanSupplier;
@@ -16,6 +19,7 @@ import java.util.function.Supplier;
 public class DriveCommand extends Command {
     private final Swerve swerve;
     private final SwerveRequest.FieldCentric fieldCentric;
+    private final PIDController translationController;
     private final PIDController yawController;
     private final PIDController objectDetectionController;
     private final PIDController headingController;
@@ -44,6 +48,12 @@ public class DriveCommand extends Command {
         this.swerve = swerve;
         this.fieldCentric = fieldCentric;
 
+        translationController = new PIDController(
+                Constants.SwerveConstants.TRANSLATION_ALIGNMENT_CONTROLLER_P,
+                0,
+                Constants.SwerveConstants.TRANSLATION_ALIGNMENT_CONTROLLER_D
+        );
+
         yawController = new PIDController(
                 Constants.SwerveConstants.ANGULAR_POSITION_P,
                 0,
@@ -64,6 +74,7 @@ public class DriveCommand extends Command {
                 0
         );
         headingController.enableContinuousInput(Constants.SwerveConstants.ANGULAR_MINIMUM_ANGLE, Constants.SwerveConstants.ANGULAR_MAXIMUM_ANGLE);
+
         this.straight = straight;
         this.strafe = strafe;
         this.rot = () -> rotRight.getAsDouble() - rotLeft.getAsDouble();
@@ -79,17 +90,20 @@ public class DriveCommand extends Command {
     public void execute() {
         updateMode();
 
+        Pose2d currentPose = swerve.localizer.getStrategyPose();
+        double currentRotDeg = currentPose.getRotation().getDegrees();
+
         swerve.consistentHeading = driveMode.get() == Swerve.DriveMode.TRANSLATING
                 ? swerve.consistentHeading
-                : swerve.localizer.getStrategyPose().getRotation().getDegrees();
+                : currentRotDeg;
 
         swerve.setControl(
                 fieldCentric.withDeadband(Constants.MAX_CONTROLLED_VEL.apply(elevatorHeight.getAsDouble()) * Constants.DEADBAND)
                         .withForwardPerspective(SwerveRequest.ForwardPerspectiveValue.OperatorPerspective)
                         .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
-                        .withVelocityX(determineTranslationalRate(-straight.getAsDouble()))
-                        .withVelocityY(determineTranslationalRate(-strafe.getAsDouble()))
-                        .withRotationalRate(determineRotationalRate())
+                        .withVelocityX(determineXRate(-straight.getAsDouble(), currentPose))
+                        .withVelocityY(determineYRate(-strafe.getAsDouble(), currentPose))
+                        .withRotationalRate(determineRotationalRate(currentRotDeg))
         );
     }
 
@@ -107,10 +121,21 @@ public class DriveCommand extends Command {
         }
     }
 
-    private double determineTranslationalRate(double axis) {
+    private double determineXRate(double axis, Pose2d currentPose) {
         return switch (driveMode.get()) {
-            case BRANCH_HEADING, REEF_TAG_HEADING, CORAL_STATION_HEADING, PROCESSOR_HEADING, NET_HEADING ->
+            case REEF_TAG_HEADING, CORAL_STATION_HEADING, PROCESSOR_HEADING, NET_HEADING ->
                 MathUtil.clamp(axis * Constants.MAX_CONTROLLED_VEL.apply(elevatorHeight.getAsDouble()), -1.0, 1.0);
+            case BRANCH_HEADING -> {
+                Translation2d nearestBranchTranslation = FieldUtil.Reef.getNearestRobotPoseAtBranch(currentPose).getTranslation();
+                double xError = currentPose.getX() - nearestBranchTranslation.getX();
+                yield autoHeading.getAsBoolean() // TODO SHOP: TEST AUTO ALIGNING WITH REEF WHEN PREPARING TO SCORE
+                        && currentPose.getTranslation().getDistance(nearestBranchTranslation) < Constants.AutoConstants.DISTANCE_TOLERANCE_TO_DRIVE_INTO
+                        ? Math.min(
+                                1.0,
+                                translationController.calculate(xError, 0) * Constants.MAX_CONTROLLED_VEL.apply(elevatorHeight.getAsDouble())
+                        )
+                        : axis * Constants.MAX_CONTROLLED_VEL.apply(elevatorHeight.getAsDouble());
+            }
             case OBJECT_HEADING ->
                 VisionUtil.Photon.Color.hasTargets()
                         ? MathUtil.clamp(axis * Constants.MAX_CONTROLLED_VEL.apply(elevatorHeight.getAsDouble()), -1.0, 1.0)
@@ -119,23 +144,46 @@ public class DriveCommand extends Command {
         };
     }
 
-    private double determineRotationalRate() {
+    private double determineYRate(double axis, Pose2d currentPose) {
+        return switch (driveMode.get()) {
+            case REEF_TAG_HEADING, CORAL_STATION_HEADING, PROCESSOR_HEADING, NET_HEADING ->
+                MathUtil.clamp(axis * Constants.MAX_CONTROLLED_VEL.apply(elevatorHeight.getAsDouble()), -1.0, 1.0);
+            case BRANCH_HEADING -> {
+                Translation2d nearestBranchTranslation = FieldUtil.Reef.getNearestRobotPoseAtBranch(currentPose).getTranslation();
+                double yError = currentPose.getY() - nearestBranchTranslation.getY();
+                yield autoHeading.getAsBoolean()
+                        && currentPose.getTranslation().getDistance(nearestBranchTranslation) < Constants.AutoConstants.DISTANCE_TOLERANCE_TO_DRIVE_INTO
+                        ? Math.min(
+                                1.0,
+                                translationController.calculate(yError, 0) * Constants.MAX_CONTROLLED_VEL.apply(elevatorHeight.getAsDouble())
+                        )
+                        : axis * Constants.MAX_CONTROLLED_VEL.apply(elevatorHeight.getAsDouble());
+            }
+            case OBJECT_HEADING ->
+                VisionUtil.Photon.Color.hasTargets()
+                        ? MathUtil.clamp(axis * Constants.MAX_CONTROLLED_VEL.apply(elevatorHeight.getAsDouble()), -1.0, 1.0)
+                        : axis * Constants.MAX_CONTROLLED_VEL.apply(elevatorHeight.getAsDouble());
+            default -> axis * Constants.MAX_CONTROLLED_VEL.apply(elevatorHeight.getAsDouble());
+        };
+    }
+
+    private double determineRotationalRate(double currentRotDeg) {
         return switch (driveMode.get()) {
             case IDLE, ROTATING -> -rot.getAsDouble() * Constants.MAX_CONTROLLED_ANGULAR_VEL;
             case FAST_ROTATING -> -rot.getAsDouble() * Constants.MAX_ANGULAR_VEL;
             case TRANSLATING -> headingController.calculate(
-                    swerve.localizer.getStrategyPose().getRotation().getDegrees(),
+                    currentRotDeg,
                     swerve.consistentHeading
             ) * Constants.MAX_CONTROLLED_ANGULAR_VEL;
             case BRANCH_HEADING -> autoHeading.getAsBoolean()
                     ? yawController.calculate(
-                            swerve.localizer.getStrategyPose().getRotation().getDegrees(),
+                            currentRotDeg,
                             swerve.localizer.getNearestReefSideHeading()
                     ) * Constants.MAX_CONTROLLED_ANGULAR_VEL
                     : -rot.getAsDouble() * Constants.MAX_CONTROLLED_ANGULAR_VEL;
             case REEF_TAG_HEADING -> autoHeading.getAsBoolean()
                     ? yawController.calculate(
-                            swerve.localizer.getStrategyPose().getRotation().getDegrees(),
+                            currentRotDeg,
                             swerve.localizer.getAngleToNearestReefSide()
                     ) * Constants.MAX_CONTROLLED_ANGULAR_VEL
                     : -rot.getAsDouble() * Constants.MAX_CONTROLLED_ANGULAR_VEL;
@@ -147,19 +195,19 @@ public class DriveCommand extends Command {
                     : -rot.getAsDouble() * Constants.MAX_CONTROLLED_ANGULAR_VEL;
             case CORAL_STATION_HEADING -> autoHeading.getAsBoolean()
                     ? yawController.calculate(
-                            swerve.localizer.getStrategyPose().getRotation().getDegrees(),
+                            currentRotDeg,
                             swerve.localizer.getNearestCoralStationHeading()
                     ) * Constants.MAX_CONTROLLED_ANGULAR_VEL
                     : -rot.getAsDouble() * Constants.MAX_CONTROLLED_ANGULAR_VEL;
             case PROCESSOR_HEADING -> autoHeading.getAsBoolean()
                     ? yawController.calculate(
-                            swerve.localizer.getStrategyPose().getRotation().getDegrees(),
+                            currentRotDeg,
                             swerve.localizer.getProcessorScoringHeading()
                     ) * Constants.MAX_CONTROLLED_ANGULAR_VEL
                     : -rot.getAsDouble() * Constants.MAX_CONTROLLED_ANGULAR_VEL;
             case NET_HEADING -> autoHeading.getAsBoolean()
                     ? yawController.calculate(
-                            swerve.localizer.getStrategyPose().getRotation().getDegrees(),
+                            currentRotDeg,
                             swerve.localizer.getNetScoringHeading()
                     ) * Constants.MAX_CONTROLLED_ANGULAR_VEL
                     : -rot.getAsDouble() * Constants.MAX_CONTROLLED_ANGULAR_VEL;

@@ -34,17 +34,17 @@ Saturday, 2/15/2025 to test:
 Saturday, 2/15/2025 software only:
 - [x] Auto - java structure (chooser), paths (pathmanager), commands
 
-Monday, 2/17/2025 to test:
+Tuesday, 2/18/2025 to test:
 - [ ] Fix pivot cancoder issues
 - [ ] Faster wrist
 - [ ] Redo L4 preset as needed
 - [ ] Test localization trust filter
 - [ ] Retest pathfinding to reef, taking into account tolerances and pids, test faster debounce
+- [ ] If works, then test auto-align in superstructure branch (merge auto-paths testing into superstructure)
 - [ ] Test multiple chooser
 - [ ] Preliminary auto things
-- [ ] Decide on starting heading of robot for autos
 
-Monday, 2/17/2025 software only:
+Tuesday, 2/18/2025 software only:
 - [ ] finish paths
 - [ ] check for correct event markers & tune locations of each marker
 - [ ] perfect/tune the control points (consistent in transitioning between paths)
