@@ -4,28 +4,28 @@
     {
       "anchor": {
         "x": 7.152,
-        "y": 7.263700994285376
+        "y": 7.271
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.384087303496236,
-        "y": 7.3566282968172265
+        "x": 7.122174657534247,
+        "y": 6.443921437221474
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "5"
     },
     {
       "anchor": {
-        "x": 5.873975409836065,
-        "y": 4.162858606557377
+        "x": 5.809996,
+        "y": 4.185151167400001
       },
       "prevControl": {
-        "x": 5.626135102045394,
-        "y": 3.786824663277226
+        "x": 6.4159674657534245,
+        "y": 4.8138484589041095
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "H"
     }
   ],
   "rotationTargets": [],
@@ -34,7 +34,7 @@
   "eventMarkers": [
     {
       "name": "outtake",
-      "waypointRelativePos": 0,
+      "waypointRelativePos": 0.1966101694915254,
       "endWaypointRelativePos": null,
       "command": null
     }
