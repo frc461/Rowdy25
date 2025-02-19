@@ -309,7 +309,7 @@ public final class DefaultConstants {
 
         // encoder config
         public static final int ENCODER_ID = 62;
-        public static final double ENCODER_ABSOLUTE_OFFSET =  0.1047397188;
+        public static final double ENCODER_ABSOLUTE_OFFSET =  0.10279527436;
         public static final SensorDirectionValue ENCODER_INVERT = SensorDirectionValue.Clockwise_Positive;
 
         // pid & tolerance // TODO SHOP: RETUNE FEEDFORWARD/FEEDBACK
@@ -326,8 +326,8 @@ public final class DefaultConstants {
 
         // presets // TODO SHOP: RETUNE PRESETS
         public static final Function<Double, Double> LOWER_LIMIT = (pivotPosition) -> (double) (pivotPosition < 45 ? 125 : 45);
-        public static final Function<Double, Double> UPPER_LIMIT = (elevatorPosition) -> (double) (elevatorPosition > 3 ? 320 : 200);
-        public static final double STOW = 45;
+        public static final Function<Double, Double> UPPER_LIMIT = (elevatorPosition) -> (double) (elevatorPosition > 8 ? 295 : 160);
+        public static final double STOW = 65;
         public static final double CORAL_STATION = 109.7;
         public static final double GROUND_CORAL = 150;
         public static final double GROUND_ALGAE = 150;
