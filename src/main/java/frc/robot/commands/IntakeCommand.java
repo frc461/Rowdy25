@@ -30,12 +30,6 @@ public class IntakeCommand extends Command {
             case OUTTAKE:
                 intake.setIntakeSpeed(-0.5);
                 break;
-            case TRANSITION:
-                if (!intake.beamBreakBroken()) {
-                    intake.setIdleState(true);
-                }
-                intake.setIntakeSpeed(-0.05);
-                break;
             case HAS_ALGAE:
                 intake.pulseIntake();
                 break;

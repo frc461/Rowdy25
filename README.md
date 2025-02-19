@@ -34,24 +34,24 @@ Saturday, 2/15/2025 to test:
 Saturday, 2/15/2025 software only:
 - [x] Auto - java structure (chooser), paths (pathmanager), commands
 
-Tuesday, 2/18/2025 to test:
+Tuesday, Wednesday, 2/18-19/2025 to test:
 - [x] Fix pivot cancoder issues
 - [x] Reconfigure wrist cancoder
 - [x] Redo wrist presets as needed
 - [x] Fast wrist
 - [x] Intake
-- [ ] Test localization trust filter & cameras
-- [ ] Retest pathfinding to reef, taking into account tolerances and pids, test faster debounce (try no pid but constant slow velocity)
+- [x] Test localization trust filter & cameras
+- [ ] change tolerances and pids and retest pathfinding to reef (try no pid but constant slow velocity)
    - [ ] If works, then test auto-align in superstructure branch (merge auto-paths testing into superstructure)
    - [ ] If that works, then implement auto-align for all other states
 - [ ] Test multiple chooser
 - [ ] Preliminary auto things
 
 Tuesday, 2/18/2025 software only:
-- [ ] finish paths
-- [ ] check for correct event markers & tune locations of each marker
-- [ ] perfect/tune the control points (consistent in transitioning between paths)
-- [ ] coral station optimization
+- [x] finish paths
+- [x] check for correct event markers & tune locations of each marker
+- [x] perfect/tune the control points (consistent in transitioning between paths)
+- [x] coral station optimization
 
 Comp bot/later:
 - [ ] Tune Canandcolor for intake (both coral & algae)

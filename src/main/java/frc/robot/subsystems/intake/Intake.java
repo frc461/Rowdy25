@@ -26,7 +26,6 @@ public class Intake extends SubsystemBase {
         HAS_ALGAE,
         INTAKE,
         INTAKE_OUT,
-        TRANSITION,
         OUTTAKE
     }
 
@@ -108,16 +107,12 @@ public class Intake extends SubsystemBase {
         currentState = newState;
     }
 
-    public void setIdleState(boolean override) {
+    public void setIdleState() {
         if (hasAlgae()) {
             setState(State.HAS_ALGAE);
-        } else if (getState() != State.TRANSITION || override) {
+        } else if (beamBreakBroken() || !hasCoral()) {
             setState(State.IDLE);
         }
-    }
-
-    public void setIdleState() {
-        setIdleState(false);
     }
 
     public void setIntakeState() {
@@ -130,10 +125,6 @@ public class Intake extends SubsystemBase {
 
     public void setOuttakeState() {
         setState(State.OUTTAKE);
-    }
-
-    public void setTransitionState() {
-        setState(State.TRANSITION);
     }
 
     public void setIntakeSpeed(double speed) {
