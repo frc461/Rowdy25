@@ -26,6 +26,7 @@ public class Intake extends SubsystemBase {
         HAS_ALGAE,
         INTAKE,
         INTAKE_OUT,
+        TRANSITION,
         OUTTAKE
     }
 
@@ -80,7 +81,15 @@ public class Intake extends SubsystemBase {
     }
 
     public boolean hasCoral() {
+        return !beamBreak.get() || getProximity() < 0.13;
+    }
+
+    public boolean beamBreakBroken() {
         return !beamBreak.get();
+    }
+
+    public boolean coralEntering() {
+        return getProximity() < 0.13;
     }
 
     public boolean hasAlgae() {
@@ -99,12 +108,16 @@ public class Intake extends SubsystemBase {
         currentState = newState;
     }
 
-    public void setIdleState() {
+    public void setIdleState(boolean override) {
         if (hasAlgae()) {
             setState(State.HAS_ALGAE);
-        } else {
+        } else if (getState() != State.TRANSITION || override) {
             setState(State.IDLE);
         }
+    }
+
+    public void setIdleState() {
+        setIdleState(false);
     }
 
     public void setIntakeState() {
@@ -119,7 +132,9 @@ public class Intake extends SubsystemBase {
         setState(State.OUTTAKE);
     }
 
-
+    public void setTransitionState() {
+        setState(State.TRANSITION);
+    }
 
     public void setIntakeSpeed(double speed) {
         motor.set(speed);

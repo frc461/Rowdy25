@@ -35,10 +35,11 @@ Saturday, 2/15/2025 software only:
 - [x] Auto - java structure (chooser), paths (pathmanager), commands
 
 Tuesday, 2/18/2025 to test:
-- [ ] Fix pivot cancoder issues
-- [ ] Reconfigure wrist cancoder
-- [ ] Redo wrist presets as needed
-- [ ] Fast wrist
+- [x] Fix pivot cancoder issues
+- [x] Reconfigure wrist cancoder
+- [x] Redo wrist presets as needed
+- [x] Fast wrist
+- [x] Intake
 - [ ] Test localization trust filter & cameras
 - [ ] Retest pathfinding to reef, taking into account tolerances and pids, test faster debounce (try no pid but constant slow velocity)
    - [ ] If works, then test auto-align in superstructure branch (merge auto-paths testing into superstructure)

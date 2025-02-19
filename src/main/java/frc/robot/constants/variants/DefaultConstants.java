@@ -221,7 +221,7 @@ public final class DefaultConstants {
         public static final double CORAL_STATION = 0;
         public static final double GROUND_CORAL = 0;
         public static final double GROUND_ALGAE = 0;
-        public static final double L1_CORAL = 0;
+        public static final double L1_CORAL = 6.0;
         public static final double L2_CORAL = 0;
         public static final double L3_CORAL = 18.1;
         public static final double L4_CORAL = 41.5;
@@ -283,7 +283,7 @@ public final class DefaultConstants {
         public static final double CORAL_STATION = 50;
         public static final double GROUND_CORAL = 3.5;
         public static final double GROUND_ALGAE = 4.5;
-        public static final double L1_CORAL = 100.0;
+        public static final double L1_CORAL = 22.3;
         public static final double L2_CORAL = 100.0;
         public static final double L3_CORAL = 100.6;
         public static final double L4_CORAL = 90.5;
@@ -316,11 +316,11 @@ public final class DefaultConstants {
         public static final BiFunction<Double, Double, Double> G = (wristDeg, pivotDeg) -> 0.15 * Math.sin(Math.toRadians(wristDeg - (90 - pivotDeg)));
         public static final double V = 0.68 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps) -> V / (rotor rps)
         public static final double A = 0.025 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps^2) -> V / (rotor rps^2)
-        public static final double P = 0.2;
+        public static final double P = 0.35;
         public static final double I = 0.0;
         public static final double D = 0.0;
         public static final double EXPO_V = V / 0.8; // 80% of the actual max velocity, as it will allocate 1 / 0.8 = 1.25 times the voltage to 1 rps
-        public static final double EXPO_A = A / 0.025; // 2.5% of the actual max accel
+        public static final double EXPO_A = A / 0.05; // 2.5% of the actual max accel
         public static final double SAFE_TOLERANCE = 25.0;
         public static final double AT_TARGET_TOLERANCE = 2.5;
 
@@ -331,7 +331,7 @@ public final class DefaultConstants {
         public static final double CORAL_STATION = 125;
         public static final double GROUND_CORAL = 150;
         public static final double GROUND_ALGAE = 150;
-        public static final double L1_CORAL = 40;
+        public static final double L1_CORAL = 125;
         public static final double L2_CORAL = 40;
         public static final double L3_CORAL = 55;
         public static final double L4_CORAL = 290.5;
