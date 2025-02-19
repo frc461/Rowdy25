@@ -54,9 +54,9 @@ Tuesday, 2/18/2025 software only:
 - [x] coral station optimization
 
 Comp bot/later:
+- [x] Re-add automatic intake logic
 - [ ] Tune Canandcolor for intake (both coral & algae)
-- [ ] Re-add automatic intake logic
 - [ ] Implement climbing
-- [ ] SysID for elevator, pivot, wrist
-- [ ] Fine tune state transitions for efficiency
-- [ ] Test ground intake/object detection
+- [ ] SysID for elevator, pivot, wrist comp bot
+- [x] Fine tune state transitions for efficiency
+- [ ] Test ground intake/object detection (after mishiwaka)
