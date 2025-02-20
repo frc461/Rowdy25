@@ -210,7 +210,7 @@ public final class DefaultConstants {
         public static final double I = 0.0;
         public static final double D = 0.025;
         public static final double EXPO_V = V / 0.95; // 60% of the actual max velocity, as it will allocate 1 / 0.8 = 1.25 times the voltage to 1 rps
-        public static final double EXPO_A = A / 0.04; // 1% of the actual max accel
+        public static final double EXPO_A = A / 0.01; // 1% of the actual max accel
         public static final double SAFE_TOLERANCE = 5.0;
         public static final double AT_TARGET_TOLERANCE = 2.5;
 
@@ -327,7 +327,7 @@ public final class DefaultConstants {
         // presets // TODO SHOP: RETUNE PRESETS
         public static final Function<Double, Double> LOWER_LIMIT = (pivotPosition) -> (double) (pivotPosition < 45 ? 125 : 45);
         public static final Function<Double, Double> UPPER_LIMIT = (elevatorPosition) -> (double) (elevatorPosition > 8 ? 295 : 160);
-        public static final double STOW = 65;
+        public static final double STOW = 125;
         public static final double CORAL_STATION = 125;
         public static final double GROUND_CORAL = 150;
         public static final double GROUND_ALGAE = 150;

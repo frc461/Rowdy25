@@ -1,9 +1,6 @@
 package frc.robot.subsystems.intake;
 
-import com.ctre.phoenix6.configs.AudioConfigs;
-import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
-import com.ctre.phoenix6.configs.MotorOutputConfigs;
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.configs.*;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import com.reduxrobotics.canand.CanandEventLoop;
@@ -47,6 +44,8 @@ public class Intake extends SubsystemBase {
                         .withNeutralMode(Constants.IntakeConstants.NEUTRAL_MODE))
                 .withCurrentLimits(new CurrentLimitsConfigs()
                         .withSupplyCurrentLimit(Constants.IntakeConstants.CURRENT_LIMIT))
+                .withVoltage(new VoltageConfigs().withPeakForwardVoltage(6.0)
+                        .withPeakReverseVoltage(6.0))
                 .withAudio(new AudioConfigs().withBeepOnConfig(false)
                         .withBeepOnBoot(false)
                         .withAllowMusicDurDisable(true)));
@@ -61,7 +60,7 @@ public class Intake extends SubsystemBase {
                         .setColorIntegrationPeriod(ColorPeriod.k25ms)
                         .setDigoutFramePeriod(0.02)
         );
-        canandcolor.setLampLEDBrightness(1.0);
+        canandcolor.setLampLEDBrightness(0.0);
         beamBreak = new DigitalInput(Constants.IntakeConstants.BEAMBREAK_ID);
         currentState = State.IDLE;
         pulseTimer.start();
@@ -80,15 +79,7 @@ public class Intake extends SubsystemBase {
     }
 
     public boolean hasCoral() {
-        return !beamBreak.get() || getProximity() < 0.13;
-    }
-
-    public boolean beamBreakBroken() {
         return !beamBreak.get();
-    }
-
-    public boolean coralEntering() {
-        return getProximity() < 0.13;
     }
 
     public boolean hasAlgae() {
@@ -110,7 +101,7 @@ public class Intake extends SubsystemBase {
     public void setIdleState() {
         if (hasAlgae()) {
             setState(State.HAS_ALGAE);
-        } else if (beamBreakBroken() || !hasCoral()) {
+        } else {
             setState(State.IDLE);
         }
     }

@@ -15,12 +15,8 @@ public class IntakeCommand extends Command {
     public void execute() {
         switch (intake.getState()) {
             case INTAKE:
-                if (intake.coralEntering()) {
-                    intake.setIntakeSpeed(0.15);
-                } else {
-                    intake.setIntakeSpeed(0.6);
-                }
-                if (intake.beamBreakBroken()) {
+                intake.setIntakeSpeed(0.35);
+                if (intake.hasCoral()) {
                     intake.setIdleState();
                 }
                 break;
