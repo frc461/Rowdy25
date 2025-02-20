@@ -81,30 +81,25 @@ public class MultipleChooser<V> implements Sendable, AutoCloseable { // TODO SHO
                 },
                 null
         );
-        builder.addStringArrayProperty(
+        builder.addStringProperty(
                 SELECTED,
                 () -> {
                     lock.lock();
                     try {
-                        if (selection.isEmpty()) {
-                            return defaultSelection.toArray(new String[0]);
+                        StringBuilder total = new StringBuilder();
+                        for (String value : selection) {
+                            total.append(value).append(", ");
                         }
-                        return selection.toArray(new String[0]);
+                        return total.substring(0, total.length() - 2);
                     } finally {
                         lock.unlock();
                     }
                 },
-                values -> {
+                value -> {
                     lock.lock();
                     try {
-                        for (String value : values) {
-                            if (selection.contains(value)) {
-                                selection.remove(value);
-                            } else {
-                                selection.add(value);
-                            }
-
-                        }
+                        selection.clear();
+                        selection.addAll(Arrays.asList(value.split(", ")));
                     } finally {
                         lock.unlock();
                     }
