@@ -80,8 +80,11 @@ public final class AutoManager {
                 firstPath,
                 () -> {
                     try {
+                        PathPlannerPath path = PathPlannerPath.fromPathFile(firstPath);
+
                         return new InstantCommand(() -> robotStates.setCurrentAutoLevel(firstScoringLocation.getSecond()))
-                                .andThen(AutoBuilder.followPath(PathPlannerPath.fromPathFile(firstPath)));
+                                .andThen(() -> AutoBuilder.resetOdom(path.getStartingHolonomicPose().orElse(Pose2d.kZero)))
+                                .andThen(AutoBuilder.followPath(path));
                     } catch (IOException | ParseException e) {
                         DriverStation.reportError("Failed to load path: " + e.getMessage(), e.getStackTrace());
                         return Commands.none();
