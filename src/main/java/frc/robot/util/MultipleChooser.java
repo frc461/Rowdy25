@@ -87,10 +87,13 @@ public class MultipleChooser<V> implements Sendable, AutoCloseable { // TODO SHO
                     lock.lock();
                     try {
                         StringBuilder total = new StringBuilder();
-                        for (String value : selection) {
-                            total.append(value).append(", ");
+                        if (!selection.isEmpty()) {
+                            for (String value : selection) {
+                                total.append(value).append(", ");
+                            }
+                            return total.substring(0, total.length() - 2);
                         }
-                        return total.substring(0, total.length() - 2);
+                        return "None selected";
                     } finally {
                         lock.unlock();
                     }
