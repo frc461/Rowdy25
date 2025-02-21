@@ -13,6 +13,7 @@ import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.PivotCommand;
 import frc.robot.commands.WristCommand;
 import frc.robot.constants.Constants;
+import frc.robot.subsystems.Lights;
 import frc.robot.subsystems.drivetrain.Swerve;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.intake.Intake;
@@ -79,8 +80,10 @@ public class RobotStates {
         currentState = State.STOW;
         currentAutoLevel = FieldUtil.Reef.Level.L2;
 
+        Lights.configureLights();
+
         Arrays.stream(State.values()).forEach(state -> stateChooser.addOption(state.name(), state));
-        stateChooser.onChange(state -> currentState = stateChooser.getSelected()); // TODO SHOP: TEST CHOOSER
+        stateChooser.onChange(state -> currentState = stateChooser.getSelected());
         SmartDashboard.putData("Robot State Chooser", stateChooser);
     }
 

@@ -1,10 +1,10 @@
-package frc.robot.util;
+package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.util.Color;
 
-public class Lights { 
+public class Lights {
 
     private static final AddressableLED lights = new AddressableLED(2);
     private static final AddressableLEDBuffer buffer = new AddressableLEDBuffer(12);

@@ -13,7 +13,6 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.autos.AutoManager;
 import frc.robot.constants.Constants;
 import frc.robot.util.SysID;
-import frc.robot.util.Lights;
 
 public class RobotContainer {
     /* Superstructure */
@@ -101,8 +100,6 @@ public class RobotContainer {
         robotStates.setDefaultCommands(driverXbox, opXbox);
         configurePathPlannerNamedCommands();
         configureButtonBindings();
-
-        Lights.configureLights();
 
         // DogLogOptions(BooleanSupplier ntPublish, boolean captureNt, boolean captureDs, boolean logExtras, boolean captureConsole, int logEntryQueueCapacity)
         DogLog.setOptions(new DogLogOptions(() -> false, false, true, true, false, 5000));

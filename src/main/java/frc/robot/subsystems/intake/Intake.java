@@ -8,12 +8,11 @@ import com.reduxrobotics.sensors.canandcolor.Canandcolor;
 import com.reduxrobotics.sensors.canandcolor.ColorPeriod;
 import com.reduxrobotics.sensors.canandcolor.ProximityPeriod;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-import frc.robot.util.Lights;
+import frc.robot.subsystems.Lights;
 
 import frc.robot.constants.Constants;
 
