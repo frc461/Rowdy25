@@ -210,7 +210,7 @@ public class RobotStates {
                         .andThen(elevator::setCoralStationState)
                         .andThen(new WaitUntilCommand(elevator::nearTarget))
                         .andThen(wrist::setCoralStationState)
-                        .andThen(new WaitUntilCommand(() -> intake.hasAlgae() || intake.hasCoral()))
+                        .andThen(new WaitUntilCommand(intake::atIdleState))
                         .andThen(this::setStowState)
                         .onlyIf(() -> !intake.hasAlgae() && !intake.hasCoral())
                         .until(() -> !coralStationState.getAsBoolean())
@@ -225,7 +225,7 @@ public class RobotStates {
                         .andThen(pivot::setGroundCoralState)
                         .andThen(new WaitUntilCommand(VisionUtil.Photon.Color::hasCoralTargets))
                         .andThen(swerve.directMoveToObject(
-                                () -> intake.hasAlgae() || intake.hasCoral(),
+                                () -> intake.hasAlgae() || intake.beamBreakBroken(),
                                 VisionUtil.Photon.Color.TargetClass.CORAL
                         ).asProxy())
                         .andThen(this::setStowState)
@@ -242,7 +242,7 @@ public class RobotStates {
                         .andThen(pivot::setGroundAlgaeState)
                         .andThen(new WaitUntilCommand(VisionUtil.Photon.Color::hasAlgaeTargets))
                         .andThen(swerve.directMoveToObject(
-                                () -> intake.hasAlgae() || intake.hasCoral(),
+                                () -> intake.hasAlgae() || intake.beamBreakBroken(),
                                 VisionUtil.Photon.Color.TargetClass.ALGAE
                         ).asProxy())
                         .andThen(this::setStowState)
@@ -311,7 +311,7 @@ public class RobotStates {
                         .andThen(elevator::setLowReefAlgaeState)
                         .andThen(new WaitUntilCommand(elevator::nearTarget))
                         .andThen(wrist::setLowReefAlgaeState)
-                        .andThen(new WaitUntilCommand(() -> intake.hasAlgae() || intake.hasCoral()))
+                        .andThen(new WaitUntilCommand(intake::atIdleState))
                         .andThen(this::setStowState)
                         .onlyIf(() -> !intake.hasAlgae() && !intake.hasCoral())
                         .until(() -> !lowReefAlgaeState.getAsBoolean())
@@ -326,7 +326,7 @@ public class RobotStates {
                         .andThen(elevator::setHighReefAlgaeState)
                         .andThen(new WaitUntilCommand(elevator::nearTarget))
                         .andThen(wrist::setHighReefAlgaeState)
-                        .andThen(new WaitUntilCommand(() -> intake.hasAlgae() || intake.hasCoral()))
+                        .andThen(new WaitUntilCommand(intake::atIdleState))
                         .andThen(this::setStowState)
                         .onlyIf(() -> !intake.hasAlgae() && !intake.hasCoral())
                         .until(() -> !highReefAlgaeState.getAsBoolean())

@@ -75,8 +75,12 @@ public class Intake extends SubsystemBase {
         return canandcolor.getProximity();
     }
 
-    public boolean hasCoral() {
+    public boolean beamBreakBroken() {
         return !beamBreak.get();
+    }
+
+    public boolean hasCoral() {
+        return beamBreakBroken() || getProximity() < 0.13;
     }
 
     public boolean hasAlgae() {
