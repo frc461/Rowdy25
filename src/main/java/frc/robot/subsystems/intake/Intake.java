@@ -44,8 +44,6 @@ public class Intake extends SubsystemBase {
                         .withNeutralMode(Constants.IntakeConstants.NEUTRAL_MODE))
                 .withCurrentLimits(new CurrentLimitsConfigs()
                         .withSupplyCurrentLimit(Constants.IntakeConstants.CURRENT_LIMIT))
-                .withVoltage(new VoltageConfigs().withPeakForwardVoltage(6.0)
-                        .withPeakReverseVoltage(6.0))
                 .withAudio(new AudioConfigs().withBeepOnConfig(false)
                         .withBeepOnBoot(false)
                         .withAllowMusicDurDisable(true)));
