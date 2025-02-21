@@ -12,7 +12,7 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 
 import java.util.List;
 
-public class VisionUtil {
+public final class VisionUtil {
     public static boolean highConfidenceEstimation() {
         return Limelight.isTagClear() && Photon.BW.isTagClear();
     }

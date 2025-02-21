@@ -5,20 +5,27 @@ import edu.wpi.first.networktables.StringPublisher;
 import frc.robot.constants.variants.DefaultConstants;
 import frc.robot.constants.variants.SimConstants;
 import frc.robot.constants.variants.TestConstants;
+import frc.robot.util.MacAddress;
 
 public enum RobotIdentity {
-    TEST,
-    ALPHA,
-    ROWDY,
-    SIM;
+    TEST("00-80-2F-18-50-1F"),
+    ALPHA("00-80-2F-34-07-F0"),
+    ROWDY("00-80-2F-33-9F-37"),
+    SIM("");
+
+    final String mac;
+    RobotIdentity(String mac) {
+        this.mac = mac;
+    }
 
     private static RobotIdentity getIdentity() {
-        return switch (MacAddress.getMACAddress()) {
-            case MacAddress.TEST -> TEST;
-            case MacAddress.ALPHA -> ALPHA;
-            case MacAddress.ROWDY -> ROWDY;
-            default -> SIM;
-        };
+        String mac = MacAddress.getMACAddress();
+        for (RobotIdentity identity : RobotIdentity.values()) {
+            if (identity.mac.equals(mac)) {
+                return identity;
+            }
+        }
+        return SIM;
     }
 
     public static void initializeConstants() {

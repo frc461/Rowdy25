@@ -3,7 +3,7 @@ package frc.robot.util;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 
-public class GravityGainsCalculator {
+public final class GravityGainsCalculator {
     private final Translation2d pivotAxisPosition;
     private final Translation2d wristAxisPosition;
     private final Translation2d wristAxisToZeroCoM;

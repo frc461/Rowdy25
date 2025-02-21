@@ -14,7 +14,7 @@ import java.util.*;
 
 import static edu.wpi.first.units.Units.Meters;
 
-public class FieldUtil {
+public final class FieldUtil {
     public static final AprilTagFieldLayout layout2025 = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeAndyMark);
     public static final double FIELD_LENGTH = layout2025.getFieldLength();
     public static final double FIELD_WIDTH = layout2025.getFieldWidth();
