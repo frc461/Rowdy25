@@ -119,7 +119,7 @@ public final class Constants {
 
             public static double BW_MAX_TAG_CLEAR_DIST;
 
-            public static double OBJECT_GOAL_PITCH;
+            public static double OBJECT_TARGET_PITCH;
         }
 
         public static final class QuestNavConstants {

@@ -65,13 +65,13 @@ public class DirectMoveToObjectCommand extends Command {
             }
         } else if (targetValid && !translationComplete) {
             double yawError = Math.abs(currentYaw);
-            double pitchError = Math.abs(currentPitch - Constants.VisionConstants.PhotonConstants.OBJECT_GOAL_PITCH);
+            double pitchError = Math.abs(currentPitch - Constants.VisionConstants.PhotonConstants.OBJECT_TARGET_PITCH);
 
             swerve.setControl(
                     robotCentric.withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
                             .withVelocityX(objectDetectionController.calculate(
                                     currentPitch,
-                                    Constants.VisionConstants.PhotonConstants.OBJECT_GOAL_PITCH
+                                    Constants.VisionConstants.PhotonConstants.OBJECT_TARGET_PITCH
                             ) * Constants.MAX_VEL)
                             .withVelocityY(objectDetectionController.calculate(
                                     -currentYaw,

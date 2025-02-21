@@ -118,7 +118,7 @@ public final class DefaultConstants {
         public static final Function<Double, Matrix<N3, N1>> VISION_STD_DEV_FUNCTION =
                 dist -> dist < 3.0
                         ? VecBuilder.fill(0.15 * dist, 0.15 * dist, Units.degreesToRadians(10.0) * dist)
-                        : VecBuilder.fill(0.5 * dist, 0.5 * dist, Units.degreesToRadians(180.0) * dist); // TODO SHOP: TEST STD DEVS
+                        : VecBuilder.fill(0.5 * dist, 0.5 * dist, Units.degreesToRadians(180.0) * dist);
 
         public static final class LimelightConstants {
             public static final String LIMELIGHT_NT_NAME = "limelight";
@@ -160,7 +160,7 @@ public final class DefaultConstants {
 
             public static final double BW_MAX_TAG_CLEAR_DIST = 3;
 
-            public static final double OBJECT_GOAL_PITCH = -15;
+            public static final double OBJECT_TARGET_PITCH = -15;
         }
 
         public static final class QuestNavConstants {
@@ -209,8 +209,8 @@ public final class DefaultConstants {
         public static final double P = 0.25;
         public static final double I = 0.0;
         public static final double D = 0.025;
-        public static final double EXPO_V = V / 0.95; // 60% of the actual max velocity, as it will allocate 1 / 0.8 = 1.25 times the voltage to 1 rps
-        public static final double EXPO_A = A / 0.01; // 1% of the actual max accel
+        public static final double EXPO_V = V / 0.90; // 90% of the actual max velocity, as it will allocate 1 / 0.9 = 1.1111 times the voltage to 1 rps
+        public static final double EXPO_A = A / 0.015; // 1.5% of the actual max accel
         public static final double SAFE_TOLERANCE = 5.0;
         public static final double AT_TARGET_TOLERANCE = 2.5;
 
@@ -271,8 +271,8 @@ public final class DefaultConstants {
         public static final double P = 0.15;
         public static final double I = 0;
         public static final double D = 0.01;
-        public static final double EXPO_V = V / 0.75; // 75% of the actual max velocity, as it will allocate 1 / 0.8 = 1.25 times the voltage to 1 rps
-        public static final double EXPO_A = A / 0.005; // 0.5% of the actual max acceleration
+        public static final double EXPO_V = V / 0.75; // 75% of the actual max velocity, as it will allocate 1 / 0.75 = 1.33333 times the voltage to 1 rps
+        public static final double EXPO_A = A / 0.0075; // 0.75% of the actual max acceleration
         public static final double SAFE_TOLERANCE = 15.0;
         public static final double AT_TARGET_TOLERANCE = 2.5;
 
@@ -312,19 +312,19 @@ public final class DefaultConstants {
         public static final double ENCODER_ABSOLUTE_OFFSET =  0.10279527436;
         public static final SensorDirectionValue ENCODER_INVERT = SensorDirectionValue.Clockwise_Positive;
 
-        // pid & tolerance // TODO SHOP: RETUNE FEEDFORWARD/FEEDBACK
+        // pid & tolerance
         public static final BiFunction<Double, Double, Double> G = (wristDeg, pivotDeg) -> 0.15 * Math.sin(Math.toRadians(wristDeg - (90 - pivotDeg)));
-        public static final double V = 0.68 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps) -> V / (rotor rps)
+        public static final double V = 0.7 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps) -> V / (rotor rps)
         public static final double A = 0.025 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps^2) -> V / (rotor rps^2)
-        public static final double P = 0.35;
+        public static final double P = 0.2;
         public static final double I = 0.0;
         public static final double D = 0.0;
         public static final double EXPO_V = V / 0.8; // 80% of the actual max velocity, as it will allocate 1 / 0.8 = 1.25 times the voltage to 1 rps
-        public static final double EXPO_A = A / 0.05; // 2.5% of the actual max accel
+        public static final double EXPO_A = A / 0.05; // 5% of the actual max accel
         public static final double SAFE_TOLERANCE = 25.0;
         public static final double AT_TARGET_TOLERANCE = 2.5;
 
-        // presets // TODO SHOP: RETUNE PRESETS
+        // presets
         public static final Function<Double, Double> LOWER_LIMIT = (pivotPosition) -> (double) (pivotPosition < 45 ? 125 : 45);
         public static final Function<Double, Double> UPPER_LIMIT = (elevatorPosition) -> (double) (elevatorPosition > 8 ? 295 : 160);
         public static final double STOW = 125;
