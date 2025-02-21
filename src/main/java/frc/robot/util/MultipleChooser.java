@@ -102,7 +102,7 @@ public class MultipleChooser<V> implements Sendable, AutoCloseable { // TODO SHO
                     lock.lock();
                     try {
                         selection.clear();
-                        selection.addAll(Arrays.asList(value.split(", ")));
+                        selection.addAll(Arrays.stream(value.split(", ")).distinct().toList());
                     } finally {
                         lock.unlock();
                     }
