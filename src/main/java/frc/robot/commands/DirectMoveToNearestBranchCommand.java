@@ -47,7 +47,8 @@ public class DirectMoveToNearestBranchCommand extends Command {
 
     @Override
     public void initialize() {
-        this.targetPose = FieldUtil.Reef.getNearestRobotPoseAtBranch(swerve.localizer.getStrategyPose());
+        end = false;
+        targetPose = FieldUtil.Reef.getNearestRobotPoseAtBranch(swerve.localizer.getStrategyPose());
     }
 
     @Override
