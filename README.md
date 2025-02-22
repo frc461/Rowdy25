@@ -41,11 +41,9 @@ Tuesday, Wednesday, 2/18-19/2025 to test:
 - [x] Fast wrist
 - [x] Intake
 - [x] Test localization trust filter & cameras
-- [ ] change tolerances and pids and retest pathfinding to reef (try no pid but constant slow velocity)
-   - [ ] If works, then test auto-align in superstructure branch (merge auto-paths testing into superstructure)
-   - [ ] If that works, then implement auto-align for all other states
-- [ ] Test multiple chooser
-- [ ] Preliminary auto things
+- [x] change tolerances and pids and retest pathfinding to reef (try no pid but constant slow velocity)
+- [x] Test multiple chooser
+- [x] Preliminary auto things
 
 Tuesday, 2/18/2025 software only:
 - [x] finish paths
@@ -53,9 +51,18 @@ Tuesday, 2/18/2025 software only:
 - [x] perfect/tune the control points (consistent in transitioning between paths)
 - [x] coral station optimization
 
+Saturday, 2/22/2025 to test:
+- [ ] test updated keybinds for mishiwaka
+- [ ] discuss two options for reef translation auto-align - driver does it while true (pov) or operator does it (more complicated)
+- [ ] auto
+   - [ ] try '2,x' paths
+   - [ ] try retuning swerve offsets/sysid
+   - [ ] try with 3rd camera in corner as well as in center looking forward
+   - [ ] try not corner of the coral station
+
 Comp bot/later:
 - [x] Re-add automatic intake logic
-- [ ] Tune Canandcolor for intake (both coral & algae)
+- [ ] Tune Canandcolor for algae intake
 - [ ] Implement climbing
 - [ ] SysID for elevator, pivot, wrist comp bot
 - [x] Fine tune state transitions for efficiency
