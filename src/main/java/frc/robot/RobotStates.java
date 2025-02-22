@@ -204,6 +204,7 @@ public class RobotStates {
         coralStationState.onTrue(
                 new InstantCommand(swerve::setCoralStationHeadingMode)
                         .unless(DriverStation::isAutonomousEnabled)
+                        .andThen(transition(Pivot.State.CORAL_STATION))
                         .andThen(intake::setIntakeState)
                         .andThen(pivot::setCoralStationState)
                         .andThen(new WaitUntilCommand(pivot::nearTarget))
@@ -254,14 +255,12 @@ public class RobotStates {
                 new InstantCommand(swerve::setBranchHeadingL1Mode)
                         .unless(DriverStation::isAutonomousEnabled)
                         .andThen(intake::setIdleState)
-                        .andThen(transition())
+                        .andThen(transition(Pivot.State.L1_CORAL))
                         .andThen(pivot::setL1CoralState)
                         .andThen(new WaitUntilCommand(pivot::nearTarget))
                         .andThen(elevator::setL1CoralState)
                         .andThen(new WaitUntilCommand(elevator::nearTarget))
                         .andThen(wrist::setL1CoralState)
-                        .andThen(new WaitUntilCommand(() -> atState.getAsBoolean() && swerve.localizer.atBranch()))
-                        .andThen(this::setIntakeOutState)
                         .until(() -> !l1CoralState.getAsBoolean())
         );
 
@@ -269,14 +268,12 @@ public class RobotStates {
                 new InstantCommand(swerve::setBranchHeadingMode)
                         .unless(DriverStation::isAutonomousEnabled)
                         .andThen(intake::setIdleState)
-                        .andThen(transition())
+                        .andThen(transition(Pivot.State.L2_CORAL))
                         .andThen(pivot::setL2CoralState)
                         .andThen(new WaitUntilCommand(pivot::nearTarget))
                         .andThen(elevator::setL2CoralState)
                         .andThen(new WaitUntilCommand(elevator::nearTarget))
                         .andThen(wrist::setL2CoralState)
-                        .andThen(new WaitUntilCommand(() -> atState.getAsBoolean() && swerve.localizer.atBranch()))
-                        .andThen(this::setIntakeOutState)
                         .until(() -> !l2CoralState.getAsBoolean())
         );
 
@@ -284,14 +281,12 @@ public class RobotStates {
                 new InstantCommand(swerve::setBranchHeadingMode)
                         .unless(DriverStation::isAutonomousEnabled)
                         .andThen(intake::setIdleState)
-                        .andThen(transition())
+                        .andThen(transition(Pivot.State.L3_CORAL))
                         .andThen(pivot::setL3CoralState)
                         .andThen(new WaitUntilCommand(pivot::nearTarget))
                         .andThen(elevator::setL3CoralState)
                         .andThen(new WaitUntilCommand(elevator::nearTarget))
                         .andThen(wrist::setL3CoralState)
-                        .andThen(new WaitUntilCommand(() -> atState.getAsBoolean() && swerve.localizer.atBranch()))
-                        .andThen(this::setIntakeOutState)
                         .until(() -> !l3CoralState.getAsBoolean())
         );
 
@@ -299,20 +294,18 @@ public class RobotStates {
                 new InstantCommand(swerve::setBranchHeadingMode)
                         .unless(DriverStation::isAutonomousEnabled)
                         .andThen(intake::setIdleState)
-                        .andThen(transition())
+                        .andThen(transition(Pivot.State.L4_CORAL))
                         .andThen(pivot::setL4CoralState)
                         .andThen(new WaitUntilCommand(pivot::nearTarget))
                         .andThen(elevator::setL4CoralState)
                         .andThen(new WaitUntilCommand(elevator::nearTarget))
                         .andThen(wrist::setL4CoralState)
-                        .andThen(new WaitUntilCommand(() -> atState.getAsBoolean() && swerve.localizer.atBranch()))
-                        .andThen(this::setOuttakeState)
                         .until(() -> !l4CoralState.getAsBoolean())
         );
 
         lowReefAlgaeState.onTrue(
                 new InstantCommand(swerve::setReefTagHeadingMode)
-                        .andThen(transition())
+                        .andThen(transition(Pivot.State.LOW_REEF_ALGAE))
                         .andThen(intake::setIntakeState)
                         .andThen(pivot::setLowReefAlgaeState)
                         .andThen(new WaitUntilCommand(pivot::nearTarget))
@@ -327,7 +320,7 @@ public class RobotStates {
 
         highReefAlgaeState.onTrue(
                 new InstantCommand(swerve::setReefTagHeadingMode)
-                        .andThen(transition())
+                        .andThen(transition(Pivot.State.HIGH_REEF_ALGAE))
                         .andThen(intake::setIntakeState)
                         .andThen(pivot::setHighReefAlgaeState)
                         .andThen(new WaitUntilCommand(pivot::nearTarget))
@@ -353,7 +346,7 @@ public class RobotStates {
         netState.onTrue(
                 new InstantCommand(swerve::setNetHeadingMode)
                         .andThen(intake::setIdleState)
-                        .andThen(transition())
+                        .andThen(transition(Pivot.State.NET))
                         .andThen(pivot::setNetState)
                         .andThen(new WaitUntilCommand(pivot::nearTarget))
                         .andThen(elevator::setNetState)
@@ -395,7 +388,7 @@ public class RobotStates {
         );
     }
 
-    private Command transition() {
+    private Command transition(Pivot.State pivotState) {
         return new ConditionalCommand(
                 new InstantCommand(wrist::setStowState)
                         .andThen(new WaitUntilCommand(wrist::nearTarget)),
@@ -403,7 +396,7 @@ public class RobotStates {
                         .andThen(new WaitUntilCommand(wrist::nearTarget))
                         .andThen(elevator::setStowState)
                         .andThen(new WaitUntilCommand(elevator::nearTarget)),
-                pivot::nearTarget
+                () -> pivot.isAtState(pivotState)
         );
     }
 

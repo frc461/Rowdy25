@@ -153,6 +153,10 @@ public class Pivot extends SubsystemBase { // TODO SHOP: INVESTIGATE CANCODER RE
         return ratchet.getPulseWidth();
     }
 
+    public boolean isAtState(State state) {
+        return Math.abs(state.position - getPosition()) < Constants.PivotConstants.AT_TARGET_TOLERANCE;
+    }
+
     public boolean nearTarget() {
         return error < Constants.PivotConstants.SAFE_TOLERANCE;
     }
