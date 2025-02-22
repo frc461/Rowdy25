@@ -76,7 +76,7 @@ public final class CompConstants { // TODO WAIT (COMP ROBOT IS READY): TUNE CONS
         public static final Translation2d AXIS_POSITION = new Translation2d(-9.417377, 9.257139);
 
         // encoder config
-        public static final double ENCODER_ABSOLUTE_OFFSET = 0.06909247503;
+        public static final double ENCODER_ABSOLUTE_OFFSET = 0.44409247503;
         public static final SensorDirectionValue ENCODER_INVERT = SensorDirectionValue.CounterClockwise_Positive;
 
         // ratchet config
@@ -124,18 +124,18 @@ public final class CompConstants { // TODO WAIT (COMP ROBOT IS READY): TUNE CONS
         public static final Translation2d AXIS_TO_ZERO_COM = new Translation2d(3.014233, -4.015809);
 
         // encoder config
-        public static final double ENCODER_ABSOLUTE_OFFSET =  0.10279527436;
+        public static final double ENCODER_ABSOLUTE_OFFSET =  0.02343817819;
         public static final SensorDirectionValue ENCODER_INVERT = SensorDirectionValue.Clockwise_Positive;
 
         // pid & tolerance
-        public static final BiFunction<Double, Double, Double> G = (wristDeg, pivotDeg) -> 0.0 * Math.sin(Math.toRadians(wristDeg - (90 - pivotDeg)));
-        public static final double V = 0.0 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps) -> V / (rotor rps)
-        public static final double A = 0.0 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps^2) -> V / (rotor rps^2)
-        public static final double P = 0.0;
+        public static final BiFunction<Double, Double, Double> G = (wristDeg, pivotDeg) -> 0.14 * Math.sin(Math.toRadians(wristDeg - (90 - pivotDeg)));
+        public static final double V = 0.7 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps) -> V / (rotor rps)
+        public static final double A = 0.015 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps^2) -> V / (rotor rps^2)
+        public static final double P = 0.2;
         public static final double I = 0.0;
         public static final double D = 0.0;
         public static final double EXPO_V = V / 0.8; // 80% of the actual max velocity, as it will allocate 1 / 0.8 = 1.25 times the voltage to 1 rps
-        public static final double EXPO_A = A / 0.05; // 5% of the actual max accel
+        public static final double EXPO_A = A / 0.08; // 8% of the actual max accel
         public static final double SAFE_TOLERANCE = 25.0;
         public static final double AT_TARGET_TOLERANCE = 2.5;
 
