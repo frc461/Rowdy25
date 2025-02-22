@@ -26,6 +26,9 @@ public class IntakeCommand extends Command {
             case INTAKE_OUT:
                 intake.setIntakeSpeed(0.5);
                 break;
+            case INTAKE_OVERRIDE:
+                intake.setIntakeSpeed(0.35);
+                break;
             case OUTTAKE:
                 intake.setIntakeSpeed(-0.5);
                 break;

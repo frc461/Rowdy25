@@ -22,6 +22,7 @@ public class Intake extends SubsystemBase {
         HAS_ALGAE,
         INTAKE,
         INTAKE_OUT,
+        INTAKE_OVERRIDE,
         OUTTAKE
     }
 
@@ -108,7 +109,15 @@ public class Intake extends SubsystemBase {
     }
 
     public void setIntakeState() {
-        setState(State.INTAKE);
+        setIntakeState(false);
+    }
+
+    public void setIntakeState(boolean override) {
+        if (override) {
+            setState(State.INTAKE_OVERRIDE);
+        } else {
+            setState(State.INTAKE);
+        }
     }
 
     public void setIntakeOutState() {
