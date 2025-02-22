@@ -127,9 +127,9 @@ public class RobotContainer {
         // IMPORTANT: WHEN BINDING DRIVER BUTTONS, TRIGGERS NEED TO BE ON FALSE ESPECIALLY WITH BINDINGS THAT INITIATE DRIVE AUTOMATION UPON HOLD DEBOUNCE
         // SO FIGURE OUT LOGIC CORRECTLY AND CAREFULLY
 
-        driverXbox.a().onTrue(new InstantCommand(robotStates.wrist::setL4CoralState)
+        driverXbox.a().onTrue(new InstantCommand(robotStates.pivot::setGroundAlgaeState)
                 .andThen(new WaitUntilCommand(() -> !driverXbox.a().getAsBoolean()))
-                .andThen(robotStates.wrist::setStowState));
+                .andThen(robotStates.pivot::setStowState));
         driverXbox.b().onTrue(new InstantCommand(robotStates.pivot::toggleRatchet));
 //        driverXbox.a().onTrue(new InstantCommand(robotStates.swerve::toggleAutoHeading));
 //        driverXbox.b().onTrue(new InstantCommand(() -> robotStates.swerve.localizer.setPoses(Constants.FAR_RIGHT_CORAL_STATION)));

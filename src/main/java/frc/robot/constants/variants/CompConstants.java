@@ -84,14 +84,14 @@ public final class CompConstants { // TODO WAIT (COMP ROBOT IS READY): TUNE CONS
         public static final int RATCHET_OFF = 1200;
 
         // pid & tolerance
-        public static final double G = 0.0;
-        public static final double V = 0.0 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps) -> V / (rotor rps)
-        public static final double A = 0.0 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps^2) -> V / (rotor rps^2)
-        public static final double P = 0.0;
-        public static final double I = 0.0;
+        public static final double G = 0.2269;
+        public static final double V = 6.35 / 2 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps) -> V / (rotor rps)
+        public static final double A = 0.06 / 2 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps^2) -> V / (rotor rps^2)
+        public static final double P = 0.15;
+        public static final double I = 0;
         public static final double D = 0.0;
-        public static final double EXPO_V = V / 0.75; // 75% of the actual max velocity, as it will allocate 1 / 0.75 = 1.33333 times the voltage to 1 rps
-        public static final double EXPO_A = A / 0.0075; // 0.75% of the actual max acceleration
+        public static final double EXPO_V = V / 0.4; // 40% of the actual max velocity, as it will allocate 1 / 0.4 = 2.5 times the voltage to 1 rps
+        public static final double EXPO_A = A / 0.015; // 1.5% of the actual max acceleration
         public static final double SAFE_TOLERANCE = 15.0;
         public static final double AT_TARGET_TOLERANCE = 2.5;
 
@@ -140,7 +140,7 @@ public final class CompConstants { // TODO WAIT (COMP ROBOT IS READY): TUNE CONS
         public static final double AT_TARGET_TOLERANCE = 2.5;
 
         // presets
-        public static final Function<Double, Double> LOWER_LIMIT = (pivotPosition) -> (double) (pivotPosition < 45 ? 125 : 45);
+        public static final Function<Double, Double> LOWER_LIMIT = (pivotPosition) -> (double) (pivotPosition < 45 ? 160 : 45);
         public static final Function<Double, Double> UPPER_LIMIT = (elevatorPosition) -> (double) (elevatorPosition > 8 ? 295 : 160);
         public static final double STOW = 125;
         public static final double CORAL_STATION = 125;
