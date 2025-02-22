@@ -58,7 +58,7 @@ public class DirectMoveToObjectCommand extends Command {
                             .withRotationalRate(objectDetectionController.calculate(
                                     currentYaw,
                                     0.0
-                            ) * Constants.MAX_CONTROLLED_ANGULAR_VEL)
+                            ) * Constants.MAX_CONTROLLED_ANGULAR_VEL.apply(0.0))
             );
             if (yawError < Constants.AutoConstants.DEGREE_TOLERANCE_TO_ACCEPT) {
                 rotationComplete = true;

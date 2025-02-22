@@ -72,8 +72,8 @@ public final class DefaultConstants {
     public static final double MAX_VEL = SwerveConstants.SPEED_AT_12_VOLTS.in(MetersPerSecond);
     public static final Function<Double, Double> MAX_CONTROLLED_VEL = elevatorHeight -> MAX_VEL - 0.1 * elevatorHeight;
     // 1.96664381049 rotations per second tuned max angular velocity
-    public static final double MAX_ANGULAR_VEL = RotationsPerSecond.of(1.96664381049).in(RadiansPerSecond);
-    public static final double MAX_CONTROLLED_ANGULAR_VEL = RotationsPerSecond.of(0.75).in(RadiansPerSecond);
+    public static final Function<Double, Double> MAX_CONTROLLED_ANGULAR_VEL = elevatorHeight -> RotationsPerSecond.of(0.75).in(RadiansPerSecond) - 0.07 * elevatorHeight;
+    public static final Function<Double, Double> MAX_ANGULAR_VEL = elevatorHeight -> elevatorHeight < 16 ? RotationsPerSecond.of(1.96664381049).in(RadiansPerSecond) : MAX_CONTROLLED_ANGULAR_VEL.apply(elevatorHeight);
 
     public static final double MAX_ACCEL = MetersPerSecondPerSecond.of(10.8).in(MetersPerSecondPerSecond);
     public static final double MAX_ANGULAR_ACCEL = DegreesPerSecondPerSecond.of(485.0).in(RadiansPerSecondPerSecond);
@@ -99,7 +99,7 @@ public final class DefaultConstants {
         public static final PathConstraints PATH_CONSTRAINTS = new PathConstraints(
                 MAX_VEL,
                 MAX_CONTROLLED_ACCEL,
-                MAX_CONTROLLED_ANGULAR_VEL,
+                MAX_CONTROLLED_ANGULAR_VEL.apply(0.0),
                 MAX_ANGULAR_ACCEL
         );
 

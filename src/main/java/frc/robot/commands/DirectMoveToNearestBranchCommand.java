@@ -16,7 +16,6 @@ import java.util.function.DoubleSupplier;
 public class DirectMoveToNearestBranchCommand extends Command {
     private final Swerve swerve;
     private final SwerveRequest.FieldCentric fieldCentric;
-    private final PIDController translationController;
     private final PIDController yawController;
     private final DoubleSupplier elevatorHeight;
     private Pose2d targetPose;
@@ -25,12 +24,6 @@ public class DirectMoveToNearestBranchCommand extends Command {
     public DirectMoveToNearestBranchCommand(Swerve swerve, SwerveRequest.FieldCentric fieldCentric, DoubleSupplier elevatorHeight) {
         this.swerve = swerve;
         this.fieldCentric = fieldCentric;
-
-        translationController = new PIDController(
-                Constants.SwerveConstants.TRANSLATION_ALIGNMENT_CONTROLLER_P,
-                0,
-                Constants.SwerveConstants.TRANSLATION_ALIGNMENT_CONTROLLER_D
-        );
 
         yawController = new PIDController(
                 Constants.SwerveConstants.ANGULAR_POSITION_P,
@@ -73,7 +66,7 @@ public class DirectMoveToNearestBranchCommand extends Command {
                         .withRotationalRate(yawController.calculate(
                                 yawError,
                                 0.0
-                        ) * Constants.MAX_CONTROLLED_ANGULAR_VEL)
+                        ) * Constants.MAX_CONTROLLED_ANGULAR_VEL.apply(elevatorHeight.getAsDouble()))
         );
 
         xPosDone = Math.abs(xError) < Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_ACCEPT;
