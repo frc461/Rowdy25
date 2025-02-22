@@ -177,14 +177,14 @@ public final class CompConstants { // TODO WAIT (COMP ROBOT IS READY): TUNE CONS
         // The steer motor uses any SwerveModule.SteerRequestType control request with the
         // output type specified by SwerveModuleConstants.SteerMotorClosedLoopOutput
         private static final Slot0Configs STEER_GAINS = new Slot0Configs()
-                .withKP(16.756).withKI(0).withKD(0.28988)
-                .withKS(0.19849).withKV(2.4115).withKA(0.055522)
+                    .withKP(19.22).withKI(0).withKD(0.49503)
+                .withKS(0.15852).withKV(2.4532).withKA(0.089693)
                 .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign);
         // When using closed-loop control, the drive motor uses the control
         // output type specified by SwerveModuleConstants.DriveMotorClosedLoopOutput
         private static final Slot0Configs DRIVE_GAINS = new Slot0Configs()
-                .withKP(0.14678).withKI(0).withKD(0)
-                .withKS(0.070646).withKV(0.11413).withKA(0.016008);
+                .withKP(0.097116).withKI(0).withKD(0)
+                .withKS(0.10746).withKV(0.11507).withKA(0.012509);
 
         // The closed-loop output type to use for the steer motors;
         // This affects the PID/FF gains for the steer motors
