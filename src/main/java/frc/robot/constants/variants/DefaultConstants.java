@@ -72,8 +72,8 @@ public final class DefaultConstants {
     public static final double MAX_VEL = SwerveConstants.SPEED_AT_12_VOLTS.in(MetersPerSecond);
     public static final Function<Double, Double> MAX_CONTROLLED_VEL = elevatorHeight -> MAX_VEL - 0.1 * elevatorHeight;
     // 1.96664381049 rotations per second tuned max angular velocity
-    public static final double MAX_ANGULAR_VEL = RotationsPerSecond.of(1.96664381049).in(RadiansPerSecond);
-    public static final double MAX_CONTROLLED_ANGULAR_VEL = RotationsPerSecond.of(0.75).in(RadiansPerSecond);
+    public static final Function<Double, Double> MAX_CONTROLLED_ANGULAR_VEL = elevatorHeight -> RotationsPerSecond.of(0.75).in(RadiansPerSecond) - 0.07 * elevatorHeight;
+    public static final Function<Double, Double> MAX_ANGULAR_VEL = elevatorHeight -> elevatorHeight < 16 ? RotationsPerSecond.of(1.96664381049).in(RadiansPerSecond) : MAX_CONTROLLED_ANGULAR_VEL.apply(elevatorHeight);
 
     public static final double MAX_ACCEL = MetersPerSecondPerSecond.of(10.8).in(MetersPerSecondPerSecond);
     public static final double MAX_ANGULAR_ACCEL = DegreesPerSecondPerSecond.of(485.0).in(RadiansPerSecondPerSecond);
@@ -99,7 +99,7 @@ public final class DefaultConstants {
         public static final PathConstraints PATH_CONSTRAINTS = new PathConstraints(
                 MAX_VEL,
                 MAX_CONTROLLED_ACCEL,
-                MAX_CONTROLLED_ANGULAR_VEL,
+                MAX_CONTROLLED_ANGULAR_VEL.apply(0.0),
                 MAX_ANGULAR_ACCEL
         );
 
@@ -118,7 +118,7 @@ public final class DefaultConstants {
         public static final Function<Double, Matrix<N3, N1>> VISION_STD_DEV_FUNCTION =
                 dist -> dist < 3.0
                         ? VecBuilder.fill(0.15 * dist, 0.15 * dist, Units.degreesToRadians(10.0) * dist)
-                        : VecBuilder.fill(0.5 * dist, 0.5 * dist, Units.degreesToRadians(180.0) * dist); // TODO SHOP: TEST STD DEVS
+                        : VecBuilder.fill(0.5 * dist, 0.5 * dist, Units.degreesToRadians(180.0) * dist);
 
         public static final class LimelightConstants {
             public static final String LIMELIGHT_NT_NAME = "limelight";
@@ -158,9 +158,9 @@ public final class DefaultConstants {
             public static final double BW_BACK_PITCH = -8.0;
             public static final double BW_BACK_YAW = 180;
 
-            public static final double BW_MAX_TAG_CLEAR_DIST = 3;
+            public static final double BW_MAX_TAG_CLEAR_DIST = 7.5;
 
-            public static final double OBJECT_GOAL_PITCH = -15;
+            public static final double OBJECT_TARGET_PITCH = -15;
         }
 
         public static final class QuestNavConstants {
@@ -209,8 +209,8 @@ public final class DefaultConstants {
         public static final double P = 0.25;
         public static final double I = 0.0;
         public static final double D = 0.025;
-        public static final double EXPO_V = V / 0.95; // 60% of the actual max velocity, as it will allocate 1 / 0.8 = 1.25 times the voltage to 1 rps
-        public static final double EXPO_A = A / 0.04; // 1% of the actual max accel
+        public static final double EXPO_V = V / 0.90; // 90% of the actual max velocity, as it will allocate 1 / 0.9 = 1.1111 times the voltage to 1 rps
+        public static final double EXPO_A = A / 0.015; // 1.5% of the actual max accel
         public static final double SAFE_TOLERANCE = 5.0;
         public static final double AT_TARGET_TOLERANCE = 2.5;
 
@@ -221,12 +221,12 @@ public final class DefaultConstants {
         public static final double CORAL_STATION = 0;
         public static final double GROUND_CORAL = 0;
         public static final double GROUND_ALGAE = 0;
-        public static final double L1_CORAL = 0;
+        public static final double L1_CORAL = 6.0;
         public static final double L2_CORAL = 0;
         public static final double L3_CORAL = 18.1;
         public static final double L4_CORAL = 41.5;
         public static final double LOW_REEF_ALGAE = 2.9;
-        public static final double HIGH_REEF_ALGAE = 10.5;
+        public static final double HIGH_REEF_ALGAE = 3;
         public static final double PROCESSOR = 0;
         public static final double NET = 44;
     }
@@ -234,6 +234,7 @@ public final class DefaultConstants {
     public final static class IntakeConstants {
         public static final int MOTOR_ID = 41;
         public static final int SENSOR_ID = 42;
+        public static final int BEAMBREAK_ID = 1;
         public static final double CURRENT_LIMIT = 40;
         public static final InvertedValue MOTOR_INVERT = InvertedValue.Clockwise_Positive;
         public static final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Coast;
@@ -270,8 +271,8 @@ public final class DefaultConstants {
         public static final double P = 0.15;
         public static final double I = 0;
         public static final double D = 0.01;
-        public static final double EXPO_V = V / 0.75; // 75% of the actual max velocity, as it will allocate 1 / 0.8 = 1.25 times the voltage to 1 rps
-        public static final double EXPO_A = A / 0.005; // 0.5% of the actual max acceleration
+        public static final double EXPO_V = V / 0.75; // 75% of the actual max velocity, as it will allocate 1 / 0.75 = 1.33333 times the voltage to 1 rps
+        public static final double EXPO_A = A / 0.0075; // 0.75% of the actual max acceleration
         public static final double SAFE_TOLERANCE = 15.0;
         public static final double AT_TARGET_TOLERANCE = 2.5;
 
@@ -279,15 +280,15 @@ public final class DefaultConstants {
         public static final double LOWER_LIMIT = 0;
         public static final double UPPER_LIMIT = 105;
         public static final double STOW = 50;
-        public static final double CORAL_STATION = 55.5;
+        public static final double CORAL_STATION = 50;
         public static final double GROUND_CORAL = 3.5;
         public static final double GROUND_ALGAE = 4.5;
-        public static final double L1_CORAL = 100.0;
+        public static final double L1_CORAL = 22.3;
         public static final double L2_CORAL = 100.0;
         public static final double L3_CORAL = 100.6;
         public static final double L4_CORAL = 90.5;
         public static final double LOW_REEF_ALGAE = 105;
-        public static final double HIGH_REEF_ALGAE = 97.6;
+        public static final double HIGH_REEF_ALGAE = 105;
         public static final double PROCESSOR = 22.1;
         public static final double NET = 90;
     }
@@ -308,34 +309,34 @@ public final class DefaultConstants {
 
         // encoder config
         public static final int ENCODER_ID = 62;
-        public static final double ENCODER_ABSOLUTE_OFFSET =  0.3986850313;
+        public static final double ENCODER_ABSOLUTE_OFFSET =  0.10279527436;
         public static final SensorDirectionValue ENCODER_INVERT = SensorDirectionValue.Clockwise_Positive;
 
-        // pid & tolerance // TODO SHOP: RETUNE FEEDFORWARD/FEEDBACK
+        // pid & tolerance
         public static final BiFunction<Double, Double, Double> G = (wristDeg, pivotDeg) -> 0.15 * Math.sin(Math.toRadians(wristDeg - (90 - pivotDeg)));
-        public static final double V = 0.68 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps) -> V / (rotor rps)
+        public static final double V = 0.7 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps) -> V / (rotor rps)
         public static final double A = 0.025 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps^2) -> V / (rotor rps^2)
         public static final double P = 0.2;
         public static final double I = 0.0;
         public static final double D = 0.0;
         public static final double EXPO_V = V / 0.8; // 80% of the actual max velocity, as it will allocate 1 / 0.8 = 1.25 times the voltage to 1 rps
-        public static final double EXPO_A = A / 0.025; // 2.5% of the actual max accel
+        public static final double EXPO_A = A / 0.05; // 5% of the actual max accel
         public static final double SAFE_TOLERANCE = 25.0;
         public static final double AT_TARGET_TOLERANCE = 2.5;
 
-        // presets // TODO SHOP: RETUNE PRESETS
+        // presets
         public static final Function<Double, Double> LOWER_LIMIT = (pivotPosition) -> (double) (pivotPosition < 45 ? 125 : 45);
-        public static final Function<Double, Double> UPPER_LIMIT = (elevatorPosition) -> (double) (elevatorPosition > 3 ? 320 : 200);
-        public static final double STOW = 45;
-        public static final double CORAL_STATION = 109.7;
+        public static final Function<Double, Double> UPPER_LIMIT = (elevatorPosition) -> (double) (elevatorPosition > 8 ? 295 : 160);
+        public static final double STOW = 125;
+        public static final double CORAL_STATION = 125;
         public static final double GROUND_CORAL = 150;
         public static final double GROUND_ALGAE = 150;
-        public static final double L1_CORAL = 40;
+        public static final double L1_CORAL = 125;
         public static final double L2_CORAL = 40;
         public static final double L3_CORAL = 55;
-        public static final double L4_CORAL = 265;
+        public static final double L4_CORAL = 290.5;
         public static final double LOW_REEF_ALGAE = 220;
-        public static final double HIGH_REEF_ALGAE = 220;
+        public static final double HIGH_REEF_ALGAE = 160;
         public static final double PROCESSOR = 150;
         public static final double NET = 175;
 
@@ -387,7 +388,7 @@ public final class DefaultConstants {
         private static final SteerFeedbackType STEER_FEEDBACK_TYPE = SteerFeedbackType.FusedCANcoder;
 
         // The stator current at which the wheels start to slip;
-        private static final Current SLIP_CURRENT = Amps.of(70.0);
+        private static final Current SLIP_CURRENT = Amps.of(65.0);
 
         public static final AudioConfigs AUDIO_CONFIGS = new AudioConfigs().withAllowMusicDurDisable(true);
 

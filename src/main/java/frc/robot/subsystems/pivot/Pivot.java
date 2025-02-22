@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
 import frc.robot.util.ExpUtil;
 import frc.robot.util.GravityGainsCalculator;
-import frc.robot.util.Lights;
+import frc.robot.subsystems.Lights;
 
 public class Pivot extends SubsystemBase { // TODO SHOP: INVESTIGATE CANCODER REPORTING 0 POSITION
     public enum State {

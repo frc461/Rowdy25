@@ -8,7 +8,7 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class MultipleChooser<V> implements Sendable, AutoCloseable { // TODO SHOP: TEST THIS CLASS
+public final class MultipleChooser<V> implements Sendable, AutoCloseable { // TODO SHOP: TEST THIS CLASS
     private static final String DEFAULT = "default";
     private static final String SELECTED = "selected";
     private static final String ACTIVE = "active";
@@ -83,15 +83,26 @@ public class MultipleChooser<V> implements Sendable, AutoCloseable { // TODO SHO
         );
         builder.addStringProperty(
                 SELECTED,
-                null,
+                () -> {
+                    lock.lock();
+                    try {
+                        StringBuilder total = new StringBuilder();
+                        if (!selection.isEmpty()) {
+                            for (String value : selection) {
+                                total.append(value).append(", ");
+                            }
+                            return total.substring(0, total.length() - 2);
+                        }
+                        return "None selected";
+                    } finally {
+                        lock.unlock();
+                    }
+                },
                 value -> {
                     lock.lock();
                     try {
-                        if (selection.contains(value)) {
-                            selection.remove(value);
-                        } else {
-                            selection.add(value);
-                        }
+                        selection.clear();
+                        selection.addAll(Arrays.stream(value.split(", ")).distinct().toList());
                     } finally {
                         lock.unlock();
                     }

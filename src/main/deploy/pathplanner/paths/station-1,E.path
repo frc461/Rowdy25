@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.1487115991084047,
-        "y": 7.018691140600368
+        "x": 1.655783834680145,
+        "y": 7.413622777716651
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.4942160615306106,
-        "y": 6.091020921072439
+        "x": 2.914982876712329,
+        "y": 6.496725171232876
       },
       "isLocked": false,
       "linkedName": "station-1"
     },
     {
       "anchor": {
-        "x": 2.1353804976851842,
-        "y": 4.598294632523148
+        "x": 2.899957191780822,
+        "y": 2.7956292951195985
       },
       "prevControl": {
-        "x": 1.9536676169678988,
-        "y": 5.004677623081261
+        "x": 2.414758485334099,
+        "y": 3.802174715634309
       },
       "nextControl": {
-        "x": 2.3302249710648137,
-        "y": 4.162544126157407
+        "x": 3.4408818493150686,
+        "y": 1.6734803082191787
       },
       "isLocked": false,
       "linkedName": null
@@ -36,8 +36,8 @@
         "y": 2.7956292951195985
       },
       "prevControl": {
-        "x": 3.59485062210648,
-        "y": 0.7419929108796293
+        "x": 4.748116438356164,
+        "y": 1.7786601027397262
       },
       "nextControl": null,
       "isLocked": false,
@@ -50,14 +50,19 @@
   "eventMarkers": [
     {
       "name": "outtake",
-      "waypointRelativePos": 1.0033898305084807,
+      "waypointRelativePos": 0.650847457627119,
       "endWaypointRelativePos": null,
-      "command": null
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "outtake"
+        }
+      }
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 5.0,
-    "maxAcceleration": 7.5,
+    "maxVelocity": 2.5,
+    "maxAcceleration": 2.5,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -68,7 +73,7 @@
     "rotation": 119.99999999999999
   },
   "reversed": false,
-  "folder": null,
+  "folder": "3. From Coral Station",
   "idealStartingState": {
     "velocity": 0,
     "rotation": -54.0

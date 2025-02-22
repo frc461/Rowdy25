@@ -5,20 +5,27 @@ import edu.wpi.first.networktables.StringPublisher;
 import frc.robot.constants.variants.DefaultConstants;
 import frc.robot.constants.variants.SimConstants;
 import frc.robot.constants.variants.TestConstants;
+import frc.robot.util.MacAddress;
 
 public enum RobotIdentity {
-    TEST,
-    ALPHA,
-    ROWDY,
-    SIM;
+    TEST("00-80-2F-18-50-1F"),
+    ALPHA("00-80-2F-34-07-F0"),
+    ROWDY("00-80-2F-33-9F-37"),
+    SIM("");
+
+    final String mac;
+    RobotIdentity(String mac) {
+        this.mac = mac;
+    }
 
     private static RobotIdentity getIdentity() {
-        return switch (MacAddress.getMACAddress()) {
-            case MacAddress.TEST -> TEST;
-            case MacAddress.ALPHA -> ALPHA;
-            case MacAddress.ROWDY -> ROWDY;
-            default -> SIM;
-        };
+        String mac = MacAddress.getMACAddress();
+        for (RobotIdentity identity : RobotIdentity.values()) {
+            if (identity.mac.equals(mac)) {
+                return identity;
+            }
+        }
+        return SIM;
     }
 
     public static void initializeConstants() {
@@ -104,7 +111,7 @@ public enum RobotIdentity {
         Constants.VisionConstants.PhotonConstants.BW_BACK_PITCH = DefaultConstants.VisionConstants.PhotonConstants.BW_BACK_PITCH;
         Constants.VisionConstants.PhotonConstants.BW_BACK_YAW = DefaultConstants.VisionConstants.PhotonConstants.BW_BACK_YAW;
         Constants.VisionConstants.PhotonConstants.BW_MAX_TAG_CLEAR_DIST = DefaultConstants.VisionConstants.PhotonConstants.BW_MAX_TAG_CLEAR_DIST;
-        Constants.VisionConstants.PhotonConstants.OBJECT_GOAL_PITCH = DefaultConstants.VisionConstants.PhotonConstants.OBJECT_GOAL_PITCH;
+        Constants.VisionConstants.PhotonConstants.OBJECT_TARGET_PITCH = DefaultConstants.VisionConstants.PhotonConstants.OBJECT_TARGET_PITCH;
         Constants.VisionConstants.QuestNavConstants.QUESTNAV_NT_NAME = DefaultConstants.VisionConstants.QuestNavConstants.QUESTNAV_NT_NAME;
         Constants.VisionConstants.QuestNavConstants.QUEST_FORWARD = DefaultConstants.VisionConstants.QuestNavConstants.QUEST_FORWARD;
         Constants.VisionConstants.QuestNavConstants.QUEST_LEFT = DefaultConstants.VisionConstants.QuestNavConstants.QUEST_LEFT;
@@ -155,6 +162,7 @@ public enum RobotIdentity {
 
         Constants.IntakeConstants.MOTOR_ID = DefaultConstants.IntakeConstants.MOTOR_ID;
         Constants.IntakeConstants.SENSOR_ID = DefaultConstants.IntakeConstants.SENSOR_ID;
+        Constants.IntakeConstants.BEAMBREAK_ID = DefaultConstants.IntakeConstants.BEAMBREAK_ID;
         Constants.IntakeConstants.CURRENT_LIMIT = DefaultConstants.IntakeConstants.CURRENT_LIMIT;
         Constants.IntakeConstants.MOTOR_INVERT = DefaultConstants.IntakeConstants.MOTOR_INVERT;
         Constants.IntakeConstants.NEUTRAL_MODE = DefaultConstants.IntakeConstants.NEUTRAL_MODE;

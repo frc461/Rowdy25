@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.576229508203553,
-        "y": 7.279661885242258
+        "x": 7.152,
+        "y": 7.266
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.332581967219947,
-        "y": 5.937038934422584
+        "x": 3.125342465753424,
+        "y": 7.007598458904109
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "5"
     },
     {
       "anchor": {
-        "x": 3.092827868859291,
-        "y": 4.186834016389798
+        "x": 3.16865,
+        "y": 4.179839048032407
       },
       "prevControl": {
-        "x": 2.1098360655806028,
-        "y": 4.378637295078324
+        "x": 2.3139554794520545,
+        "y": 5.0392337328767125
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "A"
     }
   ],
   "rotationTargets": [],
@@ -34,14 +34,19 @@
   "eventMarkers": [
     {
       "name": "outtake",
-      "waypointRelativePos": 0,
+      "waypointRelativePos": 0.25084745762711874,
       "endWaypointRelativePos": null,
-      "command": null
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "outtake"
+        }
+      }
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 5.0,
-    "maxAcceleration": 7.5,
+    "maxVelocity": 2.5,
+    "maxAcceleration": 2.5,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -52,7 +57,7 @@
     "rotation": 0.0
   },
   "reversed": false,
-  "folder": null,
+  "folder": "1. Start",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 180.0

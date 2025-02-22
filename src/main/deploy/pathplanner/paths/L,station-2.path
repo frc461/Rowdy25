@@ -4,15 +4,15 @@
     {
       "anchor": {
         "x": 3.687116034398046,
-        "y": 2.9599604625195988
+        "y": 5.081679537480401
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.0652397260273974,
-        "y": 2.3346104452054792
+        "x": 1.968364726027397,
+        "y": 5.4449272260273975
       },
       "isLocked": false,
-      "linkedName": "C"
+      "linkedName": "L"
     },
     {
       "anchor": {
@@ -20,8 +20,8 @@
         "y": 0.6381772222833488
       },
       "prevControl": {
-        "x": 2.19375,
-        "y": 1.2978381849315064
+        "x": 3.1704195205479455,
+        "y": 1.7185573630136983
       },
       "nextControl": null,
       "isLocked": false,
@@ -34,7 +34,7 @@
   "eventMarkers": [
     {
       "name": "intake",
-      "waypointRelativePos": 0.19661016949152527,
+      "waypointRelativePos": 0.352542372881356,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -60,7 +60,7 @@
   "folder": "2. To Coral Station",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 59.99999999999999
+    "rotation": -59.99999999999999
   },
   "useDefaultConstraints": true
 }

@@ -58,20 +58,20 @@ public class DirectMoveToObjectCommand extends Command {
                             .withRotationalRate(objectDetectionController.calculate(
                                     currentYaw,
                                     0.0
-                            ) * Constants.MAX_CONTROLLED_ANGULAR_VEL)
+                            ) * Constants.MAX_CONTROLLED_ANGULAR_VEL.apply(0.0))
             );
             if (yawError < Constants.AutoConstants.DEGREE_TOLERANCE_TO_ACCEPT) {
                 rotationComplete = true;
             }
         } else if (targetValid && !translationComplete) {
             double yawError = Math.abs(currentYaw);
-            double pitchError = Math.abs(currentPitch - Constants.VisionConstants.PhotonConstants.OBJECT_GOAL_PITCH);
+            double pitchError = Math.abs(currentPitch - Constants.VisionConstants.PhotonConstants.OBJECT_TARGET_PITCH);
 
             swerve.setControl(
                     robotCentric.withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
                             .withVelocityX(objectDetectionController.calculate(
                                     currentPitch,
-                                    Constants.VisionConstants.PhotonConstants.OBJECT_GOAL_PITCH
+                                    Constants.VisionConstants.PhotonConstants.OBJECT_TARGET_PITCH
                             ) * Constants.MAX_VEL)
                             .withVelocityY(objectDetectionController.calculate(
                                     -currentYaw,

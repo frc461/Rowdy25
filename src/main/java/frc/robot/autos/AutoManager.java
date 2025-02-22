@@ -6,18 +6,17 @@ import java.util.List;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.util.FlippingUtil;
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.RobotStates;
 import frc.robot.autos.routines.AutoEventLooper;
 import frc.robot.autos.routines.AutoTrigger;
+import frc.robot.constants.Constants;
 import frc.robot.util.FieldUtil;
 import frc.robot.util.MultipleChooser;
 import org.json.simple.parser.ParseException;
@@ -70,18 +69,22 @@ public final class AutoManager {
             List<Pair<FieldUtil.Reef.ScoringLocation, FieldUtil.Reef.Level>> scoringLocations,
             RobotStates robotStates
     ) {
+        List<Pair<FieldUtil.Reef.ScoringLocation, FieldUtil.Reef.Level>> currentScoringLocations = new ArrayList<>(scoringLocations);
         AutoEventLooper autoEventLooper = new AutoEventLooper("AutoEventLooper");
 
         List<AutoTrigger> triggers = new ArrayList<>();
-        Pair<FieldUtil.Reef.ScoringLocation, FieldUtil.Reef.Level> firstScoringLocation = scoringLocations.get(0);
+        Pair<FieldUtil.Reef.ScoringLocation, FieldUtil.Reef.Level> firstScoringLocation = currentScoringLocations.get(0);
         String firstPath = startPosition.index + "," + firstScoringLocation.getFirst().name();
 
         triggers.add(autoEventLooper.addTrigger(
                 firstPath,
                 () -> {
                     try {
+                        PathPlannerPath path = PathPlannerPath.fromPathFile(firstPath);
+
                         return new InstantCommand(() -> robotStates.setCurrentAutoLevel(firstScoringLocation.getSecond()))
-                                .andThen(AutoBuilder.followPath(PathPlannerPath.fromPathFile(firstPath)));
+                                .andThen(() -> robotStates.swerve.localizer.setPoses(getStartingPose(path)))
+                                .andThen(AutoBuilder.followPath(path));
                     } catch (IOException | ParseException e) {
                         DriverStation.reportError("Failed to load path: " + e.getMessage(), e.getStackTrace());
                         return Commands.none();
@@ -91,14 +94,21 @@ public final class AutoManager {
 
         triggers.add(autoEventLooper.addTrigger(
                 "outtake",
-                () -> new WaitUntilCommand(robotStates.atState)
+                () -> new WaitUntilCommand(robotStates.atState) // TODO WAIT (PATHFINDING WORKS): JUST WAIT UNTIL STOW STATE IF AUTO SCORING WORKS (ALSO L140)
+                        .andThen(new WaitCommand(0.35))
                         .andThen(robotStates::toggleAutoLevelCoralState)
                         .andThen(new WaitUntilCommand(robotStates.stowState))
+                        .andThen(new WaitCommand(0.5))
         ));
 
-        while (!scoringLocations.isEmpty()) {
-            Pair<FieldUtil.Reef.ScoringLocation, FieldUtil.Reef.Level> currentScoringLocation = scoringLocations.removeFirst();
-            Pair<FieldUtil.Reef.ScoringLocation, FieldUtil.Reef.Level> nextScoringLocation = scoringLocations.getFirst();
+        while (!currentScoringLocations.isEmpty()) {
+            Pair<FieldUtil.Reef.ScoringLocation, FieldUtil.Reef.Level> currentScoringLocation = currentScoringLocations.remove(0);
+
+            if (currentScoringLocations.isEmpty()) {
+                break;
+            }
+
+            Pair<FieldUtil.Reef.ScoringLocation, FieldUtil.Reef.Level> nextScoringLocation = currentScoringLocations.get(0);
             String nearestCoralStation = getMostEfficientCoralStation(
                     currentScoringLocation.getFirst().pose,
                     nextScoringLocation.getFirst().pose
@@ -138,27 +148,36 @@ public final class AutoManager {
             triggers.add(autoEventLooper.addTrigger(
                     "outtake",
                     () -> new WaitUntilCommand(robotStates.atState)
+                            .andThen(new WaitCommand(0.35))
                             .andThen(robotStates::toggleAutoLevelCoralState)
                             .andThen(new WaitUntilCommand(robotStates.stowState))
+                            .andThen(new WaitCommand(0.5))
             ));
         }
 
         autoEventLooper.active().onTrue(triggers.get(0).cmd());
 
         while (!triggers.isEmpty()) {
-            triggers.remove(0).done().onTrue(triggers.isEmpty() ? Commands.none() : triggers.get(0).cmd());
+            AutoTrigger currentTrigger = triggers.remove(0);
+            currentTrigger.done().onTrue(triggers.isEmpty() ? Commands.none() : triggers.get(0).cmd());
         }
 
         return autoEventLooper;
     }
 
     private String getMostEfficientCoralStation(Pose2d currentLocation, Pose2d nextLocation) {
+        List<FieldUtil.AprilTag> tags = FieldUtil.CoralStation.getCoralStationTags();
         double station1TotalDistance =
-                currentLocation.getTranslation().getDistance(FieldUtil.CoralStation.getCoralStationTags().get(0).pose2d.getTranslation())
-                + nextLocation.getTranslation().getDistance(FieldUtil.CoralStation.getCoralStationTags().get(0).pose2d.getTranslation());
+                currentLocation.getTranslation().getDistance(tags.get(0).pose2d.getTranslation())
+                + nextLocation.getTranslation().getDistance(tags.get(0).pose2d.getTranslation());
         double station2TotalDistance =
-                currentLocation.getTranslation().getDistance(FieldUtil.CoralStation.getCoralStationTags().get(1).pose2d.getTranslation())
-                + nextLocation.getTranslation().getDistance(FieldUtil.CoralStation.getCoralStationTags().get(1).pose2d.getTranslation());
+                currentLocation.getTranslation().getDistance(tags.get(1).pose2d.getTranslation())
+                + nextLocation.getTranslation().getDistance(tags.get(1).pose2d.getTranslation());
         return station1TotalDistance < station2TotalDistance ? "station-1" : "station-2";
+    }
+
+    private Pose2d getStartingPose(PathPlannerPath path) {
+        Pose2d startingPoseBlue = path.getStartingHolonomicPose().orElse(Pose2d.kZero);
+        return Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red ? FlippingUtil.flipFieldPose(startingPoseBlue) : startingPoseBlue;
     }
 }

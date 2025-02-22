@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.drivetrain.Swerve;
+import frc.robot.util.ExpUtil;
 import frc.robot.util.FieldUtil;
 
 import java.util.function.DoubleSupplier;
@@ -15,21 +16,14 @@ import java.util.function.DoubleSupplier;
 public class DirectMoveToNearestBranchCommand extends Command {
     private final Swerve swerve;
     private final SwerveRequest.FieldCentric fieldCentric;
-    private final PIDController translationController;
     private final PIDController yawController;
     private final DoubleSupplier elevatorHeight;
     private Pose2d targetPose;
-    private boolean end;
+    private boolean xPosDone, yPosDone, yawDone, end;
 
     public DirectMoveToNearestBranchCommand(Swerve swerve, SwerveRequest.FieldCentric fieldCentric, DoubleSupplier elevatorHeight) {
         this.swerve = swerve;
         this.fieldCentric = fieldCentric;
-
-        translationController = new PIDController(
-                Constants.SwerveConstants.TRANSLATION_ALIGNMENT_CONTROLLER_P,
-                0,
-                Constants.SwerveConstants.TRANSLATION_ALIGNMENT_CONTROLLER_D
-        );
 
         yawController = new PIDController(
                 Constants.SwerveConstants.ANGULAR_POSITION_P,
@@ -41,13 +35,20 @@ public class DirectMoveToNearestBranchCommand extends Command {
         this.elevatorHeight = elevatorHeight;
 
         targetPose = new Pose2d();
+        xPosDone = false;
+        yPosDone = false;
+        yawDone = false;
         end = false;
         addRequirements(this.swerve);
     }
 
     @Override
     public void initialize() {
-        this.targetPose = FieldUtil.Reef.getNearestRobotPoseAtBranch(swerve.localizer.getStrategyPose());
+        xPosDone = false;
+        yPosDone = false;
+        yawDone = false;
+        end = false;
+        targetPose = FieldUtil.Reef.getNearestRobotPoseAtBranch(swerve.localizer.getStrategyPose());
     }
 
     @Override
@@ -60,25 +61,33 @@ public class DirectMoveToNearestBranchCommand extends Command {
         swerve.setControl(
                 fieldCentric.withDriveRequestType(SwerveModule.DriveRequestType.Velocity) // TODO SHOP: TEST CLOSED LOOP
                         .withForwardPerspective(SwerveRequest.ForwardPerspectiveValue.BlueAlliance)
-                        .withVelocityX(Math.min(
-                                1.0,
-                                translationController.calculate(xError, 0) * Constants.MAX_CONTROLLED_VEL.apply(elevatorHeight.getAsDouble())
-                        ))
-                        .withVelocityY(Math.min(
-                                1.0,
-                                translationController.calculate(yError, 0) * Constants.MAX_CONTROLLED_VEL.apply(elevatorHeight.getAsDouble())
-                        ))
+                        .withVelocityX(determineVelocity(xError, xPosDone))
+                        .withVelocityY(determineVelocity(yError, yPosDone))
                         .withRotationalRate(yawController.calculate(
                                 yawError,
                                 0.0
-                        ) * Constants.MAX_CONTROLLED_ANGULAR_VEL)
+                        ) * Constants.MAX_CONTROLLED_ANGULAR_VEL.apply(elevatorHeight.getAsDouble()))
         );
-        if (Math.hypot(xError, yError) < Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_ACCEPT
-                && Math.abs(yawError) < Constants.AutoConstants.DEGREE_TOLERANCE_TO_ACCEPT) {
+
+        xPosDone = Math.abs(xError) < Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_ACCEPT;
+        yPosDone = Math.abs(yError) < Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_ACCEPT;
+        yawDone = Math.abs(yawError) < Constants.AutoConstants.DEGREE_TOLERANCE_TO_ACCEPT;
+
+        if (xPosDone && yPosDone && yawDone) {
             swerve.forceStop();
             swerve.consistentHeading = currentPose.getRotation().getDegrees();
             end = true;
         }
+    }
+
+    public double determineVelocity(double error, boolean done) {
+        if (done) {
+            return 0.0;
+        }
+        if (error < 0) {
+            return ExpUtil.output(Math.abs(error), 0.02, 50);
+        }
+        return -ExpUtil.output(Math.abs(error), 0.02, 50);
     }
 
     @Override

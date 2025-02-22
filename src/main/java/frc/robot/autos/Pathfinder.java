@@ -5,6 +5,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -42,12 +43,8 @@ public final class Pathfinder {
     }
 
     public static Command pathFindToNearestCoralScoringLocation(Pose2d currentPose) {
-        Pose2d nearestCoralScoringPose = FieldUtil.Reef.getNearestRobotPoseAtBranch(currentPose);
         return Pathfinder.pathFindToClosePose(
-                new Pose2d(
-                        nearestCoralScoringPose.getTranslation(),
-                        nearestCoralScoringPose.getRotation().rotateBy(Rotation2d.kPi)
-                ),
+                FieldUtil.Reef.getNearestRobotPoseAtBranch(currentPose),
                 Constants.AutoConstants.DISTANCE_TOLERANCE_TO_DRIVE_INTO,
                 1.0
         );
@@ -158,14 +155,17 @@ public final class Pathfinder {
     public static void main(String[] args) {
         Constants.ALLIANCE_SUPPLIER = () -> DriverStation.Alliance.Blue;
         Constants.ROBOT_LENGTH_WITH_BUMPERS = Inches.of(38.5);
+        Constants.ROBOT_WIDTH_WITH_BUMPERS = Inches.of(32.5);
+
         System.out.println("--------ROBOT POSES AT BRANCHES (A-L)--------");
         for (Pose2d pose : FieldUtil.Reef.getRobotPosesAtEachBranch()) {
             System.out.println("X: " + pose.getX() + ", Y: " + pose.getY() + ", Angle: " + pose.getRotation().getDegrees());
         }
-        System.out.println("--------ROBOT POSES AT CORAL STATIONS--------");
-        for (Pose2d pose : FieldUtil.CoralStation.getCoralStationTagPoses()) {
-            pose = pose.plus(new Transform2d(new Translation2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0, 0), Rotation2d.kZero));
-            System.out.println("X: " + pose.getX() + ", Y: " + pose.getY() + ", Angle: " + pose.getRotation().getDegrees());
-        }
+        Pose2d station1Pose = new Pose2d(Units.inchesToMeters(67.02), Units.inchesToMeters(317), FieldUtil.AprilTag.ID_13.pose2d.getRotation())
+                    .plus(new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.div(2).in(Meters), Constants.ROBOT_WIDTH_WITH_BUMPERS.div(2).unaryMinus().in(Meters), Rotation2d.kZero));
+        Pose2d station2Pose = new Pose2d(Units.inchesToMeters(67.02), Units.inchesToMeters(0), FieldUtil.AprilTag.ID_12.pose2d.getRotation())
+                    .plus(new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.div(2).in(Meters), Constants.ROBOT_WIDTH_WITH_BUMPERS.div(2).in(Meters), Rotation2d.fromDegrees(0)));
+        System.out.println("station-1: X: " + station1Pose.getX() + ", Y: " + station1Pose.getY() + ", Angle: " + station1Pose.getRotation().getDegrees());
+        System.out.println("station-2: X: " + station2Pose.getX() + ", Y: " + station2Pose.getY() + ", Angle: " + station2Pose.getRotation().getDegrees());
     }
 }

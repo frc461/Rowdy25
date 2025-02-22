@@ -39,6 +39,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
         FAST_ROTATING,
         TRANSLATING,
         BRANCH_HEADING,
+        BRANCH_L1_HEADING,
         REEF_TAG_HEADING,
         OBJECT_HEADING,
         CORAL_STATION_HEADING,
@@ -224,6 +225,10 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
 
     public void setBranchHeadingMode() {
         currentMode = DriveMode.BRANCH_HEADING;
+    }
+
+    public void setBranchHeadingL1Mode() {
+        currentMode = DriveMode.BRANCH_L1_HEADING;
     }
 
     public void setReefTagHeadingMode() {

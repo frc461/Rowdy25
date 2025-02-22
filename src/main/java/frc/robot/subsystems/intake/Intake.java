@@ -1,20 +1,18 @@
 package frc.robot.subsystems.intake;
 
-import com.ctre.phoenix6.configs.AudioConfigs;
-import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
-import com.ctre.phoenix6.configs.MotorOutputConfigs;
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.configs.*;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import com.reduxrobotics.canand.CanandEventLoop;
 import com.reduxrobotics.sensors.canandcolor.Canandcolor;
 import com.reduxrobotics.sensors.canandcolor.ColorPeriod;
 import com.reduxrobotics.sensors.canandcolor.ProximityPeriod;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-import frc.robot.util.Lights;
+import frc.robot.subsystems.Lights;
 
 import frc.robot.constants.Constants;
 
@@ -24,6 +22,7 @@ public class Intake extends SubsystemBase {
         HAS_ALGAE,
         INTAKE,
         INTAKE_OUT,
+        INTAKE_OVERRIDE,
         OUTTAKE
     }
 
@@ -31,6 +30,7 @@ public class Intake extends SubsystemBase {
 
     private final TalonFX motor;
     private final Canandcolor canandcolor;
+    private final DigitalInput beamBreak;
     private final Timer pulseTimer = new Timer();
 
     private final IntakeTelemetry intakeTelemetry = new IntakeTelemetry(this);
@@ -58,7 +58,8 @@ public class Intake extends SubsystemBase {
                         .setColorIntegrationPeriod(ColorPeriod.k25ms)
                         .setDigoutFramePeriod(0.02)
         );
-        canandcolor.setLampLEDBrightness(1.0);
+        canandcolor.setLampLEDBrightness(0.0);
+        beamBreak = new DigitalInput(Constants.IntakeConstants.BEAMBREAK_ID);
         currentState = State.IDLE;
         pulseTimer.start();
     }
@@ -75,8 +76,12 @@ public class Intake extends SubsystemBase {
         return canandcolor.getProximity();
     }
 
+    public boolean beamBreakBroken() {
+        return !beamBreak.get();
+    }
+
     public boolean hasCoral() {
-        return getProximity() < 0.05;
+        return beamBreakBroken() || getProximity() < 0.13;
     }
 
     public boolean hasAlgae() {
@@ -104,7 +109,15 @@ public class Intake extends SubsystemBase {
     }
 
     public void setIntakeState() {
-        setState(State.INTAKE);
+        setIntakeState(false);
+    }
+
+    public void setIntakeState(boolean override) {
+        if (override) {
+            setState(State.INTAKE_OVERRIDE);
+        } else {
+            setState(State.INTAKE);
+        }
     }
 
     public void setIntakeOutState() {
@@ -114,8 +127,6 @@ public class Intake extends SubsystemBase {
     public void setOuttakeState() {
         setState(State.OUTTAKE);
     }
-
-
 
     public void setIntakeSpeed(double speed) {
         motor.set(speed);

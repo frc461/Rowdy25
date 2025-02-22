@@ -34,27 +34,29 @@ Saturday, 2/15/2025 to test:
 Saturday, 2/15/2025 software only:
 - [x] Auto - java structure (chooser), paths (pathmanager), commands
 
-Tuesday, 2/18/2025 to test:
-- [ ] Fix pivot cancoder issues
-- [ ] Faster wrist
-- [ ] Redo L4 preset as needed
-- [ ] Test localization trust filter
-- [ ] Retest pathfinding to reef, taking into account tolerances and pids, test faster debounce (try no pid but constant slow velocity)
+Tuesday, Wednesday, 2/18-19/2025 to test:
+- [x] Fix pivot cancoder issues
+- [x] Reconfigure wrist cancoder
+- [x] Redo wrist presets as needed
+- [x] Fast wrist
+- [x] Intake
+- [x] Test localization trust filter & cameras
+- [ ] change tolerances and pids and retest pathfinding to reef (try no pid but constant slow velocity)
    - [ ] If works, then test auto-align in superstructure branch (merge auto-paths testing into superstructure)
    - [ ] If that works, then implement auto-align for all other states
 - [ ] Test multiple chooser
 - [ ] Preliminary auto things
 
 Tuesday, 2/18/2025 software only:
-- [ ] finish paths
-- [ ] check for correct event markers & tune locations of each marker
-- [ ] perfect/tune the control points (consistent in transitioning between paths)
-- [ ] coral station optimization
+- [x] finish paths
+- [x] check for correct event markers & tune locations of each marker
+- [x] perfect/tune the control points (consistent in transitioning between paths)
+- [x] coral station optimization
 
 Comp bot/later:
+- [x] Re-add automatic intake logic
 - [ ] Tune Canandcolor for intake (both coral & algae)
-- [ ] Re-add automatic intake logic
 - [ ] Implement climbing
-- [ ] SysID for elevator, pivot, wrist
-- [ ] Fine tune state transitions for efficiency
-- [ ] Test ground intake/object detection
+- [ ] SysID for elevator, pivot, wrist comp bot
+- [x] Fine tune state transitions for efficiency
+- [ ] Test ground intake/object detection (after mishiwaka)

@@ -3,25 +3,41 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.1487115991084047,
-        "y": 1.0237108593996305
+        "x": 1.655783834680145,
+        "y": 0.6381772222833488
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.938303313078703,
-        "y": 1.210295138888888
+        "x": 2.7196489726027395,
+        "y": 1.1626070205479448
       },
       "isLocked": false,
       "linkedName": "station-2"
     },
     {
       "anchor": {
-        "x": 5.070641447368421,
-        "y": 5.380741530970523
+        "x": 2.704623287671233,
+        "y": 4.8138484589041095
       },
       "prevControl": {
-        "x": 1.2416930700231479,
-        "y": 7.606679325810186
+        "x": 2.346018549963069,
+        "y": 3.7271674355460362
+      },
+      "nextControl": {
+        "x": 3.200470890410959,
+        "y": 6.316416952054794
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 5.006900034398046,
+        "y": 5.246010704880401
+      },
+      "prevControl": {
+        "x": 5.063655821917808,
+        "y": 6.346468321917809
       },
       "nextControl": null,
       "isLocked": false,
@@ -34,14 +50,19 @@
   "eventMarkers": [
     {
       "name": "outtake",
-      "waypointRelativePos": 0.21280848422897194,
+      "waypointRelativePos": 0.6508474576271187,
       "endWaypointRelativePos": null,
-      "command": null
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "outtake"
+        }
+      }
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 5.0,
-    "maxAcceleration": 7.5,
+    "maxVelocity": 2.5,
+    "maxAcceleration": 2.5,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -52,7 +73,7 @@
     "rotation": -119.99999999999999
   },
   "reversed": false,
-  "folder": null,
+  "folder": "3. From Coral Station",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 54.0

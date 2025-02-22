@@ -8,11 +8,27 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 8.152000000000001,
-        "y": 5.616003247853871
+        "x": 5.0486301369863025,
+        "y": 6.436622431506849
       },
       "isLocked": false,
       "linkedName": "4"
+    },
+    {
+      "anchor": {
+        "x": 2.9600599315068497,
+        "y": 5.616003247853871
+      },
+      "prevControl": {
+        "x": 3.831549657534247,
+        "y": 6.43662243150685
+      },
+      "nextControl": {
+        "x": 2.0510494186513197,
+        "y": 4.760053438334223
+      },
+      "isLocked": false,
+      "linkedName": null
     },
     {
       "anchor": {
@@ -20,8 +36,8 @@
         "y": 2.9599604625195988
       },
       "prevControl": {
-        "x": 5.621326316550925,
-        "y": 0.7572497106481482
+        "x": 2.494263698630137,
+        "y": 2.8154323630136977
       },
       "nextControl": null,
       "isLocked": false,
@@ -34,14 +50,19 @@
   "eventMarkers": [
     {
       "name": "outtake",
-      "waypointRelativePos": 0.5930016063084111,
+      "waypointRelativePos": 0.6983050847457641,
       "endWaypointRelativePos": null,
-      "command": null
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "outtake"
+        }
+      }
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 5.0,
-    "maxAcceleration": 7.5,
+    "maxVelocity": 2.5,
+    "maxAcceleration": 2.5,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -52,7 +73,7 @@
     "rotation": 59.99999999999999
   },
   "reversed": false,
-  "folder": null,
+  "folder": "1. Start",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 180.0

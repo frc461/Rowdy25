@@ -1,7 +1,7 @@
 package frc.robot.util;
 
 /* Useful for smooth, logistic curves */
-public class ExpUtil {
+public final class ExpUtil {
     /* If you need to tune your constants to apply to the exponential function, here's the link: https://www.desmos.com/calculator/yknxk8el8y */
 
     public static double output(double error, double halfway, double multiplier) {

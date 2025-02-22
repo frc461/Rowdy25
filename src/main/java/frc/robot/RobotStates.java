@@ -2,6 +2,7 @@ package frc.robot;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.StringPublisher;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
@@ -12,6 +13,7 @@ import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.PivotCommand;
 import frc.robot.commands.WristCommand;
 import frc.robot.constants.Constants;
+import frc.robot.subsystems.Lights;
 import frc.robot.subsystems.drivetrain.Swerve;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.intake.Intake;
@@ -78,8 +80,10 @@ public class RobotStates {
         currentState = State.STOW;
         currentAutoLevel = FieldUtil.Reef.Level.L2;
 
+        Lights.configureLights();
+
         Arrays.stream(State.values()).forEach(state -> stateChooser.addOption(state.name(), state));
-        stateChooser.onChange(state -> currentState = stateChooser.getSelected()); // TODO SHOP: TEST CHOOSER
+        stateChooser.onChange(state -> currentState = stateChooser.getSelected());
         SmartDashboard.putData("Robot State Chooser", stateChooser);
     }
 
@@ -199,13 +203,14 @@ public class RobotStates {
 
         coralStationState.onTrue(
                 new InstantCommand(swerve::setCoralStationHeadingMode)
+                        .unless(DriverStation::isAutonomousEnabled)
                         .andThen(intake::setIntakeState)
                         .andThen(pivot::setCoralStationState)
                         .andThen(new WaitUntilCommand(pivot::nearTarget))
                         .andThen(elevator::setCoralStationState)
                         .andThen(new WaitUntilCommand(elevator::nearTarget))
                         .andThen(wrist::setCoralStationState)
-                        .andThen(new WaitUntilCommand(() -> intake.hasAlgae() || intake.hasCoral()))
+                        .andThen(new WaitUntilCommand(intake::atIdleState))
                         .andThen(this::setStowState)
                         .onlyIf(() -> !intake.hasAlgae() && !intake.hasCoral())
                         .until(() -> !coralStationState.getAsBoolean())
@@ -220,7 +225,7 @@ public class RobotStates {
                         .andThen(pivot::setGroundCoralState)
                         .andThen(new WaitUntilCommand(VisionUtil.Photon.Color::hasCoralTargets))
                         .andThen(swerve.directMoveToObject(
-                                () -> intake.hasAlgae() || intake.hasCoral(),
+                                () -> intake.hasAlgae() || intake.beamBreakBroken(),
                                 VisionUtil.Photon.Color.TargetClass.CORAL
                         ).asProxy())
                         .andThen(this::setStowState)
@@ -237,7 +242,7 @@ public class RobotStates {
                         .andThen(pivot::setGroundAlgaeState)
                         .andThen(new WaitUntilCommand(VisionUtil.Photon.Color::hasAlgaeTargets))
                         .andThen(swerve.directMoveToObject(
-                                () -> intake.hasAlgae() || intake.hasCoral(),
+                                () -> intake.hasAlgae() || intake.beamBreakBroken(),
                                 VisionUtil.Photon.Color.TargetClass.ALGAE
                         ).asProxy())
                         .andThen(this::setStowState)
@@ -246,7 +251,8 @@ public class RobotStates {
         );
 
         l1CoralState.onTrue(
-                new InstantCommand(swerve::setBranchHeadingMode)
+                new InstantCommand(swerve::setBranchHeadingL1Mode)
+                        .unless(DriverStation::isAutonomousEnabled)
                         .andThen(intake::setIdleState)
                         .andThen(transition())
                         .andThen(pivot::setL1CoralState)
@@ -261,6 +267,7 @@ public class RobotStates {
 
         l2CoralState.onTrue(
                 new InstantCommand(swerve::setBranchHeadingMode)
+                        .unless(DriverStation::isAutonomousEnabled)
                         .andThen(intake::setIdleState)
                         .andThen(transition())
                         .andThen(pivot::setL2CoralState)
@@ -275,6 +282,7 @@ public class RobotStates {
 
         l3CoralState.onTrue(
                 new InstantCommand(swerve::setBranchHeadingMode)
+                        .unless(DriverStation::isAutonomousEnabled)
                         .andThen(intake::setIdleState)
                         .andThen(transition())
                         .andThen(pivot::setL3CoralState)
@@ -289,6 +297,7 @@ public class RobotStates {
 
         l4CoralState.onTrue(
                 new InstantCommand(swerve::setBranchHeadingMode)
+                        .unless(DriverStation::isAutonomousEnabled)
                         .andThen(intake::setIdleState)
                         .andThen(transition())
                         .andThen(pivot::setL4CoralState)
@@ -310,7 +319,7 @@ public class RobotStates {
                         .andThen(elevator::setLowReefAlgaeState)
                         .andThen(new WaitUntilCommand(elevator::nearTarget))
                         .andThen(wrist::setLowReefAlgaeState)
-                        .andThen(new WaitUntilCommand(() -> intake.hasAlgae() || intake.hasCoral()))
+                        .andThen(new WaitUntilCommand(intake::atIdleState))
                         .andThen(this::setStowState)
                         .onlyIf(() -> !intake.hasAlgae() && !intake.hasCoral())
                         .until(() -> !lowReefAlgaeState.getAsBoolean())
@@ -325,7 +334,7 @@ public class RobotStates {
                         .andThen(elevator::setHighReefAlgaeState)
                         .andThen(new WaitUntilCommand(elevator::nearTarget))
                         .andThen(wrist::setHighReefAlgaeState)
-                        .andThen(new WaitUntilCommand(() -> intake.hasAlgae() || intake.hasCoral()))
+                        .andThen(new WaitUntilCommand(intake::atIdleState))
                         .andThen(this::setStowState)
                         .onlyIf(() -> !intake.hasAlgae() && !intake.hasCoral())
                         .until(() -> !highReefAlgaeState.getAsBoolean())
@@ -368,8 +377,8 @@ public class RobotStates {
                         driverXbox::getLeftX,
                         driverXbox::getLeftTriggerAxis,
                         driverXbox::getRightTriggerAxis,
-                        DoubleTrueTrigger.doubleTrue(driverXbox.leftTrigger(0.5), 0.5),
-                        DoubleTrueTrigger.doubleTrue(driverXbox.rightTrigger(0.5), 0.5)
+                        DoubleTrueTrigger.doubleTrue(driverXbox.leftTrigger(), 0.5),
+                        DoubleTrueTrigger.doubleTrue(driverXbox.rightTrigger(), 0.5)
                 )
         );
 
@@ -386,7 +395,7 @@ public class RobotStates {
         );
     }
 
-    private Command transition() { // TODO SHOP: TEST SMOOTHER TRANSITIONS
+    private Command transition() {
         return new ConditionalCommand(
                 new InstantCommand(wrist::setStowState)
                         .andThen(new WaitUntilCommand(wrist::nearTarget)),

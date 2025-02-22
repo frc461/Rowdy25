@@ -50,8 +50,8 @@ public final class Constants {
     public static double MAX_VEL;
     public static Function<Double, Double> MAX_CONTROLLED_VEL;
     // 1.96664381049 rotations per second tuned max angular velocity
-    public static double MAX_ANGULAR_VEL;
-    public static double MAX_CONTROLLED_ANGULAR_VEL;
+    public static Function<Double, Double> MAX_ANGULAR_VEL;
+    public static Function<Double, Double> MAX_CONTROLLED_ANGULAR_VEL;
 
     public static double MAX_ACCEL;
     public static double MAX_ANGULAR_ACCEL;
@@ -119,7 +119,7 @@ public final class Constants {
 
             public static double BW_MAX_TAG_CLEAR_DIST;
 
-            public static double OBJECT_GOAL_PITCH;
+            public static double OBJECT_TARGET_PITCH;
         }
 
         public static final class QuestNavConstants {
@@ -191,6 +191,7 @@ public final class Constants {
         // basic configs
         public static int MOTOR_ID;
         public static int SENSOR_ID;
+        public static int BEAMBREAK_ID;
         public static double CURRENT_LIMIT;
         public static InvertedValue MOTOR_INVERT;
         public static NeutralModeValue NEUTRAL_MODE;
