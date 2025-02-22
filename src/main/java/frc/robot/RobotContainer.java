@@ -96,6 +96,8 @@ public class RobotContainer {
      * Y: Click - Coral pickup state, stow automatically, Click Again - Cancel
      */
 
+    private boolean overrideNonessentialOpControls = false;
+
     public RobotContainer() {
         robotStates.configureToggleStateTriggers();
         robotStates.setDefaultCommands(driverXbox, opXbox);
@@ -138,10 +140,45 @@ public class RobotContainer {
         driverXbox.b().onTrue(new InstantCommand(() -> robotStates.swerve.localizer.setPoses(Constants.FAR_RIGHT_CORAL_STATION)));
         driverXbox.x().onTrue(new InstantCommand(() -> robotStates.swerve.localizer.setPoses(Constants.FAR_LEFT_CORAL_STATION)));
 
-        opXbox.povUp().onTrue(new InstantCommand(robotStates::toggleGroundAlgaeState));
-        opXbox.povLeft().onTrue(new InstantCommand(robotStates::toggleNetState));
-        opXbox.povRight().onTrue(new InstantCommand(robotStates::toggleProcessorState));
-        opXbox.povDown().onTrue(new InstantCommand(robotStates::toggleGroundCoralState));
+        opXbox.povDown().onTrue(new ConditionalCommand(
+                new ConditionalCommand(
+                        new InstantCommand(robotStates::toggleL4CoralState),
+                        new InstantCommand(robotStates.pivot::toggleRatchet),
+                        () -> !robotStates.intake.hasCoral()
+                ),
+                new InstantCommand(robotStates::toggleGroundCoralState),
+                () -> overrideNonessentialOpControls
+        ));
+
+        opXbox.povRight().onTrue(new ConditionalCommand(
+                new ConditionalCommand(
+                        new InstantCommand(robotStates::toggleL1CoralState),
+                        new InstantCommand(robotStates::toggleHighReefAlgaeState),
+                        robotStates.intake::hasCoral
+                ),
+                new InstantCommand(robotStates::toggleProcessorState),
+                () -> overrideNonessentialOpControls
+        ));
+
+        opXbox.povLeft().onTrue(new ConditionalCommand(
+                new ConditionalCommand(
+                        new InstantCommand(robotStates::toggleL3CoralState),
+                        new InstantCommand(robotStates::toggleLowReefAlgaeState),
+                        robotStates.intake::hasCoral
+                ),
+                new InstantCommand(robotStates::toggleNetState),
+                () -> overrideNonessentialOpControls
+        ));
+
+        opXbox.povUp().onTrue(new ConditionalCommand(
+                new ConditionalCommand(
+                        new InstantCommand(robotStates::toggleL2CoralState),
+                        new InstantCommand(robotStates::toggleCoralStationState),
+                        robotStates.intake::hasCoral
+                ),
+                new InstantCommand(robotStates::toggleGroundAlgaeState),
+                () -> overrideNonessentialOpControls
+        ));
 
         opXbox.leftTrigger().onTrue(new InstantCommand(() -> robotStates.intake.setIntakeState(true))
                 .andThen(new WaitUntilCommand(() -> !opXbox.leftTrigger().getAsBoolean()))
@@ -150,6 +187,7 @@ public class RobotContainer {
                 .andThen(new WaitUntilCommand(() -> !opXbox.rightTrigger().getAsBoolean()))
                 .andThen(robotStates.intake::setIdleState));
 
+        opXbox.leftBumper().onTrue(new InstantCommand(() -> overrideNonessentialOpControls = !overrideNonessentialOpControls));
         opXbox.rightBumper().onTrue(new InstantCommand(robotStates::setStowState));
 
         opXbox.a().onTrue(new ConditionalCommand(
