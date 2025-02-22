@@ -223,7 +223,7 @@ public final class DefaultConstants {
         public static final double GROUND_ALGAE = 0;
         public static final double L1_CORAL = 6.0;
         public static final double L2_CORAL = 0;
-        public static final double L3_CORAL = 18.1;
+        public static final double L3_CORAL = 17.2;
         public static final double L4_CORAL = 41.5;
         public static final double LOW_REEF_ALGAE = 2.0;
         public static final double HIGH_REEF_ALGAE = 3.0;
@@ -234,7 +234,7 @@ public final class DefaultConstants {
     public final static class IntakeConstants {
         public static final int MOTOR_ID = 41;
         public static final int SENSOR_ID = 42;
-        public static final int BEAMBREAK_ID = 5;
+        public static final int BEAMBREAK_ID = 2;
         public static final double CURRENT_LIMIT = 40;
         public static final InvertedValue MOTOR_INVERT = InvertedValue.Clockwise_Positive;
         public static final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Coast;
@@ -332,7 +332,7 @@ public final class DefaultConstants {
         public static final double GROUND_CORAL = 150;
         public static final double GROUND_ALGAE = 150;
         public static final double L1_CORAL = 125;
-        public static final double L2_CORAL = 40;
+        public static final double L2_CORAL = 55;
         public static final double L3_CORAL = 55;
         public static final double L4_CORAL = 280;
         public static final double LOW_REEF_ALGAE = 131.0;
