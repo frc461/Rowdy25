@@ -127,80 +127,54 @@ public class RobotContainer {
         // IMPORTANT: WHEN BINDING DRIVER BUTTONS, TRIGGERS NEED TO BE ON FALSE ESPECIALLY WITH BINDINGS THAT INITIATE DRIVE AUTOMATION UPON HOLD DEBOUNCE
         // SO FIGURE OUT LOGIC CORRECTLY AND CAREFULLY
 
-        driverXbox.povUp().onFalse(new InstantCommand(robotStates::setOuttakeState));
-        driverXbox.povDown().onFalse(new InstantCommand(robotStates.swerve::toggleAutoHeading));
-        driverXbox.povLeft().onFalse(new InstantCommand(robotStates::toggleNetState));
-        driverXbox.povRight().onFalse(new InstantCommand(robotStates::toggleProcessorState));
+        driverXbox.leftBumper().onTrue(new InstantCommand(robotStates.swerve::setBranchHeadingMode) // TODO SHOP: TEST THIS
+                .andThen(new WaitUntilCommand(() -> !driverXbox.leftBumper().getAsBoolean()))
+                .andThen(robotStates.swerve::setIdleMode));
+        driverXbox.rightBumper().onTrue(new InstantCommand(robotStates.swerve::setCoralStationHeadingMode)
+                .andThen(new WaitUntilCommand(() -> !driverXbox.rightBumper().getAsBoolean()))
+                .andThen(robotStates.swerve::setIdleMode));
 
-        driverXbox.leftStick().onFalse(new InstantCommand(() -> robotStates.swerve.localizer.setPoses(Constants.FAR_LEFT_CORAL_STATION)));
-        driverXbox.rightStick().onFalse(new InstantCommand(() -> robotStates.swerve.localizer.setPoses(Constants.FAR_RIGHT_CORAL_STATION)));
+        driverXbox.a().onTrue(new InstantCommand(robotStates.swerve::toggleAutoHeading));
+        driverXbox.b().onTrue(new InstantCommand(() -> robotStates.swerve.localizer.setPoses(Constants.FAR_RIGHT_CORAL_STATION)));
+        driverXbox.x().onTrue(new InstantCommand(() -> robotStates.swerve.localizer.setPoses(Constants.FAR_LEFT_CORAL_STATION)));
 
-        driverXbox.leftBumper().onFalse(new InstantCommand(robotStates::toggleGroundCoralState));
-        driverXbox.rightBumper().onFalse(new InstantCommand(robotStates::toggleGroundAlgaeState));
+        opXbox.povUp().onTrue(new InstantCommand(robotStates::toggleGroundAlgaeState));
+        opXbox.povLeft().onTrue(new InstantCommand(robotStates::toggleNetState));
+        opXbox.povRight().onTrue(new InstantCommand(robotStates::toggleProcessorState));
+        opXbox.povDown().onTrue(new InstantCommand(robotStates::toggleGroundCoralState));
 
-//        driverXbox.a().onFalse(new ConditionalCommand(
-//                new InstantCommand(robotStates::toggleL4CoralState),
-//                Commands.none(),
-//                robotStates.intake::hasCoral
-//        ));
-        driverXbox.a().debounce(0.5).whileTrue(new ConditionalCommand( // TODO SHOP: TEST LESS TIME BEFORE PATHFINDING
-                robotStates.swerve.directMoveToNearestBranch(robotStates.elevator::getPosition),
-                Commands.none(),
-                robotStates.intake::hasCoral
-        ));
+        opXbox.leftTrigger().onTrue(new InstantCommand(() -> robotStates.intake.setIntakeState(true))
+                .andThen(new WaitUntilCommand(() -> !opXbox.leftTrigger().getAsBoolean()))
+                .andThen(robotStates.intake::setIdleState));
+        opXbox.rightTrigger().onTrue(new InstantCommand(robotStates.intake::setOuttakeState)
+                .andThen(new WaitUntilCommand(() -> !opXbox.rightTrigger().getAsBoolean()))
+                .andThen(robotStates.intake::setIdleState));
 
-//        driverXbox.b().onFalse(new ConditionalCommand(
-//                new InstantCommand(robotStates::toggleL1CoralState),
-//                new InstantCommand(robotStates::toggleHighReefAlgaeState),
-//                robotStates.intake::hasCoral
-//        ));
-        driverXbox.b().debounce(0.5).whileTrue(new ConditionalCommand(
-                robotStates.swerve.directMoveToNearestBranch(robotStates.elevator::getPosition),
-                Commands.none(),
-                robotStates.intake::hasCoral
-        ));
-
-//        driverXbox.x().onFalse(new ConditionalCommand(
-//                new InstantCommand(robotStates::toggleL3CoralState),
-//                new InstantCommand(robotStates::toggleLowReefAlgaeState),
-//                robotStates.intake::hasCoral
-//        ));
-        driverXbox.x().debounce(0.5).whileTrue(new ConditionalCommand(
-                robotStates.swerve.pathFindToNearestBranch(robotStates.elevator::getPosition),
-                Commands.none(),
-                robotStates.intake::hasCoral
-        ));
-
-//        driverXbox.y().onFalse(new ConditionalCommand(
-//                new InstantCommand(robotStates::toggleL2CoralState),
-//                new InstantCommand(robotStates::toggleCoralStationState),
-//                robotStates.intake::hasCoral
-//        ));
-        driverXbox.y().debounce(0.5).whileTrue(new ConditionalCommand(
-                robotStates.swerve.pathFindToNearestBranch(robotStates.elevator::getPosition),
-                Commands.none(),
-                robotStates.intake::hasCoral
-        ));
-
-        opXbox.povRight().onTrue(new InstantCommand(robotStates::toggleL1CoralState));
-        opXbox.povUp().onTrue(new InstantCommand(robotStates::toggleL2CoralState));
-        opXbox.povLeft().onTrue(new InstantCommand(robotStates::toggleL3CoralState));
-        opXbox.povDown().onTrue(new InstantCommand(robotStates::toggleL4CoralState));
-
-        opXbox.leftTrigger().onTrue(new InstantCommand(robotStates.intake::setIntakeState).andThen(new WaitUntilCommand(() -> !opXbox.leftTrigger().getAsBoolean())).andThen(robotStates.intake::setIdleState));
-        opXbox.rightTrigger().onTrue(new InstantCommand(robotStates.intake::setOuttakeState).andThen(new WaitUntilCommand(() -> !opXbox.rightTrigger().getAsBoolean())).andThen(robotStates.intake::setIdleState));
-
-        opXbox.leftStick().onTrue(new InstantCommand(robotStates::toggleNetState));
-        opXbox.rightStick().onTrue(new InstantCommand(robotStates::toggleProcessorState));
-
-        opXbox.leftBumper().onTrue(new InstantCommand(robotStates::toggleGroundCoralState));
-//        opXbox.rightBumper().onTrue(new InstantCommand(robotStates::toggleGroundAlgaeState));
         opXbox.rightBumper().onTrue(new InstantCommand(robotStates::setStowState));
 
-        opXbox.a().onTrue(new InstantCommand(robotStates.pivot::toggleRatchet));
-        opXbox.b().onTrue(new InstantCommand(robotStates::toggleHighReefAlgaeState));
-        opXbox.x().onTrue(new InstantCommand(robotStates::toggleLowReefAlgaeState));
-        opXbox.y().onTrue(new InstantCommand(robotStates::toggleCoralStationState));
+        opXbox.a().onTrue(new ConditionalCommand(
+                new InstantCommand(robotStates::toggleL4CoralState),
+                new InstantCommand(robotStates.pivot::toggleRatchet),
+                robotStates.intake::hasCoral
+        ));
+
+        opXbox.b().onTrue(new ConditionalCommand(
+                new InstantCommand(robotStates::toggleL1CoralState),
+                new InstantCommand(robotStates::toggleHighReefAlgaeState),
+                robotStates.intake::hasCoral
+        ));
+
+        opXbox.x().onTrue(new ConditionalCommand(
+                new InstantCommand(robotStates::toggleL3CoralState),
+                new InstantCommand(robotStates::toggleLowReefAlgaeState),
+                robotStates.intake::hasCoral
+        ));
+
+        opXbox.y().onTrue(new ConditionalCommand(
+                new InstantCommand(robotStates::toggleL2CoralState),
+                new InstantCommand(robotStates::toggleCoralStationState),
+                robotStates.intake::hasCoral
+        ));
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.

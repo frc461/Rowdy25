@@ -251,7 +251,7 @@ public class RobotStates {
         );
 
         l1CoralState.onTrue(
-                new InstantCommand(swerve::setBranchHeadingMode)
+                new InstantCommand(swerve::setBranchHeadingL1Mode)
                         .unless(DriverStation::isAutonomousEnabled)
                         .andThen(intake::setIdleState)
                         .andThen(transition())
@@ -369,8 +369,8 @@ public class RobotStates {
                         driverXbox::getLeftX,
                         driverXbox::getLeftTriggerAxis,
                         driverXbox::getRightTriggerAxis,
-                        DoubleTrueTrigger.doubleTrue(driverXbox.leftTrigger(0.5), 0.5),
-                        DoubleTrueTrigger.doubleTrue(driverXbox.rightTrigger(0.5), 0.5)
+                        DoubleTrueTrigger.doubleTrue(driverXbox.leftTrigger(), 0.5),
+                        DoubleTrueTrigger.doubleTrue(driverXbox.rightTrigger(), 0.5)
                 )
         );
 
@@ -387,7 +387,7 @@ public class RobotStates {
         );
     }
 
-    private Command transition() { // TODO SHOP: TEST SMOOTHER TRANSITIONS
+    private Command transition() {
         return new ConditionalCommand(
                 new InstantCommand(wrist::setStowState)
                         .andThen(new WaitUntilCommand(wrist::nearTarget)),
