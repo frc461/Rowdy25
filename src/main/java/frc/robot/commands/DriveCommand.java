@@ -110,7 +110,7 @@ public class DriveCommand extends Command {
 
     private double determineTranslationalRate(double axis) {
         return switch (driveMode.get()) {
-            case BRANCH_HEADING, BRANCH_L1_HEADING, REEF_TAG_HEADING, CORAL_STATION_HEADING, PROCESSOR_HEADING, NET_HEADING ->
+            case BRANCH_HEADING, BRANCH_L1_HEADING, REEF_TAG_HEADING, REEF_TAG_OPPOSITE_HEADING, CORAL_STATION_HEADING, PROCESSOR_HEADING, NET_HEADING ->
                 MathUtil.clamp(axis * Constants.MAX_CONTROLLED_VEL.apply(elevatorHeight.getAsDouble()), -2.0, 2.0);
             case OBJECT_HEADING ->
                 VisionUtil.Photon.Color.hasTargets()
@@ -144,6 +144,12 @@ public class DriveCommand extends Command {
                     ? yawController.calculate(
                             swerve.localizer.getStrategyPose().getRotation().getDegrees(),
                             swerve.localizer.getAngleToNearestReefSide()
+                    ) * Constants.MAX_CONTROLLED_ANGULAR_VEL.apply(elevatorHeight.getAsDouble())
+                    : -rot.getAsDouble() * Constants.MAX_CONTROLLED_ANGULAR_VEL.apply(elevatorHeight.getAsDouble());
+            case REEF_TAG_OPPOSITE_HEADING -> autoHeading.getAsBoolean()
+                    ? yawController.calculate(
+                            swerve.localizer.getStrategyPose().getRotation().getDegrees(),
+                            Rotation2d.fromDegrees(swerve.localizer.getAngleToNearestReefSide()).rotateBy(Rotation2d.kPi).getDegrees()
                     ) * Constants.MAX_CONTROLLED_ANGULAR_VEL.apply(elevatorHeight.getAsDouble())
                     : -rot.getAsDouble() * Constants.MAX_CONTROLLED_ANGULAR_VEL.apply(elevatorHeight.getAsDouble());
             case OBJECT_HEADING -> VisionUtil.Photon.Color.hasTargets() && autoHeading.getAsBoolean()

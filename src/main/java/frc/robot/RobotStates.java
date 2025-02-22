@@ -124,7 +124,7 @@ public class RobotStates {
     }
 
     public void toggleL1CoralState() {
-        currentState = currentState == State.L1_CORAL ? State.INTAKE_OUT : State.L1_CORAL;
+        currentState = currentState == State.L1_CORAL ? State.OUTTAKE : State.L1_CORAL;
     }
 
     public void toggleL2CoralState() {
@@ -304,9 +304,9 @@ public class RobotStates {
         );
 
         lowReefAlgaeState.onTrue(
-                new InstantCommand(swerve::setReefTagHeadingMode)
+                new InstantCommand(swerve::setReefTagOppositeHeadingMode)
                         .andThen(transition(Pivot.State.LOW_REEF_ALGAE))
-                        .andThen(intake::setIntakeState)
+                        .andThen(intake::setOuttakeState)
                         .andThen(pivot::setLowReefAlgaeState)
                         .andThen(new WaitUntilCommand(pivot::nearTarget))
                         .andThen(elevator::setLowReefAlgaeState)

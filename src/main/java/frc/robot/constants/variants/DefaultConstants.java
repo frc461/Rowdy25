@@ -225,8 +225,8 @@ public final class DefaultConstants {
         public static final double L2_CORAL = 0;
         public static final double L3_CORAL = 18.1;
         public static final double L4_CORAL = 41.5;
-        public static final double LOW_REEF_ALGAE = 2.9;
-        public static final double HIGH_REEF_ALGAE = 3;
+        public static final double LOW_REEF_ALGAE = 2.0;
+        public static final double HIGH_REEF_ALGAE = 3.0;
         public static final double PROCESSOR = 0;
         public static final double NET = 44;
     }
@@ -287,7 +287,7 @@ public final class DefaultConstants {
         public static final double L2_CORAL = 100.0;
         public static final double L3_CORAL = 100.6;
         public static final double L4_CORAL = 90.5;
-        public static final double LOW_REEF_ALGAE = 105;
+        public static final double LOW_REEF_ALGAE = 32.5;
         public static final double HIGH_REEF_ALGAE = 105;
         public static final double PROCESSOR = 22.1;
         public static final double NET = 90;
@@ -334,8 +334,8 @@ public final class DefaultConstants {
         public static final double L1_CORAL = 125;
         public static final double L2_CORAL = 40;
         public static final double L3_CORAL = 55;
-        public static final double L4_CORAL = 290.5;
-        public static final double LOW_REEF_ALGAE = 220;
+        public static final double L4_CORAL = 280;
+        public static final double LOW_REEF_ALGAE = 131.0;
         public static final double HIGH_REEF_ALGAE = 160;
         public static final double PROCESSOR = 150;
         public static final double NET = 175;
