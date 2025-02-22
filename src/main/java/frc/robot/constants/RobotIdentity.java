@@ -2,6 +2,7 @@ package frc.robot.constants;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.StringPublisher;
+import frc.robot.constants.variants.CompConstants;
 import frc.robot.constants.variants.DefaultConstants;
 import frc.robot.constants.variants.SimConstants;
 import frc.robot.constants.variants.TestConstants;
@@ -37,6 +38,7 @@ public enum RobotIdentity {
                 identityPublisher.set(ALPHA.name());
                 break;
             case ROWDY:
+                setCompConstants();
                 identityPublisher.set(ROWDY.name());
                 break;
             case TEST:
@@ -259,6 +261,123 @@ public enum RobotIdentity {
         Constants.SwerveConstants.FRONT_RIGHT = DefaultConstants.SwerveConstants.FrontRight.FRONT_RIGHT;
         Constants.SwerveConstants.BACK_LEFT = DefaultConstants.SwerveConstants.BackLeft.BACK_LEFT;
         Constants.SwerveConstants.BACK_RIGHT = DefaultConstants.SwerveConstants.BackRight.BACK_RIGHT;
+    }
+
+    private static void setCompConstants() {
+        Constants.ElevatorConstants.LOWER_LIMIT_SWITCH_ID = CompConstants.ElevatorConstants.LOWER_LIMIT_SWITCH_ID;
+        Constants.ElevatorConstants.MOTOR_INVERT = CompConstants.ElevatorConstants.MOTOR_INVERT;
+        Constants.ElevatorConstants.ROTOR_TO_INCH_RATIO = CompConstants.ElevatorConstants.ROTOR_TO_INCH_RATIO;
+        Constants.ElevatorConstants.MASS_LBS = CompConstants.ElevatorConstants.MASS_LBS;
+        Constants.ElevatorConstants.COM_TO_STAGE_2_RATIO = CompConstants.ElevatorConstants.COM_TO_STAGE_2_RATIO;
+        Constants.ElevatorConstants.STAGE_2_LIMIT = CompConstants.ElevatorConstants.STAGE_2_LIMIT;
+        Constants.ElevatorConstants.COM_TO_STAGE_3_RATIO = CompConstants.ElevatorConstants.COM_TO_STAGE_3_RATIO;
+        Constants.ElevatorConstants.ZERO_UPRIGHT_COM = CompConstants.ElevatorConstants.ZERO_UPRIGHT_COM;
+        Constants.ElevatorConstants.G = CompConstants.ElevatorConstants.G;
+        Constants.ElevatorConstants.V = CompConstants.ElevatorConstants.V;
+        Constants.ElevatorConstants.A = CompConstants.ElevatorConstants.A;
+        Constants.ElevatorConstants.P = CompConstants.ElevatorConstants.P;
+        Constants.ElevatorConstants.I = CompConstants.ElevatorConstants.I;
+        Constants.ElevatorConstants.D = CompConstants.ElevatorConstants.D;
+        Constants.ElevatorConstants.EXPO_V = CompConstants.ElevatorConstants.EXPO_V;
+        Constants.ElevatorConstants.EXPO_A = CompConstants.ElevatorConstants.EXPO_A;
+        Constants.ElevatorConstants.SAFE_TOLERANCE = CompConstants.ElevatorConstants.SAFE_TOLERANCE;
+        Constants.ElevatorConstants.AT_TARGET_TOLERANCE = CompConstants.ElevatorConstants.AT_TARGET_TOLERANCE;
+        Constants.ElevatorConstants.LOWER_LIMIT = CompConstants.ElevatorConstants.LOWER_LIMIT;
+        Constants.ElevatorConstants.UPPER_LIMIT = CompConstants.ElevatorConstants.UPPER_LIMIT;
+        Constants.ElevatorConstants.STOW = CompConstants.ElevatorConstants.STOW;
+        Constants.ElevatorConstants.CORAL_STATION = CompConstants.ElevatorConstants.CORAL_STATION;
+        Constants.ElevatorConstants.GROUND_CORAL = CompConstants.ElevatorConstants.GROUND_CORAL;
+        Constants.ElevatorConstants.GROUND_ALGAE = CompConstants.ElevatorConstants.GROUND_ALGAE;
+        Constants.ElevatorConstants.L1_CORAL = CompConstants.ElevatorConstants.L1_CORAL;
+        Constants.ElevatorConstants.L2_CORAL = CompConstants.ElevatorConstants.L2_CORAL;
+        Constants.ElevatorConstants.L3_CORAL = CompConstants.ElevatorConstants.L3_CORAL;
+        Constants.ElevatorConstants.L4_CORAL = CompConstants.ElevatorConstants.L4_CORAL;
+        Constants.ElevatorConstants.LOW_REEF_ALGAE = CompConstants.ElevatorConstants.LOW_REEF_ALGAE;
+        Constants.ElevatorConstants.HIGH_REEF_ALGAE = CompConstants.ElevatorConstants.HIGH_REEF_ALGAE;
+        Constants.ElevatorConstants.PROCESSOR = CompConstants.ElevatorConstants.PROCESSOR;
+        Constants.ElevatorConstants.NET = CompConstants.ElevatorConstants.NET;
+
+        Constants.IntakeConstants.MOTOR_INVERT = CompConstants.IntakeConstants.MOTOR_INVERT;
+
+        Constants.PivotConstants.PIVOT_INVERT = CompConstants.PivotConstants.PIVOT_INVERT;
+        Constants.PivotConstants.SENSOR_TO_DEGREE_RATIO = CompConstants.PivotConstants.SENSOR_TO_DEGREE_RATIO;
+        Constants.PivotConstants.AXIS_POSITION = CompConstants.PivotConstants.AXIS_POSITION;
+        Constants.PivotConstants.ENCODER_ABSOLUTE_OFFSET = CompConstants.PivotConstants.ENCODER_ABSOLUTE_OFFSET;
+        Constants.PivotConstants.ENCODER_INVERT = CompConstants.PivotConstants.ENCODER_INVERT;
+        Constants.PivotConstants.RATCHET_ON = CompConstants.PivotConstants.RATCHET_ON;
+        Constants.PivotConstants.RATCHET_OFF = CompConstants.PivotConstants.RATCHET_OFF;
+        Constants.PivotConstants.G = CompConstants.PivotConstants.G;
+        Constants.PivotConstants.V = CompConstants.PivotConstants.V;
+        Constants.PivotConstants.A = CompConstants.PivotConstants.A;
+        Constants.PivotConstants.P = CompConstants.PivotConstants.P;
+        Constants.PivotConstants.I = CompConstants.PivotConstants.I;
+        Constants.PivotConstants.D = CompConstants.PivotConstants.D;
+        Constants.PivotConstants.EXPO_V = CompConstants.PivotConstants.EXPO_V;
+        Constants.PivotConstants.EXPO_A = CompConstants.PivotConstants.EXPO_A;
+        Constants.PivotConstants.SAFE_TOLERANCE = CompConstants.PivotConstants.SAFE_TOLERANCE;
+        Constants.PivotConstants.AT_TARGET_TOLERANCE = CompConstants.PivotConstants.AT_TARGET_TOLERANCE;
+        Constants.PivotConstants.LOWER_LIMIT = CompConstants.PivotConstants.LOWER_LIMIT;
+        Constants.PivotConstants.UPPER_LIMIT = CompConstants.PivotConstants.UPPER_LIMIT;
+        Constants.PivotConstants.STOW = CompConstants.PivotConstants.STOW;
+        Constants.PivotConstants.CORAL_STATION = CompConstants.PivotConstants.CORAL_STATION;
+        Constants.PivotConstants.GROUND_CORAL = CompConstants.PivotConstants.GROUND_CORAL;
+        Constants.PivotConstants.GROUND_ALGAE = CompConstants.PivotConstants.GROUND_ALGAE;
+        Constants.PivotConstants.L1_CORAL = CompConstants.PivotConstants.L1_CORAL;
+        Constants.PivotConstants.L2_CORAL = CompConstants.PivotConstants.L2_CORAL;
+        Constants.PivotConstants.L3_CORAL = CompConstants.PivotConstants.L3_CORAL;
+        Constants.PivotConstants.L4_CORAL = CompConstants.PivotConstants.L4_CORAL;
+        Constants.PivotConstants.LOW_REEF_ALGAE = CompConstants.PivotConstants.LOW_REEF_ALGAE;
+        Constants.PivotConstants.HIGH_REEF_ALGAE = CompConstants.PivotConstants.HIGH_REEF_ALGAE;
+        Constants.PivotConstants.PROCESSOR = CompConstants.PivotConstants.PROCESSOR;
+        Constants.PivotConstants.NET = CompConstants.PivotConstants.NET;
+
+        Constants.WristConstants.MOTOR_INVERT = CompConstants.WristConstants.MOTOR_INVERT;
+        Constants.WristConstants.SENSOR_TO_DEGREE_RATIO = CompConstants.WristConstants.SENSOR_TO_DEGREE_RATIO;
+        Constants.WristConstants.MASS_LBS = CompConstants.WristConstants.MASS_LBS;
+        Constants.WristConstants.AXIS_POSITION = CompConstants.WristConstants.AXIS_POSITION;
+        Constants.WristConstants.AXIS_TO_ZERO_COM = CompConstants.WristConstants.AXIS_TO_ZERO_COM;
+        Constants.WristConstants.ENCODER_ABSOLUTE_OFFSET = CompConstants.WristConstants.ENCODER_ABSOLUTE_OFFSET;
+        Constants.WristConstants.ENCODER_INVERT = CompConstants.WristConstants.ENCODER_INVERT;
+        Constants.WristConstants.G = CompConstants.WristConstants.G;
+        Constants.WristConstants.V = CompConstants.WristConstants.V;
+        Constants.WristConstants.A = CompConstants.WristConstants.A;
+        Constants.WristConstants.P = CompConstants.WristConstants.P;
+        Constants.WristConstants.I = CompConstants.WristConstants.I;
+        Constants.WristConstants.D = CompConstants.WristConstants.D;
+        Constants.WristConstants.EXPO_V = CompConstants.WristConstants.EXPO_V;
+        Constants.WristConstants.EXPO_A = CompConstants.WristConstants.EXPO_A;
+        Constants.WristConstants.SAFE_TOLERANCE = CompConstants.WristConstants.SAFE_TOLERANCE;
+        Constants.WristConstants.AT_TARGET_TOLERANCE = CompConstants.WristConstants.AT_TARGET_TOLERANCE;
+        Constants.WristConstants.LOWER_LIMIT = CompConstants.WristConstants.LOWER_LIMIT;
+        Constants.WristConstants.UPPER_LIMIT = CompConstants.WristConstants.UPPER_LIMIT;
+        Constants.WristConstants.STOW = CompConstants.WristConstants.STOW;
+        Constants.WristConstants.CORAL_STATION = CompConstants.WristConstants.CORAL_STATION;
+        Constants.WristConstants.GROUND_CORAL = CompConstants.WristConstants.GROUND_CORAL;
+        Constants.WristConstants.GROUND_ALGAE = CompConstants.WristConstants.GROUND_ALGAE;
+        Constants.WristConstants.L1_CORAL = CompConstants.WristConstants.L1_CORAL;
+        Constants.WristConstants.L2_CORAL = CompConstants.WristConstants.L2_CORAL;
+        Constants.WristConstants.L3_CORAL = CompConstants.WristConstants.L3_CORAL;
+        Constants.WristConstants.L4_CORAL = CompConstants.WristConstants.L4_CORAL;
+        Constants.WristConstants.LOW_REEF_ALGAE = CompConstants.WristConstants.LOW_REEF_ALGAE;
+        Constants.WristConstants.HIGH_REEF_ALGAE = CompConstants.WristConstants.HIGH_REEF_ALGAE;
+        Constants.WristConstants.PROCESSOR = CompConstants.WristConstants.PROCESSOR;
+        Constants.WristConstants.NET = CompConstants.WristConstants.NET;
+
+        Constants.SwerveConstants.PATH_TRANSLATION_CONTROLLER_P = CompConstants.SwerveConstants.PATH_TRANSLATION_CONTROLLER_P;
+        Constants.SwerveConstants.PATH_ROTATION_CONTROLLER_P = CompConstants.SwerveConstants.PATH_ROTATION_CONTROLLER_P;
+        Constants.SwerveConstants.TRANSLATION_ALIGNMENT_CONTROLLER_P = CompConstants.SwerveConstants.TRANSLATION_ALIGNMENT_CONTROLLER_P;
+        Constants.SwerveConstants.TRANSLATION_ALIGNMENT_CONTROLLER_D = CompConstants.SwerveConstants.TRANSLATION_ALIGNMENT_CONTROLLER_D;
+        Constants.SwerveConstants.PATH_MANUAL_TRANSLATION_CONTROLLER = CompConstants.SwerveConstants.PATH_MANUAL_TRANSLATION_CONTROLLER;
+        Constants.SwerveConstants.ANGULAR_POSITION_P = CompConstants.SwerveConstants.ANGULAR_POSITION_P;
+        Constants.SwerveConstants.ANGULAR_POSITION_D = CompConstants.SwerveConstants.ANGULAR_POSITION_D;
+        Constants.SwerveConstants.ANGULAR_OBJECT_DETECTION_P = CompConstants.SwerveConstants.ANGULAR_OBJECT_DETECTION_P;
+        Constants.SwerveConstants.ANGULAR_OBJECT_DETECTION_D = CompConstants.SwerveConstants.ANGULAR_OBJECT_DETECTION_D;
+        Constants.SwerveConstants.ANGULAR_MINIMUM_ANGLE = CompConstants.SwerveConstants.ANGULAR_MINIMUM_ANGLE;
+        Constants.SwerveConstants.ANGULAR_MAXIMUM_ANGLE = CompConstants.SwerveConstants.ANGULAR_MAXIMUM_ANGLE;
+        Constants.SwerveConstants.FRONT_LEFT = CompConstants.SwerveConstants.FrontLeft.FRONT_LEFT;
+        Constants.SwerveConstants.FRONT_RIGHT = CompConstants.SwerveConstants.FrontRight.FRONT_RIGHT;
+        Constants.SwerveConstants.BACK_LEFT = CompConstants.SwerveConstants.BackLeft.BACK_LEFT;
+        Constants.SwerveConstants.BACK_RIGHT = CompConstants.SwerveConstants.BackRight.BACK_RIGHT;
     }
 
     private static void setTestConstants() {
