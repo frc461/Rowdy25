@@ -36,7 +36,12 @@
       "name": "outtake",
       "waypointRelativePos": 0.20338983050847467,
       "endWaypointRelativePos": null,
-      "command": null
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "outtake"
+        }
+      }
     }
   ],
   "globalConstraints": {
