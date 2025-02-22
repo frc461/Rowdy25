@@ -27,7 +27,7 @@ public class WristCommand extends Command {
     @Override
     public void execute() {
         double axisValue = MathUtil.applyDeadband(manualAxisValue.getAsDouble(), Constants.DEADBAND) * 0.25;
-        if (axisValue != 0.0) {
+        if (axisValue != 0.0 && robotStates.enableManualState) {
             wrist.setManualState();
             robotStates.setManualState();
             wrist.moveWrist(axisValue, pivotPosition.getAsDouble(), elevatorPosition.getAsDouble());

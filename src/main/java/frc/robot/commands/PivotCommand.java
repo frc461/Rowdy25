@@ -28,7 +28,7 @@ public class PivotCommand extends Command {
     @Override
     public void execute() {
         double axisValue = MathUtil.applyDeadband(manualAxisValue.getAsDouble(), Constants.DEADBAND) * 0.2;
-        if (axisValue != 0.0) {
+        if (axisValue != 0.0 && robotStates.enableManualState) {
             pivot.setManualState();
             robotStates.setManualState();
             pivot.movePivot(axisValue);
