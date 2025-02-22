@@ -25,7 +25,7 @@ public class ElevatorCommand extends Command {
     @Override
     public void execute() {
         double axisValue = MathUtil.applyDeadband(manualAxisValue.getAsDouble(), Constants.DEADBAND) * 0.25;
-        if (axisValue != 0.0 && robotStates.enableManualState) {
+        if (axisValue != 0.0) {
             elevator.setManualState();
             robotStates.setManualState();
             elevator.moveElevator(axisValue);

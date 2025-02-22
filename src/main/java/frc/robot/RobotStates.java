@@ -53,9 +53,8 @@ public class RobotStates {
     public final Wrist wrist = new Wrist();
 
     private State currentState;
-    public boolean enableManualState;
-
     private FieldUtil.Reef.Level currentAutoLevel;
+    private final SendableChooser<State> stateChooser = new SendableChooser<>();
 
     public final Trigger atState = new Trigger(() -> elevator.isAtTarget() && pivot.isAtTarget() && wrist.isAtTarget());
 
@@ -74,15 +73,11 @@ public class RobotStates {
     public final Trigger processorState = new Trigger(() -> currentState == State.PROCESSOR);
     public final Trigger netState = new Trigger(() -> currentState == State.NET);
 
-    private final SendableChooser<State> stateChooser = new SendableChooser<>();
-
     private final NetworkTable robotStatesTelemetryTable = Constants.NT_INSTANCE.getTable("RobotStates");
     private final StringPublisher robotStatesPub = robotStatesTelemetryTable.getStringTopic("Current Robot State").publish();
 
     public RobotStates() {
         currentState = State.STOW;
-        enableManualState = false;
-
         currentAutoLevel = FieldUtil.Reef.Level.L2;
 
         Lights.configureLights();
@@ -106,10 +101,6 @@ public class RobotStates {
 
     public void setManualState() {
         currentState = State.MANUAL;
-    }
-
-    public void toggleEnableManualState() {
-        enableManualState = !enableManualState;
     }
 
     public void setOuttakeState() {

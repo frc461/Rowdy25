@@ -150,7 +150,6 @@ public class RobotContainer {
                 .andThen(new WaitUntilCommand(() -> !opXbox.rightTrigger().getAsBoolean()))
                 .andThen(robotStates.intake::setIdleState));
 
-        opXbox.leftBumper().onTrue(new InstantCommand(robotStates::toggleEnableManualState));
         opXbox.rightBumper().onTrue(new InstantCommand(robotStates::setStowState));
 
         opXbox.a().onTrue(new ConditionalCommand(
