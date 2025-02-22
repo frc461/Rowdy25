@@ -98,6 +98,7 @@ public final class AutoManager {
                         .andThen(new WaitCommand(0.35))
                         .andThen(robotStates::toggleAutoLevelCoralState)
                         .andThen(new WaitUntilCommand(robotStates.stowState))
+                        .andThen(new WaitCommand(0.5))
         ));
 
         while (!currentScoringLocations.isEmpty()) {
@@ -147,8 +148,10 @@ public final class AutoManager {
             triggers.add(autoEventLooper.addTrigger(
                     "outtake",
                     () -> new WaitUntilCommand(robotStates.atState)
+                            .andThen(new WaitCommand(0.35))
                             .andThen(robotStates::toggleAutoLevelCoralState)
                             .andThen(new WaitUntilCommand(robotStates.stowState))
+                            .andThen(new WaitCommand(0.5))
             ));
         }
 
