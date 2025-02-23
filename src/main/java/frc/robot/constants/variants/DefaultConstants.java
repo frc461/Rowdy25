@@ -95,6 +95,8 @@ public final class DefaultConstants {
         }
 
         public static final String ALGAE_CHECK_MARKER = "checkAlgae";
+        public static final String INTAKE_MARKER = "intake";
+        public static final String OUTTAKE_MARKER = "outtake";
 
         public static final PathConstraints PATH_CONSTRAINTS = new PathConstraints(
                 MAX_VEL,

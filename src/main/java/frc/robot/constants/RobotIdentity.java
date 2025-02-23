@@ -72,6 +72,8 @@ public enum RobotIdentity {
 
         Constants.AutoConstants.ROBOT_CONFIG = DefaultConstants.AutoConstants.ROBOT_CONFIG;
         Constants.AutoConstants.ALGAE_CHECK_MARKER = DefaultConstants.AutoConstants.ALGAE_CHECK_MARKER;
+        Constants.AutoConstants.INTAKE_MARKER = DefaultConstants.AutoConstants.INTAKE_MARKER;
+        Constants.AutoConstants.OUTTAKE_MARKER = DefaultConstants.AutoConstants.OUTTAKE_MARKER;
         Constants.AutoConstants.PATH_CONSTRAINTS = DefaultConstants.AutoConstants.PATH_CONSTRAINTS;
         Constants.AutoConstants.OBJECT_SEARCH_DEGREE_SLANT = DefaultConstants.AutoConstants.OBJECT_SEARCH_DEGREE_SLANT;
         Constants.AutoConstants.DEGREE_TOLERANCE_TO_ACCEPT = DefaultConstants.AutoConstants.DEGREE_TOLERANCE_TO_ACCEPT;

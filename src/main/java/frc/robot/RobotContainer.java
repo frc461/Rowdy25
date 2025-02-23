@@ -115,12 +115,12 @@ public class RobotContainer {
 
     private void configurePathPlannerNamedCommands() {
         NamedCommands.registerCommand(
-                "outtake",
+                Constants.AutoConstants.OUTTAKE_MARKER,
                 new InstantCommand(robotStates::toggleAutoLevelCoralState)
         );
 
         NamedCommands.registerCommand(
-                "intake",
+                Constants.AutoConstants.INTAKE_MARKER,
                 new InstantCommand(robotStates::toggleCoralStationState)
         );
     }

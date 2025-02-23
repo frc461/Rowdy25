@@ -65,6 +65,8 @@ public final class Constants {
         public static RobotConfig ROBOT_CONFIG;
 
         public static String ALGAE_CHECK_MARKER;
+        public static String INTAKE_MARKER;
+        public static String OUTTAKE_MARKER;
 
         public static PathConstraints PATH_CONSTRAINTS;
 
