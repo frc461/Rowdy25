@@ -95,6 +95,8 @@ public final class DefaultConstants {
         }
 
         public static final String ALGAE_CHECK_MARKER = "checkAlgae";
+        public static final String INTAKE_MARKER = "intake";
+        public static final String OUTTAKE_MARKER = "outtake";
 
         public static final PathConstraints PATH_CONSTRAINTS = new PathConstraints(
                 MAX_VEL,
@@ -238,6 +240,7 @@ public final class DefaultConstants {
         public static final double CURRENT_LIMIT = 40;
         public static final InvertedValue MOTOR_INVERT = InvertedValue.Clockwise_Positive;
         public static final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Coast;
+        public static final double DEFAULT_PROXIMITY_OBJECT_DETECTION_THRESHOLD = 0.1;
     }
 
     public final static class PivotConstants {

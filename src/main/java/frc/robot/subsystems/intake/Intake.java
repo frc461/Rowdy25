@@ -16,6 +16,8 @@ import frc.robot.subsystems.Lights;
 
 import frc.robot.constants.Constants;
 
+import java.util.function.DoubleConsumer;
+
 public class Intake extends SubsystemBase {
     public enum State {
         IDLE,
@@ -34,6 +36,9 @@ public class Intake extends SubsystemBase {
     private final Timer pulseTimer = new Timer();
 
     private final IntakeTelemetry intakeTelemetry = new IntakeTelemetry(this);
+
+    private double proximityObjectDetectionThreshold = Constants.IntakeConstants.DEFAULT_PROXIMITY_OBJECT_DETECTION_THRESHOLD;
+    public DoubleConsumer setProximityObjectDetectionThreshold = threshold -> proximityObjectDetectionThreshold = threshold;
 
     public Intake() {
         motor = new TalonFX(Constants.IntakeConstants.MOTOR_ID);
@@ -81,7 +86,7 @@ public class Intake extends SubsystemBase {
     }
 
     public boolean hasCoral() {
-        return beamBreakBroken() || getProximity() < 0.13;
+        return beamBreakBroken() || getProximity() < proximityObjectDetectionThreshold;
     }
 
     public boolean hasAlgae() {
