@@ -197,6 +197,7 @@ public final class Constants {
         public static double CURRENT_LIMIT;
         public static InvertedValue MOTOR_INVERT;
         public static NeutralModeValue NEUTRAL_MODE;
+        public static double DEFAULT_PROXIMITY_OBJECT_DETECTION_THRESHOLD;
     }
 
     public final static class PivotConstants {
