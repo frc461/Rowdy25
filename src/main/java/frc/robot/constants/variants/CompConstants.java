@@ -16,7 +16,25 @@ import java.util.function.Function;
 import static edu.wpi.first.units.Units.*;
 import static edu.wpi.first.units.Units.Inches;
 
-public final class CompConstants { // TODO WAIT (COMP ROBOT IS READY): TUNE CONSTANTS FOR COMP BOT
+public final class CompConstants {
+    public final static class PhotonConstants {
+            public static final String BW_TOP_RIGHT_NAME = "ArducamBW";
+            public static final double BW_TOP_RIGHT_FORWARD = 0.386057;
+            public static final double BW_TOP_RIGHT_LEFT = -0.280883;
+            public static final double BW_TOP_RIGHT_UP = 0.277804;
+            public static final double BW_TOP_RIGHT_ROLL = 0.0;
+            public static final double BW_TOP_RIGHT_PITCH = -5.0;
+            public static final double BW_TOP_RIGHT_YAW = -30.375507;
+
+            public static final String BW_TOP_LEFT_NAME = "ArducamBW2";
+            public static final double BW_TOP_LEFT_FORWARD = 0.386057;
+            public static final double BW_TOP_LEFT_LEFT = 0.280883;
+            public static final double BW_TOP_LEFT_UP = 0.277804;
+            public static final double BW_TOP_LEFT_ROLL = 0.0;
+            public static final double BW_TOP_LEFT_PITCH = -5.0;
+            public static final double BW_TOP_LEFT_YAW = 30.375507;
+    }
+
     public final static class ElevatorConstants {
         // motor config
         public static final int LOWER_LIMIT_SWITCH_ID = 7;
@@ -105,7 +123,7 @@ public final class CompConstants { // TODO WAIT (COMP ROBOT IS READY): TUNE CONS
         public static final double L1_CORAL = 22.3;
         public static final double L2_CORAL = 100.0;
         public static final double L3_CORAL = 100.6;
-        public static final double L4_CORAL = 90.5;
+        public static final double L4_CORAL = 88.5;
         public static final double LOW_REEF_ALGAE = 32.5;
         public static final double HIGH_REEF_ALGAE = 105;
         public static final double PROCESSOR = 22.1;
@@ -149,7 +167,7 @@ public final class CompConstants { // TODO WAIT (COMP ROBOT IS READY): TUNE CONS
         public static final double L1_CORAL = 125;
         public static final double L2_CORAL = 40;
         public static final double L3_CORAL = 55;
-        public static final double L4_CORAL = 280;
+        public static final double L4_CORAL = 285;
         public static final double LOW_REEF_ALGAE = 131.0;
         public static final double HIGH_REEF_ALGAE = 160;
         public static final double PROCESSOR = 150;

@@ -267,6 +267,21 @@ public enum RobotIdentity {
     }
 
     private static void setCompConstants() {
+        Constants.VisionConstants.PhotonConstants.BW_TOP_RIGHT_NAME = CompConstants.PhotonConstants.BW_TOP_RIGHT_NAME;
+        Constants.VisionConstants.PhotonConstants.BW_TOP_RIGHT_FORWARD = CompConstants.PhotonConstants.BW_TOP_RIGHT_FORWARD;
+        Constants.VisionConstants.PhotonConstants.BW_TOP_RIGHT_LEFT = CompConstants.PhotonConstants.BW_TOP_RIGHT_LEFT;
+        Constants.VisionConstants.PhotonConstants.BW_TOP_RIGHT_UP = CompConstants.PhotonConstants.BW_TOP_RIGHT_UP;
+        Constants.VisionConstants.PhotonConstants.BW_TOP_RIGHT_ROLL = CompConstants.PhotonConstants.BW_TOP_RIGHT_ROLL;
+        Constants.VisionConstants.PhotonConstants.BW_TOP_RIGHT_PITCH = CompConstants.PhotonConstants.BW_TOP_RIGHT_PITCH;
+        Constants.VisionConstants.PhotonConstants.BW_TOP_RIGHT_YAW = CompConstants.PhotonConstants.BW_TOP_RIGHT_YAW;
+        Constants.VisionConstants.PhotonConstants.BW_TOP_LEFT_NAME = CompConstants.PhotonConstants.BW_TOP_LEFT_NAME;
+        Constants.VisionConstants.PhotonConstants.BW_TOP_LEFT_FORWARD = CompConstants.PhotonConstants.BW_TOP_LEFT_FORWARD;
+        Constants.VisionConstants.PhotonConstants.BW_TOP_LEFT_LEFT = CompConstants.PhotonConstants.BW_TOP_LEFT_LEFT;
+        Constants.VisionConstants.PhotonConstants.BW_TOP_LEFT_UP = CompConstants.PhotonConstants.BW_TOP_LEFT_UP;
+        Constants.VisionConstants.PhotonConstants.BW_TOP_LEFT_ROLL = CompConstants.PhotonConstants.BW_TOP_LEFT_ROLL;
+        Constants.VisionConstants.PhotonConstants.BW_TOP_LEFT_PITCH = CompConstants.PhotonConstants.BW_TOP_LEFT_PITCH;
+        Constants.VisionConstants.PhotonConstants.BW_TOP_LEFT_YAW = CompConstants.PhotonConstants.BW_TOP_LEFT_YAW;
+
         Constants.ElevatorConstants.LOWER_LIMIT_SWITCH_ID = CompConstants.ElevatorConstants.LOWER_LIMIT_SWITCH_ID;
         Constants.ElevatorConstants.MOTOR_INVERT = CompConstants.ElevatorConstants.MOTOR_INVERT;
         Constants.ElevatorConstants.ROTOR_TO_INCH_RATIO = CompConstants.ElevatorConstants.ROTOR_TO_INCH_RATIO;
