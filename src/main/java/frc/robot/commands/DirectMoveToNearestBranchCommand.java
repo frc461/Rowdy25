@@ -13,7 +13,7 @@ import frc.robot.util.FieldUtil;
 
 import java.util.function.DoubleSupplier;
 
-public class DirectMoveToNearestBranchCommand extends Command {
+public class DirectMoveToNearestBranchCommand extends Command { // TODO: IMPLEMENT SPHERICAL MODEL TO AVOID REEF COLLISION
     private final Swerve swerve;
     private final SwerveRequest.FieldCentric fieldCentric;
     private final PIDController yawController;
