@@ -115,12 +115,12 @@ public class RobotContainer {
 
     private void configurePathPlannerNamedCommands() {
         NamedCommands.registerCommand(
-                "outtake",
+                Constants.AutoConstants.OUTTAKE_MARKER,
                 new InstantCommand(robotStates::toggleAutoLevelCoralState)
         );
 
         NamedCommands.registerCommand(
-                "intake",
+                Constants.AutoConstants.INTAKE_MARKER,
                 new InstantCommand(robotStates::toggleCoralStationState)
         );
     }
@@ -134,7 +134,7 @@ public class RobotContainer {
         driverXbox.x().onTrue(new InstantCommand(() -> robotStates.swerve.localizer.setPoses(Constants.FAR_LEFT_CORAL_STATION)));
         driverXbox.y().whileTrue(robotStates.swerve.directMoveToNearestBranch(robotStates.elevator::getPosition));
 
-        driverXbox.leftBumper().onTrue(new InstantCommand(robotStates.swerve::setBranchHeadingMode) // TODO SHOP: TEST THIS
+        driverXbox.leftBumper().onTrue(new InstantCommand(robotStates.swerve::setBranchHeadingMode)
                 .andThen(new WaitUntilCommand(() -> !driverXbox.leftBumper().getAsBoolean()))
                 .andThen(robotStates.swerve::setIdleMode));
         driverXbox.rightBumper().onTrue(new InstantCommand(robotStates.swerve::setCoralStationHeadingMode)

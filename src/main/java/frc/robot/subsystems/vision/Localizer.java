@@ -13,6 +13,8 @@ import frc.robot.util.EstimatedRobotPose;
 import frc.robot.util.FieldUtil;
 import frc.robot.util.VisionUtil;
 
+import java.util.Optional;
+
 public class Localizer {
     private enum LocalizationStrategy {
         POSE_ESTIMATOR,
@@ -182,17 +184,19 @@ public class Localizer {
         VisionUtil.Photon.updateResults();
         for (VisionUtil.Photon.BW.BWCamera camera : VisionUtil.Photon.BW.BWCamera.values()) {
             if (VisionUtil.Photon.BW.isTagClear(camera)) {
-                EstimatedRobotPose poseEstimate = getUpdatedPhotonPoseEstimate(camera);
-                poseEstimator.addVisionMeasurement(
-                        poseEstimate.estimatedPose().toPose2d(),
-                        poseEstimate.timestampSeconds(),
-                        poseEstimate.stdDevs()
+                Optional<EstimatedRobotPose> optionalPoseEstimate = getUpdatedPhotonPoseEstimate(camera);
+                optionalPoseEstimate.ifPresent(
+                        poseEstimate -> poseEstimator.addVisionMeasurement(
+                                poseEstimate.estimatedPose().toPose2d(),
+                                poseEstimate.timestampSeconds(),
+                                poseEstimate.stdDevs()
+                        )
                 );
             }
         }
     }
 
-    public EstimatedRobotPose getUpdatedPhotonPoseEstimate(VisionUtil.Photon.BW.BWCamera camera) {
+    public Optional<EstimatedRobotPose> getUpdatedPhotonPoseEstimate(VisionUtil.Photon.BW.BWCamera camera) {
         return VisionUtil.Photon.BW.getBestTagPose(camera, poseEstimator.getEstimatedPosition());
     }
 

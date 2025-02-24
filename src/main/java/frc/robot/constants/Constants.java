@@ -65,6 +65,8 @@ public final class Constants {
         public static RobotConfig ROBOT_CONFIG;
 
         public static String ALGAE_CHECK_MARKER;
+        public static String INTAKE_MARKER;
+        public static String OUTTAKE_MARKER;
 
         public static PathConstraints PATH_CONSTRAINTS;
 
@@ -195,6 +197,7 @@ public final class Constants {
         public static double CURRENT_LIMIT;
         public static InvertedValue MOTOR_INVERT;
         public static NeutralModeValue NEUTRAL_MODE;
+        public static double DEFAULT_PROXIMITY_OBJECT_DETECTION_THRESHOLD;
     }
 
     public final static class PivotConstants {
