@@ -21,13 +21,13 @@ public class LocalizerSim {
         camProperties.setAvgLatencyMs(25.0);
         camProperties.setLatencyStdDevMs(10.0);
 
-        PhotonCameraSim BWTopRightSim = new PhotonCameraSim(PhotonUtil.BW.getCamera(PhotonUtil.BW.BWCamera.TOP_RIGHT), camProperties);
-        PhotonCameraSim BWTopLeftSim = new PhotonCameraSim(PhotonUtil.BW.getCamera(PhotonUtil.BW.BWCamera.TOP_LEFT), camProperties);
-        PhotonCameraSim BWBackSim = new PhotonCameraSim(PhotonUtil.BW.getCamera(PhotonUtil.BW.BWCamera.BACK), camProperties);
+        PhotonCameraSim BWTopRightSim = new PhotonCameraSim(PhotonUtil.BW.BWCamera.TOP_RIGHT.getCamera(), camProperties);
+        PhotonCameraSim BWTopLeftSim = new PhotonCameraSim(PhotonUtil.BW.BWCamera.TOP_LEFT.getCamera(), camProperties);
+        PhotonCameraSim BWBackSim = new PhotonCameraSim(PhotonUtil.BW.BWCamera.BACK.getCamera(), camProperties);
 
-        visionSim.addCamera(BWTopRightSim, PhotonUtil.BW.getRobotToBWOffset(PhotonUtil.BW.BWCamera.TOP_RIGHT));
-        visionSim.addCamera(BWTopLeftSim, PhotonUtil.BW.getRobotToBWOffset(PhotonUtil.BW.BWCamera.TOP_LEFT));
-        visionSim.addCamera(BWBackSim, PhotonUtil.BW.getRobotToBWOffset(PhotonUtil.BW.BWCamera.BACK));
+        visionSim.addCamera(BWTopRightSim, PhotonUtil.BW.BWCamera.TOP_RIGHT.getRobotToCameraOffset());
+        visionSim.addCamera(BWTopLeftSim, PhotonUtil.BW.BWCamera.TOP_LEFT.getRobotToCameraOffset());
+        visionSim.addCamera(BWBackSim, PhotonUtil.BW.BWCamera.BACK.getRobotToCameraOffset());
     }
 
     public void update(Pose2d strategyPose) {
