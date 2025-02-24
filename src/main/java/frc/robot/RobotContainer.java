@@ -131,7 +131,13 @@ public class RobotContainer {
         // IMPORTANT: WHEN BINDING DRIVER BUTTONS, TRIGGERS NEED TO BE ON FALSE ESPECIALLY WITH BINDINGS THAT INITIATE DRIVE AUTOMATION UPON HOLD DEBOUNCE
         // SO FIGURE OUT LOGIC CORRECTLY AND CAREFULLY
 
-        driverXbox.a().onTrue(new InstantCommand(robotStates.swerve::toggleAutoHeading));
+        driverXbox.a().onTrue(new InstantCommand(robotStates.swerve::toggleAutoHeading)
+                        .andThen( // TODO SHOP: TEST RUMBLING
+                                new InstantCommand(() -> driverXbox.setRumble(GenericHID.RumbleType.kBothRumble, 0.5))
+                                        .andThen(new WaitCommand(0.25))
+                                        .andThen(() -> driverXbox.setRumble(GenericHID.RumbleType.kBothRumble, 0))
+                                        .onlyIf(robotStates.swerve::isAutoHeading)
+                        ));
         driverXbox.b().onTrue(new InstantCommand(() -> robotStates.swerve.localizer.setPoses(Constants.FAR_RIGHT_CORAL_STATION)));
         driverXbox.x().onTrue(new InstantCommand(() -> robotStates.swerve.localizer.setPoses(Constants.FAR_LEFT_CORAL_STATION)));
         driverXbox.y().whileTrue(robotStates.swerve.directMoveToNearestBranch(robotStates.elevator::getPosition));

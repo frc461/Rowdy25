@@ -189,6 +189,10 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                 || currentMode == DriveMode.TRANSLATING;
     }
 
+    public boolean isAutoHeading() {
+        return autoHeading;
+    }
+
     public void resetGyro() {
         resetGyro(localizer.getStrategyPose().getRotation());
     }
