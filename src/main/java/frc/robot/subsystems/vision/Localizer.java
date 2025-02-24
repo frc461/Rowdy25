@@ -9,9 +9,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.drivetrain.Swerve;
-import frc.robot.util.EstimatedRobotPose;
-import frc.robot.util.FieldUtil;
-import frc.robot.util.VisionUtil;
+import frc.robot.util.*;
+import frc.robot.util.vision.LimelightUtil;
+import frc.robot.util.vision.PhotonUtil;
+import frc.robot.util.vision.QuestNavUtil;
 
 import java.util.Optional;
 
@@ -50,7 +51,7 @@ public class Localizer {
         );
 
         configureQuestOffset();
-        VisionUtil.Limelight.configureRobotToCameraOffset();
+        LimelightUtil.configureRobotToCameraOffset();
     }
 
     public Pose2d getStrategyPose() {
@@ -70,7 +71,7 @@ public class Localizer {
     }
 
     public Pose2d getQuestPose() {
-        return VisionUtil.QuestNav.getRobotPose();
+        return QuestNavUtil.getRobotPose();
     }
 
     public Translation2d getTranslationToNearestCoralStation() {
@@ -159,31 +160,31 @@ public class Localizer {
     }
 
     public void configureQuestOffset() {
-        VisionUtil.QuestNav.setQuestPose(poseEstimator.getEstimatedPosition());
+        QuestNavUtil.setQuestPose(poseEstimator.getEstimatedPosition());
     }
 
     public void setPoses(Pose2d pose) {
         poseEstimator.resetPose(pose);
         swerve.resetPose(pose);
         swerve.resetGyro();
-        VisionUtil.QuestNav.setQuestPose(pose);
+        QuestNavUtil.setQuestPose(pose);
     }
 
     public void updateLimelightPoseEstimation() {
-        if (VisionUtil.Limelight.isMultiTag() && VisionUtil.Limelight.isTagClear()) {
-            Pose2d megaTagPose = VisionUtil.Limelight.getMegaTagOnePose();
+        if (LimelightUtil.isMultiTag() && LimelightUtil.isTagClear()) {
+            Pose2d megaTagPose = LimelightUtil.getMegaTagOnePose();
             poseEstimator.addVisionMeasurement(
                     megaTagPose,
-                    Timer.getFPGATimestamp() - VisionUtil.Limelight.getLatency(),
-                    Constants.VisionConstants.VISION_STD_DEV_MULTITAG_FUNCTION.apply(VisionUtil.Limelight.getNearestTagDist())
+                    Timer.getFPGATimestamp() - LimelightUtil.getLatency(),
+                    Constants.VisionConstants.VISION_STD_DEV_MULTITAG_FUNCTION.apply(LimelightUtil.getNearestTagDist())
             );
         }
     }
 
     public void updatePhotonPoseEstimation() {
-        VisionUtil.Photon.updateResults();
-        for (VisionUtil.Photon.BW.BWCamera camera : VisionUtil.Photon.BW.BWCamera.values()) {
-            if (VisionUtil.Photon.BW.isTagClear(camera)) {
+        PhotonUtil.updateResults();
+        for (PhotonUtil.BW.BWCamera camera : PhotonUtil.BW.BWCamera.values()) {
+            if (PhotonUtil.BW.isTagClear(camera)) {
                 Optional<EstimatedRobotPose> optionalPoseEstimate = getUpdatedPhotonPoseEstimate(camera);
                 optionalPoseEstimate.ifPresent(
                         poseEstimate -> poseEstimator.addVisionMeasurement(
@@ -196,8 +197,8 @@ public class Localizer {
         }
     }
 
-    public Optional<EstimatedRobotPose> getUpdatedPhotonPoseEstimate(VisionUtil.Photon.BW.BWCamera camera) {
-        return VisionUtil.Photon.BW.getBestTagPose(camera, poseEstimator.getEstimatedPosition());
+    public Optional<EstimatedRobotPose> getUpdatedPhotonPoseEstimate(PhotonUtil.BW.BWCamera camera) {
+        return PhotonUtil.BW.getBestTagPose(camera, poseEstimator.getEstimatedPosition());
     }
 
     public void updatePoseEstimation() {
@@ -213,12 +214,12 @@ public class Localizer {
 
     // changes offset based on error between pose estimate and corrected QuestNav pose
     public void updateQuestNavPose() {
-        VisionUtil.QuestNav.completeQuestPose();
-        if (VisionUtil.Limelight.getNearestTagDist() > Constants.VisionConstants.QuestNavConstants.MIN_TAG_DIST_TO_BE_FAR) {
+        QuestNavUtil.completeQuestPose();
+        if (LimelightUtil.getNearestTagDist() > Constants.VisionConstants.QuestNavConstants.MIN_TAG_DIST_TO_BE_FAR) {
             hasCalibratedOnceWhenNear = false;
         }
         if (!hasCalibratedOnceWhenNear) {
-            if (VisionUtil.highConfidenceEstimation()
+            if (LimelightUtil.isTagClear() && PhotonUtil.BW.isTagClear()
                     && this.swerve.getState().Speeds.vxMetersPerSecond == 0
                     && this.swerve.getState().Speeds.vyMetersPerSecond == 0
                     && Math.abs(this.swerve.getState().Speeds.omegaRadiansPerSecond) == 0) {

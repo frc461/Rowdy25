@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.WrapperCommand;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.drivetrain.Swerve;
-import frc.robot.util.VisionUtil;
+import frc.robot.util.vision.PhotonUtil;
 
 import java.util.*;
 import java.util.function.BooleanSupplier;
@@ -28,7 +28,7 @@ public class FollowPathRequiringAlgaeCommand extends FollowPathCommand {
     private final PathPlannerPath originalPath;
     private final RobotConfig robotConfig;
     private final BooleanSupplier shouldFlipPath;
-    private final BooleanSupplier hasAlgaeTargets = VisionUtil.Photon.Color::hasAlgaeTargets;
+    private final BooleanSupplier hasAlgaeTargets = PhotonUtil.Color::hasAlgaeTargets;
     private final List<OneShotTriggerEvent> allInstantEvents = new ArrayList<>();
     private PathPlannerPath path;
     private PathPlannerTrajectory trajectory;

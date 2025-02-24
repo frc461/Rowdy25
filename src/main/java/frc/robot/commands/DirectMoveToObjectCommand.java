@@ -6,7 +6,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.drivetrain.Swerve;
-import frc.robot.util.VisionUtil;
+import frc.robot.util.vision.PhotonUtil;
 
 import java.util.function.BooleanSupplier;
 
@@ -15,12 +15,12 @@ public class DirectMoveToObjectCommand extends Command {
     private final SwerveRequest.RobotCentric robotCentric;
     private final PIDController objectDetectionController;
     private final BooleanSupplier objectObtained;
-    private final VisionUtil.Photon.Color.TargetClass objectClass;
+    private final PhotonUtil.Color.TargetClass objectClass;
     private boolean rotationComplete;
     private boolean translationComplete;
     private boolean end;
 
-    public DirectMoveToObjectCommand(Swerve swerve, SwerveRequest.RobotCentric robotCentric, BooleanSupplier objectObtained, VisionUtil.Photon.Color.TargetClass objectClass) {
+    public DirectMoveToObjectCommand(Swerve swerve, SwerveRequest.RobotCentric robotCentric, BooleanSupplier objectObtained, PhotonUtil.Color.TargetClass objectClass) {
         this.swerve = swerve;
         this.robotCentric = robotCentric;
         this.objectObtained = objectObtained;
@@ -45,9 +45,9 @@ public class DirectMoveToObjectCommand extends Command {
 
     @Override
     public void execute() {
-        boolean targetValid = VisionUtil.Photon.Color.hasTargets(objectClass);
-        double currentYaw = VisionUtil.Photon.Color.getBestObjectYaw(objectClass);
-        double currentPitch = VisionUtil.Photon.Color.getBestObjectPitch(objectClass);
+        boolean targetValid = PhotonUtil.Color.hasTargets(objectClass);
+        double currentYaw = PhotonUtil.Color.getBestObjectYaw(objectClass);
+        double currentPitch = PhotonUtil.Color.getBestObjectPitch(objectClass);
         if (targetValid && !rotationComplete) {
             double yawError = Math.abs(currentYaw);
 

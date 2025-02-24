@@ -4,10 +4,8 @@ import dev.doglog.DogLog;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.networktables.*;
 import frc.robot.constants.Constants;
-import frc.robot.util.EstimatedRobotPose;
-import frc.robot.util.VisionUtil;
-
-import java.util.Optional;
+import frc.robot.util.vision.LimelightUtil;
+import frc.robot.util.vision.PhotonUtil;
 
 public class LocalizationTelemetry {
     public enum QuestFault {
@@ -65,29 +63,29 @@ public class LocalizationTelemetry {
     public void publishValues() {
         localizationStrategyPub.set(localizer.getLocalizationStrategy());
 
-        nearestTagDistPub.set(VisionUtil.Limelight.getNearestTagDist());
-        canAddLLMeasurementsPub.set(VisionUtil.Limelight.isTagClear());
+        nearestTagDistPub.set(LimelightUtil.getNearestTagDist());
+        canAddLLMeasurementsPub.set(LimelightUtil.isTagClear());
 
-        photonColorHasAlgaeTargetPub.set(VisionUtil.Photon.Color.hasAlgaeTargets());
-        photonColorHasCoralTargetPub.set(VisionUtil.Photon.Color.hasCoralTargets());
-        photonColorBestObjectClass.set(VisionUtil.Photon.Color.getBestObjectClass().name());
-        canAddTopRightMeasurementsPub.set(VisionUtil.Photon.BW.isTagClear(VisionUtil.Photon.BW.BWCamera.TOP_RIGHT));
-        canAddTopLeftMeasurementsPub.set(VisionUtil.Photon.BW.isTagClear(VisionUtil.Photon.BW.BWCamera.TOP_LEFT));
-        canAddBackMeasurementsPub.set(VisionUtil.Photon.BW.isTagClear(VisionUtil.Photon.BW.BWCamera.BACK));
+        photonColorHasAlgaeTargetPub.set(PhotonUtil.Color.hasAlgaeTargets());
+        photonColorHasCoralTargetPub.set(PhotonUtil.Color.hasCoralTargets());
+        photonColorBestObjectClass.set(PhotonUtil.Color.getBestObjectClass().name());
+        canAddTopRightMeasurementsPub.set(PhotonUtil.BW.isTagClear(PhotonUtil.BW.BWCamera.TOP_RIGHT));
+        canAddTopLeftMeasurementsPub.set(PhotonUtil.BW.isTagClear(PhotonUtil.BW.BWCamera.TOP_LEFT));
+        canAddBackMeasurementsPub.set(PhotonUtil.BW.isTagClear(PhotonUtil.BW.BWCamera.BACK));
 
 
         fieldTypePub.set("Field2d");
         publishPose(pose2dEstimatePub, poseEstimatePub, poseEstimatePrettyPub, localizer.getEstimatedPose());
         publishPose(questPose2dPub, questPosePub, questPosePrettyPub, localizer.getQuestPose());
-        publishPose(megaTagOnePose2dPub, megaTagOnePosePub, megaTagOnePosePrettyPub, VisionUtil.Limelight.getMegaTagOnePose());
-        publishPose(megaTagTwoPose2dPub, megaTagTwoPosePub, megaTagTwoPosePrettyPub, VisionUtil.Limelight.getMegaTagTwoPose());
-        localizer.getUpdatedPhotonPoseEstimate(VisionUtil.Photon.BW.BWCamera.TOP_RIGHT).ifPresent(
+        publishPose(megaTagOnePose2dPub, megaTagOnePosePub, megaTagOnePosePrettyPub, LimelightUtil.getMegaTagOnePose());
+        publishPose(megaTagTwoPose2dPub, megaTagTwoPosePub, megaTagTwoPosePrettyPub, LimelightUtil.getMegaTagTwoPose());
+        localizer.getUpdatedPhotonPoseEstimate(PhotonUtil.BW.BWCamera.TOP_RIGHT).ifPresent(
                 poseEstimate -> publishPose(photonTopRightPose2dPub, photonTopRightPosePub, photonTopRightPosePrettyPub, poseEstimate.estimatedPose().toPose2d())
         );
-        localizer.getUpdatedPhotonPoseEstimate(VisionUtil.Photon.BW.BWCamera.TOP_LEFT).ifPresent(
+        localizer.getUpdatedPhotonPoseEstimate(PhotonUtil.BW.BWCamera.TOP_LEFT).ifPresent(
                 poseEstimate -> publishPose(photonTopLeftPose2dPub, photonTopLeftPosePub, photonTopLeftPosePrettyPub, poseEstimate.estimatedPose().toPose2d())
         );
-        localizer.getUpdatedPhotonPoseEstimate(VisionUtil.Photon.BW.BWCamera.BACK).ifPresent(
+        localizer.getUpdatedPhotonPoseEstimate(PhotonUtil.BW.BWCamera.BACK).ifPresent(
                 poseEstimate -> publishPose(photonBackPose2dPub, photonBackPosePub, photonBackPosePrettyPub, poseEstimate.estimatedPose().toPose2d())
         );
 
@@ -97,19 +95,19 @@ public class LocalizationTelemetry {
     private void logValues() {
         DogLog.log("PoseEstimate", localizer.getEstimatedPose());
         DogLog.log("LocalizationStrategy", localizer.getLocalizationStrategy());
-        localizer.getUpdatedPhotonPoseEstimate(VisionUtil.Photon.BW.BWCamera.TOP_RIGHT).ifPresent(
+        localizer.getUpdatedPhotonPoseEstimate(PhotonUtil.BW.BWCamera.TOP_RIGHT).ifPresent(
                 poseEstimate -> DogLog.log("PhotonTopRightPose", poseEstimate.estimatedPose().toPose2d())
         );
-        localizer.getUpdatedPhotonPoseEstimate(VisionUtil.Photon.BW.BWCamera.TOP_LEFT).ifPresent(
+        localizer.getUpdatedPhotonPoseEstimate(PhotonUtil.BW.BWCamera.TOP_LEFT).ifPresent(
                 poseEstimate -> DogLog.log("PhotonTopLeftPose", poseEstimate.estimatedPose().toPose2d())
         );
-        localizer.getUpdatedPhotonPoseEstimate(VisionUtil.Photon.BW.BWCamera.BACK).ifPresent(
+        localizer.getUpdatedPhotonPoseEstimate(PhotonUtil.BW.BWCamera.BACK).ifPresent(
                 poseEstimate -> DogLog.log("PhotonBackPose", poseEstimate.estimatedPose().toPose2d())
         );
-        DogLog.log("PhotonColorHasTarget", VisionUtil.Photon.Color.hasTargets());
-        DogLog.log("PhotonBWTopRightHasTarget", VisionUtil.Photon.BW.hasTargets(VisionUtil.Photon.BW.BWCamera.TOP_RIGHT));
-        DogLog.log("PhotonBWTopLeftHasTarget", VisionUtil.Photon.BW.hasTargets(VisionUtil.Photon.BW.BWCamera.TOP_LEFT));
-        DogLog.log("PhotonBWBackHasTarget", VisionUtil.Photon.BW.hasTargets(VisionUtil.Photon.BW.BWCamera.BACK));
+        DogLog.log("PhotonColorHasTarget", PhotonUtil.Color.hasTargets());
+        DogLog.log("PhotonBWTopRightHasTarget", PhotonUtil.BW.hasTargets(PhotonUtil.BW.BWCamera.TOP_RIGHT));
+        DogLog.log("PhotonBWTopLeftHasTarget", PhotonUtil.BW.hasTargets(PhotonUtil.BW.BWCamera.TOP_LEFT));
+        DogLog.log("PhotonBWBackHasTarget", PhotonUtil.BW.hasTargets(PhotonUtil.BW.BWCamera.BACK));
     }
 
     public void publishPose(StructPublisher<Pose2d> structPub, DoubleArrayPublisher arrayPub, StringPublisher prettyPub, Pose2d pose) {

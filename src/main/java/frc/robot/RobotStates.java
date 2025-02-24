@@ -21,7 +21,7 @@ import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.wrist.Wrist;
 import frc.robot.util.DoubleTrueTrigger;
 import frc.robot.util.FieldUtil;
-import frc.robot.util.VisionUtil;
+import frc.robot.util.vision.PhotonUtil;
 
 import java.util.Arrays;
 
@@ -224,10 +224,10 @@ public class RobotStates {
                         .andThen(elevator::setGroundCoralState)
                         .andThen(new WaitUntilCommand(elevator::nearTarget))
                         .andThen(pivot::setGroundCoralState)
-                        .andThen(new WaitUntilCommand(VisionUtil.Photon.Color::hasCoralTargets))
+                        .andThen(new WaitUntilCommand(PhotonUtil.Color::hasCoralTargets))
                         .andThen(swerve.directMoveToObject(
                                 () -> intake.hasAlgae() || intake.beamBreakBroken(),
-                                VisionUtil.Photon.Color.TargetClass.CORAL
+                                PhotonUtil.Color.TargetClass.CORAL
                         ).asProxy())
                         .andThen(this::setStowState)
                         .onlyIf(() -> !intake.hasAlgae() && !intake.hasCoral())
@@ -241,10 +241,10 @@ public class RobotStates {
                         .andThen(elevator::setGroundAlgaeState)
                         .andThen(new WaitUntilCommand(elevator::nearTarget))
                         .andThen(pivot::setGroundAlgaeState)
-                        .andThen(new WaitUntilCommand(VisionUtil.Photon.Color::hasAlgaeTargets))
+                        .andThen(new WaitUntilCommand(PhotonUtil.Color::hasAlgaeTargets))
                         .andThen(swerve.directMoveToObject(
                                 () -> intake.hasAlgae() || intake.beamBreakBroken(),
-                                VisionUtil.Photon.Color.TargetClass.ALGAE
+                                PhotonUtil.Color.TargetClass.ALGAE
                         ).asProxy())
                         .andThen(this::setStowState)
                         .onlyIf(() -> !intake.hasAlgae() && !intake.hasCoral())

@@ -26,7 +26,7 @@ import frc.robot.constants.Constants;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.DirectMoveToObjectCommand;
 import frc.robot.subsystems.vision.Localizer;
-import frc.robot.util.VisionUtil;
+import frc.robot.util.vision.PhotonUtil;
 
 /**
  * Class that extends the Phoenix 6 SwerveDrivetrain class and implements
@@ -159,7 +159,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
 
     public Command pathFindFindScoreAlgae(BooleanSupplier algaeObtained) {
         return new SearchForAlgaeCommand(this, fieldCentric)
-                .andThen(directMoveToObject(algaeObtained, VisionUtil.Photon.Color.TargetClass.ALGAE))
+                .andThen(directMoveToObject(algaeObtained, PhotonUtil.Color.TargetClass.ALGAE))
                 .andThen(Commands.defer(
                         () -> Pathfinder.pathFindToNearestAlgaeScoringLocation(localizer.getStrategyPose()),
                         Set.of(this)
@@ -173,7 +173,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
         ).andThen(directMoveToNearestBranch(elevatorHeight));
     }
 
-    public Command directMoveToObject(BooleanSupplier objectObtained, VisionUtil.Photon.Color.TargetClass objectLabelClass) {
+    public Command directMoveToObject(BooleanSupplier objectObtained, PhotonUtil.Color.TargetClass objectLabelClass) {
         return new DirectMoveToObjectCommand(this, robotCentric, objectObtained, objectLabelClass);
     }
 

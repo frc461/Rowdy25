@@ -8,7 +8,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.drivetrain.Swerve;
-import frc.robot.util.VisionUtil;
+import frc.robot.util.vision.PhotonUtil;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
@@ -113,7 +113,7 @@ public class DriveCommand extends Command {
             case BRANCH_HEADING, BRANCH_L1_HEADING, REEF_TAG_HEADING, REEF_TAG_OPPOSITE_HEADING, CORAL_STATION_HEADING, PROCESSOR_HEADING, NET_HEADING ->
                 MathUtil.clamp(axis * Constants.MAX_CONTROLLED_VEL.apply(elevatorHeight.getAsDouble()), -2.0, 2.0);
             case OBJECT_HEADING ->
-                VisionUtil.Photon.Color.hasTargets()
+                PhotonUtil.Color.hasTargets()
                         ? MathUtil.clamp(axis * Constants.MAX_CONTROLLED_VEL.apply(elevatorHeight.getAsDouble()), -2.0, 2.0)
                         : axis * Constants.MAX_CONTROLLED_VEL.apply(elevatorHeight.getAsDouble());
             default -> axis * Constants.MAX_CONTROLLED_VEL.apply(elevatorHeight.getAsDouble());
@@ -152,9 +152,9 @@ public class DriveCommand extends Command {
                             Rotation2d.fromDegrees(swerve.localizer.getAngleToNearestReefSide()).rotateBy(Rotation2d.kPi).getDegrees()
                     ) * Constants.MAX_CONTROLLED_ANGULAR_VEL.apply(elevatorHeight.getAsDouble())
                     : -rot.getAsDouble() * Constants.MAX_CONTROLLED_ANGULAR_VEL.apply(elevatorHeight.getAsDouble());
-            case OBJECT_HEADING -> VisionUtil.Photon.Color.hasTargets() && autoHeading.getAsBoolean()
+            case OBJECT_HEADING -> PhotonUtil.Color.hasTargets() && autoHeading.getAsBoolean()
                     ? objectDetectionController.calculate(
-                            VisionUtil.Photon.Color.getBestObjectYaw(),
+                            PhotonUtil.Color.getBestObjectYaw(),
                             0
                     ) * Constants.MAX_CONTROLLED_ANGULAR_VEL.apply(elevatorHeight.getAsDouble())
                     : -rot.getAsDouble() * Constants.MAX_CONTROLLED_ANGULAR_VEL.apply(elevatorHeight.getAsDouble());

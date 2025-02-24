@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.drivetrain.Swerve;
 import frc.robot.util.FieldUtil;
-import frc.robot.util.VisionUtil;
+import frc.robot.util.vision.PhotonUtil;
 
 public class SearchForAlgaeCommand extends Command {
     private final Swerve swerve;
@@ -108,7 +108,7 @@ public class SearchForAlgaeCommand extends Command {
             end = true;
         }
 
-        if (VisionUtil.Photon.Color.hasAlgaeTargets()) {
+        if (PhotonUtil.Color.hasAlgaeTargets()) {
             end = true;
         }
     }
