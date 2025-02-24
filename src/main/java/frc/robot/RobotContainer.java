@@ -8,6 +8,8 @@ import com.pathplanner.lib.pathfinding.Pathfinding;
 
 import dev.doglog.DogLog;
 import dev.doglog.DogLogOptions;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -133,6 +135,9 @@ public class RobotContainer {
         driverXbox.b().onTrue(new InstantCommand(() -> robotStates.swerve.localizer.setPoses(Constants.FAR_RIGHT_CORAL_STATION)));
         driverXbox.x().onTrue(new InstantCommand(() -> robotStates.swerve.localizer.setPoses(Constants.FAR_LEFT_CORAL_STATION)));
         driverXbox.y().whileTrue(robotStates.swerve.directMoveToNearestBranch(robotStates.elevator::getPosition));
+
+        driverXbox.povUp().onTrue(new InstantCommand(() -> robotStates.swerve.resetGyro(Rotation2d.kZero)));
+        driverXbox.povDown().onTrue(new InstantCommand(robotStates.swerve::resetGyro));
 
         driverXbox.leftBumper().onTrue(new InstantCommand(robotStates.swerve::setBranchHeadingMode)
                 .andThen(new WaitUntilCommand(() -> !driverXbox.leftBumper().getAsBoolean()))

@@ -3,6 +3,7 @@ package frc.robot.util.vision;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.interpolation.TimeInterpolatableBuffer;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.Timer;
 import frc.robot.constants.Constants;
 import frc.robot.util.EstimatedRobotPose;
 import frc.robot.util.FieldUtil;
@@ -16,9 +17,9 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
 public final class PhotonUtil {
-    public static void updateResults() {
+    public static void updateResults(Rotation2d heading) {
         Color.updateResults();
-        BW.updateResults();
+        BW.updateResults(heading);
     }
 
     public static final class Color {
@@ -112,7 +113,7 @@ public final class PhotonUtil {
     }
 
     public static final class BW {
-        private final TimeInterpolatableBuffer<Rotation2d> headingBuffer =
+        private static final TimeInterpolatableBuffer<Rotation2d> headingBuffer =
                 TimeInterpolatableBuffer.createBuffer(1.0);
 
         public enum BWCamera {
@@ -289,11 +290,7 @@ public final class PhotonUtil {
             ));
         }
 
-        public void addHeadingData(double timestampSeconds, Rotation2d heading) {
-            headingBuffer.addSample(timestampSeconds, heading);
-        }
-
-        private Optional<EstimatedRobotPose> getSingleTagPose(BWCamera camera) {
+        private Optional<EstimatedRobotPose> getSingleTagPose(BWCamera camera) { // TODO SHOP: TEST THIS FUNCTION
             if (!hasTargets(camera)) {
                 return Optional.empty();
             }
@@ -372,7 +369,8 @@ public final class PhotonUtil {
             return BW.isMultiTag(camera) ? getMultiTagPose(camera) : getSingleTagPose(camera, currentPose);
         }
 
-        public static void updateResults() {
+        public static void updateResults(Rotation2d heading) {
+            headingBuffer.addSample(Timer.getFPGATimestamp(), heading);
             for (BWCamera camera : BWCamera.values()) {
                 List<PhotonPipelineResult> results = camera.camera.getAllUnreadResults();
 

@@ -14,6 +14,7 @@ import com.ctre.phoenix6.swerve.*;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -181,10 +182,6 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
         return new DirectMoveToNearestBranchCommand(this, fieldCentric, elevatorHeight);
     }
 
-    public DriveMode getDriveMode() {
-        return currentMode;
-    }
-
     public boolean isFullyTeleop() {
         return currentMode == DriveMode.IDLE
                 || currentMode == DriveMode.ROTATING
@@ -193,7 +190,11 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
     }
 
     public void resetGyro() {
-        resetRotation(localizer.getStrategyPose().getRotation());
+        resetGyro(localizer.getStrategyPose().getRotation());
+    }
+
+    public void resetGyro(Rotation2d heading) {
+        resetRotation(heading);
     }
 
     public void forceStop() {

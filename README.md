@@ -52,13 +52,15 @@ Tuesday, 2/18/2025 software only:
 - [x] coral station optimization
 
 Saturday, 2/22/2025 to test:
-- [ ] test updated keybinds for mishiwaka
-- [ ] discuss two options for reef translation auto-align - driver does it while true (pov) or operator does it (more complicated)
+- [x] test updated keybinds for mishiwaka
+- [x] discuss two options for reef translation auto-align - driver does it while true (pov) or operator does it (more complicated)
+
+Monday, 2/24/2025 to test:
+- [ ] test new single tag pose (need to zero properly first)
 - [ ] auto
    - [ ] try '2,x' paths
-   - [ ] try retuning swerve offsets/sysid
-   - [ ] try with 3rd camera in corner as well as in center looking forward
    - [ ] try not corner of the coral station
+   - [ ] try cameras looking forward
 
 Comp bot/later:
 - [x] Re-add automatic intake logic

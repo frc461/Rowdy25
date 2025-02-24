@@ -182,7 +182,7 @@ public class Localizer {
     }
 
     public void updatePhotonPoseEstimation() {
-        PhotonUtil.updateResults();
+        PhotonUtil.updateResults(poseEstimator.getEstimatedPosition().getRotation());
         for (PhotonUtil.BW.BWCamera camera : PhotonUtil.BW.BWCamera.values()) {
             if (PhotonUtil.BW.isTagClear(camera)) {
                 Optional<EstimatedRobotPose> optionalPoseEstimate = getUpdatedPhotonPoseEstimate(camera);
@@ -199,12 +199,6 @@ public class Localizer {
 
     public Optional<EstimatedRobotPose> getUpdatedPhotonPoseEstimate(PhotonUtil.BW.BWCamera camera) {
         return PhotonUtil.BW.getBestTagPose(camera, poseEstimator.getEstimatedPosition());
-    }
-
-    public void updatePoseEstimation() {
-        poseEstimator.update(this.swerve.getState().RawHeading, this.swerve.getState().ModulePositions);
-        // updateLimelightPoseEstimation();
-        updatePhotonPoseEstimation();
     }
 
     public void forceUpdateQuestNavPose() {
@@ -229,13 +223,10 @@ public class Localizer {
         }
     }
 
-     public void updatePoses() {
-         updatePoseEstimation();
-         updateQuestNavPose();
-     }
-
     public void periodic() {
-        updatePoses();
+        poseEstimator.update(this.swerve.getState().RawHeading, this.swerve.getState().ModulePositions);
+        updatePhotonPoseEstimation();
+        updateQuestNavPose();
         setLocalizationStrategyFromChooser();
         localizationTelemetry.publishValues();
     }
