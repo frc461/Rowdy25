@@ -1,6 +1,5 @@
 package frc.robot.util;
 
-import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.*;
@@ -11,6 +10,8 @@ import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 
 public final class VisionUtil {
     public static boolean highConfidenceEstimation() {
@@ -328,20 +329,24 @@ public final class VisionUtil {
                 return isTagClear(Photon.BW.BWCamera.TOP_RIGHT) || isTagClear(Photon.BW.BWCamera.TOP_LEFT) || isTagClear(Photon.BW.BWCamera.BACK);
             }
 
-            public static EstimatedRobotPose getMultiTagPose(BWCamera camera) {
-
-
-                MultiTargetPNPResult multiTagResult = getLatestResult(camera).getMultiTagResult().orElse(new MultiTargetPNPResult());
-                Pose3d bestPose = new Pose3d().plus(multiTagResult.estimatedPose.best).relativeTo(FieldUtil.ORIGIN).plus(getRobotToBWOffset(camera).inverse());
-                return new EstimatedRobotPose(
-                        bestPose,
-                        getLatestResultTimestamp(camera),
-                        getLatestResult(camera).getTargets(),
-                        Constants.VisionConstants.VISION_STD_DEV_MULTITAG_FUNCTION.apply(getBestTagDist(camera))
+            public static Optional<EstimatedRobotPose> getMultiTagPose(BWCamera camera) {
+                Optional<MultiTargetPNPResult> multiTagResult = getLatestResult(camera).getMultiTagResult();
+                AtomicReference<Optional<EstimatedRobotPose>> optionalPoseToReturn = new AtomicReference<>(Optional.empty());
+                multiTagResult.ifPresent(
+                        multiTargetPNPResult -> {
+                            Pose3d bestPose = new Pose3d().plus(multiTargetPNPResult.estimatedPose.best).relativeTo(FieldUtil.ORIGIN).plus(getRobotToBWOffset(camera).inverse());
+                            optionalPoseToReturn.set(Optional.of(new EstimatedRobotPose(
+                                    bestPose,
+                                    getLatestResultTimestamp(camera),
+                                    getLatestResult(camera).getTargets(),
+                                    Constants.VisionConstants.VISION_STD_DEV_MULTITAG_FUNCTION.apply(getBestTagDist(camera))
+                            )));
+                        }
                 );
+                return optionalPoseToReturn.get();
             }
 
-            public static EstimatedRobotPose getSingleTagPose(BWCamera camera, Pose2d currentPose) {
+            public static Optional<EstimatedRobotPose> getSingleTagPose(BWCamera camera, Pose2d currentPose) {
                 if (hasTargets(camera)) {
                     Pose3d tagPose = FieldUtil.AprilTag.getTag(getBestTagID(camera)).pose3d;
                     PhotonPipelineResult result = getLatestResult(camera);
@@ -358,32 +363,36 @@ public final class VisionUtil {
                     double distToApply;
 
                     // Disambiguate using the current pose i.e., choose the pose most consistent with the robot's current rotation
-                    if (getLatestResult(camera).getBestTarget().getPoseAmbiguity() < 0.15) {
+                    double ambiguity = getLatestResult(camera).getBestTarget().getPoseAmbiguity();
+                    if (ambiguity < 0.15) {
                         poseToReturn = poseBest;
                         distToApply = bestDist;
-                    } else if (Math.abs(poseBest.toPose2d().getRotation().minus(currentPose.getRotation()).getDegrees()) <
-                            Math.abs(poseAlt.toPose2d().getRotation().minus(currentPose.getRotation()).getDegrees())) {
+                    } else if (Math.abs(poseBest.toPose2d().getRotation().minus(currentPose.getRotation()).getDegrees())
+                            < Math.abs(poseAlt.toPose2d().getRotation().minus(currentPose.getRotation()).getDegrees())
+                            && ambiguity < 0.4) {
                         poseToReturn = poseBest;
                         distToApply = bestDist;
-                    } else {
+                    } else if (ambiguity < 0.4) {
                         poseToReturn = poseAlt;
                         distToApply = altDist;
+                    } else {
+                        return Optional.empty();
                     }
 
                     // Check if the pose is inside the field
                     if (FieldUtil.isInField(poseToReturn)) {
-                        return new EstimatedRobotPose(
+                        return Optional.of(new EstimatedRobotPose(
                                 poseToReturn,
                                 result.getTimestampSeconds(),
                                 result.getTargets(),
                                 Constants.VisionConstants.VISION_STD_DEV_FUNCTION.apply(distToApply)
-                        );
+                        ));
                     }
                 }
-                return new EstimatedRobotPose(new Pose3d(), 0.0, List.of(), VecBuilder.fill(0.0, 0.0, 0.0));
+                return Optional.empty();
             }
 
-            public static EstimatedRobotPose getBestTagPose(BWCamera camera, Pose2d currentPose) {
+            public static Optional<EstimatedRobotPose> getBestTagPose(BWCamera camera, Pose2d currentPose) {
                 return VisionUtil.Photon.BW.isMultiTag(camera) ? getMultiTagPose(camera) : getSingleTagPose(camera, currentPose);
             }
 
