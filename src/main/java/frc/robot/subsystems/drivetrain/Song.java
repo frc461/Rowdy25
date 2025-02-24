@@ -60,9 +60,7 @@ public class Song {
     }
 
     public static void playRandom(Swerve swerve, Song[] songs) {
-        Song song;
-        song = songs[random.nextInt(songs.length)];
-        song.play(swerve);
+        songs[random.nextInt(songs.length)].play(swerve);
     }
 
     private void play(Swerve swerve) {
@@ -80,6 +78,7 @@ public class Song {
         }
 
         swerve.orchestra.clearInstruments();
+        swerve.orchestra.loadMusic(getPath());
 
         IntStream.range(0, trackWeights.length).forEach(
                 weightIndex -> IntStream.range(0, trackWeights[weightIndex]).forEach(
