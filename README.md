@@ -55,12 +55,18 @@ Saturday, 2/22/2025 to test:
 - [x] test updated keybinds for mishiwaka
 - [x] discuss two options for reef translation auto-align - driver does it while true (pov) or operator does it (more complicated)
 
-Monday, 2/24/2025 to test:
+Tuesday, 2/25/2025 to test:
+- [ ] tune max tag clear dist
 - [ ] test new single tag pose (need to zero properly first)
+- [ ] tune max tag clear dist for above single tag pose calculation
+- [ ] (try for comp bot)
 - [ ] auto
    - [ ] try '2,x' paths
    - [ ] try not corner of the coral station
    - [ ] try cameras looking forward
+
+Tuesday, 2/25/2025 software only:
+- [ ] new spherical pathing for pathfinding to branch
 
 Comp bot/later:
 - [x] Re-add automatic intake logic
