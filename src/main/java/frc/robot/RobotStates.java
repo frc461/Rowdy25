@@ -368,6 +368,7 @@ public class RobotStates {
                         elevator::getPosition,
                         driverXbox::getLeftY,
                         driverXbox::getLeftX,
+                        driverXbox::getRightX,
                         driverXbox::getLeftTriggerAxis,
                         driverXbox::getRightTriggerAxis,
                         DoubleTrueTrigger.doubleTrue(driverXbox.leftTrigger(), 0.5),

@@ -35,6 +35,7 @@ public class DriveCommand extends Command {
             DoubleSupplier elevatorHeight,
             DoubleSupplier straight,
             DoubleSupplier strafe,
+            DoubleSupplier rotJoystick,
             DoubleSupplier rotLeft,
             DoubleSupplier rotRight,
             BooleanSupplier fastRotationLeft,
@@ -67,7 +68,7 @@ public class DriveCommand extends Command {
         headingController.enableContinuousInput(Constants.SwerveConstants.ANGULAR_MINIMUM_ANGLE, Constants.SwerveConstants.ANGULAR_MAXIMUM_ANGLE);
         this.straight = straight;
         this.strafe = strafe;
-        this.rot = () -> rotRight.getAsDouble() - rotLeft.getAsDouble();
+        this.rot = () -> Math.abs(rotJoystick.getAsDouble()) > 0.1 ? rotJoystick.getAsDouble() : rotRight.getAsDouble() - rotLeft.getAsDouble();
         this.fastRotationLeft = fastRotationLeft;
         this.fastRotationRight = fastRotationRight;
         this.elevatorHeight = elevatorHeight;
@@ -128,28 +129,16 @@ public class DriveCommand extends Command {
                     swerve.localizer.getStrategyPose().getRotation().getDegrees(),
                     swerve.consistentHeading
             ) * Constants.MAX_CONTROLLED_ANGULAR_VEL.apply(elevatorHeight.getAsDouble());
-            case BRANCH_HEADING -> autoHeading.getAsBoolean()
+            case BRANCH_HEADING, REEF_TAG_HEADING -> autoHeading.getAsBoolean()
                     ? yawController.calculate(
                             swerve.localizer.getStrategyPose().getRotation().getDegrees(),
                             swerve.localizer.getNearestReefSideHeading()
                     ) * Constants.MAX_CONTROLLED_ANGULAR_VEL.apply(elevatorHeight.getAsDouble())
                     : -rot.getAsDouble() * Constants.MAX_CONTROLLED_ANGULAR_VEL.apply(elevatorHeight.getAsDouble());
-            case BRANCH_L1_HEADING ->  autoHeading.getAsBoolean()
+            case BRANCH_L1_HEADING, REEF_TAG_OPPOSITE_HEADING ->  autoHeading.getAsBoolean()
                     ? yawController.calculate(
                             swerve.localizer.getStrategyPose().getRotation().getDegrees(),
                             Rotation2d.fromDegrees(swerve.localizer.getNearestReefSideHeading()).rotateBy(Rotation2d.kPi).getDegrees()
-                    ) * Constants.MAX_CONTROLLED_ANGULAR_VEL.apply(elevatorHeight.getAsDouble())
-                    : -rot.getAsDouble() * Constants.MAX_CONTROLLED_ANGULAR_VEL.apply(elevatorHeight.getAsDouble());
-            case REEF_TAG_HEADING -> autoHeading.getAsBoolean()
-                    ? yawController.calculate(
-                            swerve.localizer.getStrategyPose().getRotation().getDegrees(),
-                            swerve.localizer.getAngleToNearestReefSide()
-                    ) * Constants.MAX_CONTROLLED_ANGULAR_VEL.apply(elevatorHeight.getAsDouble())
-                    : -rot.getAsDouble() * Constants.MAX_CONTROLLED_ANGULAR_VEL.apply(elevatorHeight.getAsDouble());
-            case REEF_TAG_OPPOSITE_HEADING -> autoHeading.getAsBoolean()
-                    ? yawController.calculate(
-                            swerve.localizer.getStrategyPose().getRotation().getDegrees(),
-                            Rotation2d.fromDegrees(swerve.localizer.getAngleToNearestReefSide()).rotateBy(Rotation2d.kPi).getDegrees()
                     ) * Constants.MAX_CONTROLLED_ANGULAR_VEL.apply(elevatorHeight.getAsDouble())
                     : -rot.getAsDouble() * Constants.MAX_CONTROLLED_ANGULAR_VEL.apply(elevatorHeight.getAsDouble());
             case OBJECT_HEADING -> PhotonUtil.Color.hasTargets() && autoHeading.getAsBoolean()

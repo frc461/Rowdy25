@@ -160,7 +160,7 @@ public final class DefaultConstants {
             public static final double BW_BACK_PITCH = -8.0;
             public static final double BW_BACK_YAW = 180;
 
-            public static final double BW_MAX_TAG_CLEAR_DIST = 7.5;
+            public static final double BW_MAX_TAG_CLEAR_DIST = 4;
 
             public static final double OBJECT_TARGET_PITCH = -15;
         }
@@ -223,7 +223,7 @@ public final class DefaultConstants {
         public static final double CORAL_STATION = 0;
         public static final double GROUND_CORAL = 0;
         public static final double GROUND_ALGAE = 0;
-        public static final double L1_CORAL = 6.0;
+        public static final double L1_CORAL = 0;
         public static final double L2_CORAL = 0;
         public static final double L3_CORAL = 17.2;
         public static final double L4_CORAL = 41.5;
@@ -236,7 +236,7 @@ public final class DefaultConstants {
     public final static class IntakeConstants {
         public static final int MOTOR_ID = 41;
         public static final int SENSOR_ID = 42;
-        public static final int BEAMBREAK_ID = 2;
+        public static final int BEAMBREAK_ID = 4;
         public static final double CURRENT_LIMIT = 40;
         public static final InvertedValue MOTOR_INVERT = InvertedValue.Clockwise_Positive;
         public static final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Coast;
@@ -259,7 +259,7 @@ public final class DefaultConstants {
 
         // encoder config
         public static final int ENCODER_ID = 53;
-        public static final double ENCODER_ABSOLUTE_OFFSET = 0.06909247503;
+        public static final double ENCODER_ABSOLUTE_OFFSET = 0.06250135632;
         public static final SensorDirectionValue ENCODER_INVERT = SensorDirectionValue.CounterClockwise_Positive;
 
         // ratchet config
@@ -286,7 +286,7 @@ public final class DefaultConstants {
         public static final double CORAL_STATION = 50;
         public static final double GROUND_CORAL = 3.5;
         public static final double GROUND_ALGAE = 4.5;
-        public static final double L1_CORAL = 22.3;
+        public static final double L1_CORAL = 35.4;
         public static final double L2_CORAL = 100.0;
         public static final double L3_CORAL = 100.6;
         public static final double L4_CORAL = 90.5;
@@ -312,7 +312,7 @@ public final class DefaultConstants {
 
         // encoder config
         public static final int ENCODER_ID = 62;
-        public static final double ENCODER_ABSOLUTE_OFFSET =  0.10279527436;
+        public static final double ENCODER_ABSOLUTE_OFFSET =  0.43460869667;
         public static final SensorDirectionValue ENCODER_INVERT = SensorDirectionValue.Clockwise_Positive;
 
         // pid & tolerance
@@ -337,7 +337,7 @@ public final class DefaultConstants {
         public static final double L1_CORAL = 125;
         public static final double L2_CORAL = 55;
         public static final double L3_CORAL = 55;
-        public static final double L4_CORAL = 280;
+        public static final double L4_CORAL = 285;
         public static final double LOW_REEF_ALGAE = 131.0;
         public static final double HIGH_REEF_ALGAE = 160;
         public static final double PROCESSOR = 150;
