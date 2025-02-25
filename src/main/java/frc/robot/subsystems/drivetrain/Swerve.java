@@ -276,7 +276,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
             localizer.syncRotations();
         }
 
-        if (DriverStation.isDisabled() && !orchestra.isPlaying()) {
+        if (DriverStation.isDisabled() && !orchestra.isPlaying() && !Song.tenSeconds()) {
             Song.playRandom(this, Song.disableSongs);
         } if (!DriverStation.isDisabled() && orchestra.isPlaying() || Song.tenSeconds()) {
             orchestra.stop();
