@@ -166,8 +166,16 @@ public class Localizer {
     public void setPoses(Pose2d pose) {
         poseEstimator.resetPose(pose);
         swerve.resetPose(pose);
-        swerve.resetGyro();
         QuestNavUtil.setQuestPose(pose);
+    }
+
+    public void setRotations(Rotation2d heading) {
+        swerve.resetRotation(heading);
+        poseEstimator.resetRotation(heading);
+    }
+
+    public void syncRotations() {
+        setRotations(poseEstimator.getEstimatedPosition().getRotation());
     }
 
     public void updateLimelightPoseEstimation() {

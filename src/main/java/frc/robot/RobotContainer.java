@@ -142,8 +142,8 @@ public class RobotContainer {
         driverXbox.x().onTrue(new InstantCommand(() -> robotStates.swerve.localizer.setPoses(Constants.FAR_LEFT_CORAL_STATION)));
         driverXbox.y().whileTrue(robotStates.swerve.directMoveToNearestBranch(robotStates.elevator::getPosition));
 
-        driverXbox.povUp().onTrue(new InstantCommand(() -> robotStates.swerve.resetGyro(Rotation2d.kZero)));
-        driverXbox.povDown().onTrue(new InstantCommand(robotStates.swerve::resetGyro));
+        driverXbox.povUp().onTrue(new InstantCommand(() -> robotStates.swerve.localizer.setRotations(Rotation2d.kZero)));
+        driverXbox.povDown().onTrue(new InstantCommand(robotStates.swerve.localizer::syncRotations));
 
         driverXbox.leftBumper().onTrue(new InstantCommand(robotStates.swerve::setBranchHeadingMode)
                 .andThen(new WaitUntilCommand(() -> !driverXbox.leftBumper().getAsBoolean()))
