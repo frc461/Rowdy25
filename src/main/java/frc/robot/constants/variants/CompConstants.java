@@ -19,20 +19,20 @@ import static edu.wpi.first.units.Units.Inches;
 public final class CompConstants {
     public final static class PhotonConstants {
             public static final String BW_TOP_RIGHT_NAME = "ArducamBW";
-            public static final double BW_TOP_RIGHT_FORWARD = 0.395096;
-            public static final double BW_TOP_RIGHT_LEFT = -0.286102;
-            public static final double BW_TOP_RIGHT_UP = 0.278718;
+            public static final double BW_TOP_RIGHT_FORWARD = 0.409011;
+            public static final double BW_TOP_RIGHT_LEFT = -0.266700;
+            public static final double BW_TOP_RIGHT_UP = 0.278782;
             public static final double BW_TOP_RIGHT_ROLL = 0.0;
             public static final double BW_TOP_RIGHT_PITCH = -5.0;
-            public static final double BW_TOP_RIGHT_YAW = -30.375507;
+            public static final double BW_TOP_RIGHT_YAW = -0.0;
 
             public static final String BW_TOP_LEFT_NAME = "ArducamBW2";
-            public static final double BW_TOP_LEFT_FORWARD = 0.395096;
-            public static final double BW_TOP_LEFT_LEFT = 0.286102;
-            public static final double BW_TOP_LEFT_UP = 0.278718;
+            public static final double BW_TOP_LEFT_FORWARD = 0.409011;
+            public static final double BW_TOP_LEFT_LEFT = 0.266700;
+            public static final double BW_TOP_LEFT_UP = 0.278782;
             public static final double BW_TOP_LEFT_ROLL = 0.0;
             public static final double BW_TOP_LEFT_PITCH = -5.0;
-            public static final double BW_TOP_LEFT_YAW = 30.375507;
+            public static final double BW_TOP_LEFT_YAW = 0.0;
     }
 
     public final static class ElevatorConstants {
