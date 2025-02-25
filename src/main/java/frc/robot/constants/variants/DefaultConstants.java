@@ -286,7 +286,7 @@ public final class DefaultConstants {
         public static final double CORAL_STATION = 50;
         public static final double GROUND_CORAL = 3.5;
         public static final double GROUND_ALGAE = 4.5;
-        public static final double L1_CORAL = 35.4;
+        public static final double L1_CORAL = 31.5;
         public static final double L2_CORAL = 100.0;
         public static final double L3_CORAL = 100.6;
         public static final double L4_CORAL = 90.5;
