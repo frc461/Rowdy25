@@ -290,7 +290,7 @@ public final class PhotonUtil {
             ));
         }
 
-        private Optional<EstimatedRobotPose> getSingleTagPose(BWCamera camera) { // TODO SHOP: TEST THIS FUNCTION
+        private static Optional<EstimatedRobotPose> getSingleTagPose(BWCamera camera) { // TODO SHOP: TEST THIS FUNCTION
             if (!hasTargets(camera)) {
                 return Optional.empty();
             }
@@ -365,8 +365,8 @@ public final class PhotonUtil {
             );
         }
 
-        public static Optional<EstimatedRobotPose> getBestTagPose(BWCamera camera, Pose2d currentPose) {
-            return BW.isMultiTag(camera) ? getMultiTagPose(camera) : getSingleTagPose(camera, currentPose);
+        public static Optional<EstimatedRobotPose> getBestTagPose(BWCamera camera) {
+            return BW.isMultiTag(camera) ? getMultiTagPose(camera) : getSingleTagPose(camera);
         }
 
         public static void updateResults(Rotation2d heading) {

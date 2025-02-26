@@ -206,7 +206,7 @@ public class Localizer {
     }
 
     public Optional<EstimatedRobotPose> getUpdatedPhotonPoseEstimate(PhotonUtil.BW.BWCamera camera) {
-        return PhotonUtil.BW.getBestTagPose(camera, poseEstimator.getEstimatedPosition());
+        return PhotonUtil.BW.getBestTagPose(camera);
     }
 
     public void forceUpdateQuestNavPose() {
