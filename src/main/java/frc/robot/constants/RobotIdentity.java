@@ -316,6 +316,7 @@ public enum RobotIdentity {
         Constants.ElevatorConstants.NET = CompConstants.ElevatorConstants.NET;
 
         Constants.IntakeConstants.MOTOR_INVERT = CompConstants.IntakeConstants.MOTOR_INVERT;
+        Constants.IntakeConstants.BEAMBREAK_ID = CompConstants.IntakeConstants.BEAMBREAK_ID;
 
         Constants.PivotConstants.PIVOT_INVERT = CompConstants.PivotConstants.PIVOT_INVERT;
         Constants.PivotConstants.SENSOR_TO_DEGREE_RATIO = CompConstants.PivotConstants.SENSOR_TO_DEGREE_RATIO;

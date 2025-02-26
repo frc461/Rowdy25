@@ -82,6 +82,7 @@ public final class CompConstants {
 
     public final static class IntakeConstants {
         public static final InvertedValue MOTOR_INVERT = InvertedValue.Clockwise_Positive;
+        public static final int BEAMBREAK_ID = 1;
     }
 
     public final static class PivotConstants {
