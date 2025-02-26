@@ -70,7 +70,7 @@ public final class CompConstants {
         public static final double CORAL_STATION = 0;
         public static final double GROUND_CORAL = 0;
         public static final double GROUND_ALGAE = 0;
-        public static final double L1_CORAL = 6.0;
+        public static final double L1_CORAL = 0;
         public static final double L2_CORAL = 0;
         public static final double L3_CORAL = 18.1;
         public static final double L4_CORAL = 41.5;
@@ -95,7 +95,7 @@ public final class CompConstants {
         public static final Translation2d AXIS_POSITION = new Translation2d(-9.417377, 9.257139);
 
         // encoder config
-        public static final double ENCODER_ABSOLUTE_OFFSET = 0.45117323132;
+        public static final double ENCODER_ABSOLUTE_OFFSET = 0.43799031573;
         public static final SensorDirectionValue ENCODER_INVERT = SensorDirectionValue.CounterClockwise_Positive;
 
         // ratchet config
@@ -117,17 +117,17 @@ public final class CompConstants {
         // presets
         public static final double LOWER_LIMIT = 0;
         public static final double UPPER_LIMIT = 105;
-        public static final double STOW = 50;
-        public static final double CORAL_STATION = 50;
+        public static final double STOW = 55;
+        public static final double CORAL_STATION = 55;
         public static final double GROUND_CORAL = 3.5;
         public static final double GROUND_ALGAE = 4.5;
-        public static final double L1_CORAL = 22.3;
+        public static final double L1_CORAL = 31.5;
         public static final double L2_CORAL = 100.0;
         public static final double L3_CORAL = 100.6;
         public static final double L4_CORAL = 88.5;
         public static final double LOW_REEF_ALGAE = 32.5;
         public static final double HIGH_REEF_ALGAE = 105;
-        public static final double PROCESSOR = 22.1;
+        public static final double PROCESSOR = 22;
         public static final double NET = 90;
     }
 
@@ -161,15 +161,15 @@ public final class CompConstants {
         // presets
         public static final Function<Double, Double> LOWER_LIMIT = (pivotPosition) -> (double) (pivotPosition < 45 ? 160 : 45);
         public static final Function<Double, Double> UPPER_LIMIT = (elevatorPosition) -> (double) (elevatorPosition > 8 ? 295 : 160);
-        public static final double STOW = 125;
-        public static final double CORAL_STATION = 125;
+        public static final double STOW = 115;
+        public static final double CORAL_STATION = 115;
         public static final double GROUND_CORAL = 150;
         public static final double GROUND_ALGAE = 150;
-        public static final double L1_CORAL = 125;
+        public static final double L1_CORAL = 160;
         public static final double L2_CORAL = 40;
         public static final double L3_CORAL = 55;
         public static final double L4_CORAL = 285;
-        public static final double LOW_REEF_ALGAE = 131.0;
+        public static final double LOW_REEF_ALGAE = 131;
         public static final double HIGH_REEF_ALGAE = 160;
         public static final double PROCESSOR = 150;
         public static final double NET = 175;
