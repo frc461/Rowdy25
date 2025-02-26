@@ -18,7 +18,7 @@ import static edu.wpi.first.units.Units.Inches;
 
 public final class CompConstants {
     public final static class PhotonConstants {
-            public static final String BW_TOP_RIGHT_NAME = "ArducamBW";
+            public static final String BW_TOP_RIGHT_NAME = "ArducamBW2";
             public static final double BW_TOP_RIGHT_FORWARD = 0.409011;
             public static final double BW_TOP_RIGHT_LEFT = -0.266700;
             public static final double BW_TOP_RIGHT_UP = 0.278782;
@@ -26,7 +26,7 @@ public final class CompConstants {
             public static final double BW_TOP_RIGHT_PITCH = -5.0;
             public static final double BW_TOP_RIGHT_YAW = -0.0;
 
-            public static final String BW_TOP_LEFT_NAME = "ArducamBW2";
+            public static final String BW_TOP_LEFT_NAME = "ArducamBW";
             public static final double BW_TOP_LEFT_FORWARD = 0.409011;
             public static final double BW_TOP_LEFT_LEFT = 0.266700;
             public static final double BW_TOP_LEFT_UP = 0.278782;
@@ -94,7 +94,7 @@ public final class CompConstants {
         public static final Translation2d AXIS_POSITION = new Translation2d(-9.417377, 9.257139);
 
         // encoder config
-        public static final double ENCODER_ABSOLUTE_OFFSET = 0.44409247503;
+        public static final double ENCODER_ABSOLUTE_OFFSET = 0.45117323132;
         public static final SensorDirectionValue ENCODER_INVERT = SensorDirectionValue.CounterClockwise_Positive;
 
         // ratchet config
@@ -142,7 +142,7 @@ public final class CompConstants {
         public static final Translation2d AXIS_TO_ZERO_COM = new Translation2d(3.014233, -4.015809);
 
         // encoder config
-        public static final double ENCODER_ABSOLUTE_OFFSET =  0.02343817819;
+        public static final double ENCODER_ABSOLUTE_OFFSET =  0.16528455949;
         public static final SensorDirectionValue ENCODER_INVERT = SensorDirectionValue.Clockwise_Positive;
 
         // pid & tolerance
