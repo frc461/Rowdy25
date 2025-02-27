@@ -1,0 +1,212 @@
+{
+  "version": 1.0,
+  "grid_size": 128,
+  "tabs": [
+    {
+      "name": "THE ONLY TAB",
+      "grid_layout": {
+        "layouts": [
+          {
+            "title": "Scoring Locations",
+            "x": 0.0,
+            "y": 0.0,
+            "width": 256.0,
+            "height": 384.0,
+            "type": "List Layout",
+            "properties": {
+              "label_position": "TOP"
+            },
+            "children": [
+              {
+                "title": "active",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Scoring Locations/active",
+                  "period": 0.06,
+                  "data_type": "string[]",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "default",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Scoring Locations/default",
+                  "period": 0.06,
+                  "data_type": "string[]",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "options",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Scoring Locations/options",
+                  "period": 0.06,
+                  "data_type": "string[]",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "selected",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Scoring Locations/selected",
+                  "period": 0.06,
+                  "data_type": "string",
+                  "show_submit_button": false
+                }
+              }
+            ]
+          }
+        ],
+        "containers": [
+          {
+            "title": "Start Position",
+            "x": 0.0,
+            "y": 384.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "ComboBox Chooser",
+            "properties": {
+              "topic": "/SmartDashboard/Start Position",
+              "period": 0.06,
+              "sort_options": false
+            }
+          },
+          {
+            "title": "Wrist State",
+            "x": 256.0,
+            "y": 128.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/WristTelemetry/Wrist State",
+              "period": 0.06,
+              "data_type": "string",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Elevator State",
+            "x": 384.0,
+            "y": 128.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/ElevatorTelemetry/Elevator State",
+              "period": 0.06,
+              "data_type": "string",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Intake State",
+            "x": 256.0,
+            "y": 256.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/IntakeTelemetry/Intake State",
+              "period": 0.06,
+              "data_type": "string",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Pivot State",
+            "x": 384.0,
+            "y": 256.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/PivotTelemetry/Pivot State",
+              "period": 0.06,
+              "data_type": "string",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Current Robot State",
+            "x": 256.0,
+            "y": 384.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/RobotStates/Current Robot State",
+              "period": 0.06,
+              "data_type": "string",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Pivot Ratchet State",
+            "x": 256.0,
+            "y": 0.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/PivotTelemetry/Pivot Ratchet State",
+              "period": 0.06,
+              "data_type": "string",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Intake Has Coral",
+            "x": 512.0,
+            "y": 0.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Boolean Box",
+            "properties": {
+              "topic": "/IntakeTelemetry/Intake Has Coral",
+              "period": 0.06,
+              "data_type": "boolean",
+              "true_color": 4283215696,
+              "false_color": 4294198070,
+              "true_icon": "None",
+              "false_icon": "None"
+            }
+          },
+          {
+            "title": "Climb State",
+            "x": 512.0,
+            "y": 128.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/ClimbTelemetry/Climb State",
+              "period": 0.06,
+              "data_type": "string",
+              "show_submit_button": false
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
