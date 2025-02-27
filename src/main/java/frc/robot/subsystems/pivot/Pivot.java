@@ -29,7 +29,8 @@ public class Pivot extends SubsystemBase { // TODO SHOP: INVESTIGATE CANCODER RE
         LOW_REEF_ALGAE(Constants.PivotConstants.LOW_REEF_ALGAE),
         HIGH_REEF_ALGAE(Constants.PivotConstants.HIGH_REEF_ALGAE),
         PROCESSOR(Constants.PivotConstants.PROCESSOR),
-        NET(Constants.PivotConstants.NET);
+        NET(Constants.PivotConstants.NET),
+        CLIMB(Constants.PivotConstants.CLIMB);
 
         private final double position;
 
@@ -225,6 +226,10 @@ public class Pivot extends SubsystemBase { // TODO SHOP: INVESTIGATE CANCODER RE
 
     public void setNetState() {
         setState(State.NET);
+    }
+
+    public void setClimbState() {
+        setState(State.CLIMB);
     }
 
     public void holdTarget(double elevatorPosition, double wristPosition) {

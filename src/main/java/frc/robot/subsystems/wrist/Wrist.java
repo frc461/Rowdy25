@@ -24,7 +24,8 @@ public class Wrist extends SubsystemBase {
         LOW_REEF_ALGAE(Constants.WristConstants.LOW_REEF_ALGAE),
         HIGH_REEF_ALGAE(Constants.WristConstants.HIGH_REEF_ALGAE),
         PROCESSOR(Constants.WristConstants.PROCESSOR),
-        NET(Constants.WristConstants.NET);
+        NET(Constants.WristConstants.NET),
+        CLIMB(Constants.WristConstants.CLIMB);
 
         private final double position;
 
@@ -168,6 +169,10 @@ public class Wrist extends SubsystemBase {
 
     public void setNetState() {
         setState(State.NET);
+    }
+
+    public void setClimbState() {
+        setState(State.CLIMB);
     }
 
     public void holdTarget(double pivotPosition) {

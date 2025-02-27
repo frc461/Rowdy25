@@ -13,6 +13,7 @@ import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.PivotCommand;
 import frc.robot.commands.WristCommand;
 import frc.robot.constants.Constants;
+import frc.robot.subsystems.climb.Climb;
 import frc.robot.subsystems.Lights;
 import frc.robot.subsystems.drivetrain.Swerve;
 import frc.robot.subsystems.elevator.Elevator;
@@ -43,10 +44,12 @@ public class RobotStates {
         LOW_REEF_ALGAE,
         HIGH_REEF_ALGAE,
         PROCESSOR,
-        NET
+        NET,
+        CLIMB
     }
 
     public final Swerve swerve = new Swerve();
+    public final Climb climb = new Climb();
     public final Elevator elevator = new Elevator();
     public final Intake intake = new Intake();
     public final Pivot pivot = new Pivot();
@@ -72,6 +75,7 @@ public class RobotStates {
     public final Trigger highReefAlgaeState = new Trigger(() -> currentState == State.HIGH_REEF_ALGAE);
     public final Trigger processorState = new Trigger(() -> currentState == State.PROCESSOR);
     public final Trigger netState = new Trigger(() -> currentState == State.NET);
+    public final Trigger climbState = new Trigger(() -> currentState == State.CLIMB);
 
     private final NetworkTable robotStatesTelemetryTable = Constants.NT_INSTANCE.getTable("RobotStates");
     private final StringPublisher robotStatesPub = robotStatesTelemetryTable.getStringTopic("Current Robot State").publish();

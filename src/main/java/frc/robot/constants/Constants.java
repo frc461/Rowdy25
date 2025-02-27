@@ -271,7 +271,7 @@ public final class Constants {
         public static double HIGH_REEF_ALGAE;
         public static double PROCESSOR;
         public static double NET;
-
+        public static double CLIMB;
     }
 
     public final static class WristConstants {
@@ -319,7 +319,7 @@ public final class Constants {
         public static double HIGH_REEF_ALGAE;
         public static double PROCESSOR;
         public static double NET;
-
+        public static double CLIMB;
     }
 
     public static final class SwerveConstants {

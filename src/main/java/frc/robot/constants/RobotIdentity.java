@@ -225,6 +225,7 @@ public enum RobotIdentity {
         Constants.PivotConstants.HIGH_REEF_ALGAE = DefaultConstants.PivotConstants.HIGH_REEF_ALGAE;
         Constants.PivotConstants.PROCESSOR = DefaultConstants.PivotConstants.PROCESSOR;
         Constants.PivotConstants.NET = DefaultConstants.PivotConstants.NET;
+        Constants.PivotConstants.CLIMB = DefaultConstants.PivotConstants.CLIMB;
 
         Constants.WristConstants.MOTOR_ID = DefaultConstants.WristConstants.MOTOR_ID;
         Constants.WristConstants.CURRENT_LIMIT = DefaultConstants.WristConstants.CURRENT_LIMIT;
@@ -261,6 +262,7 @@ public enum RobotIdentity {
         Constants.WristConstants.HIGH_REEF_ALGAE = DefaultConstants.WristConstants.HIGH_REEF_ALGAE;
         Constants.WristConstants.PROCESSOR = DefaultConstants.WristConstants.PROCESSOR;
         Constants.WristConstants.NET = DefaultConstants.WristConstants.NET;
+        Constants.WristConstants.CLIMB = DefaultConstants.WristConstants.CLIMB;
 
         Constants.SwerveConstants.PATH_TRANSLATION_CONTROLLER_P = DefaultConstants.SwerveConstants.PATH_TRANSLATION_CONTROLLER_P;
         Constants.SwerveConstants.PATH_ROTATION_CONTROLLER_P = DefaultConstants.SwerveConstants.PATH_ROTATION_CONTROLLER_P;

@@ -318,6 +318,7 @@ public final class DefaultConstants {
         public static final double HIGH_REEF_ALGAE = 105;
         public static final double PROCESSOR = 22.1;
         public static final double NET = 90;
+        public static final double CLIMB = 0;
     }
 
     public final static class WristConstants {
@@ -366,7 +367,7 @@ public final class DefaultConstants {
         public static final double HIGH_REEF_ALGAE = 160;
         public static final double PROCESSOR = 150;
         public static final double NET = 175;
-
+        public static final double CLIMB = 0;
     }
 
     public static final class SwerveConstants {
