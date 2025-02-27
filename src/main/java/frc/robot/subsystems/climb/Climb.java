@@ -44,7 +44,7 @@ public class Climb extends SubsystemBase {
     private final ClimbTelemetry climbTelemetry = new ClimbTelemetry(this);
     
     public Climb() {
-        currentState = State.PREPARE_CLIMB;
+        currentState = State.IDLE;
 
         climb = new TalonFX(Constants.ClimbConstants.ID);
         climb.getConfigurator().apply(new TalonFXConfiguration()
@@ -78,7 +78,7 @@ public class Climb extends SubsystemBase {
     }
 
     public int getRatchetPulseWidth() {
-        return getState() == State.CLIMB ? RatchetState.OFF.pulseWidth : RatchetState.ON.pulseWidth;
+        return (getState() == State.CLIMB || getState() == State.IDLE) ? RatchetState.OFF.pulseWidth : RatchetState.ON.pulseWidth;
     }
 
     public void escalateClimb() {

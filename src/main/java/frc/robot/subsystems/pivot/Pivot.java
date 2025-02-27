@@ -76,7 +76,7 @@ public class Pivot extends SubsystemBase {
 
     public Pivot() {
         currentState = State.STOW;
-        currentRatchetState = RatchetState.ON;
+        currentRatchetState = RatchetState.OFF;
 
         CANcoder encoder = new CANcoder(Constants.PivotConstants.ENCODER_ID);
         encoder.getConfigurator().apply(new CANcoderConfiguration()

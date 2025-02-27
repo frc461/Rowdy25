@@ -203,8 +203,8 @@ public final class DefaultConstants {
         public static final double ROTOR_TO_INCH_RATIO = ROTOR_TO_PULLEY_RATIO / PULLEY_CIRCUMFERENCE;
         // ratchet
         public static final ServoChannel.ChannelId RATCHET_CHANNEL = ServoChannel.ChannelId.kChannelId1;
-        public static final int RATCHET_ON = 0; //TODO: FIND VALUES
-        public static final int RATCHET_OFF = 0;
+        public static final int RATCHET_ON = 1115; //TODO: FIND VALUES
+        public static final int RATCHET_OFF = 1250;
         
         // presets
         public static final double IDLE = 0;
