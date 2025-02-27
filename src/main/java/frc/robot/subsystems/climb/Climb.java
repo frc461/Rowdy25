@@ -58,7 +58,7 @@ public class Climb extends SubsystemBase {
                         .withSupplyCurrentLimit(Constants.ClimbConstants.CURRENT_LIMIT))
         );
 
-        ratchet = new ServoHub(Constants.SERVO_HUB_ID).getServoChannel(Constants.ClimbConstants.RATCHET_CHANNEL);
+        ratchet = Constants.SERVO_HUB.getServoChannel(Constants.ClimbConstants.RATCHET_CHANNEL);
         ratchet.setPowered(true);
         ratchet.setEnabled(true);
 

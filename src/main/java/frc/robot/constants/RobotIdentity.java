@@ -72,6 +72,7 @@ public enum RobotIdentity {
         Constants.ONE_MILLION = DefaultConstants.ONE_MILLION;
         Constants.DEADBAND = DefaultConstants.DEADBAND;
         Constants.SERVO_HUB_ID = DefaultConstants.SERVO_HUB_ID;
+        Constants.SERVO_HUB = DefaultConstants.SERVO_HUB;
 
         Constants.AutoConstants.ROBOT_CONFIG = DefaultConstants.AutoConstants.ROBOT_CONFIG;
         Constants.AutoConstants.ALGAE_CHECK_MARKER = DefaultConstants.AutoConstants.ALGAE_CHECK_MARKER;

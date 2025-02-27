@@ -14,6 +14,8 @@ import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.path.PathConstraints;
 
 import com.revrobotics.servohub.ServoChannel;
+import com.revrobotics.servohub.ServoHub;
+
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -63,6 +65,7 @@ public final class Constants {
     public static double DEADBAND;
 
     public static int SERVO_HUB_ID;
+    public static ServoHub SERVO_HUB;
 
     public static final class AutoConstants {
         public static RobotConfig ROBOT_CONFIG;

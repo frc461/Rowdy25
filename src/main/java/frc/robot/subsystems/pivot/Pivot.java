@@ -111,7 +111,7 @@ public class Pivot extends SubsystemBase {
             pivot2.setControl(new Follower(Constants.PivotConstants.LEAD_ID, true));
         }
 
-        ratchet = new ServoHub(Constants.SERVO_HUB_ID).getServoChannel(Constants.PivotConstants.RATCHET_CHANNEL);
+        ratchet = Constants.SERVO_HUB.getServoChannel(Constants.PivotConstants.RATCHET_CHANNEL);
         ratchet.setEnabled(true);
         ratchet.setPowered(true);
 
