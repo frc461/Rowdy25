@@ -56,16 +56,26 @@ Saturday, 2/22/2025 to test:
 - [x] discuss two options for reef translation auto-align - driver does it while true (pov) or operator does it (more complicated)
 
 Tuesday, 2/25/2025 to test:
-- [ ] tune max tag clear dist
-- [ ] test new single tag pose (need to zero properly first)
-- [ ] tune max tag clear dist for above single tag pose calculation
-- [ ] (try for comp bot)
-- [ ] auto
-   - [ ] try '2,x' paths
-   - [ ] try not corner of the coral station
-   - [ ] try cameras looking forward
+- [x] tune max tag clear dist
+- [x] test new single tag pose (need to zero properly first)
+- [x] tune max tag clear dist for above single tag pose calculation
+- [x] (try for comp bot)
+- [x] auto
+  - [x] try not corner of the coral station
+  - [x] try cameras looking forward
 
-Tuesday, 2/25/2025 software only:
+Thursday, 2/27/2025 to test:
+- [ ] try updating pivot G gains
+- [ ] auto
+  - [ ] new camera mounts on
+  - [ ] tune kA
+  - [ ] tune drive motor kP
+  - [ ] tune path kP
+  - [ ] try variety of paths
+- [ ] climb subsystem
+  - [ ] climb presets
+
+Monday, 3/04/2025 software only:
 - [ ] new spherical pathing for pathfinding to branch
 
 Comp bot/later:
