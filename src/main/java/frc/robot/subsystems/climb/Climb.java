@@ -40,6 +40,7 @@ public class Climb extends SubsystemBase {
 
 	private final TalonFX climb;
     private final ServoChannel ratchet;
+    private double error;
 
     private final ClimbTelemetry climbTelemetry = new ClimbTelemetry(this);
     
@@ -56,11 +57,13 @@ public class Climb extends SubsystemBase {
                 .withCurrentLimits(new CurrentLimitsConfigs()
                         .withSupplyCurrentLimit(Constants.ClimbConstants.CURRENT_LIMIT))
         );
-        climb.setPosition(0.0);
 
         ratchet = new ServoHub(Constants.SERVO_HUB_ID).getServoChannel(Constants.ClimbConstants.RATCHET_CHANNEL);
         ratchet.setPowered(true);
         ratchet.setEnabled(true);
+
+        climb.setPosition(0.0);
+        error = 0.0;
     }
 
     public State getState() {
@@ -90,6 +93,20 @@ public class Climb extends SubsystemBase {
     @Override
     public void periodic() {
         climbTelemetry.publishValues();
+
+        error = getPosition() - getTarget();
+
+        switch (getState()) {
+            case IDLE:
+                break;
+            case PREPARE_CLIMB, CLIMB:
+                if (Math.abs(error) > 5.0) {
+                    climb.set(error < 0 ? 0.1 : -0.1);
+                } else {
+                    climb.set(0.0);
+                }
+                break;
+        }
 
         ratchet.setPulseWidth(getRatchetPulseWidth());
     }
