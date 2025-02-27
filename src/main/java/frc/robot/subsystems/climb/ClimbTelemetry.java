@@ -16,12 +16,12 @@ public class ClimbTelemetry {
     private final NetworkTable climbTelemetryTable = Constants.NT_INSTANCE.getTable("ClimbTelemetry");
     private final StringPublisher climbStatePub = climbTelemetryTable.getStringTopic("Climb State").publish();
     private final DoublePublisher climbPositionPub = climbTelemetryTable.getDoubleTopic("Climb Position").publish();
-    private final StringPublisher climbLatchStatePub = climbTelemetryTable.getStringTopic("Latch State").publish();
+    private final DoublePublisher climbTargetPub = climbTelemetryTable.getDoubleTopic("Climb Target").publish();
 
     public void publishValues() {
         climbStatePub.set(climb.getState().name());
         climbPositionPub.set(climb.getPosition());
-        climbLatchStatePub.set(climb.getCurrentLatchState().name());
+        climbTargetPub.set(climb.getTarget());
 
         logValues();
     }
@@ -29,6 +29,6 @@ public class ClimbTelemetry {
     private void logValues() {
         DogLog.log("ClimbState", climb.getState());
         DogLog.log("ClimbPosition", climb.getPosition());
-        DogLog.log("ClimbLatchState", climb.getCurrentLatchState());
+        DogLog.log("ClimbTarget", climb.getTarget());
     }
 }
