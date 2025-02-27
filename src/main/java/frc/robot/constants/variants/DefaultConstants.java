@@ -184,6 +184,23 @@ public final class DefaultConstants {
         }
     }
 
+    public final static class ClimbConstants {
+        // motor config
+        public static final int ID = 0; // TODO: set id
+        public static final double CURRENT_LIMIT = 40;
+        public static final InvertedValue MOTOR_INVERT = InvertedValue.Clockwise_Positive;
+        public static final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Coast;
+
+        // mechanism characterization
+        private static final double ROTOR_TO_PULLEY_RATIO = 11.57;
+        private static final double PULLEY_CIRCUMFERENCE = 7.065;
+        public static final double ROTOR_TO_INCH_RATIO = ROTOR_TO_PULLEY_RATIO / PULLEY_CIRCUMFERENCE;
+        // latch
+        public static final int SERVO_HUB_ID = 54;
+        public static final int LATCH_CHANNEL = 1;
+    }
+
+
     public final static class ElevatorConstants {
         // motor config
         public static final int LEAD_ID = 31;

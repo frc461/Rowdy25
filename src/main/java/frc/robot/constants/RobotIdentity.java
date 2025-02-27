@@ -1,5 +1,7 @@
 package frc.robot.constants;
 
+import java.awt.Container;
+
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.StringPublisher;
 import frc.robot.constants.variants.CompConstants;
@@ -126,6 +128,14 @@ public enum RobotIdentity {
         Constants.VisionConstants.QuestNavConstants.TRANSLATION_ERROR_TOLERANCE = DefaultConstants.VisionConstants.QuestNavConstants.TRANSLATION_ERROR_TOLERANCE;
         Constants.VisionConstants.QuestNavConstants.ROTATION_ERROR_TOLERANCE = DefaultConstants.VisionConstants.QuestNavConstants.ROTATION_ERROR_TOLERANCE;
         Constants.VisionConstants.QuestNavConstants.MIN_TAG_DIST_TO_BE_FAR = DefaultConstants.VisionConstants.QuestNavConstants.MIN_TAG_DIST_TO_BE_FAR;
+
+        Constants.ClimbConstants.ID = DefaultConstants.ClimbConstants.ID;
+        Constants.ClimbConstants.CURRENT_LIMIT = DefaultConstants.ClimbConstants.CURRENT_LIMIT;
+        Constants.ClimbConstants.MOTOR_INVERT = DefaultConstants.ClimbConstants.MOTOR_INVERT;
+        Constants.ClimbConstants.NEUTRAL_MODE = DefaultConstants.ClimbConstants.NEUTRAL_MODE;
+        Constants.ClimbConstants.ROTOR_TO_INCH_RATIO = DefaultConstants.ClimbConstants.ROTOR_TO_INCH_RATIO;
+        Constants.ClimbConstants.SERVO_HUB_ID = DefaultConstants.ClimbConstants.SERVO_HUB_ID;
+        Constants.ClimbConstants.LATCH_CHANNEL = DefaultConstants.ClimbConstants.LATCH_CHANNEL;
 
         Constants.ElevatorConstants.LEAD_ID = DefaultConstants.ElevatorConstants.LEAD_ID;
         Constants.ElevatorConstants.FOLLOWER_ID = DefaultConstants.ElevatorConstants.FOLLOWER_ID;

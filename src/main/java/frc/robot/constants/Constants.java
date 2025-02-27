@@ -142,6 +142,21 @@ public final class Constants {
         }
     }
 
+    public final static class ClimbConstants {
+        // motor config
+        public static int ID;
+        public static double CURRENT_LIMIT;
+        public static InvertedValue MOTOR_INVERT;
+        public static NeutralModeValue NEUTRAL_MODE;
+
+        // mechanism characterization
+        public static double ROTOR_TO_INCH_RATIO;
+
+        // latch
+        public static int SERVO_HUB_ID;
+        public static int LATCH_CHANNEL;
+    }
+
     public final static class ElevatorConstants {
         // motor config
         public static int LEAD_ID;
