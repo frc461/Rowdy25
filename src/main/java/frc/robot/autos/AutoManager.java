@@ -22,6 +22,8 @@ import frc.robot.util.MultipleChooser;
 import org.json.simple.parser.ParseException;
 
 public final class AutoManager {
+    private Command currentCommand;
+
     public enum StartPosition {
         FAR_LEFT(1),
         CENTER_LEFT(2),
@@ -35,17 +37,24 @@ public final class AutoManager {
         }
     }
 
-    public StartPosition startPosition;
-    public List<Pair<FieldUtil.Reef.ScoringLocation, FieldUtil.Reef.Level>> scoringLocations;
+    public StartPosition startPosition = null;
+    public List<Pair<FieldUtil.Reef.ScoringLocation, FieldUtil.Reef.Level>> scoringLocations = null;
 
     private final SendableChooser<StartPosition> startPositionChooser = new SendableChooser<>();
     private final MultipleChooser<Pair<FieldUtil.Reef.ScoringLocation, FieldUtil.Reef.Level>> scoringLocationsChooser = new MultipleChooser<>();
 
-    public AutoManager() {
+    public AutoManager(RobotStates robotStates) {
+
         for (StartPosition position : StartPosition.values()) {
             startPositionChooser.addOption(position.name(), position);
         }
         SmartDashboard.putData("Start Position", startPositionChooser);
+        startPositionChooser.onChange(state -> {
+            startPosition = startPositionChooser.getSelected();
+            if (startPosition != null && scoringLocations != null) {
+                currentCommand = generateAutoEventLooper(startPosition, scoringLocations, robotStates).cmd();
+            }
+        });
 
         for (FieldUtil.Reef.ScoringLocation location : FieldUtil.Reef.ScoringLocation.values()) {
             for (FieldUtil.Reef.Level level : FieldUtil.Reef.Level.values()) {
@@ -53,14 +62,18 @@ public final class AutoManager {
             }
         }
         SmartDashboard.putData("Scoring Locations", scoringLocationsChooser);
+        scoringLocationsChooser.onChange(states -> {
+            scoringLocations = scoringLocationsChooser.getSelected();
+            if (!(startPosition == null) && !(scoringLocations == null)) {
+                currentCommand = generateAutoEventLooper(startPosition, scoringLocations, robotStates).cmd();
+            }
+        });
+
+        currentCommand = Commands.none();
     }
 
-
-    public Command getFinalAutoCommand(RobotStates robotStates) {
-        startPosition = startPositionChooser.getSelected();
-        scoringLocations = scoringLocationsChooser.getSelected();
-
-        return generateAutoEventLooper(startPosition, scoringLocations, robotStates).cmd();
+    public Command getFinalAutoCommand() {
+        return currentCommand;
     }
 
 

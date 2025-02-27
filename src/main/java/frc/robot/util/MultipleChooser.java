@@ -7,6 +7,7 @@ import edu.wpi.first.util.sendable.SendableRegistry;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.function.Consumer;
 
 public final class MultipleChooser<V> implements Sendable, AutoCloseable { // TODO SHOP: TEST THIS CLASS
     private static final String DEFAULT = "default";
@@ -19,6 +20,8 @@ public final class MultipleChooser<V> implements Sendable, AutoCloseable { // TO
 
     private final int instance;
     private final List<String> defaultSelection = new ArrayList<>();
+    private final List<String> previousSelection = new ArrayList<>();
+    private Consumer<List<V>> listener;
     private static final AtomicInteger instances = new AtomicInteger();
 
     public MultipleChooser() {
@@ -55,6 +58,12 @@ public final class MultipleChooser<V> implements Sendable, AutoCloseable { // TO
         } finally {
             lock.unlock();
         }
+    }
+
+    public void onChange(Consumer<List<V>> listener) {
+        lock.lock();
+        this.listener = listener;
+        lock.unlock();
     }
 
     private final List<String> selection = new ArrayList<>();
@@ -99,12 +108,26 @@ public final class MultipleChooser<V> implements Sendable, AutoCloseable { // TO
                     }
                 },
                 value -> {
+                    List<V> choice;
+                    Consumer<List<V>> listener;
                     lock.lock();
                     try {
                         selection.clear();
                         selection.addAll(Arrays.stream(value.split(", ")).distinct().toList());
+                        if (!selection.equals(previousSelection) && this.listener != null) {
+                            choice = selection.stream().map(options::get).toList();
+                            listener = this.listener;
+                        } else {
+                            choice = null;
+                            listener = null;
+                        }
+                        previousSelection.clear();
+                        previousSelection.addAll(selection);
                     } finally {
                         lock.unlock();
+                    }
+                    if (listener != null) {
+                        listener.accept(choice);
                     }
                 }
         );

@@ -22,7 +22,7 @@ public class RobotContainer {
     private final RobotStates robotStates = new RobotStates();
 
     /* Auto Chooser & Configurator */
-    private final AutoManager autoManager = new AutoManager();
+    private final AutoManager autoManager = new AutoManager(robotStates);
 
     /* Sys ID */
     private final SysID sysID = new SysID(robotStates.swerve);
@@ -252,6 +252,6 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        return autoManager.getFinalAutoCommand(robotStates);
+        return autoManager.getFinalAutoCommand();
     }
 }
