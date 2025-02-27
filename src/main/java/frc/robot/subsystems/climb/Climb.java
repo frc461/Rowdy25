@@ -11,7 +11,6 @@ import com.revrobotics.servohub.ServoHub;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
-import frc.robot.subsystems.pivot.Pivot;
 
 public class Climb extends SubsystemBase {
     public enum State {
@@ -20,7 +19,7 @@ public class Climb extends SubsystemBase {
     }
 
     public enum LatchState {
-        ON(Constants.ClimbConstants.LATCH_ON), // Pivot can move
+        ON(Constants.ClimbConstants.LATCH_ON),
         OFF(Constants.ClimbConstants.LATCH_OFF);
 
         private final int pulseWidth;
@@ -31,10 +30,6 @@ public class Climb extends SubsystemBase {
     }
 
     private State currentState;
-
-    public LatchState getCurrentLatchState() {
-        return currentLatchState;
-    }
 
     private LatchState currentLatchState;
 
@@ -84,11 +79,14 @@ public class Climb extends SubsystemBase {
         latch.setPulseWidth(currentLatchState.pulseWidth);
     }
 
-    public void climbUp() {
-
+    public LatchState getCurrentLatchState() {
+        return currentLatchState;
     }
 
 
+    public void climbUp() {
+
+    }
 
     public void climbDown() {
 
