@@ -157,6 +157,10 @@ public final class Constants {
         public static int LATCH_CHANNEL;
         public static int LATCH_ON;
         public static int LATCH_OFF;
+
+        // presets
+        public static int UP;
+        public static int DOWN;
     }
 
     public final static class ElevatorConstants {
@@ -203,7 +207,7 @@ public final class Constants {
         public static double HIGH_REEF_ALGAE;
         public static double PROCESSOR;
         public static double NET;
-
+        public static double CLIMB;
     }
 
     public final static class IntakeConstants {

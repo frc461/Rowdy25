@@ -14,8 +14,14 @@ import frc.robot.constants.Constants;
 
 public class Climb extends SubsystemBase {
     public enum State {
-        UP,
-        DOWN
+        UP(Constants.ClimbConstants.UP),
+        DOWN(Constants.ClimbConstants.DOWN);
+
+        private final int position;
+
+        State(int position) {
+            this.position = position;
+        }
     }
 
     public enum LatchState {
@@ -82,7 +88,6 @@ public class Climb extends SubsystemBase {
     public LatchState getCurrentLatchState() {
         return currentLatchState;
     }
-
 
     public void climbUp() {
 

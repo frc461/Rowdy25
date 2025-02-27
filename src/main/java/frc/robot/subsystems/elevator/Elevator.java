@@ -6,12 +6,10 @@ import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
 import frc.robot.util.ExpUtil;
-import frc.robot.util.FieldUtil;
 
 public class Elevator extends SubsystemBase {
     public enum State {
@@ -27,7 +25,8 @@ public class Elevator extends SubsystemBase {
         LOW_REEF_ALGAE(Constants.ElevatorConstants.LOW_REEF_ALGAE),
         HIGH_REEF_ALGAE(Constants.ElevatorConstants.HIGH_REEF_ALGAE),
         NET(Constants.ElevatorConstants.NET),
-        PROCESSOR(Constants.ElevatorConstants.PROCESSOR);
+        PROCESSOR(Constants.ElevatorConstants.PROCESSOR),
+        CLIMB(Constants.ElevatorConstants.CLIMB);
 
         private final double position;
 
@@ -162,6 +161,10 @@ public class Elevator extends SubsystemBase {
 
     public void setNetState() {
         setState(State.NET);
+    }
+
+    public void setClimbState() {
+        setState(State.CLIMB);
     }
 
     public void checkLimitSwitch() {

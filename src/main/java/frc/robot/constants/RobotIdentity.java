@@ -1,6 +1,6 @@
 package frc.robot.constants;
 
-import java.awt.Container;
+import java.io.Console;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.StringPublisher;
@@ -138,6 +138,8 @@ public enum RobotIdentity {
         Constants.ClimbConstants.LATCH_CHANNEL = DefaultConstants.ClimbConstants.LATCH_CHANNEL;
         Constants.ClimbConstants.LATCH_ON = DefaultConstants.ClimbConstants.LATCH_ON;
         Constants.ClimbConstants.LATCH_OFF = DefaultConstants.ClimbConstants.LATCH_OFF;
+        Constants.ClimbConstants.UP = DefaultConstants.ClimbConstants.UP;
+        Constants.ClimbConstants.UP = DefaultConstants.ClimbConstants.DOWN;
 
         Constants.ElevatorConstants.LEAD_ID = DefaultConstants.ElevatorConstants.LEAD_ID;
         Constants.ElevatorConstants.FOLLOWER_ID = DefaultConstants.ElevatorConstants.FOLLOWER_ID;
@@ -175,6 +177,7 @@ public enum RobotIdentity {
         Constants.ElevatorConstants.HIGH_REEF_ALGAE = DefaultConstants.ElevatorConstants.HIGH_REEF_ALGAE;
         Constants.ElevatorConstants.PROCESSOR = DefaultConstants.ElevatorConstants.PROCESSOR;
         Constants.ElevatorConstants.NET = DefaultConstants.ElevatorConstants.NET;
+        Constants.ElevatorConstants.CLIMB = DefaultConstants.ElevatorConstants.CLIMB;
 
         Constants.IntakeConstants.MOTOR_ID = DefaultConstants.IntakeConstants.MOTOR_ID;
         Constants.IntakeConstants.SENSOR_ID = DefaultConstants.IntakeConstants.SENSOR_ID;

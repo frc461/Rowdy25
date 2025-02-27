@@ -200,6 +200,10 @@ public final class DefaultConstants {
         public static final int LATCH_CHANNEL = 1;
         public static final int LATCH_ON = 0; //TODO: FIND VALUES
         public static final int LATCH_OFF = 0; //TODO: FIND VALUES
+        
+        // presets
+        public static final int UP = 0;
+        public static final int DOWN = 0;
     }
 
 
@@ -250,6 +254,7 @@ public final class DefaultConstants {
         public static final double HIGH_REEF_ALGAE = 3.0;
         public static final double PROCESSOR = 0;
         public static final double NET = 44;
+        public static final double CLIMB = 0;
     }
 
     public final static class IntakeConstants {
