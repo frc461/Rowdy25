@@ -192,7 +192,7 @@ public final class DefaultConstants {
 
     public final static class ClimbConstants {
         // motor config
-        public static final int ID = 0; // TODO: SET ID
+        public static final int ID = 0;
         public static final double CURRENT_LIMIT = 40;
         public static final InvertedValue MOTOR_INVERT = InvertedValue.Clockwise_Positive;
         public static final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Coast;
@@ -203,13 +203,13 @@ public final class DefaultConstants {
         public static final double ROTOR_TO_INCH_RATIO = ROTOR_TO_PULLEY_RATIO / PULLEY_CIRCUMFERENCE;
         // ratchet
         public static final ServoChannel.ChannelId RATCHET_CHANNEL = ServoChannel.ChannelId.kChannelId1;
-        public static final int RATCHET_ON = 1115; //TODO: FIND VALUES
+        public static final int RATCHET_ON = 1115;
         public static final int RATCHET_OFF = 1250;
         
         // presets
         public static final double IDLE = 0;
-        public static final double PREPARE_CLIMB = 0;
-        public static final double CLIMB = 0;
+        public static final double PREPARE_CLIMB = 225;
+        public static final double CLIMB = 60;
     }
 
 
