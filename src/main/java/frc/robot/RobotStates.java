@@ -45,6 +45,7 @@ public class RobotStates {
         HIGH_REEF_ALGAE,
         PROCESSOR,
         NET,
+        PREPARE_CLIMB,
         CLIMB
     }
 
@@ -75,6 +76,7 @@ public class RobotStates {
     public final Trigger highReefAlgaeState = new Trigger(() -> currentState == State.HIGH_REEF_ALGAE);
     public final Trigger processorState = new Trigger(() -> currentState == State.PROCESSOR);
     public final Trigger netState = new Trigger(() -> currentState == State.NET);
+    public final Trigger prepareClimbState = new Trigger(() -> currentState == State.PREPARE_CLIMB);
     public final Trigger climbState = new Trigger(() -> currentState == State.CLIMB);
 
     private final NetworkTable robotStatesTelemetryTable = Constants.NT_INSTANCE.getTable("RobotStates");
