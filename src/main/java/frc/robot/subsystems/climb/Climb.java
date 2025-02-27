@@ -14,39 +14,37 @@ import frc.robot.constants.Constants;
 
 public class Climb extends SubsystemBase {
     public enum State {
-        UP(Constants.ClimbConstants.UP),
-        DOWN(Constants.ClimbConstants.DOWN);
+        IDLE(Constants.ClimbConstants.IDLE),
+        PREPARE_CLIMB(Constants.ClimbConstants.PREPARE_CLIMB),
+        CLIMB(Constants.ClimbConstants.CLIMB);
 
-        private final int position;
+        private final double position;
 
-        State(int position) {
+        State(double position) {
             this.position = position;
         }
     }
 
-    public enum LatchState {
-        ON(Constants.ClimbConstants.LATCH_ON),
-        OFF(Constants.ClimbConstants.LATCH_OFF);
+    public enum RatchetState {
+        ON(Constants.ClimbConstants.RATCHET_ON),
+        OFF(Constants.ClimbConstants.RATCHET_OFF);
 
         private final int pulseWidth;
 
-        LatchState(int pulseWidth) {
+        RatchetState(int pulseWidth) {
             this.pulseWidth = pulseWidth;
         }
     }
 
     private State currentState;
 
-    private LatchState currentLatchState;
-
 	private final TalonFX climb;
-    private final ServoChannel latch;
+    private final ServoChannel ratchet;
 
     private final ClimbTelemetry climbTelemetry = new ClimbTelemetry(this);
     
     public Climb() {
-        currentState = State.DOWN;
-        currentLatchState = LatchState.ON;
+        currentState = State.PREPARE_CLIMB;
 
         climb = new TalonFX(Constants.ClimbConstants.ID);
         climb.getConfigurator().apply(new TalonFXConfiguration()
@@ -58,18 +56,11 @@ public class Climb extends SubsystemBase {
                 .withCurrentLimits(new CurrentLimitsConfigs()
                         .withSupplyCurrentLimit(Constants.ClimbConstants.CURRENT_LIMIT))
         );
+        climb.setPosition(0.0);
 
-        latch = new ServoHub(Constants.ClimbConstants.SERVO_HUB_ID).getServoChannel(ServoChannel.ChannelId.kChannelId1);
-        latch.setPowered(true);
-        latch.setEnabled(true);
-    }
-
-    public void toggleState() {
-        currentState = currentState == State.UP ? State.DOWN : State.UP;
-    }
-
-    public void setState(State state) {
-        currentState = state;
+        ratchet = new ServoHub(Constants.SERVO_HUB_ID).getServoChannel(Constants.ClimbConstants.RATCHET_CHANNEL);
+        ratchet.setPowered(true);
+        ratchet.setEnabled(true);
     }
 
     public State getState() {
@@ -80,27 +71,26 @@ public class Climb extends SubsystemBase {
         return climb.getPosition().getValueAsDouble();
     }
 
-    public void toggleRatchet() {
-        currentLatchState = currentLatchState == LatchState.ON ? LatchState.OFF : Climb.LatchState.ON;
-        latch.setPulseWidth(currentLatchState.pulseWidth);
+    public double getTarget() {
+        return getState().position;
     }
 
-    public LatchState getCurrentLatchState() {
-        return currentLatchState;
+    public int getRatchetPulseWidth() {
+        return getState() == State.CLIMB ? RatchetState.OFF.pulseWidth : RatchetState.ON.pulseWidth;
     }
 
-    public void climbUp() {
-
+    public void escalateClimb() {
+        currentState = (currentState == State.CLIMB || currentState == State.PREPARE_CLIMB) ? State.CLIMB : State.PREPARE_CLIMB;
     }
 
-    public void climbDown() {
-
+    public void reset() {
+        currentState = State.IDLE;
     }
 
     @Override
     public void periodic() {
         climbTelemetry.publishValues();
 
-        latch.setPulseWidth(currentLatchState.pulseWidth);
+        ratchet.setPulseWidth(getRatchetPulseWidth());
     }
 }

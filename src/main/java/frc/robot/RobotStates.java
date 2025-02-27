@@ -182,9 +182,14 @@ public class RobotStates {
         currentState = currentState == State.NET ? State.OUTTAKE : State.NET;
     }
 
+    public void escalateClimb() {
+        currentState = (currentState == State.CLIMB || currentState == State.PREPARE_CLIMB) ? State.CLIMB : State.PREPARE_CLIMB;
+    }
+
     public void configureToggleStateTriggers() {
         stowState.onTrue(
                 new InstantCommand(swerve::setIdleMode)
+                        .andThen(climb::reset)
                         .andThen(intake::setIdleState)
                         .andThen(wrist::setStowState)
                         .andThen(new WaitUntilCommand(wrist::nearTarget))
@@ -339,7 +344,7 @@ public class RobotStates {
                         .until(() -> !highReefAlgaeState.getAsBoolean())
         );
 
-        processorState.onTrue(
+        processorState.onTrue( // TODO: OPTIMIZE WITH INTAKE
                 new InstantCommand(swerve::setProcessorHeadingMode)
                         .andThen(intake::setIdleState)
                         .andThen(wrist::setProcessorState)
@@ -359,6 +364,23 @@ public class RobotStates {
                         .andThen(new WaitUntilCommand(elevator::nearTarget))
                         .andThen(wrist::setNetState)
                         .until(() -> !netState.getAsBoolean())
+        );
+
+        prepareClimbState.onTrue(
+                new InstantCommand(swerve::setIdleMode)
+                        .andThen(climb::escalateClimb)
+                        .andThen(intake::setIdleState)
+                        .andThen(transition(Pivot.State.CLIMB))
+                        .andThen(pivot::setClimbState)
+                        .andThen(new WaitUntilCommand(pivot::nearTarget))
+                        .andThen(elevator::setClimbState)
+                        .andThen(new WaitUntilCommand(elevator::nearTarget))
+                        .andThen(wrist::setClimbState)
+                        .until(() -> !prepareClimbState.getAsBoolean())
+        );
+
+        climbState.onTrue(
+                new InstantCommand(climb::escalateClimb)
         );
     }
 

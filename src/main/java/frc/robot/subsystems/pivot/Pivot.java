@@ -15,7 +15,7 @@ import frc.robot.util.ExpUtil;
 import frc.robot.util.GravityGainsCalculator;
 import frc.robot.subsystems.Lights;
 
-public class Pivot extends SubsystemBase { // TODO SHOP: INVESTIGATE CANCODER REPORTING 0 POSITION
+public class Pivot extends SubsystemBase {
     public enum State {
         MANUAL(Constants.PivotConstants.LOWER_LIMIT),
         STOW(Constants.PivotConstants.STOW),
@@ -111,7 +111,7 @@ public class Pivot extends SubsystemBase { // TODO SHOP: INVESTIGATE CANCODER RE
             pivot2.setControl(new Follower(Constants.PivotConstants.LEAD_ID, true));
         }
 
-        ratchet = new ServoHub(Constants.PivotConstants.SERVO_HUB_ID).getServoChannel(ServoChannel.ChannelId.kChannelId0);
+        ratchet = new ServoHub(Constants.SERVO_HUB_ID).getServoChannel(Constants.PivotConstants.RATCHET_CHANNEL);
         ratchet.setEnabled(true);
         ratchet.setPowered(true);
 
@@ -168,7 +168,6 @@ public class Pivot extends SubsystemBase { // TODO SHOP: INVESTIGATE CANCODER RE
 
     public void toggleRatchet() {
         currentRatchetState = currentRatchetState == RatchetState.ON ? RatchetState.OFF : RatchetState.ON;
-        ratchet.setPulseWidth(currentRatchetState.pulseWidth);
     }
 
     private void setState(State newState) {

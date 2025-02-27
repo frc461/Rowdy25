@@ -1,7 +1,5 @@
 package frc.robot.constants;
 
-import java.io.Console;
-
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.StringPublisher;
 import frc.robot.constants.variants.CompConstants;
@@ -73,6 +71,7 @@ public enum RobotIdentity {
         Constants.NT_INSTANCE = DefaultConstants.NT_INSTANCE;
         Constants.ONE_MILLION = DefaultConstants.ONE_MILLION;
         Constants.DEADBAND = DefaultConstants.DEADBAND;
+        Constants.SERVO_HUB_ID = DefaultConstants.SERVO_HUB_ID;
 
         Constants.AutoConstants.ROBOT_CONFIG = DefaultConstants.AutoConstants.ROBOT_CONFIG;
         Constants.AutoConstants.ALGAE_CHECK_MARKER = DefaultConstants.AutoConstants.ALGAE_CHECK_MARKER;
@@ -134,12 +133,12 @@ public enum RobotIdentity {
         Constants.ClimbConstants.MOTOR_INVERT = DefaultConstants.ClimbConstants.MOTOR_INVERT;
         Constants.ClimbConstants.NEUTRAL_MODE = DefaultConstants.ClimbConstants.NEUTRAL_MODE;
         Constants.ClimbConstants.ROTOR_TO_INCH_RATIO = DefaultConstants.ClimbConstants.ROTOR_TO_INCH_RATIO;
-        Constants.ClimbConstants.SERVO_HUB_ID = DefaultConstants.ClimbConstants.SERVO_HUB_ID;
-        Constants.ClimbConstants.LATCH_CHANNEL = DefaultConstants.ClimbConstants.LATCH_CHANNEL;
-        Constants.ClimbConstants.LATCH_ON = DefaultConstants.ClimbConstants.LATCH_ON;
-        Constants.ClimbConstants.LATCH_OFF = DefaultConstants.ClimbConstants.LATCH_OFF;
-        Constants.ClimbConstants.UP = DefaultConstants.ClimbConstants.UP;
-        Constants.ClimbConstants.UP = DefaultConstants.ClimbConstants.DOWN;
+        Constants.ClimbConstants.RATCHET_CHANNEL = DefaultConstants.ClimbConstants.RATCHET_CHANNEL;
+        Constants.ClimbConstants.RATCHET_ON = DefaultConstants.ClimbConstants.RATCHET_ON;
+        Constants.ClimbConstants.RATCHET_OFF = DefaultConstants.ClimbConstants.RATCHET_OFF;
+        Constants.ClimbConstants.IDLE = DefaultConstants.ClimbConstants.IDLE;
+        Constants.ClimbConstants.PREPARE_CLIMB = DefaultConstants.ClimbConstants.PREPARE_CLIMB;
+        Constants.ClimbConstants.CLIMB = DefaultConstants.ClimbConstants.CLIMB;
 
         Constants.ElevatorConstants.LEAD_ID = DefaultConstants.ElevatorConstants.LEAD_ID;
         Constants.ElevatorConstants.FOLLOWER_ID = DefaultConstants.ElevatorConstants.FOLLOWER_ID;
@@ -189,7 +188,6 @@ public enum RobotIdentity {
 
         Constants.PivotConstants.LEAD_ID = DefaultConstants.PivotConstants.LEAD_ID;
         Constants.PivotConstants.FOLLOWER_ID = DefaultConstants.PivotConstants.FOLLOWER_ID;
-        Constants.PivotConstants.SERVO_HUB_ID = DefaultConstants.PivotConstants.SERVO_HUB_ID;
         Constants.PivotConstants.CURRENT_LIMIT = DefaultConstants.PivotConstants.CURRENT_LIMIT;
         Constants.PivotConstants.PIVOT_INVERT = DefaultConstants.PivotConstants.PIVOT_INVERT;
         Constants.PivotConstants.NEUTRAL_MODE = DefaultConstants.PivotConstants.NEUTRAL_MODE;
@@ -198,7 +196,7 @@ public enum RobotIdentity {
         Constants.PivotConstants.ENCODER_ID = DefaultConstants.PivotConstants.ENCODER_ID;
         Constants.PivotConstants.ENCODER_ABSOLUTE_OFFSET = DefaultConstants.PivotConstants.ENCODER_ABSOLUTE_OFFSET;
         Constants.PivotConstants.ENCODER_INVERT = DefaultConstants.PivotConstants.ENCODER_INVERT;
-        Constants.PivotConstants.RATCHET_ID = DefaultConstants.PivotConstants.RATCHET_CHANNEL;
+        Constants.PivotConstants.RATCHET_CHANNEL = DefaultConstants.PivotConstants.RATCHET_CHANNEL;
         Constants.PivotConstants.RATCHET_ON = DefaultConstants.PivotConstants.RATCHET_ON;
         Constants.PivotConstants.RATCHET_OFF = DefaultConstants.PivotConstants.RATCHET_OFF;
         Constants.PivotConstants.G = DefaultConstants.PivotConstants.G;

@@ -17,6 +17,7 @@ import com.ctre.phoenix6.swerve.SwerveModuleConstantsFactory;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.path.PathConstraints;
 
+import com.revrobotics.servohub.ServoChannel;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -82,6 +83,8 @@ public final class DefaultConstants {
     public static final NetworkTableInstance NT_INSTANCE = NetworkTableInstance.getDefault();
     public static final int ONE_MILLION = 1_000_000;
     public static final double DEADBAND = 0.1;
+
+    public static final int SERVO_HUB_ID = 54;
 
     public static final class AutoConstants {
         public static final RobotConfig ROBOT_CONFIG;
@@ -186,7 +189,7 @@ public final class DefaultConstants {
 
     public final static class ClimbConstants {
         // motor config
-        public static final int ID = 0; // TODO: set id
+        public static final int ID = 0; // TODO: SET ID
         public static final double CURRENT_LIMIT = 40;
         public static final InvertedValue MOTOR_INVERT = InvertedValue.Clockwise_Positive;
         public static final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Coast;
@@ -195,15 +198,15 @@ public final class DefaultConstants {
         private static final double ROTOR_TO_PULLEY_RATIO = 11.57;
         private static final double PULLEY_CIRCUMFERENCE = 7.065;
         public static final double ROTOR_TO_INCH_RATIO = ROTOR_TO_PULLEY_RATIO / PULLEY_CIRCUMFERENCE;
-        // latch
-        public static final int SERVO_HUB_ID = 54;
-        public static final int LATCH_CHANNEL = 1;
-        public static final int LATCH_ON = 0; //TODO: FIND VALUES
-        public static final int LATCH_OFF = 0; //TODO: FIND VALUES
+        // ratchet
+        public static final ServoChannel.ChannelId RATCHET_CHANNEL = ServoChannel.ChannelId.kChannelId1;
+        public static final int RATCHET_ON = 0; //TODO: FIND VALUES
+        public static final int RATCHET_OFF = 0;
         
         // presets
-        public static final int UP = 0;
-        public static final int DOWN = 0;
+        public static final double IDLE = 0;
+        public static final double PREPARE_CLIMB = 0;
+        public static final double CLIMB = 0;
     }
 
 
@@ -271,7 +274,6 @@ public final class DefaultConstants {
         // motor config
         public static final int LEAD_ID = 51;
         public static final int FOLLOWER_ID = 52;
-        public static final int SERVO_HUB_ID = 54;
         public static final double CURRENT_LIMIT = 40;
         public static final InvertedValue PIVOT_INVERT = InvertedValue.Clockwise_Positive;
         public static final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Coast;
@@ -287,7 +289,7 @@ public final class DefaultConstants {
         public static final SensorDirectionValue ENCODER_INVERT = SensorDirectionValue.CounterClockwise_Positive;
 
         // ratchet config
-        public static final int RATCHET_CHANNEL = 0;
+        public static final ServoChannel.ChannelId RATCHET_CHANNEL = ServoChannel.ChannelId.kChannelId0;
         public static final int RATCHET_ON = 1050;
         public static final int RATCHET_OFF = 1200;
 
@@ -318,7 +320,7 @@ public final class DefaultConstants {
         public static final double HIGH_REEF_ALGAE = 105;
         public static final double PROCESSOR = 22.1;
         public static final double NET = 90;
-        public static final double CLIMB = 0;
+        public static final double CLIMB = 90;
     }
 
     public final static class WristConstants {

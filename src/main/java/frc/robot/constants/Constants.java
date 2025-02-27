@@ -13,6 +13,7 @@ import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.path.PathConstraints;
 
+import com.revrobotics.servohub.ServoChannel;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -60,6 +61,8 @@ public final class Constants {
     public static NetworkTableInstance NT_INSTANCE;
     public static int ONE_MILLION;
     public static double DEADBAND;
+
+    public static int SERVO_HUB_ID;
 
     public static final class AutoConstants {
         public static RobotConfig ROBOT_CONFIG;
@@ -152,15 +155,15 @@ public final class Constants {
         // mechanism characterization
         public static double ROTOR_TO_INCH_RATIO;
 
-        // latch
-        public static int SERVO_HUB_ID;
-        public static int LATCH_CHANNEL;
-        public static int LATCH_ON;
-        public static int LATCH_OFF;
+        // ratchet
+        public static ServoChannel.ChannelId RATCHET_CHANNEL;
+        public static int RATCHET_ON;
+        public static int RATCHET_OFF;
 
         // presets
-        public static int UP;
-        public static int DOWN;
+        public static double IDLE;
+        public static double PREPARE_CLIMB;
+        public static double CLIMB;
     }
 
     public final static class ElevatorConstants {
@@ -225,7 +228,6 @@ public final class Constants {
         // motor config
         public static int LEAD_ID;
         public static int FOLLOWER_ID;
-        public static int SERVO_HUB_ID;
         public static double CURRENT_LIMIT;
         public static InvertedValue PIVOT_INVERT;
         public static NeutralModeValue NEUTRAL_MODE;
@@ -240,7 +242,7 @@ public final class Constants {
         public static SensorDirectionValue ENCODER_INVERT;
 
         // ratchet config
-        public static int RATCHET_ID;
+        public static ServoChannel.ChannelId RATCHET_CHANNEL;
         public static int RATCHET_ON;
         public static int RATCHET_OFF;
 
