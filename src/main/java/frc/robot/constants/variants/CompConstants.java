@@ -19,17 +19,17 @@ import static edu.wpi.first.units.Units.Inches;
 public final class CompConstants {
     public final static class PhotonConstants {
             public static final String BW_TOP_RIGHT_NAME = "ArducamBW2";
-            public static final double BW_TOP_RIGHT_FORWARD = 0.409011;
+            public static final double BW_TOP_RIGHT_FORWARD = 0.396311;
             public static final double BW_TOP_RIGHT_LEFT = -0.266700;
-            public static final double BW_TOP_RIGHT_UP = 0.278782;
+            public static final double BW_TOP_RIGHT_UP = 0.254114;
             public static final double BW_TOP_RIGHT_ROLL = 0.0;
             public static final double BW_TOP_RIGHT_PITCH = -5.0;
             public static final double BW_TOP_RIGHT_YAW = -0.0;
 
             public static final String BW_TOP_LEFT_NAME = "ArducamBW";
-            public static final double BW_TOP_LEFT_FORWARD = 0.409011;
+            public static final double BW_TOP_LEFT_FORWARD = 0.396311;
             public static final double BW_TOP_LEFT_LEFT = 0.266700;
-            public static final double BW_TOP_LEFT_UP = 0.278782;
+            public static final double BW_TOP_LEFT_UP = 0.254114;
             public static final double BW_TOP_LEFT_ROLL = 0.0;
             public static final double BW_TOP_LEFT_PITCH = -5.0;
             public static final double BW_TOP_LEFT_YAW = 0.0;
@@ -203,7 +203,7 @@ public final class CompConstants {
         // output type specified by SwerveModuleConstants.DriveMotorClosedLoopOutput
         private static final Slot0Configs DRIVE_GAINS = new Slot0Configs()
                 .withKP(0.097116).withKI(0).withKD(0)
-                .withKS(0.10746).withKV(0.11507).withKA(0.012509); // TODO SHOP: TUNE KA GAIN
+                .withKS(0.10746).withKV(0.11507).withKA(0.012509); // TODO SHOP: TUNE KA GAIN (SET P = 0 WHEN TUNING KA)
 
         // The closed-loop output type to use for the steer motors;
         // This affects the PID/FF gains for the steer motors

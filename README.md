@@ -65,9 +65,11 @@ Tuesday, 2/25/2025 to test:
   - [x] try cameras looking forward
 
 Thursday, 2/27/2025 to test:
+- [ ] try updating pivot G gains
 - [ ] auto
   - [ ] new camera mounts on
-  - [ ] tune kA
+  - [ ] try slower rotation and faster linear acceleration
+  - [ ] if that doesn't work then tune kA (turn drive motor P to 0)
   - [ ] tune drive motor kP
   - [ ] tune path kP
   - [ ] try variety of paths
