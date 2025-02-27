@@ -155,6 +155,8 @@ public final class Constants {
         // latch
         public static int SERVO_HUB_ID;
         public static int LATCH_CHANNEL;
+        public static int LATCH_ON;
+        public static int LATCH_OFF;
     }
 
     public final static class ElevatorConstants {

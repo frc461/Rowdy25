@@ -11,6 +11,7 @@ import com.revrobotics.servohub.ServoHub;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
+import frc.robot.subsystems.pivot.Pivot;
 
 public class Climb extends SubsystemBase {
     public enum State {
@@ -18,7 +19,24 @@ public class Climb extends SubsystemBase {
         DOWN
     }
 
+    public enum LatchState {
+        ON(Constants.ClimbConstants.LATCH_ON), // Pivot can move
+        OFF(Constants.ClimbConstants.LATCH_OFF);
+
+        private final int pulseWidth;
+
+        LatchState(int pulseWidth) {
+            this.pulseWidth = pulseWidth;
+        }
+    }
+
     private State currentState;
+
+    public LatchState getCurrentLatchState() {
+        return currentLatchState;
+    }
+
+    private LatchState currentLatchState;
 
 	private final TalonFX climb;
     private final ServoChannel latch;
@@ -27,6 +45,7 @@ public class Climb extends SubsystemBase {
     
     public Climb() {
         currentState = State.DOWN;
+        currentLatchState = LatchState.ON;
 
         climb = new TalonFX(Constants.ClimbConstants.ID);
         climb.getConfigurator().apply(new TalonFXConfiguration()
@@ -40,6 +59,8 @@ public class Climb extends SubsystemBase {
         );
 
         latch = new ServoHub(Constants.ClimbConstants.SERVO_HUB_ID).getServoChannel(ServoChannel.ChannelId.kChannelId1);
+        latch.setPowered(true);
+        latch.setEnabled(true);
     }
 
     public void toggleState() {
@@ -58,9 +79,16 @@ public class Climb extends SubsystemBase {
         return climb.getPosition().getValueAsDouble();
     }
 
+    public void toggleRatchet() {
+        currentLatchState = currentLatchState == LatchState.ON ? LatchState.OFF : Climb.LatchState.ON;
+        latch.setPulseWidth(currentLatchState.pulseWidth);
+    }
+
     public void climbUp() {
 
     }
+
+
 
     public void climbDown() {
 
@@ -69,5 +97,7 @@ public class Climb extends SubsystemBase {
     @Override
     public void periodic() {
         climbTelemetry.publishValues();
+
+        latch.setPulseWidth(currentLatchState.pulseWidth);
     }
 }

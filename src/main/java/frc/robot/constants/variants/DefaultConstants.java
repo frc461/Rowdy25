@@ -198,6 +198,8 @@ public final class DefaultConstants {
         // latch
         public static final int SERVO_HUB_ID = 54;
         public static final int LATCH_CHANNEL = 1;
+        public static final int LATCH_ON = 0; //TODO: FIND VALUES
+        public static final int LATCH_OFF = 0; //TODO: FIND VALUES
     }
 
 

@@ -136,6 +136,8 @@ public enum RobotIdentity {
         Constants.ClimbConstants.ROTOR_TO_INCH_RATIO = DefaultConstants.ClimbConstants.ROTOR_TO_INCH_RATIO;
         Constants.ClimbConstants.SERVO_HUB_ID = DefaultConstants.ClimbConstants.SERVO_HUB_ID;
         Constants.ClimbConstants.LATCH_CHANNEL = DefaultConstants.ClimbConstants.LATCH_CHANNEL;
+        Constants.ClimbConstants.LATCH_ON = DefaultConstants.ClimbConstants.LATCH_ON;
+        Constants.ClimbConstants.LATCH_OFF = DefaultConstants.ClimbConstants.LATCH_OFF;
 
         Constants.ElevatorConstants.LEAD_ID = DefaultConstants.ElevatorConstants.LEAD_ID;
         Constants.ElevatorConstants.FOLLOWER_ID = DefaultConstants.ElevatorConstants.FOLLOWER_ID;
