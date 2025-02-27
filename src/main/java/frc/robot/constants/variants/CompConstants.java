@@ -143,7 +143,7 @@ public final class CompConstants {
         public static final Translation2d AXIS_TO_ZERO_COM = new Translation2d(3.014233, -4.015809);
 
         // encoder config
-        public static final double ENCODER_ABSOLUTE_OFFSET =  0.16528455949;
+        public static final double ENCODER_ABSOLUTE_OFFSET =  -0.15820176865;
         public static final SensorDirectionValue ENCODER_INVERT = SensorDirectionValue.Clockwise_Positive;
 
         // pid & tolerance
@@ -177,8 +177,8 @@ public final class CompConstants {
     }
 
     public static final class SwerveConstants {
-        public static final double PATH_TRANSLATION_CONTROLLER_P = 10.0;
-        public static final double PATH_ROTATION_CONTROLLER_P = 7.5;
+        public static final double PATH_TRANSLATION_CONTROLLER_P = 2.0;
+        public static final double PATH_ROTATION_CONTROLLER_P = 2.0;
 
         public static final double TRANSLATION_ALIGNMENT_CONTROLLER_P = 1.0;
         public static final double TRANSLATION_ALIGNMENT_CONTROLLER_D = 0.002;
@@ -203,7 +203,7 @@ public final class CompConstants {
         // output type specified by SwerveModuleConstants.DriveMotorClosedLoopOutput
         private static final Slot0Configs DRIVE_GAINS = new Slot0Configs()
                 .withKP(0.097116).withKI(0).withKD(0)
-                .withKS(0.10746).withKV(0.11507).withKA(0.012509);
+                .withKS(0.10746).withKV(0.11507).withKA(0.012509); // TODO SHOP: TUNE KA GAIN
 
         // The closed-loop output type to use for the steer motors;
         // This affects the PID/FF gains for the steer motors
