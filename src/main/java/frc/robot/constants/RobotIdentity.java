@@ -133,7 +133,6 @@ public enum RobotIdentity {
         Constants.ClimbConstants.CURRENT_LIMIT = DefaultConstants.ClimbConstants.CURRENT_LIMIT;
         Constants.ClimbConstants.MOTOR_INVERT = DefaultConstants.ClimbConstants.MOTOR_INVERT;
         Constants.ClimbConstants.NEUTRAL_MODE = DefaultConstants.ClimbConstants.NEUTRAL_MODE;
-        Constants.ClimbConstants.ROTOR_TO_INCH_RATIO = DefaultConstants.ClimbConstants.ROTOR_TO_INCH_RATIO;
         Constants.ClimbConstants.RATCHET_CHANNEL = DefaultConstants.ClimbConstants.RATCHET_CHANNEL;
         Constants.ClimbConstants.RATCHET_ON = DefaultConstants.ClimbConstants.RATCHET_ON;
         Constants.ClimbConstants.RATCHET_OFF = DefaultConstants.ClimbConstants.RATCHET_OFF;

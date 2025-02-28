@@ -144,6 +144,10 @@ public class RobotContainer {
 
         driverXbox.povUp().onTrue(new InstantCommand(() -> robotStates.swerve.localizer.setRotations(Rotation2d.kZero)));
         driverXbox.povDown().onTrue(new InstantCommand(robotStates.swerve.localizer::syncRotations));
+        driverXbox.povLeft().onTrue(new InstantCommand(() -> robotStates.climb.setClimb(-0.9)));
+        driverXbox.povLeft().onFalse(new InstantCommand(() -> robotStates.climb.setClimb(0.0)).andThen(robotStates.climb::setClimb));
+        driverXbox.povRight().onTrue(new InstantCommand(() -> robotStates.climb.setClimb(0.9)));
+        driverXbox.povRight().onFalse(new InstantCommand(() -> robotStates.climb.setClimb(0.0)));
 
         driverXbox.leftBumper().onTrue(new InstantCommand(robotStates.swerve::setBranchHeadingMode)
                 .andThen(new WaitUntilCommand(() -> !driverXbox.leftBumper().getAsBoolean()))
@@ -210,7 +214,7 @@ public class RobotContainer {
         opXbox.leftBumper().onTrue(new InstantCommand(() -> overrideNonessentialOpControls = !overrideNonessentialOpControls));
         opXbox.rightBumper().onTrue(new InstantCommand(robotStates::setStowState));
 
-        opXbox.a().onTrue(new InstantCommand(robotStates.pivot::toggleRatchet));
+        opXbox.a().onTrue(new InstantCommand(robotStates::escalateClimb));
 
         opXbox.b().onTrue(new InstantCommand(robotStates::toggleHighReefAlgaeState));
 

@@ -7,7 +7,6 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import com.revrobotics.servohub.ServoChannel;
-import com.revrobotics.servohub.ServoHub;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
@@ -76,7 +75,7 @@ public class Pivot extends SubsystemBase {
 
     public Pivot() {
         currentState = State.STOW;
-        currentRatchetState = RatchetState.OFF;
+        currentRatchetState = RatchetState.ON;
 
         CANcoder encoder = new CANcoder(Constants.PivotConstants.ENCODER_ID);
         encoder.getConfigurator().apply(new CANcoderConfiguration()
@@ -138,6 +137,10 @@ public class Pivot extends SubsystemBase {
         return getState() == State.MANUAL ? lastManualPosition : getState().position;
     }
 
+    public int getRatchetPulseWidth() {
+        return getState() == State.CLIMB ? RatchetState.OFF.pulseWidth : RatchetState.ON.pulseWidth;
+    }
+
     public boolean validStartPosition() {
         return Math.abs(getPosition() - Constants.PivotConstants.STOW) <= Constants.PivotConstants.SAFE_TOLERANCE;
     }
@@ -164,10 +167,6 @@ public class Pivot extends SubsystemBase {
 
     public boolean isAtTarget() {
         return error < Constants.PivotConstants.AT_TARGET_TOLERANCE;
-    }
-
-    public void toggleRatchet() {
-        currentRatchetState = currentRatchetState == RatchetState.ON ? RatchetState.OFF : RatchetState.ON;
     }
 
     private void setState(State newState) {
@@ -251,6 +250,6 @@ public class Pivot extends SubsystemBase {
 
         Lights.setLights((validStartPosition()) && DriverStation.isDisabled());
 
-        ratchet.setPulseWidth(currentRatchetState.pulseWidth);
+        ratchet.setPulseWidth(getRatchetPulseWidth());
     }
 }

@@ -197,10 +197,6 @@ public final class DefaultConstants {
         public static final InvertedValue MOTOR_INVERT = InvertedValue.Clockwise_Positive;
         public static final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Coast;
 
-        // mechanism characterization
-        private static final double ROTOR_TO_PULLEY_RATIO = 11.57;
-        private static final double PULLEY_CIRCUMFERENCE = 7.065;
-        public static final double ROTOR_TO_INCH_RATIO = ROTOR_TO_PULLEY_RATIO / PULLEY_CIRCUMFERENCE;
         // ratchet
         public static final ServoChannel.ChannelId RATCHET_CHANNEL = ServoChannel.ChannelId.kChannelId1;
         public static final int RATCHET_ON = 1115;
@@ -209,7 +205,7 @@ public final class DefaultConstants {
         // presets
         public static final double IDLE = 0;
         public static final double PREPARE_CLIMB = 225;
-        public static final double CLIMB = 60;
+        public static final double CLIMB = 45;
     }
 
 
@@ -260,7 +256,7 @@ public final class DefaultConstants {
         public static final double HIGH_REEF_ALGAE = 3.0;
         public static final double PROCESSOR = 0;
         public static final double NET = 44;
-        public static final double CLIMB = 0;
+        public static final double CLIMB = 12;
     }
 
     public final static class IntakeConstants {
@@ -323,7 +319,7 @@ public final class DefaultConstants {
         public static final double HIGH_REEF_ALGAE = 105;
         public static final double PROCESSOR = 22.1;
         public static final double NET = 90;
-        public static final double CLIMB = 90;
+        public static final double CLIMB = 105;
     }
 
     public final static class WristConstants {
@@ -372,7 +368,7 @@ public final class DefaultConstants {
         public static final double HIGH_REEF_ALGAE = 160;
         public static final double PROCESSOR = 150;
         public static final double NET = 175;
-        public static final double CLIMB = 0;
+        public static final double CLIMB = 180;
     }
 
     public static final class SwerveConstants {

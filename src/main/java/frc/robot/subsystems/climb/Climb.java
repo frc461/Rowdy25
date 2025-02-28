@@ -48,8 +48,7 @@ public class Climb extends SubsystemBase {
 
         climb = new TalonFX(Constants.ClimbConstants.ID);
         climb.getConfigurator().apply(new TalonFXConfiguration()
-                .withFeedback(new FeedbackConfigs()
-                        .withSensorToMechanismRatio(Constants.ClimbConstants.ROTOR_TO_INCH_RATIO))
+                .withFeedback(new FeedbackConfigs())
                 .withMotorOutput(new MotorOutputConfigs()
                         .withInverted(Constants.ClimbConstants.MOTOR_INVERT)
                         .withNeutralMode(NeutralModeValue.Coast))
@@ -70,19 +69,28 @@ public class Climb extends SubsystemBase {
 	}
 
     public double getPosition() {
-        return climb.getPosition().getValueAsDouble();
+        return climb.getRotorPosition().getValueAsDouble();
     }
 
     public double getTarget() {
-        return getState().position;
+        return getState() == State.CLIMB ? getPosition() : getState().position;
     }
 
     public int getRatchetPulseWidth() {
-        return (getState() == State.CLIMB || getState() == State.IDLE) ? RatchetState.OFF.pulseWidth : RatchetState.ON.pulseWidth;
+        return (getState() == State.CLIMB) ? RatchetState.OFF.pulseWidth : RatchetState.ON.pulseWidth;
     }
 
     public void escalateClimb() {
         currentState = (currentState == State.CLIMB || currentState == State.PREPARE_CLIMB) ? State.CLIMB : State.PREPARE_CLIMB;
+    }
+
+    public void setClimb() {
+        currentState = State.CLIMB;
+    }
+
+    public void setClimb(double value) {
+        currentState = State.IDLE;
+        climb.set(value);
     }
 
     public void reset() {
@@ -98,9 +106,16 @@ public class Climb extends SubsystemBase {
         switch (getState()) {
             case IDLE:
                 break;
-            case PREPARE_CLIMB, CLIMB:
+            case PREPARE_CLIMB:
+                if (Math.abs(error) > 12.5) {
+                    climb.set(error < 0 ? 0.6 : -0.6);
+                } else {
+                    climb.set(0.0);
+                }
+                break;
+            case CLIMB:
                 if (Math.abs(error) > 5.0) {
-                    climb.set(error < 0 ? 0.1 : -0.1);
+                    climb.set(error < 0 ? 0.4 : -0.4);
                 } else {
                     climb.set(0.0);
                 }

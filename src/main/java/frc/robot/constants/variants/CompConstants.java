@@ -99,8 +99,8 @@ public final class CompConstants {
         public static final SensorDirectionValue ENCODER_INVERT = SensorDirectionValue.CounterClockwise_Positive;
 
         // ratchet config
-        public static final int RATCHET_ON = 2500;
-        public static final int RATCHET_OFF = 2450;
+        public static final int RATCHET_ON = 1725;
+        public static final int RATCHET_OFF = 1600;
 
         // pid & tolerance
         public static final double G = 0.2269;

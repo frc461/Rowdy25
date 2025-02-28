@@ -155,9 +155,6 @@ public final class Constants {
         public static InvertedValue MOTOR_INVERT;
         public static NeutralModeValue NEUTRAL_MODE;
 
-        // mechanism characterization
-        public static double ROTOR_TO_INCH_RATIO;
-
         // ratchet
         public static ServoChannel.ChannelId RATCHET_CHANNEL;
         public static int RATCHET_ON;
