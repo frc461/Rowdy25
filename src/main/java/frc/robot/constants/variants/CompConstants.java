@@ -7,6 +7,7 @@ import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstantsFactory;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.*;
 import frc.robot.util.ExpUtil;
 
@@ -20,7 +21,7 @@ public final class CompConstants {
     public final static class PhotonConstants {
             public static final String BW_TOP_RIGHT_NAME = "ArducamBW2";
             public static final double BW_TOP_RIGHT_FORWARD = 0.396311;
-            public static final double BW_TOP_RIGHT_LEFT = -0.266700;
+            public static final double BW_TOP_RIGHT_LEFT = -0.266700 - Units.inchesToMeters(1 / 16.0);
             public static final double BW_TOP_RIGHT_UP = 0.254114;
             public static final double BW_TOP_RIGHT_ROLL = 0.0;
             public static final double BW_TOP_RIGHT_PITCH = -5.0;
@@ -28,7 +29,7 @@ public final class CompConstants {
 
             public static final String BW_TOP_LEFT_NAME = "ArducamBW";
             public static final double BW_TOP_LEFT_FORWARD = 0.396311;
-            public static final double BW_TOP_LEFT_LEFT = 0.266700;
+            public static final double BW_TOP_LEFT_LEFT = 0.266700 + Units.inchesToMeters(1 / 16.0);
             public static final double BW_TOP_LEFT_UP = 0.254114;
             public static final double BW_TOP_LEFT_ROLL = 0.0;
             public static final double BW_TOP_LEFT_PITCH = -5.0;
