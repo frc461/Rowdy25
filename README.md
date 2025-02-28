@@ -65,16 +65,17 @@ Tuesday, 2/25/2025 to test:
   - [x] try cameras looking forward
 
 Thursday, 2/27/2025 to test:
-- [ ] try updating pivot G gains
+- [x] try updating pivot G gains
+- [x] auto
+  - [x] new camera mounts on
+  - [x] try slower rotation and faster linear acceleration
+- [x] climb subsystem
+  - [x] climb presets
+
+INMIS:
 - [ ] auto
-  - [ ] new camera mounts on
-  - [ ] try slower rotation and faster linear acceleration
-  - [ ] if that doesn't work then tune kA (turn drive motor P to 0)
-  - [ ] tune drive motor kP
-  - [ ] tune path kP
   - [ ] try variety of paths
-- [ ] climb subsystem
-  - [ ] climb presets
+- [ ] test climb subsystem more
 
 Monday, 3/04/2025 software only:
 - [ ] new spherical pathing for pathfinding to branch
