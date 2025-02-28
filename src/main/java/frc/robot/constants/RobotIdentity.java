@@ -296,6 +296,13 @@ public enum RobotIdentity {
         Constants.VisionConstants.PhotonConstants.BW_TOP_LEFT_ROLL = CompConstants.PhotonConstants.BW_TOP_LEFT_ROLL;
         Constants.VisionConstants.PhotonConstants.BW_TOP_LEFT_PITCH = CompConstants.PhotonConstants.BW_TOP_LEFT_PITCH;
         Constants.VisionConstants.PhotonConstants.BW_TOP_LEFT_YAW = CompConstants.PhotonConstants.BW_TOP_LEFT_YAW;
+        Constants.VisionConstants.PhotonConstants.BW_BACK_NAME = CompConstants.PhotonConstants.BW_BACK_NAME;
+        Constants.VisionConstants.PhotonConstants.BW_BACK_FORWARD = CompConstants.PhotonConstants.BW_BACK_FORWARD;
+        Constants.VisionConstants.PhotonConstants.BW_BACK_LEFT = CompConstants.PhotonConstants.BW_BACK_LEFT;
+        Constants.VisionConstants.PhotonConstants.BW_BACK_UP = CompConstants.PhotonConstants.BW_BACK_UP;
+        Constants.VisionConstants.PhotonConstants.BW_BACK_ROLL = CompConstants.PhotonConstants.BW_BACK_ROLL;
+        Constants.VisionConstants.PhotonConstants.BW_BACK_PITCH = CompConstants.PhotonConstants.BW_BACK_PITCH;
+        Constants.VisionConstants.PhotonConstants.BW_BACK_YAW = CompConstants.PhotonConstants.BW_BACK_YAW;
 
         Constants.ElevatorConstants.LOWER_LIMIT_SWITCH_ID = CompConstants.ElevatorConstants.LOWER_LIMIT_SWITCH_ID;
         Constants.ElevatorConstants.MOTOR_INVERT = CompConstants.ElevatorConstants.MOTOR_INVERT;

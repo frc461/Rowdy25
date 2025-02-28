@@ -34,6 +34,14 @@ public final class CompConstants {
             public static final double BW_TOP_LEFT_ROLL = 0.0;
             public static final double BW_TOP_LEFT_PITCH = -5.0;
             public static final double BW_TOP_LEFT_YAW = 0.0;
+
+            public static final String BW_BACK_NAME = "ArducamBW3";
+            public static final double BW_BACK_FORWARD = -0.305367;
+            public static final double BW_BACK_LEFT = 0.266457;
+            public static final double BW_BACK_UP = 0.184669;
+            public static final double BW_BACK_ROLL = 0.0;
+            public static final double BW_BACK_PITCH = -8.0;
+            public static final double BW_BACK_YAW = 180;
     }
 
     public final static class ElevatorConstants {
@@ -237,8 +245,6 @@ public final class CompConstants {
                                 .withStatorCurrentLimitEnable(true)
                 );
         private static final CANcoderConfiguration CANCODER_INITIAL_CONFIGS = new CANcoderConfiguration();
-        // Configs for the Pigeon 2;
-        private static final Pigeon2Configuration PIGEON_CONFIGS = new Pigeon2Configuration();
 
         // Theoretical free speed (m/s) at 12 V applied output;
         private static final LinearVelocity SPEED_AT_12_VOLTS = MetersPerSecond.of(5.21);
