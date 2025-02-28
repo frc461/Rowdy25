@@ -107,7 +107,7 @@ public final class AutoManager {
 
         triggers.add(autoEventLooper.addTrigger(
                 "outtake",
-                () -> new WaitUntilCommand(robotStates.atState) // TODO WAIT (PATHFINDING WORKS): JUST WAIT UNTIL STOW STATE IF AUTO SCORING WORKS (ALSO L140)
+                () -> new WaitUntilCommand(robotStates.atAutoScoreState)
                         .andThen(new WaitCommand(0.35))
                         .andThen(robotStates::toggleAutoLevelCoralState)
                         .andThen(new WaitUntilCommand(robotStates.stowState))
@@ -160,7 +160,7 @@ public final class AutoManager {
 
             triggers.add(autoEventLooper.addTrigger(
                     "outtake",
-                    () -> new WaitUntilCommand(robotStates.atState)
+                    () -> new WaitUntilCommand(robotStates.atAutoScoreState)
                             .andThen(new WaitCommand(0.35))
                             .andThen(robotStates::toggleAutoLevelCoralState)
                             .andThen(new WaitUntilCommand(robotStates.stowState))

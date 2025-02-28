@@ -98,6 +98,10 @@ public class Wrist extends SubsystemBase {
         return error;
     }
 
+    public boolean isAtState(State state) {
+        return Math.abs(state.position - getPosition()) < Constants.WristConstants.AT_TARGET_TOLERANCE;
+    }
+
     public boolean nearTarget() {
         return error < Constants.WristConstants.SAFE_TOLERANCE;
     }

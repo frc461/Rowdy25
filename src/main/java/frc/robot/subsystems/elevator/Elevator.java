@@ -98,6 +98,10 @@ public class Elevator extends SubsystemBase {
         return !lowerSwitch.get();
     }
 
+    public boolean isAtState(State state) {
+        return Math.abs(state.position - getPosition()) < Constants.ElevatorConstants.AT_TARGET_TOLERANCE;
+    }
+
     public boolean nearTarget() {
         return error < Constants.ElevatorConstants.SAFE_TOLERANCE;
     }

@@ -60,8 +60,6 @@ public class RobotStates {
     private FieldUtil.Reef.Level currentAutoLevel;
     private final SendableChooser<State> stateChooser = new SendableChooser<>();
 
-    public final Trigger atState = new Trigger(() -> elevator.isAtTarget() && pivot.isAtTarget() && wrist.isAtTarget());
-
     public final Trigger stowState = new Trigger(() -> currentState == State.STOW);
     public final Trigger outtakeState = new Trigger(() -> currentState == State.OUTTAKE);
     public final Trigger intakeOutState = new Trigger(() -> currentState == State.INTAKE_OUT);
@@ -78,6 +76,27 @@ public class RobotStates {
     public final Trigger netState = new Trigger(() -> currentState == State.NET);
     public final Trigger prepareClimbState = new Trigger(() -> currentState == State.PREPARE_CLIMB);
     public final Trigger climbState = new Trigger(() -> currentState == State.CLIMB);
+
+    public final Trigger atStowState = new Trigger(() -> wrist.isAtState(Wrist.State.STOW) && elevator.isAtState(Elevator.State.STOW) && pivot.isAtState(Pivot.State.STOW));
+    public final Trigger atCoralStationState = new Trigger(() -> wrist.isAtState(Wrist.State.CORAL_STATION) && elevator.isAtState(Elevator.State.CORAL_STATION) && pivot.isAtState(Pivot.State.CORAL_STATION));
+    public final Trigger atGroundCoralState = new Trigger(() -> wrist.isAtState(Wrist.State.GROUND_CORAL) && elevator.isAtState(Elevator.State.GROUND_CORAL) && pivot.isAtState(Pivot.State.GROUND_CORAL));
+    public final Trigger atGroundAlgaeState = new Trigger(() -> wrist.isAtState(Wrist.State.GROUND_ALGAE) && elevator.isAtState(Elevator.State.GROUND_ALGAE) && pivot.isAtState(Pivot.State.GROUND_ALGAE));
+    public final Trigger atL1CoralState = new Trigger(() -> wrist.isAtState(Wrist.State.L1_CORAL) && elevator.isAtState(Elevator.State.L1_CORAL) && pivot.isAtState(Pivot.State.L1_CORAL));
+    public final Trigger atL2CoralState = new Trigger(() -> wrist.isAtState(Wrist.State.L2_CORAL) && elevator.isAtState(Elevator.State.L2_CORAL) && pivot.isAtState(Pivot.State.L2_CORAL));
+    public final Trigger atL3CoralState = new Trigger(() -> wrist.isAtState(Wrist.State.L3_CORAL) && elevator.isAtState(Elevator.State.L3_CORAL) && pivot.isAtState(Pivot.State.L3_CORAL));
+    public final Trigger atL4CoralState = new Trigger(() -> wrist.isAtState(Wrist.State.L4_CORAL) && elevator.isAtState(Elevator.State.L4_CORAL) && pivot.isAtState(Pivot.State.L4_CORAL));
+    public final Trigger atLowReefAlgaeState = new Trigger(() -> wrist.isAtState(Wrist.State.LOW_REEF_ALGAE) && elevator.isAtState(Elevator.State.LOW_REEF_ALGAE) && pivot.isAtState(Pivot.State.LOW_REEF_ALGAE));
+    public final Trigger atHighReefAlgaeState= new Trigger(() -> wrist.isAtState(Wrist.State.HIGH_REEF_ALGAE) && elevator.isAtState(Elevator.State.HIGH_REEF_ALGAE) && pivot.isAtState(Pivot.State.HIGH_REEF_ALGAE));
+    public final Trigger atProcessorState = new Trigger(() -> wrist.isAtState(Wrist.State.PROCESSOR) && elevator.isAtState(Elevator.State.PROCESSOR) && pivot.isAtState(Pivot.State.PROCESSOR));
+    public final Trigger atNetState = new Trigger(() -> wrist.isAtState(Wrist.State.NET) && elevator.isAtState(Elevator.State.NET) && pivot.isAtState(Pivot.State.NET));
+    public final Trigger atClimbState = new Trigger(() -> wrist.isAtState(Wrist.State.CLIMB) && elevator.isAtState(Elevator.State.CLIMB) && pivot.isAtState(Pivot.State.CLIMB));
+
+    public final Trigger atAutoScoreState = switch (currentAutoLevel) {
+        case L1 -> atL1CoralState;
+        case L2 -> atL2CoralState;
+        case L3 -> atL3CoralState;
+        case L4 -> atL4CoralState;
+    };
 
     private final NetworkTable robotStatesTelemetryTable = Constants.NT_INSTANCE.getTable("RobotStates");
     private final StringPublisher robotStatesPub = robotStatesTelemetryTable.getStringTopic("Current Robot State").publish();
