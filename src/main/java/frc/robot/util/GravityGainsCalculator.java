@@ -9,7 +9,7 @@ public final class GravityGainsCalculator {
     private final Translation2d wristAxisToZeroCoM;
     private final Translation2d elevatorZeroUprightCoM;
     private final double elevatorCoMToStage2Ratio;
-    private final double elevatorStage2Limit;
+    private final double elevatorStage3Limit;
     private final double elevatorCoMToStage3Ratio;
     private final double elevatorMassLbs;
     private final double wristMassLbs;
@@ -23,7 +23,7 @@ public final class GravityGainsCalculator {
         Translation2d wristAxisToZeroCoM,
         Translation2d elevatorZeroUprightCoM,
         double elevatorCoMToStage2Ratio,
-        double elevatorStage2Limit,
+        double elevatorStage3Limit,
         double elevatorCoMToStage3Ratio,
         double elevatorMassLbs,
         double wristMassLbs,
@@ -34,7 +34,7 @@ public final class GravityGainsCalculator {
         this.wristAxisToZeroCoM = wristAxisToZeroCoM;
         this.elevatorZeroUprightCoM = elevatorZeroUprightCoM;
         this.elevatorCoMToStage2Ratio = elevatorCoMToStage2Ratio;
-        this.elevatorStage2Limit = elevatorStage2Limit;
+        this.elevatorStage3Limit = elevatorStage3Limit;
         this.elevatorCoMToStage3Ratio = elevatorCoMToStage3Ratio;
         this.elevatorMassLbs = elevatorMassLbs;
         this.wristMassLbs = wristMassLbs;
@@ -56,7 +56,10 @@ public final class GravityGainsCalculator {
         Translation2d currentWristAxisToCoM = wristAxisToZeroCoM.rotateBy(Rotation2d.fromDegrees(wristPosition));
         Translation2d currentWristCoM = newWristAxis.plus(currentWristAxisToCoM);
 
-        Translation2d currentElevatorUprightCoM = elevatorZeroUprightCoM.plus(new Translation2d(0, elevatorCoMToStage2Ratio * Math.min(elevatorStage2Limit, elevatorPosition) + elevatorCoMToStage3Ratio * Math.max(0, elevatorPosition - elevatorStage2Limit)));
+        Translation2d currentElevatorUprightCoM = elevatorZeroUprightCoM.plus(
+                new Translation2d(0, elevatorCoMToStage3Ratio * Math.min(elevatorStage3Limit, elevatorPosition)
+                        + elevatorCoMToStage2Ratio * Math.max(0, elevatorPosition - elevatorStage3Limit))
+        );
         Translation2d currentElevatorCoM = pivotAxisPosition.plus(currentElevatorUprightCoM.minus(pivotAxisPosition).rotateBy(Rotation2d.fromDegrees(-(90 - pivotPosition))));
 
         Translation2d currentCoM = currentWristCoM.times(wristMassLbs).plus(currentElevatorCoM.times(elevatorMassLbs)).div(wristMassLbs + elevatorMassLbs);
@@ -92,6 +95,6 @@ public final class GravityGainsCalculator {
             kG
         );
 
-        System.out.println(calculator.calculateGFromPositions(5, 150, 40));
+        System.out.println(calculator.calculateGFromPositions(45, 120, 5));
     }
 }

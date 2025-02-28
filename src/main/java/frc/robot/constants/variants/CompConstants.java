@@ -45,11 +45,11 @@ public final class CompConstants {
         private static final double PULLEY_CIRCUMFERENCE = 7.065;
         public static final double ROTOR_TO_INCH_RATIO = ROTOR_TO_PULLEY_RATIO / PULLEY_CIRCUMFERENCE;
         private static final double STAGE_2_LOAD_LBS = 28.44;
-        public static final double MASS_LBS = 23.0132625;
+        public static final double MASS_LBS = 23.0132625 / ((102.2329023 - 54.8422757) / (114.375 - 54.8422757));
         public static final double COM_TO_STAGE_2_RATIO = 0.509767;
-        public static final double STAGE_2_LIMIT = 24;
+        public static final double STAGE_3_LIMIT = 22;
         public static final double COM_TO_STAGE_3_RATIO = 0.3345002;
-        public static final Translation2d ZERO_UPRIGHT_COM = new Translation2d(-11.347053, 15.125012);
+        public static final Translation2d ZERO_UPRIGHT_COM = new Translation2d(-11.175605, 14.997186);
 
         // pid & tolerance
         public static final Function<Double, Double> G = (pivotDeg) -> 0.2175 * Math.sin(Math.toRadians(pivotDeg));
@@ -138,9 +138,9 @@ public final class CompConstants {
         // mechanism characterization
         private static final double ROTOR_TO_MECHANISM_RATIO = 45.3704;
         public static final double SENSOR_TO_DEGREE_RATIO = 1 / 360.0;
-        public static final double MASS_LBS = 4.8121516;
+        public static final double MASS_LBS = 6.9769122 / ((102.2329023 - 54.8422757) / (114.375 - 54.8422757));
         public static final Translation2d AXIS_POSITION = new Translation2d(-11.767377, 38.007139);
-        public static final Translation2d AXIS_TO_ZERO_COM = new Translation2d(3.014233, -4.015809);
+        public static final Translation2d AXIS_TO_ZERO_COM = new Translation2d(-10.440589, 33.398821).minus(AXIS_POSITION);
 
         // encoder config
         public static final double ENCODER_ABSOLUTE_OFFSET =  -0.15820176865;
@@ -203,7 +203,7 @@ public final class CompConstants {
         // output type specified by SwerveModuleConstants.DriveMotorClosedLoopOutput
         private static final Slot0Configs DRIVE_GAINS = new Slot0Configs()
                 .withKP(0.097116).withKI(0).withKD(0)
-                .withKS(0.10746).withKV(0.11507).withKA(0.012509); // TODO SHOP: TUNE KA GAIN (SET P = 0 WHEN TUNING KA)
+                .withKS(0.10746).withKV(0.11507).withKA(0.012509);
 
         // The closed-loop output type to use for the steer motors;
         // This affects the PID/FF gains for the steer motors

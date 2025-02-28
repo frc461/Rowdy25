@@ -50,7 +50,6 @@ public class Pivot extends SubsystemBase {
     }
 
     private State currentState;
-    private RatchetState currentRatchetState;
 
     private final TalonFX pivot;
     private final ServoChannel ratchet;
@@ -62,7 +61,7 @@ public class Pivot extends SubsystemBase {
             Constants.WristConstants.AXIS_TO_ZERO_COM,
             Constants.ElevatorConstants.ZERO_UPRIGHT_COM,
             Constants.ElevatorConstants.COM_TO_STAGE_2_RATIO,
-            Constants.ElevatorConstants.STAGE_2_LIMIT,
+            Constants.ElevatorConstants.STAGE_3_LIMIT,
             Constants.ElevatorConstants.COM_TO_STAGE_3_RATIO,
             Constants.ElevatorConstants.MASS_LBS,
             Constants.WristConstants.MASS_LBS,
@@ -75,7 +74,6 @@ public class Pivot extends SubsystemBase {
 
     public Pivot() {
         currentState = State.STOW;
-        currentRatchetState = RatchetState.ON;
 
         CANcoder encoder = new CANcoder(Constants.PivotConstants.ENCODER_ID);
         encoder.getConfigurator().apply(new CANcoderConfiguration()
@@ -126,7 +124,7 @@ public class Pivot extends SubsystemBase {
     }
 
     public RatchetState getRatchetState() {
-        return currentRatchetState;
+        return getState() == State.CLIMB ? RatchetState.OFF : RatchetState.ON;
     }
 
     public double getPosition() {
@@ -231,10 +229,9 @@ public class Pivot extends SubsystemBase {
     }
 
     public void holdTarget(double elevatorPosition, double wristPosition) {
-        currentG = gravityGainsCalculator.calculateGFromPositions(getPosition(), wristPosition, elevatorPosition);
+        currentG = gravityGainsCalculator.calculateGFromPositions(getPosition(), wristPosition, elevatorPosition); // TODO INMIS: TEST NEW GRAVITY GAINS
         pivot.setControl(request.withPosition(getTarget()).withFeedForward(currentG));
     }
-
 
     public void movePivot(double axisValue) {
         pivot.set(axisValue > 0

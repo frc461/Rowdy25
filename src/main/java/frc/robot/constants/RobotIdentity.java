@@ -149,7 +149,7 @@ public enum RobotIdentity {
         Constants.ElevatorConstants.ROTOR_TO_INCH_RATIO = DefaultConstants.ElevatorConstants.ROTOR_TO_INCH_RATIO;
         Constants.ElevatorConstants.MASS_LBS = DefaultConstants.ElevatorConstants.MASS_LBS;
         Constants.ElevatorConstants.COM_TO_STAGE_2_RATIO = DefaultConstants.ElevatorConstants.COM_TO_STAGE_2_RATIO;
-        Constants.ElevatorConstants.STAGE_2_LIMIT = DefaultConstants.ElevatorConstants.STAGE_2_LIMIT;
+        Constants.ElevatorConstants.STAGE_3_LIMIT = DefaultConstants.ElevatorConstants.STAGE_3_LIMIT;
         Constants.ElevatorConstants.COM_TO_STAGE_3_RATIO = DefaultConstants.ElevatorConstants.COM_TO_STAGE_3_RATIO;
         Constants.ElevatorConstants.ZERO_UPRIGHT_COM = DefaultConstants.ElevatorConstants.ZERO_UPRIGHT_COM;
         Constants.ElevatorConstants.G = DefaultConstants.ElevatorConstants.G;
@@ -302,7 +302,7 @@ public enum RobotIdentity {
         Constants.ElevatorConstants.ROTOR_TO_INCH_RATIO = CompConstants.ElevatorConstants.ROTOR_TO_INCH_RATIO;
         Constants.ElevatorConstants.MASS_LBS = CompConstants.ElevatorConstants.MASS_LBS;
         Constants.ElevatorConstants.COM_TO_STAGE_2_RATIO = CompConstants.ElevatorConstants.COM_TO_STAGE_2_RATIO;
-        Constants.ElevatorConstants.STAGE_2_LIMIT = CompConstants.ElevatorConstants.STAGE_2_LIMIT;
+        Constants.ElevatorConstants.STAGE_3_LIMIT = CompConstants.ElevatorConstants.STAGE_3_LIMIT;
         Constants.ElevatorConstants.COM_TO_STAGE_3_RATIO = CompConstants.ElevatorConstants.COM_TO_STAGE_3_RATIO;
         Constants.ElevatorConstants.ZERO_UPRIGHT_COM = CompConstants.ElevatorConstants.ZERO_UPRIGHT_COM;
         Constants.ElevatorConstants.G = CompConstants.ElevatorConstants.G;

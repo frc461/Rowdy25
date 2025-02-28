@@ -179,7 +179,7 @@ public final class Constants {
         public static double ROTOR_TO_INCH_RATIO;
         public static double MASS_LBS;
         public static double COM_TO_STAGE_2_RATIO;
-        public static double STAGE_2_LIMIT;
+        public static double STAGE_3_LIMIT;
         public static double COM_TO_STAGE_3_RATIO;
         public static Translation2d ZERO_UPRIGHT_COM;
 

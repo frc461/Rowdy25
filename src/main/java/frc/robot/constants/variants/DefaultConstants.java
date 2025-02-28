@@ -225,7 +225,7 @@ public final class DefaultConstants {
         private static final double STAGE_2_LOAD_LBS = 28.44;
         public static final double MASS_LBS = 23.0132625;
         public static final double COM_TO_STAGE_2_RATIO = 0.509767;
-        public static final double STAGE_2_LIMIT = 24;
+        public static final double STAGE_3_LIMIT = 22;
         public static final double COM_TO_STAGE_3_RATIO = 0.3345002;
         public static final Translation2d ZERO_UPRIGHT_COM = new Translation2d(-11.347053, 15.125012);
 
