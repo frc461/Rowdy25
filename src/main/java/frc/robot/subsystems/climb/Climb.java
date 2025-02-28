@@ -13,7 +13,9 @@ import frc.robot.constants.Constants;
 
 public class Climb extends SubsystemBase {
     public enum State {
-        IDLE(Constants.ClimbConstants.IDLE),
+        STOW(Constants.ClimbConstants.STOW),
+        MANUAL(Constants.ClimbConstants.STOW),
+        MANUAL_LATCH(Constants.ClimbConstants.STOW),
         PREPARE_CLIMB(Constants.ClimbConstants.PREPARE_CLIMB),
         CLIMB(Constants.ClimbConstants.CLIMB);
 
@@ -44,7 +46,7 @@ public class Climb extends SubsystemBase {
     private final ClimbTelemetry climbTelemetry = new ClimbTelemetry(this);
     
     public Climb() {
-        currentState = State.IDLE;
+        currentState = State.STOW;
 
         climb = new TalonFX(Constants.ClimbConstants.ID);
         climb.getConfigurator().apply(new TalonFXConfiguration()
@@ -73,28 +75,29 @@ public class Climb extends SubsystemBase {
     }
 
     public double getTarget() {
-        return getState() == State.CLIMB ? getPosition() : getState().position;
+        return getState() == State.MANUAL || getState() == State.MANUAL_LATCH ? getPosition() : getState().position;
     }
 
     public int getRatchetPulseWidth() {
-        return (getState() == State.CLIMB) ? RatchetState.OFF.pulseWidth : RatchetState.ON.pulseWidth;
+        return getState() == State.CLIMB || getState() == State.MANUAL_LATCH ? RatchetState.OFF.pulseWidth : RatchetState.ON.pulseWidth;
     }
 
     public void escalateClimb() {
         currentState = (currentState == State.CLIMB || currentState == State.PREPARE_CLIMB) ? State.CLIMB : State.PREPARE_CLIMB;
     }
 
-    public void setClimb() {
-        currentState = State.CLIMB;
-    }
-
-    public void setClimb(double value) {
-        currentState = State.IDLE;
+    public void manualClimb(double value) {
+        currentState = State.MANUAL;
         climb.set(value);
     }
 
+    public void stopClimb(boolean latched) {
+        currentState = latched ? State.MANUAL_LATCH : State.MANUAL;
+        climb.set(0.0);
+    }
+
     public void reset() {
-        currentState = State.IDLE;
+        currentState = State.STOW;
     }
 
     @Override
@@ -104,18 +107,23 @@ public class Climb extends SubsystemBase {
         error = getPosition() - getTarget();
 
         switch (getState()) {
-            case IDLE:
+            case STOW:
+                if (Math.abs(error) > 15.0) {
+                    climb.set(error < 0 ? 0.6 : -0.2);
+                } else {
+                    climb.set(0.0);
+                }
                 break;
             case PREPARE_CLIMB:
-                if (Math.abs(error) > 12.5) {
-                    climb.set(error < 0 ? 0.6 : -0.6);
+                if (Math.abs(error) > 7.5) {
+                    climb.set(error < 0 ? 0.6 : -0.2);
                 } else {
                     climb.set(0.0);
                 }
                 break;
             case CLIMB:
-                if (Math.abs(error) > 5.0) {
-                    climb.set(error < 0 ? 0.4 : -0.4);
+                if (error > 7.5) {
+                    climb.set(-0.6);
                 } else {
                     climb.set(0.0);
                 }

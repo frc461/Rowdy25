@@ -161,7 +161,7 @@ public final class Constants {
         public static int RATCHET_OFF;
 
         // presets
-        public static double IDLE;
+        public static double STOW;
         public static double PREPARE_CLIMB;
         public static double CLIMB;
     }

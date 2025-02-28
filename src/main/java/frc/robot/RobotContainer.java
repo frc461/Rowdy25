@@ -144,17 +144,15 @@ public class RobotContainer {
 
         driverXbox.povUp().onTrue(new InstantCommand(() -> robotStates.swerve.localizer.setRotations(Rotation2d.kZero)));
         driverXbox.povDown().onTrue(new InstantCommand(robotStates.swerve.localizer::syncRotations));
-        driverXbox.povLeft().onTrue(new InstantCommand(() -> robotStates.climb.setClimb(-0.9)));
-        driverXbox.povLeft().onFalse(new InstantCommand(() -> robotStates.climb.setClimb(0.0)).andThen(robotStates.climb::setClimb));
-        driverXbox.povRight().onTrue(new InstantCommand(() -> robotStates.climb.setClimb(0.9)));
-        driverXbox.povRight().onFalse(new InstantCommand(() -> robotStates.climb.setClimb(0.0)));
+        driverXbox.povLeft().onTrue(new InstantCommand(() -> robotStates.climb.manualClimb(-0.9)));
+        driverXbox.povLeft().onFalse(new InstantCommand(() -> robotStates.climb.stopClimb(true)));
+        driverXbox.povRight().onTrue(new InstantCommand(() -> robotStates.climb.manualClimb(0.9)));
+        driverXbox.povRight().onFalse(new InstantCommand(() -> robotStates.climb.stopClimb(false)));
 
-        driverXbox.leftBumper().onTrue(new InstantCommand(robotStates.swerve::setBranchHeadingMode)
-                .andThen(new WaitUntilCommand(() -> !driverXbox.leftBumper().getAsBoolean()))
-                .andThen(robotStates.swerve::setIdleMode));
-        driverXbox.rightBumper().onTrue(new InstantCommand(robotStates.swerve::setCoralStationHeadingMode)
-                .andThen(new WaitUntilCommand(() -> !driverXbox.rightBumper().getAsBoolean()))
-                .andThen(robotStates.swerve::setIdleMode));
+        driverXbox.leftBumper().onTrue(new InstantCommand(robotStates.swerve::setBranchHeadingMode));
+        driverXbox.leftBumper().onFalse(new InstantCommand(robotStates.swerve::setIdleMode));
+        driverXbox.rightBumper().onTrue(new InstantCommand(robotStates.swerve::setCoralStationHeadingMode));
+        driverXbox.rightBumper().onFalse(new InstantCommand(robotStates.swerve::setIdleMode));
 
         opXbox.povDown().onTrue(new InstantCommand(robotStates::toggleL4CoralState));
 
@@ -204,12 +202,10 @@ public class RobotContainer {
 //                () -> overrideNonessentialOpControls
 //        ));
 
-        opXbox.leftTrigger().onTrue(new InstantCommand(() -> robotStates.intake.setIntakeState(true))
-                .andThen(new WaitUntilCommand(() -> !opXbox.leftTrigger().getAsBoolean()))
-                .andThen(robotStates.intake::setIdleState));
-        opXbox.rightTrigger().onTrue(new InstantCommand(robotStates.intake::setOuttakeState)
-                .andThen(new WaitUntilCommand(() -> !opXbox.rightTrigger().getAsBoolean()))
-                .andThen(robotStates.intake::setIdleState));
+        opXbox.leftTrigger().onTrue(new InstantCommand(() -> robotStates.intake.setIntakeState(true)));
+        opXbox.leftTrigger().onFalse(new InstantCommand(robotStates.intake::setIdleState));
+        opXbox.rightTrigger().onTrue(new InstantCommand(robotStates.intake::setOuttakeState));
+        opXbox.rightTrigger().onFalse(new InstantCommand(robotStates.intake::setIdleState));
 
         opXbox.leftBumper().onTrue(new InstantCommand(() -> overrideNonessentialOpControls = !overrideNonessentialOpControls));
         opXbox.rightBumper().onTrue(new InstantCommand(robotStates::setStowState));
