@@ -132,7 +132,7 @@ public class RobotContainer {
         // SO FIGURE OUT LOGIC CORRECTLY AND CAREFULLY
 
         driverXbox.a().onTrue(new InstantCommand(robotStates.swerve::toggleAutoHeading)
-                        .andThen( // TODO SHOP: TEST RUMBLING
+                        .andThen(
                                 new InstantCommand(() -> driverXbox.setRumble(GenericHID.RumbleType.kBothRumble, 0.5))
                                         .andThen(new WaitCommand(0.25))
                                         .andThen(() -> driverXbox.setRumble(GenericHID.RumbleType.kBothRumble, 0))

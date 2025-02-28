@@ -9,7 +9,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Consumer;
 
-public final class MultipleChooser<V> implements Sendable, AutoCloseable { // TODO SHOP: TEST THIS CLASS
+public final class MultipleChooser<V> implements Sendable, AutoCloseable {
     private static final String DEFAULT = "default";
     private static final String SELECTED = "selected";
     private static final String ACTIVE = "active";

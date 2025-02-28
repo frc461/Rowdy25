@@ -110,7 +110,7 @@ public class Wrist extends SubsystemBase {
         return error < Constants.WristConstants.AT_TARGET_TOLERANCE;
     }
 
-    public void setTarget(double pivotPosition, double elevatorPosition) { // TODO WAIT (NEW MANIPULATOR): CHANGE UPPER LIMIT BACK TO DOUBLE SINCE MOTOR WON'T BE IN THE WAY ANYMORE
+    public void setTarget(double pivotPosition, double elevatorPosition) {
         this.target = MathUtil.clamp(
                 getState() == State.MANUAL ? lastManualPosition : getState().position,
                 Constants.WristConstants.LOWER_LIMIT.apply(pivotPosition),

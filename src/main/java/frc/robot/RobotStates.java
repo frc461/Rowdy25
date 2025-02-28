@@ -29,7 +29,7 @@ import java.util.Arrays;
 import dev.doglog.DogLog;
 
 public class RobotStates {
-    public enum State { // TODO: IMPLEMENT CLIMBING
+    public enum State {
         STOW,
         MANUAL,
         OUTTAKE,
