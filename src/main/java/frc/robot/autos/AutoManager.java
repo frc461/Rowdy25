@@ -141,9 +141,13 @@ public final class AutoManager {
                     }
             ));
 
-            triggers.add(autoEventLooper.addTrigger("waitUntilHasObject", () -> new WaitUntilCommand(
-                    () -> robotStates.stowState.getAsBoolean() || robotStates.intake.hasCoral()
-            )));
+            triggers.add(autoEventLooper.addTrigger("waitUntilHasObject", () -> new RepeatCommand(
+                    new WaitUntilCommand(() -> robotStates.stowState.getAsBoolean() || robotStates.intake.hasCoral())
+                            .withDeadline(new WaitCommand(0.75))
+                            .andThen(new InstantCommand(robotStates.intake::setOuttakeState))
+                            .withDeadline(new WaitCommand(0.25))
+                            .andThen(new InstantCommand(robotStates.intake::setIntakeState))
+            ).until(() -> robotStates.stowState.getAsBoolean() || robotStates.intake.hasCoral())));
 
             String fromCoralStationPath = nearestCoralStation + "," + nextScoringLocation.getFirst().name();
 
