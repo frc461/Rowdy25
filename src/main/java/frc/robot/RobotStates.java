@@ -57,7 +57,7 @@ public class RobotStates {
     public final Wrist wrist = new Wrist();
 
     private State currentState;
-    private FieldUtil.Reef.Level currentAutoLevel;
+    private FieldUtil.Reef.Level currentAutoLevel = FieldUtil.Reef.Level.L2;
     private final SendableChooser<State> stateChooser = new SendableChooser<>();
 
     public final Trigger stowState = new Trigger(() -> currentState == State.STOW);
@@ -103,7 +103,6 @@ public class RobotStates {
 
     public RobotStates() {
         currentState = State.STOW;
-        currentAutoLevel = FieldUtil.Reef.Level.L2;
 
         Lights.configureLights();
 
