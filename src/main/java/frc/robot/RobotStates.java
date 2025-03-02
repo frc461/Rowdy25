@@ -77,6 +77,8 @@ public class RobotStates {
     public final Trigger prepareClimbState = new Trigger(() -> currentState == State.PREPARE_CLIMB);
     public final Trigger climbState = new Trigger(() -> currentState == State.CLIMB);
 
+    public final Trigger atState = new Trigger(() -> elevator.isAtTarget() && pivot.isAtTarget() && wrist.isAtTarget());
+
     public final Trigger atStowState = new Trigger(() -> wrist.isAtState(Wrist.State.STOW) && elevator.isAtState(Elevator.State.STOW) && pivot.isAtState(Pivot.State.STOW));
     public final Trigger atCoralStationState = new Trigger(() -> wrist.isAtState(Wrist.State.CORAL_STATION) && elevator.isAtState(Elevator.State.CORAL_STATION) && pivot.isAtState(Pivot.State.CORAL_STATION));
     public final Trigger atGroundCoralState = new Trigger(() -> wrist.isAtState(Wrist.State.GROUND_CORAL) && elevator.isAtState(Elevator.State.GROUND_CORAL) && pivot.isAtState(Pivot.State.GROUND_CORAL));

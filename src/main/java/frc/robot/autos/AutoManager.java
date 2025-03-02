@@ -10,6 +10,7 @@ import com.pathplanner.lib.util.FlippingUtil;
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
@@ -107,8 +108,8 @@ public final class AutoManager {
 
         triggers.add(autoEventLooper.addTrigger(
                 "outtake",
-                () -> new WaitUntilCommand(robotStates.atAutoScoreState)
-                        .andThen(new WaitCommand(0.35))
+                () -> new WaitUntilCommand(robotStates.atState)
+                        .andThen(new WaitCommand(1.0))
                         .andThen(robotStates::toggleAutoLevelCoralState)
                         .andThen(new WaitUntilCommand(robotStates.stowState))
                         .andThen(new WaitCommand(0.5))
@@ -123,8 +124,8 @@ public final class AutoManager {
 
             Pair<FieldUtil.Reef.ScoringLocation, FieldUtil.Reef.Level> nextScoringLocation = currentScoringLocations.get(0);
             String nearestCoralStation = getMostEfficientCoralStation(
-                    currentScoringLocation.getFirst().pose,
-                    nextScoringLocation.getFirst().pose
+                    FieldUtil.Reef.ScoringLocation.getPose(currentScoringLocation.getFirst()),
+                    FieldUtil.Reef.ScoringLocation.getPose(nextScoringLocation.getFirst())
             ); // TODO: IMPLEMENT A CORAL STATION PREFERENCE CHOOSER
             String toCoralStationPath = currentScoringLocation.getFirst().name() + "," + nearestCoralStation;
 
@@ -169,8 +170,8 @@ public final class AutoManager {
 
             triggers.add(autoEventLooper.addTrigger(
                     "outtake",
-                    () -> new WaitUntilCommand(robotStates.atAutoScoreState)
-                            .andThen(new WaitCommand(0.35))
+                    () -> new WaitUntilCommand(robotStates.atState)
+                            .andThen(new WaitCommand(0.75))
                             .andThen(robotStates::toggleAutoLevelCoralState)
                             .andThen(new WaitUntilCommand(robotStates.stowState))
                             .andThen(new WaitCommand(0.5))

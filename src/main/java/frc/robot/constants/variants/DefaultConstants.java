@@ -118,15 +118,15 @@ public final class DefaultConstants {
     }
 
     public static final class VisionConstants {
-        public static final Matrix<N3, N1> ODOM_STD_DEV = VecBuilder.fill(0.01, 0.01, Units.degreesToRadians(0.01));
+        public static final Matrix<N3, N1> ODOM_STD_DEV = VecBuilder.fill(0.03, 0.03, Units.degreesToRadians(0.01));
         public static final Function<Double, Matrix<N3, N1>> VISION_STD_DEV_MULTITAG_FUNCTION =
                 dist -> dist < 3.0
-                        ? VecBuilder.fill(Math.min(0.1, 0.1 * dist), Math.min(0.1, 0.1 * dist), Units.degreesToRadians(1.0))
-                        : VecBuilder.fill(0.15 * dist, 0.15 * dist, Units.degreesToRadians(180.0) * dist);
+                        ? VecBuilder.fill(Math.min(0.03, 0.03 * dist), Math.min(0.03, 0.03 * dist), Units.degreesToRadians(1.0))
+                        : VecBuilder.fill(0.05 * dist, 0.05 * dist, Units.degreesToRadians(180.0) * dist);
         public static final Function<Double, Matrix<N3, N1>> VISION_STD_DEV_FUNCTION =
                 dist -> dist < 3.0
-                        ? VecBuilder.fill(0.15 * dist, 0.15 * dist, Units.degreesToRadians(10.0) * dist)
-                        : VecBuilder.fill(0.5 * dist, 0.5 * dist, Units.degreesToRadians(180.0) * dist);
+                        ? VecBuilder.fill(0.075 * dist, 0.075 * dist, Units.degreesToRadians(10.0) * dist)
+                        : VecBuilder.fill(0.1 * dist, 0.1 * dist, Units.degreesToRadians(180.0) * dist);
 
         public static final class LimelightConstants {
             public static final String LIMELIGHT_NT_NAME = "limelight";
@@ -256,7 +256,7 @@ public final class DefaultConstants {
         public static final double HIGH_REEF_ALGAE = 3.0;
         public static final double PROCESSOR = 0;
         public static final double NET = 44;
-        public static final double CLIMB = 12;
+        public static final double CLIMB = 8;
     }
 
     public final static class IntakeConstants {
@@ -266,7 +266,7 @@ public final class DefaultConstants {
         public static final double CURRENT_LIMIT = 40;
         public static final InvertedValue MOTOR_INVERT = InvertedValue.Clockwise_Positive;
         public static final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Coast;
-        public static final double DEFAULT_PROXIMITY_OBJECT_DETECTION_THRESHOLD = 0.12;
+        public static final double DEFAULT_PROXIMITY_OBJECT_DETECTION_THRESHOLD = 0.1;
     }
 
     public final static class PivotConstants {

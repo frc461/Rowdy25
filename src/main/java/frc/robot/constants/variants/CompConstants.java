@@ -126,8 +126,8 @@ public final class CompConstants {
         // presets
         public static final double LOWER_LIMIT = 0;
         public static final double UPPER_LIMIT = 105;
-        public static final double STOW = 55;
-        public static final double CORAL_STATION = 55;
+        public static final double STOW = 58;
+        public static final double CORAL_STATION = 58;
         public static final double GROUND_CORAL = 3.5;
         public static final double GROUND_ALGAE = 4.5;
         public static final double L1_CORAL = 31.5;

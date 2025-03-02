@@ -134,22 +134,34 @@ public final class FieldUtil {
         public static final Transform2d RIGHT_BRANCH_OFFSET_FROM_TAG = new Transform2d(Units.inchesToMeters(-9.664797), Units.inchesToMeters(6.469731), Rotation2d.kZero);
 
         public enum ScoringLocation {
-            A(getRobotPosesAtEachBranch().get(0)),
-            B(getRobotPosesAtEachBranch().get(1)),
-            C(getRobotPosesAtEachBranch().get(2)),
-            D(getRobotPosesAtEachBranch().get(3)),
-            E(getRobotPosesAtEachBranch().get(4)),
-            F(getRobotPosesAtEachBranch().get(5)),
-            G(getRobotPosesAtEachBranch().get(6)),
-            H(getRobotPosesAtEachBranch().get(7)),
-            I(getRobotPosesAtEachBranch().get(8)),
-            J(getRobotPosesAtEachBranch().get(9)),
-            K(getRobotPosesAtEachBranch().get(10)),
-            L(getRobotPosesAtEachBranch().get(11));
+            A,
+            B,
+            C,
+            D,
+            E,
+            F,
+            G,
+            H,
+            I,
+            J,
+            K,
+            L;
 
-            public final Pose2d pose;
-            ScoringLocation(Pose2d pose) {
-                this.pose = pose;
+            public static Pose2d getPose(ScoringLocation location) {
+                return switch (location) {
+                    case A -> getRobotPosesAtEachBranch().get(0);
+                    case B -> getRobotPosesAtEachBranch().get(1);
+                    case C -> getRobotPosesAtEachBranch().get(2);
+                    case D -> getRobotPosesAtEachBranch().get(3);
+                    case E -> getRobotPosesAtEachBranch().get(4);
+                    case F -> getRobotPosesAtEachBranch().get(5);
+                    case G -> getRobotPosesAtEachBranch().get(6);
+                    case H -> getRobotPosesAtEachBranch().get(7);
+                    case I -> getRobotPosesAtEachBranch().get(8);
+                    case J -> getRobotPosesAtEachBranch().get(9);
+                    case K -> getRobotPosesAtEachBranch().get(10);
+                    case L -> getRobotPosesAtEachBranch().get(11);
+                };
             }
         }
 
