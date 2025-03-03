@@ -78,6 +78,7 @@ public class Elevator extends SubsystemBase {
 
         request = new MotionMagicExpoVoltage(0);
 
+        elevator.setPosition(0.0);
         error = 0.0;
         lastManualPosition = State.STOW.position;
     }
@@ -95,7 +96,7 @@ public class Elevator extends SubsystemBase {
     }
  
     public boolean lowerSwitchTriggered() {
-        return !lowerSwitch.get();
+        return false;
     }
 
     public boolean isAtState(State state) {

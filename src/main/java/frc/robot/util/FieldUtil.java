@@ -134,18 +134,7 @@ public final class FieldUtil {
         public static final Transform2d RIGHT_BRANCH_OFFSET_FROM_TAG = new Transform2d(Units.inchesToMeters(-9.664797), Units.inchesToMeters(6.469731), Rotation2d.kZero);
 
         public enum ScoringLocation {
-            A,
-            B,
-            C,
-            D,
-            E,
-            F,
-            G,
-            H,
-            I,
-            J,
-            K,
-            L;
+            A, B, C, D, E, F, G, H, I, J, K, L;
 
             public static Pose2d getPose(ScoringLocation location) {
                 return switch (location) {
