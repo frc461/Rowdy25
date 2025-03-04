@@ -8,7 +8,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
-import frc.robot.util.ExpUtil;
+import frc.robot.util.EquationUtil;
 
 public class Wrist extends SubsystemBase {
     public enum State {
@@ -185,8 +185,8 @@ public class Wrist extends SubsystemBase {
 
     public void moveWrist(double axisValue, double pivotPosition, double elevatorPosition) {
         wrist.set(axisValue > 0
-                ? axisValue * ExpUtil.output(Constants.WristConstants.UPPER_LIMIT.apply(elevatorPosition) - getPosition(), 1, 5, 10)
-                : axisValue * ExpUtil.output(getPosition() - Constants.WristConstants.LOWER_LIMIT.apply(pivotPosition), 1, 5, 10));
+                ? axisValue * EquationUtil.expOutput(Constants.WristConstants.UPPER_LIMIT.apply(elevatorPosition) - getPosition(), 1, 5, 10)
+                : axisValue * EquationUtil.expOutput(getPosition() - Constants.WristConstants.LOWER_LIMIT.apply(pivotPosition), 1, 5, 10));
     }
 
     @Override

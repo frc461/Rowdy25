@@ -8,12 +8,12 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.drivetrain.Swerve;
-import frc.robot.util.ExpUtil;
+import frc.robot.util.EquationUtil;
 import frc.robot.util.FieldUtil;
 
 import java.util.function.DoubleSupplier;
 
-public class DirectMoveToNearestBranchCommand extends Command { // TODO: IMPLEMENT SPHERICAL MODEL TO AVOID REEF COLLISION
+public class DirectMoveToNearestBranchCommand extends Command {
     private final Swerve swerve;
     private final SwerveRequest.FieldCentric fieldCentric;
     private final PIDController yawController;
@@ -85,9 +85,9 @@ public class DirectMoveToNearestBranchCommand extends Command { // TODO: IMPLEME
             return 0.0;
         }
         if (error < 0) {
-            return ExpUtil.output(Math.abs(error), 0.02, 50);
+            return EquationUtil.expOutput(Math.abs(error), 0.02, 50);
         }
-        return -ExpUtil.output(Math.abs(error), 0.02, 50);
+        return -EquationUtil.expOutput(Math.abs(error), 0.02, 50);
     }
 
     @Override

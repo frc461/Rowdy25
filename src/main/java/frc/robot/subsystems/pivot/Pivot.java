@@ -10,7 +10,7 @@ import com.revrobotics.servohub.ServoChannel;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
-import frc.robot.util.ExpUtil;
+import frc.robot.util.EquationUtil;
 import frc.robot.util.GravityGainsCalculator;
 import frc.robot.subsystems.Lights;
 
@@ -235,8 +235,8 @@ public class Pivot extends SubsystemBase {
 
     public void movePivot(double axisValue) {
         pivot.set(axisValue > 0
-                ? axisValue * ExpUtil.output(Constants.PivotConstants.UPPER_LIMIT - getPosition(), 1, 5, 10)
-                : axisValue * ExpUtil.output(getPosition() - Constants.PivotConstants.LOWER_LIMIT, 1, 5, 10));
+                ? axisValue * EquationUtil.expOutput(Constants.PivotConstants.UPPER_LIMIT - getPosition(), 1, 5, 10)
+                : axisValue * EquationUtil.expOutput(getPosition() - Constants.PivotConstants.LOWER_LIMIT, 1, 5, 10));
     }
 
     @Override

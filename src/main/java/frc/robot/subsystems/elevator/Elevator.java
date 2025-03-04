@@ -9,7 +9,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
-import frc.robot.util.ExpUtil;
+import frc.robot.util.EquationUtil;
 
 public class Elevator extends SubsystemBase {
     public enum State {
@@ -186,8 +186,8 @@ public class Elevator extends SubsystemBase {
     public void moveElevator(double axisValue) {
         checkLimitSwitch();
         elevator.set(axisValue > 0
-                ? axisValue * ExpUtil.output(Constants.ElevatorConstants.UPPER_LIMIT - getPosition(), 1, 0.5, 10)
-                : axisValue * ExpUtil.output(getPosition() - Constants.ElevatorConstants.LOWER_LIMIT, 1, 0.5, 10));
+                ? axisValue * EquationUtil.expOutput(Constants.ElevatorConstants.UPPER_LIMIT - getPosition(), 1, 0.5, 10)
+                : axisValue * EquationUtil.expOutput(getPosition() - Constants.ElevatorConstants.LOWER_LIMIT, 1, 0.5, 10));
     }
 
     @Override

@@ -9,7 +9,7 @@ import com.ctre.phoenix6.swerve.SwerveModuleConstantsFactory;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.*;
-import frc.robot.util.ExpUtil;
+import frc.robot.util.EquationUtil;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -192,7 +192,7 @@ public final class CompConstants {
         public static final double TRANSLATION_ALIGNMENT_CONTROLLER_P = 1.0;
         public static final double TRANSLATION_ALIGNMENT_CONTROLLER_D = 0.002;
 
-        public static final Function<Double, Double> PATH_MANUAL_TRANSLATION_CONTROLLER = x -> ExpUtil.output(x, 4.0, 0.8, 6);
+        public static final Function<Double, Double> PATH_MANUAL_TRANSLATION_CONTROLLER = x -> EquationUtil.expOutput(x, 4.0, 0.8, 6);
         public static final double ANGULAR_POSITION_P = 0.035;
         public static final double ANGULAR_POSITION_D = 0.0012;
 
