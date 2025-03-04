@@ -59,21 +59,21 @@ public final class DefaultConstants {
 
     public static final Pose2d FAR_LEFT_CORAL_STATION =
             ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red
-                    ? new Pose2d(Units.inchesToMeters(623.86), 0, FieldUtil.AprilTag.ID_1.pose2d.getRotation())
-                            .plus(new Transform2d(ROBOT_LENGTH_WITH_BUMPERS.div(2).in(Meters), ROBOT_WIDTH_WITH_BUMPERS.div(2).unaryMinus().in(Meters), Rotation2d.kZero))
-                    : new Pose2d(Units.inchesToMeters(67.02), Units.inchesToMeters(317), FieldUtil.AprilTag.ID_13.pose2d.getRotation())
-                            .plus(new Transform2d(ROBOT_LENGTH_WITH_BUMPERS.div(2).in(Meters), ROBOT_WIDTH_WITH_BUMPERS.div(2).unaryMinus().in(Meters), Rotation2d.kZero));
+                    ? FieldUtil.AprilTag.ID_1.pose2d
+                            .plus(new Transform2d(ROBOT_LENGTH_WITH_BUMPERS.div(2).in(Meters), 0, Rotation2d.kZero))
+                    : FieldUtil.AprilTag.ID_13.pose2d
+                            .plus(new Transform2d(ROBOT_LENGTH_WITH_BUMPERS.div(2).in(Meters), 0, Rotation2d.kZero));
 
     public static final Pose2d FAR_RIGHT_CORAL_STATION =
             ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red
-                    ? new Pose2d(Units.inchesToMeters(623.86), Units.inchesToMeters(317), FieldUtil.AprilTag.ID_2.pose2d.getRotation())
-                            .plus(new Transform2d(ROBOT_LENGTH_WITH_BUMPERS.div(2).in(Meters), ROBOT_WIDTH_WITH_BUMPERS.div(2).in(Meters), Rotation2d.fromDegrees(0)))
-                    : new Pose2d(Units.inchesToMeters(67.02), Units.inchesToMeters(0), FieldUtil.AprilTag.ID_12.pose2d.getRotation())
-                            .plus(new Transform2d(ROBOT_LENGTH_WITH_BUMPERS.div(2).in(Meters), ROBOT_WIDTH_WITH_BUMPERS.div(2).in(Meters), Rotation2d.fromDegrees(0)));
+                    ? FieldUtil.AprilTag.ID_2.pose2d
+                            .plus(new Transform2d(ROBOT_LENGTH_WITH_BUMPERS.div(2).in(Meters), 0, Rotation2d.kZero))
+                    : FieldUtil.AprilTag.ID_12.pose2d
+                            .plus(new Transform2d(ROBOT_LENGTH_WITH_BUMPERS.div(2).in(Meters), 0, Rotation2d.kZero));
 
     // kSpeedAt12Volts desired top speed
     public static final double MAX_VEL = SwerveConstants.SPEED_AT_12_VOLTS.in(MetersPerSecond);
-    public static final Function<Double, Double> MAX_CONTROLLED_VEL = elevatorHeight -> MAX_VEL - 0.1 * elevatorHeight;
+    public static final Function<Double, Double> MAX_CONTROLLED_VEL = elevatorHeight -> MAX_VEL - 0.09 * elevatorHeight;
     // 1.96664381049 rotations per second tuned max angular velocity
     public static final Function<Double, Double> MAX_CONTROLLED_ANGULAR_VEL = elevatorHeight -> RotationsPerSecond.of(0.75).in(RadiansPerSecond) - 0.07 * elevatorHeight;
     public static final Function<Double, Double> MAX_ANGULAR_VEL = elevatorHeight -> elevatorHeight < 16 ? RotationsPerSecond.of(1.96664381049).in(RadiansPerSecond) : MAX_CONTROLLED_ANGULAR_VEL.apply(elevatorHeight);
