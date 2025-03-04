@@ -10,7 +10,6 @@ import com.pathplanner.lib.util.FlippingUtil;
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
@@ -26,11 +25,11 @@ public final class AutoManager {
     private Command currentCommand;
 
     public enum StartPosition {
-        FAR_LEFT(1),
-        CENTER_LEFT(2),
-        CENTER(3),
-        CENTER_RIGHT(4),
-        FAR_RIGHT(5);
+        DRIVER_FAR_RIGHT(1),
+        DRIVER_CENTER_RIGHT(2),
+        DRIVER_CENTER(3),
+        DRIVER_CENTER_LEFT(4),
+        DRIVER_FAR_LEFT(5);
 
         final int index;
         StartPosition(int index) {
@@ -142,14 +141,6 @@ public final class AutoManager {
                     }
             ));
 
-            // triggers.add(autoEventLooper.addTrigger("waitUntilHasObject", () -> new RepeatCommand(
-            //         new WaitUntilCommand(() -> robotStates.stowState.getAsBoolean() || robotStates.intake.hasCoral())
-            //                 .withDeadline(new WaitCommand(0.75))
-            //                 .andThen(new InstantCommand(robotStates.intake::setOuttakeState))
-            //                 .withDeadline(new WaitCommand(0.25))
-            //                 .andThen(new InstantCommand(robotStates.intake::setIntakeState))
-            // ).until(() -> robotStates.stowState.getAsBoolean() || robotStates.intake.hasCoral())));
-
             triggers.add(autoEventLooper.addTrigger("waitUntilHasObject", () -> 
                     new WaitUntilCommand(() -> robotStates.stowState.getAsBoolean() || robotStates.intake.hasCoral())));
 
@@ -170,8 +161,8 @@ public final class AutoManager {
 
             triggers.add(autoEventLooper.addTrigger(
                     "outtake",
-                    () -> new WaitUntilCommand(robotStates.atState)
-                            .andThen(new WaitCommand(0.75))
+                    () -> new WaitUntilCommand(robotStates.atState) // TODO SHOP: TEST IS AT AUTO STATE
+                            .andThen(new WaitCommand(0.75)) // TODO SHOP: TUNE AND OPTIMIZE
                             .andThen(robotStates::toggleAutoLevelCoralState)
                             .andThen(new WaitUntilCommand(robotStates.stowState))
                             .andThen(new WaitCommand(0.5))
