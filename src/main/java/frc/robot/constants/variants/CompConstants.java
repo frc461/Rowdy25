@@ -189,10 +189,6 @@ public final class CompConstants {
         public static final double PATH_TRANSLATION_CONTROLLER_P = 2.0; // TODO SHOP: TUNE PATH FOLLOWING KP
         public static final double PATH_ROTATION_CONTROLLER_P = 2.0;
 
-        public static final double TRANSLATION_ALIGNMENT_CONTROLLER_P = 1.0;
-        public static final double TRANSLATION_ALIGNMENT_CONTROLLER_D = 0.002;
-
-        public static final Function<Double, Double> PATH_MANUAL_TRANSLATION_CONTROLLER = x -> EquationUtil.expOutput(x, 4.0, 0.8, 6);
         public static final double ANGULAR_POSITION_P = 0.035;
         public static final double ANGULAR_POSITION_D = 0.0012;
 

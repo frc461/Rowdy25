@@ -264,9 +264,6 @@ public enum RobotIdentity {
 
         Constants.SwerveConstants.PATH_TRANSLATION_CONTROLLER_P = DefaultConstants.SwerveConstants.PATH_TRANSLATION_CONTROLLER_P;
         Constants.SwerveConstants.PATH_ROTATION_CONTROLLER_P = DefaultConstants.SwerveConstants.PATH_ROTATION_CONTROLLER_P;
-        Constants.SwerveConstants.TRANSLATION_ALIGNMENT_CONTROLLER_P = DefaultConstants.SwerveConstants.TRANSLATION_ALIGNMENT_CONTROLLER_P;
-        Constants.SwerveConstants.TRANSLATION_ALIGNMENT_CONTROLLER_D = DefaultConstants.SwerveConstants.TRANSLATION_ALIGNMENT_CONTROLLER_D;
-        Constants.SwerveConstants.PATH_MANUAL_TRANSLATION_CONTROLLER = DefaultConstants.SwerveConstants.PATH_MANUAL_TRANSLATION_CONTROLLER;
         Constants.SwerveConstants.ANGULAR_POSITION_P = DefaultConstants.SwerveConstants.ANGULAR_POSITION_P;
         Constants.SwerveConstants.ANGULAR_POSITION_D = DefaultConstants.SwerveConstants.ANGULAR_POSITION_D;
         Constants.SwerveConstants.ANGULAR_OBJECT_DETECTION_P = DefaultConstants.SwerveConstants.ANGULAR_OBJECT_DETECTION_P;
@@ -406,9 +403,6 @@ public enum RobotIdentity {
 
         Constants.SwerveConstants.PATH_TRANSLATION_CONTROLLER_P = CompConstants.SwerveConstants.PATH_TRANSLATION_CONTROLLER_P;
         Constants.SwerveConstants.PATH_ROTATION_CONTROLLER_P = CompConstants.SwerveConstants.PATH_ROTATION_CONTROLLER_P;
-        Constants.SwerveConstants.TRANSLATION_ALIGNMENT_CONTROLLER_P = CompConstants.SwerveConstants.TRANSLATION_ALIGNMENT_CONTROLLER_P;
-        Constants.SwerveConstants.TRANSLATION_ALIGNMENT_CONTROLLER_D = CompConstants.SwerveConstants.TRANSLATION_ALIGNMENT_CONTROLLER_D;
-        Constants.SwerveConstants.PATH_MANUAL_TRANSLATION_CONTROLLER = CompConstants.SwerveConstants.PATH_MANUAL_TRANSLATION_CONTROLLER;
         Constants.SwerveConstants.ANGULAR_POSITION_P = CompConstants.SwerveConstants.ANGULAR_POSITION_P;
         Constants.SwerveConstants.ANGULAR_POSITION_D = CompConstants.SwerveConstants.ANGULAR_POSITION_D;
         Constants.SwerveConstants.ANGULAR_OBJECT_DETECTION_P = CompConstants.SwerveConstants.ANGULAR_OBJECT_DETECTION_P;

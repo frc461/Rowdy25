@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.drivetrain.Swerve;
+import frc.robot.util.EquationUtil;
 import frc.robot.util.FieldUtil;
 import frc.robot.util.vision.PhotonUtil;
 
@@ -90,9 +91,9 @@ public class SearchForAlgaeCommand extends Command {
             swerve.setControl(
                     fieldCentric.withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
                             .withForwardPerspective(SwerveRequest.ForwardPerspectiveValue.BlueAlliance)
-                            .withVelocityX(Constants.SwerveConstants.PATH_MANUAL_TRANSLATION_CONTROLLER.apply(Math.abs(xError))
+                            .withVelocityX(EquationUtil.expOutput(Math.abs(xError), 4.0, 0.8, 6)
                                     * (xError < 0 ? -1 : 1) * transitionMultiplier + xVel)
-                            .withVelocityY(Constants.SwerveConstants.PATH_MANUAL_TRANSLATION_CONTROLLER.apply(Math.abs(yError))
+                            .withVelocityY(EquationUtil.expOutput(Math.abs(yError), 4.0, 0.8, 6)
                                     * (yError < 0 ? -1 : 1) * transitionMultiplier + yVel)
                             .withRotationalRate(errorController.calculate(
                                     currentYaw,
