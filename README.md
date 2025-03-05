@@ -73,9 +73,9 @@ Thursday, 2/27/2025 to test:
   - [x] climb presets
 
 INMIS:
-- [ ] auto
-  - [ ] try variety of paths
-- [ ] test climb subsystem more
+- [x] auto
+  - [x] try variety of paths
+- [x] test climb subsystem more
 
 Monday, 3/04/2025 software only:
 - [ ] new spherical pathing for pathfinding to branch

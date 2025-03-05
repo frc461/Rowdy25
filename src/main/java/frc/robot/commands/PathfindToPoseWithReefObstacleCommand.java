@@ -5,6 +5,8 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.drivetrain.Swerve;
@@ -98,7 +100,9 @@ public class PathfindToPoseWithReefObstacleCommand extends Command { // TODO: IM
     }
 
     private Pose2d getTemporaryTargetPose(Pose2d currentPose) {
-        return new Pose2d();
+        Rotation2d angleToReefCenter = FieldUtil.Reef.getAngleFromReefCenter(currentPose);
+
+        return new Pose2d(Translation2d.kZero, angleToReefCenter);
     }
 
     @Override

@@ -2,10 +2,7 @@ package frc.robot.util;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.constants.Constants;
@@ -127,6 +124,21 @@ public final class FieldUtil {
     }
 
     public static class Reef {
+        public static final Translation2d BLUE_REEF_CENTER = AprilTag.ID_18.pose2d.getTranslation().interpolate(AprilTag.ID_21.pose2d.getTranslation(), 0.5);
+        public static final Translation2d RED_REEF_CENTER = AprilTag.ID_7.pose2d.getTranslation().interpolate(AprilTag.ID_10.pose2d.getTranslation(), 0.5);
+
+        public static Translation2d getReefCenter() {
+            return Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red ? RED_REEF_CENTER : BLUE_REEF_CENTER;
+        }
+
+        public static Rotation2d getAngleFromReefCenter(Translation2d translation) {
+            return translation.minus(getReefCenter()).getAngle();
+        }
+
+        public static Rotation2d getAngleFromReefCenter(Pose2d pose) {
+            return getAngleFromReefCenter(pose.getTranslation());
+        }
+
         public static final Transform2d ROBOT_AT_LEFT_BRANCH_OFFSET_FROM_TAG = new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0, Units.inchesToMeters(-6.469731), Rotation2d.kPi);
         public static final Transform2d ROBOT_AT_RIGHT_BRANCH_OFFSET_FROM_TAG = new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0, Units.inchesToMeters(6.469731), Rotation2d.kPi);
 
