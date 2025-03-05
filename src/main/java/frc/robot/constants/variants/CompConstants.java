@@ -186,7 +186,7 @@ public final class CompConstants {
     }
 
     public static final class SwerveConstants {
-        public static final double PATH_TRANSLATION_CONTROLLER_P = 2.0;
+        public static final double PATH_TRANSLATION_CONTROLLER_P = 2.0; // TODO SHOP: TUNE PATH FOLLOWING KP
         public static final double PATH_ROTATION_CONTROLLER_P = 2.0;
 
         public static final double TRANSLATION_ALIGNMENT_CONTROLLER_P = 1.0;
