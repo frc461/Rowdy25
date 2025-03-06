@@ -13,15 +13,15 @@ import frc.robot.util.FieldUtil;
 
 import java.util.function.DoubleSupplier;
 
-public class DirectMoveToNearestBranchCommand extends Command {
+public class DirectMoveToPose extends Command {
     private final Swerve swerve;
     private final SwerveRequest.FieldCentric fieldCentric;
     private final PIDController yawController;
     private final DoubleSupplier elevatorHeight;
-    private Pose2d targetPose;
+    private final Pose2d targetPose;
     private boolean xPosDone, yPosDone, yawDone, end;
 
-    public DirectMoveToNearestBranchCommand(Swerve swerve, SwerveRequest.FieldCentric fieldCentric, DoubleSupplier elevatorHeight) {
+    public DirectMoveToPose(Swerve swerve, SwerveRequest.FieldCentric fieldCentric, DoubleSupplier elevatorHeight, Pose2d targetPose) {
         this.swerve = swerve;
         this.fieldCentric = fieldCentric;
 
@@ -34,7 +34,7 @@ public class DirectMoveToNearestBranchCommand extends Command {
 
         this.elevatorHeight = elevatorHeight;
 
-        targetPose = new Pose2d();
+        this.targetPose = targetPose;
         xPosDone = false;
         yPosDone = false;
         yawDone = false;
@@ -48,7 +48,6 @@ public class DirectMoveToNearestBranchCommand extends Command {
         yPosDone = false;
         yawDone = false;
         end = false;
-        targetPose = FieldUtil.Reef.getNearestRobotPoseAtBranch(swerve.localizer.getStrategyPose());
     }
 
     @Override
@@ -58,7 +57,7 @@ public class DirectMoveToNearestBranchCommand extends Command {
         double velocity = MathUtil.clamp(
                 Math.max(
                         EquationUtil.expOutput(targetPose.getTranslation().getDistance(currentPose.getTranslation()), 0.02, 50),
-                        EquationUtil.linearOutput(targetPose.getTranslation().getDistance(currentPose.getTranslation()), 3.5)
+                        Math.min(EquationUtil.linearOutput(targetPose.getTranslation().getDistance(currentPose.getTranslation()), 2.5), 2.5) // TODO WAIT (UNTIL SLOW WORKS): OPTIMIZE SPEED
                 ),
                 -Constants.MAX_CONTROLLED_VEL.apply(elevatorHeight.getAsDouble()),
                 Constants.MAX_CONTROLLED_VEL.apply(elevatorHeight.getAsDouble())

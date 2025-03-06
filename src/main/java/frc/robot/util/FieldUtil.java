@@ -118,6 +118,12 @@ public final class FieldUtil {
             return currentPose.nearest(getCoralStationTagPoses());
         }
 
+        public static Pose2d getNearestRobotPoseAtCoralStation(Pose2d currentPose) {
+            return getNearestCoralStationTagPose(currentPose).plus(
+                    new Transform2d(new Translation2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0, 0), Rotation2d.kZero)
+            );
+        }
+
         public static AprilTag getNearestCoralStationTag(Pose2d currentPose) {
             return TagManager.getPosesToTags().getOrDefault(getNearestCoralStationTagPose(currentPose), AprilTag.INVALID);
         }

@@ -16,7 +16,7 @@ import java.util.function.DoubleSupplier;
 
 import static edu.wpi.first.units.Units.Meters;
 
-public class PathfindToPoseAvoidingReefCommand extends Command { // TODO: IMPLEMENT SPHERICAL MODEL TO AVOID REEF COLLISION
+public class PathfindToPoseAvoidingReefCommand extends Command {
     private enum Sides {
         AB, CD, EF, GH, IJ, KL;
 
@@ -102,7 +102,7 @@ public class PathfindToPoseAvoidingReefCommand extends Command { // TODO: IMPLEM
         double velocity = MathUtil.clamp(
                 Math.max(
                         EquationUtil.expOutput(temporaryTargetPose.getTranslation().getDistance(currentPose.getTranslation()), 0.02, 50),
-                        EquationUtil.linearOutput(temporaryTargetPose.getTranslation().getDistance(currentPose.getTranslation()), 3.5)
+                        Math.min(EquationUtil.linearOutput(temporaryTargetPose.getTranslation().getDistance(currentPose.getTranslation()), 2.5), 2.5) // TODO WAIT (UNTIL SLOW WORKS): OPTIMIZE SPEED
                 ),
                 -Constants.MAX_CONTROLLED_VEL.apply(elevatorHeight.getAsDouble()),
                 Constants.MAX_CONTROLLED_VEL.apply(elevatorHeight.getAsDouble())

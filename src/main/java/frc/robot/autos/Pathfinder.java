@@ -115,8 +115,12 @@ public final class Pathfinder {
         );
     }
 
+    public static Pose2d calculateClosePose(Pose2d targetPose,double distance, Rotation2d distanceHeading) {
+        return targetPose.plus(new Transform2d(new Translation2d(-distance, distanceHeading), Rotation2d.kZero));
+    }
+
     public static Pose2d calculateClosePose(Pose2d targetPose, double distance) {
-        return targetPose.plus(new Transform2d(new Translation2d(-distance, 0), Rotation2d.kZero));
+        return calculateClosePose(targetPose, distance, Rotation2d.kZero);
     }
 
     private static Pose2d calculateClosePoseWithAngleScopeAndRadius(
