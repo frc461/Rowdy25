@@ -126,6 +126,7 @@ public final class FieldUtil {
     public static class Reef {
         public static final Translation2d BLUE_REEF_CENTER = AprilTag.ID_18.pose2d.getTranslation().interpolate(AprilTag.ID_21.pose2d.getTranslation(), 0.5);
         public static final Translation2d RED_REEF_CENTER = AprilTag.ID_7.pose2d.getTranslation().interpolate(AprilTag.ID_10.pose2d.getTranslation(), 0.5);
+        public static final double REEF_APOTHEM = AprilTag.ID_18.pose2d.getTranslation().getDistance(AprilTag.ID_21.pose2d.getTranslation()) / 2.0;
 
         public static Translation2d getReefCenter() {
             return Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red ? RED_REEF_CENTER : BLUE_REEF_CENTER;
@@ -176,11 +177,27 @@ public final class FieldUtil {
         }
 
         public static List<AprilTag> getReefTags() {
-            return Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red ?
-                    List.of(
-                            AprilTag.ID_7, AprilTag.ID_8, AprilTag.ID_9, AprilTag.ID_10, AprilTag.ID_11, AprilTag.ID_6
+            return Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red
+                    ? List.of(AprilTag.ID_7, AprilTag.ID_8, AprilTag.ID_9, AprilTag.ID_10, AprilTag.ID_11, AprilTag.ID_6)
+                    : List.of(AprilTag.ID_18, AprilTag.ID_17, AprilTag.ID_22, AprilTag.ID_21, AprilTag.ID_20, AprilTag.ID_19);
+        }
+
+        public static List<Pose2d> getReefCorners() {
+            return Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red
+                    ? List.of(
+                            new Pose2d(RED_REEF_CENTER, Rotation2d.fromDegrees(-30)).plus(new Transform2d(new Translation2d(REEF_APOTHEM * 2 / Math.sqrt(3), 0), Rotation2d.kZero)),
+                            new Pose2d(RED_REEF_CENTER, Rotation2d.fromDegrees(30)).plus(new Transform2d(new Translation2d(REEF_APOTHEM * 2 / Math.sqrt(3), 0), Rotation2d.kZero)),
+                            new Pose2d(RED_REEF_CENTER, Rotation2d.fromDegrees(90)).plus(new Transform2d(new Translation2d(REEF_APOTHEM * 2 / Math.sqrt(3), 0), Rotation2d.kZero)),
+                            new Pose2d(RED_REEF_CENTER, Rotation2d.fromDegrees(150)).plus(new Transform2d(new Translation2d(REEF_APOTHEM * 2 / Math.sqrt(3), 0), Rotation2d.kZero)),
+                            new Pose2d(RED_REEF_CENTER, Rotation2d.fromDegrees(-150)).plus(new Transform2d(new Translation2d(REEF_APOTHEM * 2 / Math.sqrt(3), 0), Rotation2d.kZero)),
+                            new Pose2d(RED_REEF_CENTER, Rotation2d.fromDegrees(-90)).plus(new Transform2d(new Translation2d(REEF_APOTHEM * 2 / Math.sqrt(3), 0), Rotation2d.kZero))
                     ) : List.of(
-                            AprilTag.ID_18, AprilTag.ID_17, AprilTag.ID_22, AprilTag.ID_21, AprilTag.ID_20, AprilTag.ID_19
+                            new Pose2d(BLUE_REEF_CENTER, Rotation2d.fromDegrees(150)).plus(new Transform2d(new Translation2d(REEF_APOTHEM * 2 / Math.sqrt(3), 0), Rotation2d.kZero)),
+                            new Pose2d(BLUE_REEF_CENTER, Rotation2d.fromDegrees(-150)).plus(new Transform2d(new Translation2d(REEF_APOTHEM * 2 / Math.sqrt(3), 0), Rotation2d.kZero)),
+                            new Pose2d(BLUE_REEF_CENTER, Rotation2d.fromDegrees(-90)).plus(new Transform2d(new Translation2d(REEF_APOTHEM * 2 / Math.sqrt(3), 0), Rotation2d.kZero)),
+                            new Pose2d(BLUE_REEF_CENTER, Rotation2d.fromDegrees(-30)).plus(new Transform2d(new Translation2d(REEF_APOTHEM * 2 / Math.sqrt(3), 0), Rotation2d.kZero)),
+                            new Pose2d(BLUE_REEF_CENTER, Rotation2d.fromDegrees(30)).plus(new Transform2d(new Translation2d(REEF_APOTHEM * 2 / Math.sqrt(3), 0), Rotation2d.kZero)),
+                            new Pose2d(BLUE_REEF_CENTER, Rotation2d.fromDegrees(90)).plus(new Transform2d(new Translation2d(REEF_APOTHEM * 2 / Math.sqrt(3), 0), Rotation2d.kZero))
                     );
         }
 

@@ -6,6 +6,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.Constants;
@@ -14,7 +15,8 @@ import frc.robot.util.EquationUtil;
 import frc.robot.util.FieldUtil;
 
 import java.util.function.DoubleSupplier;
-import java.util.function.Function;
+
+import static edu.wpi.first.units.Units.Meters;
 
 public class PathfindToPoseWithReefObstacleCommand extends Command { // TODO: IMPLEMENT SPHERICAL MODEL TO AVOID REEF COLLISION
     private final Swerve swerve;
@@ -100,9 +102,21 @@ public class PathfindToPoseWithReefObstacleCommand extends Command { // TODO: IM
     }
 
     private Pose2d getTemporaryTargetPose(Pose2d currentPose) {
-        Rotation2d angleToReefCenter = FieldUtil.Reef.getAngleFromReefCenter(currentPose);
+        Rotation2d robotAngleToReefCenter = FieldUtil.Reef.getAngleFromReefCenter(currentPose);
 
-        return new Pose2d(Translation2d.kZero, angleToReefCenter);
+        if (currentPose.getTranslation().getDistance(FieldUtil.Reef.getReefCenter()) < FieldUtil.Reef.REEF_APOTHEM + Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters)) {
+            Translation2d targetTranslation = new Pose2d(currentPose.getTranslation(), robotAngleToReefCenter)
+                    .plus(new Transform2d(
+                            new Translation2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) * 2, 0),
+                            Rotation2d.kZero
+                    ))
+                    .getTranslation();
+            return new Pose2d(targetTranslation, currentPose.getRotation());
+        } else if (robotAngleToReefCenter.plus(targetPose.getTranslation().minus(currentPose.getTranslation()).getAngle().unaryMinus()).getDegrees() > 90.0) {
+            return targetPose;
+        } else {
+            return new Pose2d(Translation2d.kZero, robotAngleToReefCenter);
+        }
     }
 
     @Override
