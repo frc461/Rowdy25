@@ -57,11 +57,11 @@ public class PathfindToPoseAvoidingReefCommand extends Command { // TODO: IMPLEM
     private Pose2d temporaryTargetPose;
     private boolean xPosDone, yPosDone, yawDone, end;
 
-    public PathfindToPoseAvoidingReefCommand(
-            Pose2d targetPose,
+    public PathfindToPoseAvoidingReefCommand( // TODO SHOP: TEST THIS IN REAL LIFE
             Swerve swerve,
             SwerveRequest.FieldCentric fieldCentric,
-            DoubleSupplier elevatorHeight
+            DoubleSupplier elevatorHeight,
+            Pose2d targetPose
     ) {
         this.swerve = swerve;
         this.fieldCentric = fieldCentric;

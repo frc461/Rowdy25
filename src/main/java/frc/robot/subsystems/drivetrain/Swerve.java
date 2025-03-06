@@ -21,11 +21,13 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.autos.Pathfinder;
 import frc.robot.commands.DirectMoveToNearestBranchCommand;
+import frc.robot.commands.PathfindToPoseAvoidingReefCommand;
 import frc.robot.commands.auto.SearchForAlgaeCommand;
 import frc.robot.constants.Constants;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.DirectMoveToObjectCommand;
 import frc.robot.subsystems.vision.Localizer;
+import frc.robot.util.FieldUtil;
 import frc.robot.util.vision.PhotonUtil;
 
 /**
@@ -159,7 +161,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
         );
     }
 
-    public Command pathFindFindScoreAlgae(BooleanSupplier algaeObtained) {
+    public Command pathFindFindScoreAlgae(BooleanSupplier algaeObtained) { // TODO: REVAMP THIS INTO CORAL SEARCHING
         return new SearchForAlgaeCommand(this, fieldCentric)
                 .andThen(directMoveToObject(algaeObtained, PhotonUtil.Color.TargetClass.ALGAE))
                 .andThen(Commands.defer(
@@ -168,10 +170,16 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                 ));
     }
 
-    public Command pathFindToNearestBranch(DoubleSupplier elevatorHeight) {
-        return Commands.defer(
-                () -> Pathfinder.pathFindToNearestCoralScoringLocation(localizer.getStrategyPose()),
-                Set.of(this)
+    public Command pathFindToNearestBranch(DoubleSupplier elevatorHeight) { // TODO SHOP: TEST THIS
+        return new PathfindToPoseAvoidingReefCommand(
+                this,
+                fieldCentric,
+                elevatorHeight,
+                Pathfinder.calculateClosePose(
+                        FieldUtil.Reef.getNearestRobotPoseAtBranch(localizer.getStrategyPose()),
+                        Constants.AutoConstants.DISTANCE_TOLERANCE_TO_DRIVE_INTO
+                )
+
         ).andThen(directMoveToNearestBranch(elevatorHeight));
     }
 

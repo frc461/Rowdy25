@@ -56,10 +56,7 @@ public final class Pathfinder {
             double goalEndVelocity
     ) {
         return pathFindToPose(
-                new Pose2d(
-                        targetPose.getTranslation().minus(new Translation2d(distance, targetPose.getRotation())),
-                        targetPose.getRotation()
-                ),
+                calculateClosePose(targetPose, distance),
                 goalEndVelocity
         );
     }
@@ -116,6 +113,10 @@ public final class Pathfinder {
                 ),
                 goalEndVelocity
         );
+    }
+
+    public static Pose2d calculateClosePose(Pose2d targetPose, double distance) {
+        return targetPose.plus(new Transform2d(new Translation2d(-distance, 0), Rotation2d.kZero));
     }
 
     private static Pose2d calculateClosePoseWithAngleScopeAndRadius(
