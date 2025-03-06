@@ -54,40 +54,41 @@ public class DirectMoveToNearestBranchCommand extends Command {
     @Override
     public void execute() {
         Pose2d currentPose = swerve.localizer.getStrategyPose();
-        double xError = currentPose.getX() - targetPose.getX();
-        double yError = currentPose.getY() - targetPose.getY();
-        double yawError = MathUtil.inputModulus(currentPose.getRotation().getDegrees() - targetPose.getRotation().getDegrees(), -180, 180);
+
+        double velocity = MathUtil.clamp(
+                Math.max(
+                        EquationUtil.expOutput(targetPose.getTranslation().getDistance(currentPose.getTranslation()), 0.02, 50),
+                        EquationUtil.linearOutput(targetPose.getTranslation().getDistance(currentPose.getTranslation()), 3.5)
+                ),
+                -Constants.MAX_CONTROLLED_VEL.apply(elevatorHeight.getAsDouble()),
+                Constants.MAX_CONTROLLED_VEL.apply(elevatorHeight.getAsDouble())
+        );
+
+        double velocityHeadingRadians = Math.atan2(targetPose.getY() - currentPose.getY(), targetPose.getX() - currentPose.getX());
 
         swerve.setControl(
                 fieldCentric.withDriveRequestType(SwerveModule.DriveRequestType.Velocity)
                         .withForwardPerspective(SwerveRequest.ForwardPerspectiveValue.BlueAlliance)
-                        .withVelocityX(determineVelocity(xError, xPosDone))
-                        .withVelocityY(determineVelocity(yError, yPosDone))
+                        .withVelocityX(Math.cos(velocityHeadingRadians) * velocity)
+                        .withVelocityY(Math.sin(velocityHeadingRadians) * velocity)
                         .withRotationalRate(yawController.calculate(
-                                yawError,
-                                0.0
+                                currentPose.getRotation().getDegrees(),
+                                targetPose.getRotation().getDegrees()
                         ) * Constants.MAX_CONTROLLED_ANGULAR_VEL.apply(elevatorHeight.getAsDouble()))
         );
 
-        xPosDone = Math.abs(xError) < Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_ACCEPT;
-        yPosDone = Math.abs(yError) < Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_ACCEPT;
-        yawDone = Math.abs(yawError) < Constants.AutoConstants.DEGREE_TOLERANCE_TO_ACCEPT;
+        xPosDone = Math.abs(currentPose.getX() - targetPose.getX())
+                < Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_ACCEPT;
+        yPosDone = Math.abs(currentPose.getY() - targetPose.getY())
+                < Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_ACCEPT;
+        yawDone = Math.abs(MathUtil.inputModulus(currentPose.getRotation().getDegrees() - targetPose.getRotation().getDegrees(), -180, 180))
+                < Constants.AutoConstants.DEGREE_TOLERANCE_TO_ACCEPT;
 
         if (xPosDone && yPosDone && yawDone) {
             swerve.forceStop();
             swerve.consistentHeading = currentPose.getRotation().getDegrees();
             end = true;
         }
-    }
-
-    public double determineVelocity(double error, boolean done) {
-        if (done) {
-            return 0.0;
-        }
-        if (error < 0) {
-            return EquationUtil.expOutput(Math.abs(error), 0.02, 50);
-        }
-        return -EquationUtil.expOutput(Math.abs(error), 0.02, 50);
     }
 
     @Override

@@ -8,7 +8,9 @@ import com.pathplanner.lib.pathfinding.Pathfinding;
 
 import dev.doglog.DogLog;
 import dev.doglog.DogLogOptions;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj2.command.*;
@@ -140,7 +142,7 @@ public class RobotContainer {
                         ));
         driverXbox.b().onTrue(new InstantCommand(() -> robotStates.swerve.localizer.setPoses(Constants.FAR_RIGHT_CORAL_STATION)));
         driverXbox.x().onTrue(new InstantCommand(() -> robotStates.swerve.localizer.setPoses(Constants.FAR_LEFT_CORAL_STATION)));
-        driverXbox.y().whileTrue(robotStates.swerve.directMoveToNearestBranch(robotStates.elevator::getPosition));
+        driverXbox.y().whileTrue(robotStates.swerve.pathFindToNearestBranch(robotStates.elevator::getPosition));
 
         driverXbox.povUp().onTrue(new InstantCommand(() -> robotStates.swerve.localizer.setRotations(Rotation2d.kZero)));
         driverXbox.povDown().onTrue(new InstantCommand(robotStates.swerve.localizer::syncRotations));
