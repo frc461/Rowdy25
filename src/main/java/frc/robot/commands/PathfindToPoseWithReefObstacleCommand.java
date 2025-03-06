@@ -9,6 +9,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.autos.Pathfinder;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.drivetrain.Swerve;
 import frc.robot.util.EquationUtil;
@@ -19,6 +20,38 @@ import java.util.function.DoubleSupplier;
 import static edu.wpi.first.units.Units.Meters;
 
 public class PathfindToPoseWithReefObstacleCommand extends Command { // TODO: IMPLEMENT SPHERICAL MODEL TO AVOID REEF COLLISION
+    private enum Sides {
+        AB, CD, EF, GH, IJ, KL;
+
+        private static Rotation2d getDegreeStart(Sides side) {
+            return switch (side) {
+                case AB -> FieldUtil.Reef.getReefCorners().get(0).getRotation();
+                case CD -> FieldUtil.Reef.getReefCorners().get(1).getRotation();
+                case EF -> FieldUtil.Reef.getReefCorners().get(2).getRotation();
+                case GH -> FieldUtil.Reef.getReefCorners().get(3).getRotation();
+                case IJ -> FieldUtil.Reef.getReefCorners().get(4).getRotation();
+                case KL -> FieldUtil.Reef.getReefCorners().get(5).getRotation();
+            };
+        }
+
+        public static Sides getSide(Pose2d pose) {
+            Rotation2d reefCenterAngleToRobot = pose.getTranslation().minus(FieldUtil.Reef.getReefCenter()).getAngle();
+            if (Pathfinder.inBetween(reefCenterAngleToRobot, getDegreeStart(AB), getDegreeStart(CD))) {
+                return AB;
+            } else if (Pathfinder.inBetween(reefCenterAngleToRobot, getDegreeStart(CD), getDegreeStart(EF))) {
+                return CD;
+            } else if (Pathfinder.inBetween(reefCenterAngleToRobot, getDegreeStart(EF), getDegreeStart(GH))) {
+                return EF;
+            } else if (Pathfinder.inBetween(reefCenterAngleToRobot, getDegreeStart(GH), getDegreeStart(IJ))) {
+                return GH;
+            } else if (Pathfinder.inBetween(reefCenterAngleToRobot, getDegreeStart(IJ), getDegreeStart(KL))) {
+                return IJ;
+            } else {
+                return KL;
+            }
+        }
+    }
+
     private final Swerve swerve;
     private final SwerveRequest.FieldCentric fieldCentric;
     private final PIDController yawController;
@@ -112,11 +145,38 @@ public class PathfindToPoseWithReefObstacleCommand extends Command { // TODO: IM
                     ))
                     .getTranslation();
             return new Pose2d(targetTranslation, currentPose.getRotation());
-        } else if (robotAngleToReefCenter.plus(targetPose.getTranslation().minus(currentPose.getTranslation()).getAngle().unaryMinus()).getDegrees() > 90.0) {
+        } else if (robotAngleToReefCenter.plus(targetPose.getTranslation().minus(currentPose.getTranslation()).getAngle().unaryMinus()).getDegrees() > 90.0
+                || sameSideAsTargetPose(currentPose)) {
             return targetPose;
         } else {
+            Rotation2d reefCenterAngleToRobot = robotAngleToReefCenter.unaryMinus();
             return new Pose2d(Translation2d.kZero, robotAngleToReefCenter);
         }
+    }
+
+    private boolean sameSideAsTargetPose(Pose2d currentPose) {
+        Pose2d frontLeft = currentPose.plus(new Transform2d(
+                new Translation2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0, Constants.ROBOT_WIDTH_WITH_BUMPERS.in(Meters) / 2.0),
+                Rotation2d.kZero
+        ));
+        Pose2d frontRight = currentPose.plus(new Transform2d(
+                new Translation2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0, -Constants.ROBOT_WIDTH_WITH_BUMPERS.in(Meters) / 2.0),
+                Rotation2d.kZero
+        ));
+        Pose2d backLeft = currentPose.plus(new Transform2d(
+                new Translation2d(-Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0, Constants.ROBOT_WIDTH_WITH_BUMPERS.in(Meters) / 2.0),
+                Rotation2d.kZero
+        ));
+        Pose2d backRight = currentPose.plus(new Transform2d(
+                new Translation2d(-Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0, -Constants.ROBOT_WIDTH_WITH_BUMPERS.in(Meters) / 2.0),
+                Rotation2d.kZero
+        ));
+        return sameSideAsPose(frontLeft, targetPose) && sameSideAsPose(frontRight, targetPose)
+                && sameSideAsPose(backLeft, targetPose) && sameSideAsPose(backRight, targetPose);
+    }
+
+    private boolean sameSideAsPose(Pose2d one, Pose2d two) {
+        return Sides.getSide(one) == Sides.getSide(two);
     }
 
     @Override

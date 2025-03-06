@@ -145,7 +145,7 @@ public final class Pathfinder {
         ));
     }
 
-    private static boolean inBetween(Rotation2d angle, Rotation2d lowerAngleThreshold, Rotation2d upperAngleThreshold) {
+    public static boolean inBetween(Rotation2d angle, Rotation2d lowerAngleThreshold, Rotation2d upperAngleThreshold) {
         if (lowerAngleThreshold.getDegrees() > upperAngleThreshold.getDegrees()) {
             return angle.getDegrees() > lowerAngleThreshold.getDegrees() || angle.getDegrees() < upperAngleThreshold.getDegrees();
         }
