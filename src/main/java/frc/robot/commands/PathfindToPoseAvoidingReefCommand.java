@@ -54,7 +54,7 @@ public class PathfindToPoseAvoidingReefCommand extends Command {
     private final PIDController yawController;
     private final DoubleSupplier elevatorHeight;
     private final Pose2d targetPose;
-    private Pose2d temporaryTargetPose;
+    private Pose2d smoothTemporaryTargetPose;
     private boolean xPosDone, yPosDone, yawDone, end;
 
     public PathfindToPoseAvoidingReefCommand( // TODO SHOP: TEST THIS IN REAL LIFE
@@ -76,7 +76,7 @@ public class PathfindToPoseAvoidingReefCommand extends Command {
         this.elevatorHeight = elevatorHeight;
 
         this.targetPose = targetPose;
-        temporaryTargetPose = new Pose2d();
+        smoothTemporaryTargetPose = null;
         xPosDone = false;
         yPosDone = false;
         yawDone = false;
@@ -86,7 +86,7 @@ public class PathfindToPoseAvoidingReefCommand extends Command {
 
     @Override
     public void initialize() {
-        temporaryTargetPose = new Pose2d();
+        smoothTemporaryTargetPose = null;
         xPosDone = false;
         yPosDone = false;
         yawDone = false;
@@ -96,19 +96,20 @@ public class PathfindToPoseAvoidingReefCommand extends Command {
     @Override
     public void execute() {
         Pose2d currentPose = swerve.localizer.getStrategyPose();
-        temporaryTargetPose = getTemporaryTargetPose(currentPose);
-        swerve.localizer.setCurrentTemporaryTargetPose(temporaryTargetPose);
+        Pose2d temporaryTargetPose = getTemporaryTargetPose(currentPose);
+        smoothTemporaryTargetPose = getSmoothTargetPose(temporaryTargetPose);
+        swerve.localizer.setCurrentTemporaryTargetPose(smoothTemporaryTargetPose);
 
         double velocity = MathUtil.clamp(
                 Math.max(
-                        EquationUtil.expOutput(temporaryTargetPose.getTranslation().getDistance(currentPose.getTranslation()), 0.02, 50),
-                        Math.min(EquationUtil.linearOutput(temporaryTargetPose.getTranslation().getDistance(currentPose.getTranslation()), 2.5), 2.5) // TODO WAIT (UNTIL SLOW WORKS): OPTIMIZE SPEED
+                        EquationUtil.expOutput(smoothTemporaryTargetPose.getTranslation().getDistance(currentPose.getTranslation()), 0.02, 50),
+                        Math.min(EquationUtil.linearOutput(smoothTemporaryTargetPose.getTranslation().getDistance(currentPose.getTranslation()), 3.5), 3.5) // TODO WAIT (UNTIL SLOW WORKS): OPTIMIZE SPEED
                 ),
                 -Constants.MAX_CONTROLLED_VEL.apply(elevatorHeight.getAsDouble()),
                 Constants.MAX_CONTROLLED_VEL.apply(elevatorHeight.getAsDouble())
         );
 
-        double velocityHeadingRadians = Math.atan2(temporaryTargetPose.getY() - currentPose.getY(), temporaryTargetPose.getX() - currentPose.getX());
+        double velocityHeadingRadians = Math.atan2(smoothTemporaryTargetPose.getY() - currentPose.getY(), smoothTemporaryTargetPose.getX() - currentPose.getX());
 
         swerve.setControl(
                 fieldCentric.withDriveRequestType(SwerveModule.DriveRequestType.Velocity)
@@ -117,7 +118,7 @@ public class PathfindToPoseAvoidingReefCommand extends Command {
                         .withVelocityY(Math.sin(velocityHeadingRadians) * velocity)
                         .withRotationalRate(yawController.calculate(
                                 currentPose.getRotation().getDegrees(),
-                                temporaryTargetPose.getRotation().getDegrees()
+                                smoothTemporaryTargetPose.getRotation().getDegrees()
                         ) * Constants.MAX_CONTROLLED_ANGULAR_VEL.apply(elevatorHeight.getAsDouble()))
         );
 
@@ -133,6 +134,25 @@ public class PathfindToPoseAvoidingReefCommand extends Command {
             swerve.consistentHeading = currentPose.getRotation().getDegrees();
             end = true;
         }
+    }
+
+    private Pose2d getSmoothTargetPose(Pose2d temporaryPose) {
+        if (smoothTemporaryTargetPose == null) {
+            return temporaryPose;
+        }
+
+        if (smoothTemporaryTargetPose.getTranslation().getDistance(temporaryPose.getTranslation()) > 0.05) {
+            Rotation2d headingToTemporaryPose = temporaryPose.getTranslation().minus(smoothTemporaryTargetPose.getTranslation()).getAngle();
+            return new Pose2d(
+                    new Pose2d(smoothTemporaryTargetPose.getTranslation(), headingToTemporaryPose).plus(new Transform2d(
+                            new Translation2d(0.05, 0),
+                            Rotation2d.kZero
+                    )).getTranslation(),
+                    smoothTemporaryTargetPose.getRotation().interpolate(temporaryPose.getRotation(), 0.25)
+            );
+        }
+
+        return temporaryPose;
     }
 
     private Pose2d getTemporaryTargetPose(Pose2d currentPose) {

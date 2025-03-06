@@ -57,7 +57,7 @@ public class DirectMoveToPose extends Command {
         double velocity = MathUtil.clamp(
                 Math.max(
                         EquationUtil.expOutput(targetPose.getTranslation().getDistance(currentPose.getTranslation()), 0.02, 50),
-                        Math.min(EquationUtil.linearOutput(targetPose.getTranslation().getDistance(currentPose.getTranslation()), 2.5), 2.5) // TODO WAIT (UNTIL SLOW WORKS): OPTIMIZE SPEED
+                        Math.min(EquationUtil.linearOutput(targetPose.getTranslation().getDistance(currentPose.getTranslation()), 2.0), 2.0) // TODO WAIT (UNTIL SLOW WORKS): OPTIMIZE SPEED
                 ),
                 -Constants.MAX_CONTROLLED_VEL.apply(elevatorHeight.getAsDouble()),
                 Constants.MAX_CONTROLLED_VEL.apply(elevatorHeight.getAsDouble())
