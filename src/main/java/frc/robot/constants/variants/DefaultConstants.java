@@ -32,7 +32,6 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.units.measure.*;
 import edu.wpi.first.wpilibj.DriverStation;
-import frc.robot.util.EquationUtil;
 import frc.robot.util.FieldUtil;
 import org.json.simple.parser.ParseException;
 
@@ -57,14 +56,14 @@ public final class DefaultConstants {
 
     public static final Supplier<DriverStation.Alliance> ALLIANCE_SUPPLIER = () -> DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue);
 
-    public static final Pose2d FAR_LEFT_CORAL_STATION =
+    public static final Pose2d CENTER_OF_LEFT_CORAL_STATION =
             ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red
                     ? FieldUtil.AprilTag.ID_1.pose2d
                             .plus(new Transform2d(ROBOT_LENGTH_WITH_BUMPERS.div(2).in(Meters), 0, Rotation2d.kZero))
                     : FieldUtil.AprilTag.ID_13.pose2d
                             .plus(new Transform2d(ROBOT_LENGTH_WITH_BUMPERS.div(2).in(Meters), 0, Rotation2d.kZero));
 
-    public static final Pose2d FAR_RIGHT_CORAL_STATION =
+    public static final Pose2d CENTER_OF_RIGHT_CORAL_STATION =
             ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red
                     ? FieldUtil.AprilTag.ID_2.pose2d
                             .plus(new Transform2d(ROBOT_LENGTH_WITH_BUMPERS.div(2).in(Meters), 0, Rotation2d.kZero))

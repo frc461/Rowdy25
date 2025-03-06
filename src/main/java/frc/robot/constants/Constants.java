@@ -46,8 +46,8 @@ public final class Constants {
 
     public static Supplier<DriverStation.Alliance> ALLIANCE_SUPPLIER;
 
-    public static Pose2d FAR_LEFT_CORAL_STATION;
-    public static Pose2d FAR_RIGHT_CORAL_STATION;
+    public static Pose2d CENTER_OF_LEFT_CORAL_STATION;
+    public static Pose2d CENTER_OF_RIGHT_CORAL_STATION;
 
     // kSpeedAt12Volts desired top speed
     public static double MAX_VEL;

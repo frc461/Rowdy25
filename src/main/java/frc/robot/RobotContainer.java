@@ -151,6 +151,9 @@ public class RobotContainer {
         driverXbox.povRight().onTrue(new InstantCommand(() -> robotStates.climb.manualClimb(0.9)));
         driverXbox.povRight().onFalse(new InstantCommand(() -> robotStates.climb.stopClimb(false)));
 
+        driverXbox.leftStick().onTrue(new InstantCommand(() -> robotStates.swerve.localizer.setPoses(Constants.CENTER_OF_RIGHT_CORAL_STATION)));
+        driverXbox.rightStick().onTrue(new InstantCommand(() -> robotStates.swerve.localizer.setPoses(Constants.CENTER_OF_LEFT_CORAL_STATION)));
+
         driverXbox.leftBumper().onTrue(new InstantCommand(robotStates.swerve::setBranchHeadingMode));
         driverXbox.leftBumper().onFalse(new InstantCommand(robotStates.swerve::setIdleMode));
         driverXbox.rightBumper().onTrue(new InstantCommand(robotStates.swerve::setCoralStationHeadingMode));

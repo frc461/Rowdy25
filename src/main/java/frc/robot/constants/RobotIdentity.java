@@ -59,8 +59,8 @@ public enum RobotIdentity {
         Constants.ROBOT_LENGTH_WITH_BUMPERS = DefaultConstants.ROBOT_LENGTH_WITH_BUMPERS;
         Constants.ROBOT_WIDTH_WITH_BUMPERS = DefaultConstants.ROBOT_WIDTH_WITH_BUMPERS;
         Constants.ALLIANCE_SUPPLIER = DefaultConstants.ALLIANCE_SUPPLIER;
-        Constants.FAR_LEFT_CORAL_STATION = DefaultConstants.FAR_LEFT_CORAL_STATION;
-        Constants.FAR_RIGHT_CORAL_STATION = DefaultConstants.FAR_RIGHT_CORAL_STATION;
+        Constants.CENTER_OF_LEFT_CORAL_STATION = DefaultConstants.CENTER_OF_LEFT_CORAL_STATION;
+        Constants.CENTER_OF_RIGHT_CORAL_STATION = DefaultConstants.CENTER_OF_RIGHT_CORAL_STATION;
         Constants.MAX_VEL = DefaultConstants.MAX_VEL;
         Constants.MAX_CONTROLLED_VEL = DefaultConstants.MAX_CONTROLLED_VEL;
         Constants.MAX_ANGULAR_VEL = DefaultConstants.MAX_ANGULAR_VEL;
