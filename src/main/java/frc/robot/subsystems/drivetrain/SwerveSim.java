@@ -28,7 +28,7 @@ public class SwerveSim {
 
                 /* use the measured time delta, get battery voltage from WPILib */
                 swerve.updateSimState(deltaTime, RobotController.getBatteryVoltage());
-                localizerSim.update(swerve.localizer.getStrategyPose());
+                localizerSim.update(swerve.getState().Pose);
         }).startPeriodic(SIM_LOOP_PERIOD);
     }
 }
