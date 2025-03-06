@@ -32,6 +32,7 @@ public class Localizer {
     // The pose extrapolation method that the robot will use. It will be set to QuestNav by default.
     private LocalizationStrategy strategy = LocalizationStrategy.POSE_ESTIMATOR;
 
+    private Pose2d currentTemporaryTargetPose = new Pose2d();
     private boolean hasCalibratedOnceWhenNear = false;
 
     public Localizer(Swerve swerve) {
@@ -60,6 +61,10 @@ public class Localizer {
 
     public String getLocalizationStrategy() {
         return strategy == LocalizationStrategy.QUEST_NAV ? "Quest Nav" : "Pose Estimator";
+    }
+
+    public Pose2d getCurrentTemporaryTargetPose() {
+        return currentTemporaryTargetPose;
     }
 
     public boolean hasCalibratedOnceWhenNear() {
@@ -146,6 +151,10 @@ public class Localizer {
 
     public boolean nearestAlgaeScoringIsNet() {
         return FieldUtil.AlgaeScoring.getAlgaeScoringFromTag(FieldUtil.AlgaeScoring.getNearestAlgaeScoringTag(getStrategyPose())) == FieldUtil.AlgaeScoring.ScoringLocation.NET;
+    }
+
+    public void setCurrentTemporaryTargetPose(Pose2d temporaryTargetPose) {
+        this.currentTemporaryTargetPose = temporaryTargetPose;
     }
 
     public void setLocalizationStrategyFromChooser() {

@@ -25,6 +25,7 @@ public class LocalizationTelemetry {
     private final NetworkTable photonTelemetryTable = Constants.NT_INSTANCE.getTable("PhotonTelemetry");
 
     private final StringPublisher poseEstimatePrettyPub = localizationTelemetryTable.getStringTopic("Estimated Pose").publish();
+    private final StringPublisher temporaryTargetPosePrettyPub = localizationTelemetryTable.getStringTopic("Temporary Target Pose").publish();
     private final StringPublisher questPosePrettyPub = localizationTelemetryTable.getStringTopic("Quest-Based Pose").publish();
     private final StringPublisher localizationStrategyPub = localizationTelemetryTable.getStringTopic("Localization Strategy").publish();
 
@@ -47,6 +48,8 @@ public class LocalizationTelemetry {
     private final StringPublisher fieldTypePub = robotPoseTable.getStringTopic(".type").publish();
     private final StructPublisher<Pose2d> pose2dEstimatePub = robotPoseTable.getStructTopic("Estimated Pose2d", Pose2d.struct).publish();
     private final DoubleArrayPublisher poseEstimatePub = robotPoseTable.getDoubleArrayTopic("Estimated Pose").publish();
+    private final StructPublisher<Pose2d> temporaryTargetPose2dPub = robotPoseTable.getStructTopic("Temporary Target Pose2d", Pose2d.struct).publish();
+    private final DoubleArrayPublisher temporaryTargetPosePub = robotPoseTable.getDoubleArrayTopic("Temporary Target Pose").publish();
     private final StructPublisher<Pose2d> questPose2dPub = robotPoseTable.getStructTopic("Quest-Based Pose2d", Pose2d.struct).publish();
     private final DoubleArrayPublisher questPosePub = robotPoseTable.getDoubleArrayTopic("Quest-Based Pose").publish();
     private final StructPublisher<Pose2d> megaTagOnePose2dPub = robotPoseTable.getStructTopic("MegaTagOne Pose2d", Pose2d.struct).publish();
@@ -76,6 +79,7 @@ public class LocalizationTelemetry {
 
         fieldTypePub.set("Field2d");
         publishPose(pose2dEstimatePub, poseEstimatePub, poseEstimatePrettyPub, localizer.getEstimatedPose());
+        publishPose(temporaryTargetPose2dPub, temporaryTargetPosePub, temporaryTargetPosePrettyPub, localizer.getCurrentTemporaryTargetPose());
         publishPose(questPose2dPub, questPosePub, questPosePrettyPub, localizer.getQuestPose());
         publishPose(megaTagOnePose2dPub, megaTagOnePosePub, megaTagOnePosePrettyPub, LimelightUtil.getMegaTagOnePose());
         publishPose(megaTagTwoPose2dPub, megaTagTwoPosePub, megaTagTwoPosePrettyPub, LimelightUtil.getMegaTagTwoPose());

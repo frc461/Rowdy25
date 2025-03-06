@@ -161,6 +161,21 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
         );
     }
 
+    public Command pathFindToNearestBranch(DoubleSupplier elevatorHeight) { // TODO SHOP: TEST THIS
+        return Commands.defer(
+                () -> new PathfindToPoseAvoidingReefCommand(
+                        this,
+                        fieldCentric,
+                        elevatorHeight,
+                        Pathfinder.calculateClosePose(
+                                FieldUtil.Reef.getNearestRobotPoseAtBranch(localizer.getStrategyPose()),
+                                Constants.AutoConstants.DISTANCE_TOLERANCE_TO_DRIVE_INTO
+                        )
+                ),
+                Set.of(this)
+        ).andThen(directMoveToNearestBranch(elevatorHeight));
+    }
+
     public Command pathFindFindScoreAlgae(BooleanSupplier algaeObtained) { // TODO: REVAMP THIS INTO CORAL SEARCHING
         return new SearchForAlgaeCommand(this, fieldCentric)
                 .andThen(directMoveToObject(algaeObtained, PhotonUtil.Color.TargetClass.ALGAE))
@@ -168,19 +183,6 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                         () -> Pathfinder.pathFindToNearestAlgaeScoringLocation(localizer.getStrategyPose()),
                         Set.of(this)
                 ));
-    }
-
-    public Command pathFindToNearestBranch(DoubleSupplier elevatorHeight) { // TODO SHOP: TEST THIS
-        return new PathfindToPoseAvoidingReefCommand(
-                this,
-                fieldCentric,
-                elevatorHeight,
-                Pathfinder.calculateClosePose(
-                        FieldUtil.Reef.getNearestRobotPoseAtBranch(localizer.getStrategyPose()),
-                        Constants.AutoConstants.DISTANCE_TOLERANCE_TO_DRIVE_INTO
-                )
-
-        ).andThen(directMoveToNearestBranch(elevatorHeight));
     }
 
     public Command directMoveToObject(BooleanSupplier objectObtained, PhotonUtil.Color.TargetClass objectLabelClass) {
