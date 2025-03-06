@@ -4,10 +4,7 @@ import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.autos.Pathfinder;
 import frc.robot.constants.Constants;
@@ -19,7 +16,7 @@ import java.util.function.DoubleSupplier;
 
 import static edu.wpi.first.units.Units.Meters;
 
-public class PathfindToPoseWithReefObstacleCommand extends Command { // TODO: IMPLEMENT SPHERICAL MODEL TO AVOID REEF COLLISION
+public class PathfindToPoseAvoidingReefCommand extends Command { // TODO: IMPLEMENT SPHERICAL MODEL TO AVOID REEF COLLISION
     private enum Sides {
         AB, CD, EF, GH, IJ, KL;
 
@@ -34,7 +31,7 @@ public class PathfindToPoseWithReefObstacleCommand extends Command { // TODO: IM
             };
         }
 
-        public static Sides getSide(Pose2d pose) {
+        private static Sides getSide(Pose2d pose) {
             Rotation2d reefCenterAngleToRobot = pose.getTranslation().minus(FieldUtil.Reef.getReefCenter()).getAngle();
             if (Pathfinder.inBetween(reefCenterAngleToRobot, getDegreeStart(AB), getDegreeStart(CD))) {
                 return AB;
@@ -60,7 +57,7 @@ public class PathfindToPoseWithReefObstacleCommand extends Command { // TODO: IM
     private Pose2d temporaryTargetPose;
     private boolean xPosDone, yPosDone, yawDone, end;
 
-    public PathfindToPoseWithReefObstacleCommand(
+    public PathfindToPoseAvoidingReefCommand(
             Pose2d targetPose,
             Swerve swerve,
             SwerveRequest.FieldCentric fieldCentric,
@@ -150,7 +147,19 @@ public class PathfindToPoseWithReefObstacleCommand extends Command { // TODO: IM
             return targetPose;
         } else {
             Rotation2d reefCenterAngleToRobot = robotAngleToReefCenter.unaryMinus();
-            return new Pose2d(Translation2d.kZero, robotAngleToReefCenter);
+            Rotation2d reefCenterAngleToTargetPose = targetPose.getTranslation().minus(FieldUtil.Reef.getReefCenter()).getAngle();
+            Rotation2d temporaryTargetAngle =
+                    reefCenterAngleToRobot.rotateBy(Rotation2d.fromDegrees(Math.copySign(
+                            5.0,
+                            reefCenterAngleToTargetPose.minus(reefCenterAngleToRobot).getDegrees()
+                    )));
+            return new Pose2d(
+                    new Pose2d(FieldUtil.Reef.getReefCenter(), temporaryTargetAngle).plus(new Transform2d(
+                            new Translation2d(1.4, 0),
+                            Rotation2d.kZero
+                    )).getTranslation(),
+                    robotAngleToReefCenter
+            );
         }
     }
 
