@@ -111,6 +111,9 @@ public class PathfindToPoseAvoidingReefCommand extends Command {
 
         double velocityHeadingRadians = Math.atan2(smoothTemporaryTargetPose.getY() - currentPose.getY(), smoothTemporaryTargetPose.getX() - currentPose.getX());
 
+        System.out.println("X Vel: " + Math.cos(velocityHeadingRadians) * velocity);
+        System.out.println("Y Vel: " + Math.sin(velocityHeadingRadians) * velocity);
+
         swerve.setControl(
                 fieldCentric.withDriveRequestType(SwerveModule.DriveRequestType.Velocity)
                         .withForwardPerspective(SwerveRequest.ForwardPerspectiveValue.BlueAlliance)
@@ -162,7 +165,7 @@ public class PathfindToPoseAvoidingReefCommand extends Command {
         if (Math.abs(targetPose.getTranslation().minus(currentPose.getTranslation()).getAngle().minus(robotAngleToReefCenter).getDegrees()) > 90.0
                 || sameSideAsTargetPose(currentPose)) {
             return targetPose;
-        } else if (currentPose.getTranslation().getDistance(FieldUtil.Reef.getReefCenter()) < FieldUtil.Reef.REEF_APOTHEM + Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters)) {
+        } else if (currentPose.getTranslation().getDistance(FieldUtil.Reef.getReefCenter()) < FieldUtil.Reef.REEF_APOTHEM + Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0) {
             Translation2d targetTranslation = new Pose2d(FieldUtil.Reef.getReefCenter(), FieldUtil.Reef.getNearestReefTagPose(currentPose).getRotation())
                     .plus(new Transform2d(
                             new Translation2d(3.0, 0),
@@ -209,7 +212,11 @@ public class PathfindToPoseAvoidingReefCommand extends Command {
     }
 
     private boolean sameSideAsPose(Pose2d one, Pose2d two) {
-        return Sides.getSide(one) == Sides.getSide(two);
+        Pose2d nearestReefTagPose = FieldUtil.Reef.getNearestReefTagPose(one);
+        Rotation2d lowerBound = nearestReefTagPose.getRotation().rotateBy(Rotation2d.kCW_Pi_2);
+        Rotation2d upperBound = nearestReefTagPose.getRotation().rotateBy(Rotation2d.kCCW_Pi_2);
+        Rotation2d tagToCurrentPose = two.getTranslation().minus(nearestReefTagPose.getTranslation()).getAngle();
+        return Pathfinder.inBetween(tagToCurrentPose, lowerBound, upperBound);
     }
 
     @Override
