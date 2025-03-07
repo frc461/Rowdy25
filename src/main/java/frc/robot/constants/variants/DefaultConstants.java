@@ -113,7 +113,7 @@ public final class DefaultConstants {
         public static final double OBJECT_SEARCH_DEGREE_SLANT = 30.0;
         public static final double DEGREE_TOLERANCE_TO_ACCEPT = 2.5;
         public static final double TRANSLATION_TOLERANCE_TO_ACCEPT = 0.03;
-        public static final double DISTANCE_TOLERANCE_TO_DRIVE_INTO = 1.0;
+        public static final double DISTANCE_TOLERANCE_TO_DRIVE_INTO = 0.5;
     }
 
     public static final class VisionConstants {

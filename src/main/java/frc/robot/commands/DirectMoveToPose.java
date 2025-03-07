@@ -21,7 +21,12 @@ public class DirectMoveToPose extends Command {
     private final Pose2d targetPose;
     private boolean xPosDone, yPosDone, yawDone, end;
 
-    public DirectMoveToPose(Swerve swerve, SwerveRequest.FieldCentric fieldCentric, DoubleSupplier elevatorHeight, Pose2d targetPose) {
+    public DirectMoveToPose(
+            Swerve swerve,
+            SwerveRequest.FieldCentric fieldCentric,
+            DoubleSupplier elevatorHeight,
+            Pose2d targetPose
+    ) {
         this.swerve = swerve;
         this.fieldCentric = fieldCentric;
 
@@ -56,8 +61,8 @@ public class DirectMoveToPose extends Command {
 
         double velocity = MathUtil.clamp(
                 Math.max(
-                        EquationUtil.expOutput(targetPose.getTranslation().getDistance(currentPose.getTranslation()), 0.02, 50),
-                        Math.min(EquationUtil.linearOutput(targetPose.getTranslation().getDistance(currentPose.getTranslation()), 2.0), 2.0)
+                        EquationUtil.expOutput(targetPose.getTranslation().getDistance(currentPose.getTranslation()), 0.5, 0.05, 50), // TODO SHOP: TEST THIS FURTHER
+                        Math.min(EquationUtil.linearOutput(targetPose.getTranslation().getDistance(currentPose.getTranslation()), 0.5), 0.5)
                 ),
                 -Constants.MAX_CONTROLLED_VEL.apply(elevatorHeight.getAsDouble()),
                 Constants.MAX_CONTROLLED_VEL.apply(elevatorHeight.getAsDouble())
