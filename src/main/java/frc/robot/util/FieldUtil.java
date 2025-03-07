@@ -297,6 +297,14 @@ public final class FieldUtil {
                     AprilTag.ID_5.pose2d : AprilTag.ID_14.pose2d;
         }
 
+        public static Pose2d getRobotPoseAtProcessor() {
+            return getProcessorTagPose().plus(new Transform2d(new Translation2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0, 0), Rotation2d.kZero));
+        }
+
+        public static Pose2d getRobotPoseAtNet() {
+            return getNetTagPose().plus(new Transform2d(new Translation2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0, 0), Rotation2d.kPi));
+        }
+
         public static Pose2d getNearestAlgaeScoringTagPose(Pose2d currentPose) {
             return currentPose.nearest(getAlgaeScoringTagPoses());
         }

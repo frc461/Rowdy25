@@ -257,6 +257,47 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
         );
     }
 
+    public Command pathFindToNet(DoubleSupplier elevatorHeight) {
+        return Commands.defer(
+                () -> new PathfindToPoseAvoidingReefCommand(
+                        this,
+                        fieldCentric,
+                        elevatorHeight,
+                        Pathfinder.calculateClosePose(
+                                FieldUtil.AlgaeScoring.getRobotPoseAtNet(),
+                                Constants.AutoConstants.DISTANCE_TOLERANCE_TO_DRIVE_INTO
+                        )
+                ).andThen(new DirectMoveToPoseCommand(
+                        this,
+                        fieldCentric,
+                        elevatorHeight,
+                        FieldUtil.AlgaeScoring.getRobotPoseAtNet()
+                )),
+                Set.of(this)
+        );
+    }
+
+    public Command pathFindToProcessor(DoubleSupplier elevatorHeight) {
+        return Commands.defer(
+                () -> new PathfindToPoseAvoidingReefCommand(
+                        this,
+                        fieldCentric,
+                        elevatorHeight,
+                        Pathfinder.calculateClosePose(
+                                FieldUtil.AlgaeScoring.getRobotPoseAtProcessor(),
+                                Constants.AutoConstants.DISTANCE_TOLERANCE_TO_DRIVE_INTO,
+                                Rotation2d.kPi
+                        )
+                ).andThen(new DirectMoveToPoseCommand(
+                        this,
+                        fieldCentric,
+                        elevatorHeight,
+                        FieldUtil.AlgaeScoring.getRobotPoseAtProcessor()
+                )),
+                Set.of(this)
+        );
+    }
+
     public boolean isFullyTeleop() {
         return currentMode == DriveMode.IDLE
                 || currentMode == DriveMode.ROTATING

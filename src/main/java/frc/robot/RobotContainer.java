@@ -17,6 +17,8 @@ import frc.robot.autos.AutoManager;
 import frc.robot.constants.Constants;
 import frc.robot.util.SysID;
 
+import java.util.concurrent.locks.Condition;
+
 public class RobotContainer {
     /* Superstructure */
     private final RobotStates robotStates = new RobotStates();
@@ -133,8 +135,8 @@ public class RobotContainer {
                                         .andThen(() -> driverXbox.setRumble(GenericHID.RumbleType.kBothRumble, 0))
                                         .onlyIf(robotStates.swerve::isAutoHeading)
                         ));
-        driverXbox.x().whileTrue(robotStates.swerve.pathFindToLeftCoralStation(robotStates.elevator::getPosition));
-        driverXbox.y().whileTrue(robotStates.swerve.pathFindToRightCoralStation(robotStates.elevator::getPosition));
+        driverXbox.x().whileTrue(robotStates.swerve.pathFindToNet(robotStates.elevator::getPosition));
+        driverXbox.y().whileTrue(robotStates.swerve.pathFindToProcessor(robotStates.elevator::getPosition));
 
         driverXbox.povUp().onTrue(new InstantCommand(() -> robotStates.swerve.localizer.setRotations(Rotation2d.kZero)));
         driverXbox.povDown().onTrue(new InstantCommand(robotStates.swerve.localizer::syncRotations));
@@ -146,8 +148,24 @@ public class RobotContainer {
         driverXbox.leftStick().onTrue(new InstantCommand(() -> robotStates.swerve.localizer.setPoses(Constants.CENTER_OF_RIGHT_CORAL_STATION)));
         driverXbox.rightStick().onTrue(new InstantCommand(() -> robotStates.swerve.localizer.setPoses(Constants.CENTER_OF_LEFT_CORAL_STATION)));
 
-        driverXbox.leftBumper().whileTrue(robotStates.swerve.pathFindToNearestLeftBranch(robotStates.elevator::getPosition));
-        driverXbox.rightBumper().whileTrue(robotStates.swerve.pathFindToNearestRightBranch(robotStates.elevator::getPosition));
+        driverXbox.leftBumper().whileTrue(new ConditionalCommand(
+                robotStates.swerve.pathFindToNearestLeftBranch(robotStates.elevator::getPosition),
+                new ConditionalCommand(
+                        robotStates.swerve.pathFindToNet(robotStates.elevator::getPosition),
+                        robotStates.swerve.pathFindToLeftCoralStation(robotStates.elevator::getPosition),
+                        robotStates.intake::hasAlgae
+                ),
+                robotStates.intake::hasCoral
+        ));
+        driverXbox.rightBumper().whileTrue(new ConditionalCommand(
+                robotStates.swerve.pathFindToNearestRightBranch(robotStates.elevator::getPosition),
+                new ConditionalCommand(
+                        robotStates.swerve.pathFindToProcessor(robotStates.elevator::getPosition),
+                        robotStates.swerve.pathFindToRightCoralStation(robotStates.elevator::getPosition),
+                        robotStates.intake::hasAlgae
+                ),
+                robotStates.intake::hasCoral
+        ));
 
         opXbox.povDown().onTrue(new InstantCommand(robotStates::toggleL4CoralState));
 

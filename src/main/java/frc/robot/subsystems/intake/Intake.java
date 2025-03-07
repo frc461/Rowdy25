@@ -40,7 +40,7 @@ public class Intake extends SubsystemBase {
     private double proximityObjectDetectionThreshold = Constants.IntakeConstants.DEFAULT_PROXIMITY_OBJECT_DETECTION_THRESHOLD;
     public DoubleConsumer setProximityObjectDetectionThreshold = threshold -> proximityObjectDetectionThreshold = threshold;
 
-    public Intake() {
+    public Intake() { // TODO: IMPLEMENT STALL DETECTION (HIGH AMPAGE FOR AN EXTENDED PERIOD OF TIME)
         motor = new TalonFX(Constants.IntakeConstants.MOTOR_ID);
 
         motor.getConfigurator().apply(new TalonFXConfiguration()
