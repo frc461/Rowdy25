@@ -2,6 +2,7 @@ package frc.robot.util;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -114,14 +115,18 @@ public final class FieldUtil {
             return TagManager.getTagLocations2d(getCoralStationTags());
         }
 
+        public static List<Pose2d> getRobotPosesAtEachCoralStation() {
+            return getCoralStationTagPoses().stream().map(coralStationTagPose -> coralStationTagPose.plus(
+                    new Transform2d(new Translation2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0, 0), Rotation2d.kZero)
+            )).toList();
+        }
+
         public static Pose2d getNearestCoralStationTagPose(Pose2d currentPose) {
             return currentPose.nearest(getCoralStationTagPoses());
         }
 
         public static Pose2d getNearestRobotPoseAtCoralStation(Pose2d currentPose) {
-            return getNearestCoralStationTagPose(currentPose).plus(
-                    new Transform2d(new Translation2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0, 0), Rotation2d.kZero)
-            );
+            return currentPose.nearest(getRobotPosesAtEachCoralStation());
         }
 
         public static AprilTag getNearestCoralStationTag(Pose2d currentPose) {
@@ -239,6 +244,14 @@ public final class FieldUtil {
 
         public static Pose2d getNearestBranchPose(Pose2d currentPose) {
             return currentPose.nearest(getBranchPoses());
+        }
+
+        public static Pair<Pose2d, Pose2d> getNearestRobotPosesAtBranchPair(Pose2d currentPose) {
+            Pose2d nearestReefTagPose = getNearestReefTagPose(currentPose);
+            return new Pair<>(
+                    nearestReefTagPose.plus(ROBOT_AT_LEFT_BRANCH_OFFSET_FROM_TAG),
+                    nearestReefTagPose.plus(ROBOT_AT_RIGHT_BRANCH_OFFSET_FROM_TAG)
+            );
         }
 
         public enum AlgaeLocation {

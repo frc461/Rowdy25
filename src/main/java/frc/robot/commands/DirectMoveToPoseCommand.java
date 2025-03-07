@@ -5,15 +5,15 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.drivetrain.Swerve;
 import frc.robot.util.EquationUtil;
-import frc.robot.util.FieldUtil;
 
 import java.util.function.DoubleSupplier;
 
-public class DirectMoveToPose extends Command {
+public class DirectMoveToPoseCommand extends Command {
     private final Swerve swerve;
     private final SwerveRequest.FieldCentric fieldCentric;
     private final PIDController yawController;
@@ -21,7 +21,7 @@ public class DirectMoveToPose extends Command {
     private final Pose2d targetPose;
     private boolean xPosDone, yPosDone, yawDone, end;
 
-    public DirectMoveToPose(
+    public DirectMoveToPoseCommand(
             Swerve swerve,
             SwerveRequest.FieldCentric fieldCentric,
             DoubleSupplier elevatorHeight,
@@ -89,7 +89,6 @@ public class DirectMoveToPose extends Command {
                 < Constants.AutoConstants.DEGREE_TOLERANCE_TO_ACCEPT;
 
         if (xPosDone && yPosDone && yawDone) {
-            swerve.forceStop();
             swerve.consistentHeading = currentPose.getRotation().getDegrees();
             end = true;
         }

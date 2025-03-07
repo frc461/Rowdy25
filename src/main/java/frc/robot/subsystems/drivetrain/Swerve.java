@@ -21,7 +21,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.autos.Pathfinder;
-import frc.robot.commands.DirectMoveToPose;
+import frc.robot.commands.DirectMoveToPoseCommand;
 import frc.robot.commands.PathfindToPoseAvoidingReefCommand;
 import frc.robot.commands.auto.SearchForAlgaeCommand;
 import frc.robot.constants.Constants;
@@ -175,65 +175,84 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
         return new DirectMoveToObjectCommand(this, robotCentric, objectObtained, objectLabelClass);
     }
 
-    public Command pathFindToNearestBranch(DoubleSupplier elevatorHeight) { // TODO SHOP: TEST THIS
-        return pathFindCloseToNearestBranch(elevatorHeight).andThen(directMoveToNearestBranch(elevatorHeight));
-    }
-
-    public Command pathFindCloseToNearestBranch(DoubleSupplier elevatorHeight) {
+    public Command pathFindToNearestLeftBranch(DoubleSupplier elevatorHeight) {
         return Commands.defer(
                 () -> new PathfindToPoseAvoidingReefCommand(
                         this,
                         fieldCentric,
                         elevatorHeight,
                         Pathfinder.calculateClosePose(
-                                FieldUtil.Reef.getNearestRobotPoseAtBranch(localizer.getStrategyPose()),
+                                FieldUtil.Reef.getNearestRobotPosesAtBranchPair(localizer.getStrategyPose()).getFirst(),
                                 Constants.AutoConstants.DISTANCE_TOLERANCE_TO_DRIVE_INTO
                         )
-                ),
-                Set.of(this)
-        );
-    }
-
-    public Command directMoveToNearestBranch(DoubleSupplier elevatorHeight) {
-        return Commands.defer(
-                () -> new DirectMoveToPose(
+                ).andThen(new DirectMoveToPoseCommand(
                         this,
                         fieldCentric,
                         elevatorHeight,
-                        FieldUtil.Reef.getNearestRobotPoseAtBranch(localizer.getStrategyPose())
+                        FieldUtil.Reef.getNearestRobotPosesAtBranchPair(localizer.getStrategyPose()).getFirst())
                 ),
                 Set.of(this)
         );
     }
 
-    public Command pathFindToNearestCoralStation(DoubleSupplier elevatorHeight) { // TODO SHOP: TEST THIS
-        return pathFindCloseToNearestCoralStation(elevatorHeight).andThen(directMoveToNearestCoralStation(elevatorHeight));
-    }
-
-    public Command pathFindCloseToNearestCoralStation(DoubleSupplier elevatorHeight) {
+    public Command pathFindToNearestRightBranch(DoubleSupplier elevatorHeight) {
         return Commands.defer(
                 () -> new PathfindToPoseAvoidingReefCommand(
                         this,
                         fieldCentric,
                         elevatorHeight,
                         Pathfinder.calculateClosePose(
-                                FieldUtil.CoralStation.getNearestRobotPoseAtCoralStation(localizer.getStrategyPose()),
+                                FieldUtil.Reef.getNearestRobotPosesAtBranchPair(localizer.getStrategyPose()).getSecond(),
+                                Constants.AutoConstants.DISTANCE_TOLERANCE_TO_DRIVE_INTO
+                        )
+                ).andThen(new DirectMoveToPoseCommand(
+                        this,
+                        fieldCentric,
+                        elevatorHeight,
+                        FieldUtil.Reef.getNearestRobotPosesAtBranchPair(localizer.getStrategyPose()).getSecond())
+                ),
+                Set.of(this)
+        );
+    }
+
+    public Command pathFindToLeftCoralStation(DoubleSupplier elevatorHeight) {
+        return Commands.defer(
+                () -> new PathfindToPoseAvoidingReefCommand(
+                        this,
+                        fieldCentric,
+                        elevatorHeight,
+                        Pathfinder.calculateClosePose(
+                                FieldUtil.CoralStation.getRobotPosesAtEachCoralStation().get(0),
                                 Constants.AutoConstants.DISTANCE_TOLERANCE_TO_DRIVE_INTO,
                                 Rotation2d.kPi
                         )
-                ),
+                ).andThen(new DirectMoveToPoseCommand(
+                        this,
+                        fieldCentric,
+                        elevatorHeight,
+                        FieldUtil.CoralStation.getRobotPosesAtEachCoralStation().get(0)
+                )),
                 Set.of(this)
         );
     }
 
-    public Command directMoveToNearestCoralStation(DoubleSupplier elevatorHeight) {
+    public Command pathFindToRightCoralStation(DoubleSupplier elevatorHeight) {
         return Commands.defer(
-                () -> new DirectMoveToPose(
+                () -> new PathfindToPoseAvoidingReefCommand(
                         this,
                         fieldCentric,
                         elevatorHeight,
-                        FieldUtil.CoralStation.getNearestRobotPoseAtCoralStation(localizer.getStrategyPose())
-                ),
+                        Pathfinder.calculateClosePose(
+                                FieldUtil.CoralStation.getRobotPosesAtEachCoralStation().get(1),
+                                Constants.AutoConstants.DISTANCE_TOLERANCE_TO_DRIVE_INTO,
+                                Rotation2d.kPi
+                        )
+                ).andThen(new DirectMoveToPoseCommand(
+                        this,
+                        fieldCentric,
+                        elevatorHeight,
+                        FieldUtil.CoralStation.getRobotPosesAtEachCoralStation().get(1)
+                )),
                 Set.of(this)
         );
     }

@@ -17,38 +17,6 @@ import java.util.function.DoubleSupplier;
 import static edu.wpi.first.units.Units.Meters;
 
 public class PathfindToPoseAvoidingReefCommand extends Command {
-    private enum Sides {
-        AB, CD, EF, GH, IJ, KL;
-
-        private static Rotation2d getDegreeStart(Sides side) {
-            return switch (side) {
-                case AB -> FieldUtil.Reef.getReefCorners().get(0).getRotation();
-                case CD -> FieldUtil.Reef.getReefCorners().get(1).getRotation();
-                case EF -> FieldUtil.Reef.getReefCorners().get(2).getRotation();
-                case GH -> FieldUtil.Reef.getReefCorners().get(3).getRotation();
-                case IJ -> FieldUtil.Reef.getReefCorners().get(4).getRotation();
-                case KL -> FieldUtil.Reef.getReefCorners().get(5).getRotation();
-            };
-        }
-
-        private static Sides getSide(Pose2d pose) {
-            Rotation2d reefCenterAngleToRobot = pose.getTranslation().minus(FieldUtil.Reef.getReefCenter()).getAngle();
-            if (Pathfinder.inBetween(reefCenterAngleToRobot, getDegreeStart(AB), getDegreeStart(CD))) {
-                return AB;
-            } else if (Pathfinder.inBetween(reefCenterAngleToRobot, getDegreeStart(CD), getDegreeStart(EF))) {
-                return CD;
-            } else if (Pathfinder.inBetween(reefCenterAngleToRobot, getDegreeStart(EF), getDegreeStart(GH))) {
-                return EF;
-            } else if (Pathfinder.inBetween(reefCenterAngleToRobot, getDegreeStart(GH), getDegreeStart(IJ))) {
-                return GH;
-            } else if (Pathfinder.inBetween(reefCenterAngleToRobot, getDegreeStart(IJ), getDegreeStart(KL))) {
-                return IJ;
-            } else {
-                return KL;
-            }
-        }
-    }
-
     private final Swerve swerve;
     private final SwerveRequest.FieldCentric fieldCentric;
     private final PIDController yawController;
@@ -57,7 +25,7 @@ public class PathfindToPoseAvoidingReefCommand extends Command {
     private Pose2d smoothTemporaryTargetPose;
     private boolean xPosDone, yPosDone, yawDone, end;
 
-    public PathfindToPoseAvoidingReefCommand( // TODO SHOP: TEST THIS IN REAL LIFE
+    public PathfindToPoseAvoidingReefCommand(
             Swerve swerve,
             SwerveRequest.FieldCentric fieldCentric,
             DoubleSupplier elevatorHeight,
@@ -111,9 +79,6 @@ public class PathfindToPoseAvoidingReefCommand extends Command {
 
         double velocityHeadingRadians = Math.atan2(smoothTemporaryTargetPose.getY() - currentPose.getY(), smoothTemporaryTargetPose.getX() - currentPose.getX());
 
-        System.out.println("X Vel: " + Math.cos(velocityHeadingRadians) * velocity);
-        System.out.println("Y Vel: " + Math.sin(velocityHeadingRadians) * velocity);
-
         swerve.setControl(
                 fieldCentric.withDriveRequestType(SwerveModule.DriveRequestType.Velocity)
                         .withForwardPerspective(SwerveRequest.ForwardPerspectiveValue.BlueAlliance)
@@ -133,7 +98,6 @@ public class PathfindToPoseAvoidingReefCommand extends Command {
                 < Constants.AutoConstants.DEGREE_TOLERANCE_TO_ACCEPT;
 
         if (xPosDone && yPosDone && yawDone) {
-            swerve.forceStop();
             swerve.consistentHeading = currentPose.getRotation().getDegrees();
             end = true;
         }
