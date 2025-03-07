@@ -52,7 +52,7 @@ public class DirectMoveToObjectCommand extends Command {
             double yawError = Math.abs(currentYaw);
 
             swerve.setControl(
-                    robotCentric.withDriveRequestType(SwerveModule.DriveRequestType.Velocity) // TODO SHOP: TEST CLOSED LOOP
+                    robotCentric.withDriveRequestType(SwerveModule.DriveRequestType.Velocity)
                             .withVelocityX(0.0)
                             .withVelocityY(0.0)
                             .withRotationalRate(objectDetectionController.calculate(

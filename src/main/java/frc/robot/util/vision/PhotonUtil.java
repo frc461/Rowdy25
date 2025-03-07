@@ -290,7 +290,7 @@ public final class PhotonUtil {
             ));
         }
 
-        private static Optional<EstimatedRobotPose> getSingleTagPose(BWCamera camera) { // TODO SHOP: TEST THIS FUNCTION
+        private static Optional<EstimatedRobotPose> getSingleTagPose(BWCamera camera) {
             if (!hasTargets(camera)) {
                 return Optional.empty();
             }

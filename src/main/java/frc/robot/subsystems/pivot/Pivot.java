@@ -229,7 +229,7 @@ public class Pivot extends SubsystemBase {
     }
 
     public void holdTarget(double elevatorPosition, double wristPosition) {
-        currentG = gravityGainsCalculator.calculateGFromPositions(getPosition(), wristPosition, elevatorPosition); // TODO INMIS: TEST NEW GRAVITY GAINS
+        currentG = gravityGainsCalculator.calculateGFromPositions(getPosition(), wristPosition, elevatorPosition);
         pivot.setControl(request.withPosition(getTarget()).withFeedForward(currentG));
     }
 
