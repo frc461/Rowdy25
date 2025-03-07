@@ -37,11 +37,13 @@ public final class AutoManager {
         }
     }
 
-    public StartPosition startPosition = null;
-    public List<Pair<FieldUtil.Reef.ScoringLocation, FieldUtil.Reef.Level>> scoringLocations = null;
+    private StartPosition startPosition = null;
+    private List<Pair<FieldUtil.Reef.ScoringLocation, FieldUtil.Reef.Level>> scoringLocations = null;
+    private String coralStationOverride = null;
 
     private final SendableChooser<StartPosition> startPositionChooser = new SendableChooser<>();
     private final MultipleChooser<Pair<FieldUtil.Reef.ScoringLocation, FieldUtil.Reef.Level>> scoringLocationsChooser = new MultipleChooser<>();
+    private final SendableChooser<String> coralStationOverrideChooser = new SendableChooser<>();
 
     public AutoManager(RobotStates robotStates) {
 
@@ -52,7 +54,7 @@ public final class AutoManager {
         startPositionChooser.onChange(state -> {
             startPosition = startPositionChooser.getSelected();
             if (startPosition != null && scoringLocations != null) {
-                currentCommand = generateAutoEventLooper(startPosition, scoringLocations, robotStates).cmd();
+                currentCommand = generateAutoEventLooper(robotStates).cmd();
             }
         });
 
@@ -65,7 +67,17 @@ public final class AutoManager {
         scoringLocationsChooser.onChange(states -> {
             scoringLocations = scoringLocationsChooser.getSelected();
             if (!(startPosition == null) && !(scoringLocations == null)) {
-                currentCommand = generateAutoEventLooper(startPosition, scoringLocations, robotStates).cmd();
+                currentCommand = generateAutoEventLooper(robotStates).cmd();
+            }
+        });
+
+        coralStationOverrideChooser.addOption("Driver Left Coral Station", "station-1"); // TODO SHOP: TEST CORAL PREFERENCE
+        coralStationOverrideChooser.addOption("Driver Right Coral Station", "station-2");
+        SmartDashboard.putData("Coral Station Preference", coralStationOverrideChooser);
+        coralStationOverrideChooser.onChange(state -> {
+            coralStationOverride = coralStationOverrideChooser.getSelected();
+            if (!(startPosition == null) && !(scoringLocations == null)) {
+                currentCommand = generateAutoEventLooper(robotStates).cmd();
             }
         });
 
@@ -78,16 +90,14 @@ public final class AutoManager {
 
 
     private AutoEventLooper generateAutoEventLooper(
-            StartPosition startPosition,
-            List<Pair<FieldUtil.Reef.ScoringLocation, FieldUtil.Reef.Level>> scoringLocations,
             RobotStates robotStates
     ) {
-        List<Pair<FieldUtil.Reef.ScoringLocation, FieldUtil.Reef.Level>> currentScoringLocations = new ArrayList<>(scoringLocations);
+        List<Pair<FieldUtil.Reef.ScoringLocation, FieldUtil.Reef.Level>> currentScoringLocations = new ArrayList<>(this.scoringLocations);
         AutoEventLooper autoEventLooper = new AutoEventLooper("AutoEventLooper");
 
         List<AutoTrigger> triggers = new ArrayList<>();
         Pair<FieldUtil.Reef.ScoringLocation, FieldUtil.Reef.Level> firstScoringLocation = currentScoringLocations.get(0);
-        String firstPath = startPosition.index + "," + firstScoringLocation.getFirst().name();
+        String firstPath = this.startPosition.index + "," + firstScoringLocation.getFirst().name();
 
         triggers.add(autoEventLooper.addTrigger(
                 firstPath,
@@ -122,11 +132,12 @@ public final class AutoManager {
             }
 
             Pair<FieldUtil.Reef.ScoringLocation, FieldUtil.Reef.Level> nextScoringLocation = currentScoringLocations.get(0);
-            String nearestCoralStation = getMostEfficientCoralStation(
-                    FieldUtil.Reef.ScoringLocation.getPose(currentScoringLocation.getFirst()),
-                    FieldUtil.Reef.ScoringLocation.getPose(nextScoringLocation.getFirst())
-            ); // TODO: IMPLEMENT A CORAL STATION PREFERENCE CHOOSER
-            String toCoralStationPath = currentScoringLocation.getFirst().name() + "," + nearestCoralStation;
+            String coralStation = this.coralStationOverride == null
+                    ? getMostEfficientCoralStation(
+                            FieldUtil.Reef.ScoringLocation.getPose(currentScoringLocation.getFirst()),
+                            FieldUtil.Reef.ScoringLocation.getPose(nextScoringLocation.getFirst())
+                    ) : this.coralStationOverride;
+            String toCoralStationPath = currentScoringLocation.getFirst().name() + "," + coralStation;
 
             triggers.add(autoEventLooper.addTrigger(
                     toCoralStationPath,
@@ -144,7 +155,7 @@ public final class AutoManager {
             triggers.add(autoEventLooper.addTrigger("waitUntilHasObject", () -> 
                     new WaitUntilCommand(() -> robotStates.stowState.getAsBoolean() || robotStates.intake.hasCoral())));
 
-            String fromCoralStationPath = nearestCoralStation + "," + nextScoringLocation.getFirst().name();
+            String fromCoralStationPath = coralStation + "," + nextScoringLocation.getFirst().name();
 
             triggers.add(autoEventLooper.addTrigger(
                     fromCoralStationPath,
