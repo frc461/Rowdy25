@@ -142,7 +142,6 @@ public class PathfindToPoseAvoidingReefCommand extends Command {
 
     private Pose2d getTemporaryTargetPose(Pose2d currentPose) {
         Rotation2d reefCenterAngleToRobot = FieldUtil.Reef.getAngleFromReefCenter(currentPose);
-        Rotation2d robotAngleToReefCenter = reefCenterAngleToRobot.rotateBy(Rotation2d.kPi);
 
         if (sameSideAsTargetPose(currentPose)) {
             return targetPose;
@@ -200,10 +199,6 @@ public class PathfindToPoseAvoidingReefCommand extends Command {
         }
 
         Pair<Rotation2d, Rotation2d> anglesToVerticesBounds = getBound(anglesToEachVertex);
-
-        System.out.println("angleToTarget: " + targetPose.getTranslation().minus(currentPose.getTranslation()).getAngle().getDegrees());
-        System.out.println("minAngle: " + anglesToVerticesBounds.getFirst().getDegrees());
-        System.out.println("maxAngle: " + anglesToVerticesBounds.getSecond().getDegrees());
 
         return !Pathfinder.inBetween(
                 targetPose.getTranslation().minus(currentPose.getTranslation()).getAngle(),

@@ -131,10 +131,6 @@ public class RobotContainer {
                                         .andThen(() -> driverXbox.setRumble(GenericHID.RumbleType.kBothRumble, 0))
                                         .onlyIf(robotStates.swerve::isAutoHeading)
                         ));
-        driverXbox.a().whileTrue(robotStates.swerve.pathFindToLeftCoralStation(robotStates.elevator::getPosition));
-        driverXbox.b().whileTrue(robotStates.swerve.pathFindToProcessor(robotStates.elevator::getPosition));
-        driverXbox.x().whileTrue(robotStates.swerve.pathFindToNet(robotStates.elevator::getPosition));
-        driverXbox.y().whileTrue(robotStates.swerve.pathFindToRightCoralStation(robotStates.elevator::getPosition));
 
         driverXbox.povUp().onTrue(new InstantCommand(() -> robotStates.swerve.localizer.setRotations(Rotation2d.kZero)));
         driverXbox.povDown().onTrue(new InstantCommand(robotStates.swerve.localizer::syncRotations));
