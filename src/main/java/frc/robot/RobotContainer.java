@@ -17,8 +17,6 @@ import frc.robot.autos.AutoManager;
 import frc.robot.constants.Constants;
 import frc.robot.util.SysID;
 
-import java.util.concurrent.locks.Condition;
-
 public class RobotContainer {
     /* Superstructure */
     private final RobotStates robotStates = new RobotStates();
@@ -98,8 +96,6 @@ public class RobotContainer {
      * Y: Click - Coral pickup state, stow automatically, Click Again - Cancel
      */
 
-    private boolean overrideNonessentialOpControls = false;
-
     public RobotContainer() {
         robotStates.configureToggleStateTriggers();
         robotStates.setDefaultCommands(driverXbox, opXbox);
@@ -135,8 +131,10 @@ public class RobotContainer {
                                         .andThen(() -> driverXbox.setRumble(GenericHID.RumbleType.kBothRumble, 0))
                                         .onlyIf(robotStates.swerve::isAutoHeading)
                         ));
+        driverXbox.a().whileTrue(robotStates.swerve.pathFindToLeftCoralStation(robotStates.elevator::getPosition));
+        driverXbox.b().whileTrue(robotStates.swerve.pathFindToProcessor(robotStates.elevator::getPosition));
         driverXbox.x().whileTrue(robotStates.swerve.pathFindToNet(robotStates.elevator::getPosition));
-        driverXbox.y().whileTrue(robotStates.swerve.pathFindToProcessor(robotStates.elevator::getPosition));
+        driverXbox.y().whileTrue(robotStates.swerve.pathFindToRightCoralStation(robotStates.elevator::getPosition));
 
         driverXbox.povUp().onTrue(new InstantCommand(() -> robotStates.swerve.localizer.setRotations(Rotation2d.kZero)));
         driverXbox.povDown().onTrue(new InstantCommand(robotStates.swerve.localizer::syncRotations));
@@ -167,7 +165,7 @@ public class RobotContainer {
                 robotStates.intake::hasCoral
         ));
 
-        opXbox.povDown().onTrue(new InstantCommand(robotStates::toggleL4CoralState));
+        opXbox.povDown().onTrue(new InstantCommand(robotStates::toggleL4CoralState)); // TODO: SET AUTO STATE INSTEAD OF TOGGLING STATE
 
         opXbox.povRight().onTrue(new InstantCommand(robotStates::toggleL1CoralState));
 
@@ -180,7 +178,7 @@ public class RobotContainer {
         opXbox.rightTrigger().onTrue(new InstantCommand(robotStates.intake::setOuttakeState));
         opXbox.rightTrigger().onFalse(new InstantCommand(robotStates.intake::setIdleState));
 
-        opXbox.leftBumper().onTrue(new InstantCommand(() -> overrideNonessentialOpControls = !overrideNonessentialOpControls));
+        opXbox.leftBumper().onTrue(new InstantCommand(robotStates::toggleAutoLevelCoralState));
         opXbox.rightBumper().onTrue(new InstantCommand(robotStates::setStowState));
 
         opXbox.a().onTrue(new InstantCommand(robotStates::escalateClimb));

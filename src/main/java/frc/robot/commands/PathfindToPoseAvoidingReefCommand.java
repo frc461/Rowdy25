@@ -3,6 +3,7 @@ package frc.robot.commands;
 import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -12,11 +13,28 @@ import frc.robot.subsystems.drivetrain.Swerve;
 import frc.robot.util.EquationUtil;
 import frc.robot.util.FieldUtil;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.DoubleSupplier;
 
 import static edu.wpi.first.units.Units.Meters;
 
 public class PathfindToPoseAvoidingReefCommand extends Command {
+    private enum Side {
+        AB, CD, EF, GH, IJ, KL;
+
+        private static Pose2d getLeftVertexPose(Side side) {
+            return switch (side) {
+                case AB -> FieldUtil.Reef.getReefCorners().get(0);
+                case CD -> FieldUtil.Reef.getReefCorners().get(1);
+                case EF -> FieldUtil.Reef.getReefCorners().get(2);
+                case GH -> FieldUtil.Reef.getReefCorners().get(3);
+                case IJ -> FieldUtil.Reef.getReefCorners().get(4);
+                case KL -> FieldUtil.Reef.getReefCorners().get(5);
+            };
+        }
+    }
+
     private final Swerve swerve;
     private final SwerveRequest.FieldCentric fieldCentric;
     private final PIDController yawController;
@@ -126,8 +144,7 @@ public class PathfindToPoseAvoidingReefCommand extends Command {
         Rotation2d reefCenterAngleToRobot = FieldUtil.Reef.getAngleFromReefCenter(currentPose);
         Rotation2d robotAngleToReefCenter = reefCenterAngleToRobot.rotateBy(Rotation2d.kPi);
 
-        if (Math.abs(targetPose.getTranslation().minus(currentPose.getTranslation()).getAngle().minus(robotAngleToReefCenter).getDegrees()) > 90.0
-                || sameSideAsTargetPose(currentPose)) {
+        if (sameSideAsTargetPose(currentPose)) {
             return targetPose;
         } else if (currentPose.getTranslation().getDistance(FieldUtil.Reef.getReefCenter()) < FieldUtil.Reef.REEF_APOTHEM + Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 1.3) {
             Translation2d targetTranslation = new Pose2d(FieldUtil.Reef.getReefCenter(), FieldUtil.Reef.getNearestReefTagPose(currentPose).getRotation())
@@ -149,38 +166,66 @@ public class PathfindToPoseAvoidingReefCommand extends Command {
                             new Translation2d(2.5, 0),
                             Rotation2d.kZero
                     )).getTranslation(),
-                    robotAngleToReefCenter
+                    currentPose.getRotation().interpolate(targetPose.getRotation(), 0.25)
             );
         }
     }
 
     private boolean sameSideAsTargetPose(Pose2d currentPose) {
-        Pose2d frontLeft = currentPose.plus(new Transform2d(
-                new Translation2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0, Constants.ROBOT_WIDTH_WITH_BUMPERS.in(Meters) / 2.0),
-                Rotation2d.kZero
-        ));
-        Pose2d frontRight = currentPose.plus(new Transform2d(
-                new Translation2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0, -Constants.ROBOT_WIDTH_WITH_BUMPERS.in(Meters) / 2.0),
-                Rotation2d.kZero
-        ));
-        Pose2d backLeft = currentPose.plus(new Transform2d(
-                new Translation2d(-Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0, Constants.ROBOT_WIDTH_WITH_BUMPERS.in(Meters) / 2.0),
-                Rotation2d.kZero
-        ));
-        Pose2d backRight = currentPose.plus(new Transform2d(
-                new Translation2d(-Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0, -Constants.ROBOT_WIDTH_WITH_BUMPERS.in(Meters) / 2.0),
-                Rotation2d.kZero
-        ));
-        return sameSideAsPose(frontLeft, targetPose) && sameSideAsPose(frontRight, targetPose)
-                && sameSideAsPose(backLeft, targetPose) && sameSideAsPose(backRight, targetPose);
+        List<Pose2d> robotCorners = List.of(
+                currentPose.plus(new Transform2d(
+                        new Translation2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0, Constants.ROBOT_WIDTH_WITH_BUMPERS.in(Meters) / 2.0),
+                        Rotation2d.kZero
+                )),
+                currentPose.plus(new Transform2d(
+                        new Translation2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0, -Constants.ROBOT_WIDTH_WITH_BUMPERS.in(Meters) / 2.0),
+                        Rotation2d.kZero
+                )),
+                currentPose.plus(new Transform2d(
+                        new Translation2d(-Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0, Constants.ROBOT_WIDTH_WITH_BUMPERS.in(Meters) / 2.0),
+                        Rotation2d.kZero
+                )),
+                currentPose.plus(new Transform2d(
+                        new Translation2d(-Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0, -Constants.ROBOT_WIDTH_WITH_BUMPERS.in(Meters) / 2.0),
+                        Rotation2d.kZero
+                ))
+        );
+
+        List<Rotation2d> anglesToEachVertex = new ArrayList<>();
+
+        for (Side side : Side.values()) {
+            anglesToEachVertex.addAll(robotCorners.stream()
+                    .map(corner -> Side.getLeftVertexPose(side).getTranslation().minus(corner.getTranslation()).getAngle())
+                    .toList());
+        }
+
+        Pair<Rotation2d, Rotation2d> anglesToVerticesBounds = getBound(anglesToEachVertex);
+
+        System.out.println("angleToTarget: " + targetPose.getTranslation().minus(currentPose.getTranslation()).getAngle().getDegrees());
+        System.out.println("minAngle: " + anglesToVerticesBounds.getFirst().getDegrees());
+        System.out.println("maxAngle: " + anglesToVerticesBounds.getSecond().getDegrees());
+
+        return !Pathfinder.inBetween(
+                targetPose.getTranslation().minus(currentPose.getTranslation()).getAngle(),
+                anglesToVerticesBounds.getFirst().minus(Rotation2d.fromDegrees(5.0)),
+                anglesToVerticesBounds.getSecond().plus(Rotation2d.fromDegrees(5.0))
+        );
     }
 
-    private boolean sameSideAsPose(Pose2d one, Pose2d two) {
-        Pose2d nearestReefTagPose = FieldUtil.Reef.getNearestReefTagPose(one);
-        Rotation2d lowerBound = nearestReefTagPose.getRotation().rotateBy(Rotation2d.kCW_Pi_2);
-        Rotation2d upperBound = nearestReefTagPose.getRotation().rotateBy(Rotation2d.kCCW_Pi_2);
-        Rotation2d tagToCurrentPose = two.getTranslation().minus(nearestReefTagPose.getTranslation()).getAngle();
-        return Pathfinder.inBetween(tagToCurrentPose, lowerBound, upperBound);
+    private Pair<Rotation2d, Rotation2d> getBound(List<Rotation2d> angles) {
+        Rotation2d min = angles.get(0);
+        Rotation2d max = angles.get(0);
+        for (Rotation2d angle : angles) {
+            if (!Pathfinder.inBetween(angle, min, max)) {
+                Rotation2d divider = min.interpolate(max, 0.5).rotateBy(Rotation2d.kPi);
+                if (Pathfinder.inBetween(angle, divider, min)) {
+                    min = angle;
+                } else {
+                    max = angle;
+                }
+            }
+        }
+        return new Pair<>(min, max);
     }
 
     @Override
