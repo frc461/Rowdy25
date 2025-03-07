@@ -307,7 +307,7 @@ public final class Constants {
         public static double AT_TARGET_TOLERANCE;
 
         // presets
-        public static Function<Double, Double> LOWER_LIMIT;
+        public static BiFunction<Double, Double, Double> LOWER_LIMIT;
         public static Function<Double, Double> UPPER_LIMIT;
         public static double STOW;
         public static double CORAL_STATION;

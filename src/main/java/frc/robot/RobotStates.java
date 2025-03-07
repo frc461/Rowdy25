@@ -206,7 +206,7 @@ public class RobotStates {
         currentState = (currentState == State.CLIMB || currentState == State.PREPARE_CLIMB) ? State.CLIMB : State.PREPARE_CLIMB;
     }
 
-    public void configureToggleStateTriggers() {
+    public void configureToggleStateTriggers() { // TODO: OPTIMIZE STATE TRANSITIONS
         stowState.onTrue(
                 new InstantCommand(swerve::setIdleMode)
                         .andThen(climb::reset)
@@ -364,7 +364,7 @@ public class RobotStates {
                         .until(() -> !highReefAlgaeState.getAsBoolean())
         );
 
-        processorState.onTrue( // TODO: OPTIMIZE WITH INTAKE
+        processorState.onTrue(
                 new InstantCommand(swerve::setProcessorHeadingMode)
                         .andThen(intake::setIdleState)
                         .andThen(wrist::setProcessorState)

@@ -353,7 +353,7 @@ public final class DefaultConstants {
         public static final double AT_TARGET_TOLERANCE = 2.5;
 
         // presets
-        public static final Function<Double, Double> LOWER_LIMIT = (pivotPosition) -> (double) (pivotPosition < 45 ? 125 : 45);
+        public static final BiFunction<Double, Double, Double> LOWER_LIMIT = (elevatorPosition, pivotPosition) -> (double) (pivotPosition < 45 ? 125 : elevatorPosition > 1.5 && elevatorPosition < 12 ? 125 : 45);
         public static final Function<Double, Double> UPPER_LIMIT = (elevatorPosition) -> (double) (elevatorPosition > 8 ? 295 : 160);
         public static final double STOW = 125;
         public static final double CORAL_STATION = 125;
