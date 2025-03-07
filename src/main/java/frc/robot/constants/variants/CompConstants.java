@@ -82,7 +82,7 @@ public final class CompConstants {
         public static final double L1_CORAL = 0;
         public static final double L2_CORAL = 0;
         public static final double L3_CORAL = 18.1;
-        public static final double L4_CORAL = 41.5;
+        public static final double L4_CORAL = 45.5;
         public static final double LOW_REEF_ALGAE = 2.0;
         public static final double HIGH_REEF_ALGAE = 3.0;
         public static final double PROCESSOR = 0;
@@ -133,7 +133,7 @@ public final class CompConstants {
         public static final double L1_CORAL = 31.5;
         public static final double L2_CORAL = 100.0;
         public static final double L3_CORAL = 100.6;
-        public static final double L4_CORAL = 88.5;
+        public static final double L4_CORAL = 93.5;
         public static final double LOW_REEF_ALGAE = 32.5;
         public static final double HIGH_REEF_ALGAE = 105;
         public static final double PROCESSOR = 22;
@@ -177,7 +177,7 @@ public final class CompConstants {
         public static final double L1_CORAL = 160;
         public static final double L2_CORAL = 40;
         public static final double L3_CORAL = 55;
-        public static final double L4_CORAL = 285;
+        public static final double L4_CORAL = 75;
         public static final double LOW_REEF_ALGAE = 131;
         public static final double HIGH_REEF_ALGAE = 160;
         public static final double PROCESSOR = 150;
