@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.autos.AutoManager;
 import frc.robot.constants.Constants;
+import frc.robot.util.FieldUtil;
 import frc.robot.util.SysID;
 
 public class RobotContainer {
@@ -161,13 +162,13 @@ public class RobotContainer {
                 robotStates.intake::hasCoral
         ));
 
-        opXbox.povDown().onTrue(new InstantCommand(robotStates::toggleL4CoralState)); // TODO: SET AUTO STATE INSTEAD OF TOGGLING STATE
+        opXbox.povDown().onTrue(new InstantCommand(() -> robotStates.setCurrentAutoLevel(FieldUtil.Reef.Level.L1)));
 
-        opXbox.povRight().onTrue(new InstantCommand(robotStates::toggleL1CoralState));
+        opXbox.povRight().onTrue(new InstantCommand(() -> robotStates.setCurrentAutoLevel(FieldUtil.Reef.Level.L3)));
 
-        opXbox.povLeft().onTrue(new InstantCommand(robotStates::toggleL3CoralState));
+        opXbox.povLeft().onTrue(new InstantCommand(() -> robotStates.setCurrentAutoLevel(FieldUtil.Reef.Level.L2)));
 
-        opXbox.povUp().onTrue(new InstantCommand(robotStates::toggleL2CoralState));
+        opXbox.povUp().onTrue(new InstantCommand(() -> robotStates.setCurrentAutoLevel(FieldUtil.Reef.Level.L4)));
 
         opXbox.leftTrigger().onTrue(new InstantCommand(() -> robotStates.intake.setIntakeState(true)));
         opXbox.leftTrigger().onFalse(new InstantCommand(robotStates.intake::setIdleState));
