@@ -103,7 +103,7 @@ public class PathfindToPoseAvoidingReefCommand extends Command {
         double velocity = MathUtil.clamp(
                 Math.max(
                         EquationUtil.expOutput(smoothTemporaryTargetPose.getTranslation().getDistance(currentPose.getTranslation()), 0.02, 50),
-                        Math.min(EquationUtil.linearOutput(smoothTemporaryTargetPose.getTranslation().getDistance(currentPose.getTranslation()), 3.5), 3.5)
+                        Math.min(EquationUtil.linearOutput(smoothTemporaryTargetPose.getTranslation().getDistance(currentPose.getTranslation()), 4.0), 4.0)
                 ),
                 -Constants.MAX_CONTROLLED_VEL.apply(elevatorHeight.getAsDouble()),
                 Constants.MAX_CONTROLLED_VEL.apply(elevatorHeight.getAsDouble())
@@ -165,10 +165,10 @@ public class PathfindToPoseAvoidingReefCommand extends Command {
         if (Math.abs(targetPose.getTranslation().minus(currentPose.getTranslation()).getAngle().minus(robotAngleToReefCenter).getDegrees()) > 90.0
                 || sameSideAsTargetPose(currentPose)) {
             return targetPose;
-        } else if (currentPose.getTranslation().getDistance(FieldUtil.Reef.getReefCenter()) < FieldUtil.Reef.REEF_APOTHEM + Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0) {
+        } else if (currentPose.getTranslation().getDistance(FieldUtil.Reef.getReefCenter()) < FieldUtil.Reef.REEF_APOTHEM + Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 1.3) {
             Translation2d targetTranslation = new Pose2d(FieldUtil.Reef.getReefCenter(), FieldUtil.Reef.getNearestReefTagPose(currentPose).getRotation())
                     .plus(new Transform2d(
-                            new Translation2d(3.0, 0),
+                            new Translation2d(2.8, 0),
                             Rotation2d.kZero
                     ))
                     .getTranslation();
@@ -182,7 +182,7 @@ public class PathfindToPoseAvoidingReefCommand extends Command {
                     )));
             return new Pose2d(
                     new Pose2d(FieldUtil.Reef.getReefCenter(), temporaryTargetAngle).plus(new Transform2d(
-                            new Translation2d(3.0, 0),
+                            new Translation2d(2.5, 0),
                             Rotation2d.kZero
                     )).getTranslation(),
                     robotAngleToReefCenter
