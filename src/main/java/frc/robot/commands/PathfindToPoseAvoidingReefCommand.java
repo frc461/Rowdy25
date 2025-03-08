@@ -190,20 +190,27 @@ public class PathfindToPoseAvoidingReefCommand extends Command {
         );
 
         List<Rotation2d> anglesToEachVertex = new ArrayList<>();
+        List<Double> distancesToEachVertex = new ArrayList<>();
 
         for (Side side : Side.values()) {
             anglesToEachVertex.addAll(robotCorners.stream()
                     .map(corner -> Side.getLeftVertexPose(side).getTranslation().minus(corner.getTranslation()).getAngle())
                     .toList());
+            distancesToEachVertex.addAll(robotCorners.stream()
+                    .map(corner -> Side.getLeftVertexPose(side).getTranslation().getDistance(corner.getTranslation()))
+                    .toList());
         }
 
         Pair<Rotation2d, Rotation2d> anglesToVerticesBounds = getBound(anglesToEachVertex);
+        double lowestDistance = distancesToEachVertex.stream().mapToDouble(Double::doubleValue).min().orElse(0.0);
+        System.out.println(lowestDistance);
+        System.out.println("Target pose distance: " + targetPose.getTranslation().getDistance(currentPose.getTranslation()));
 
         return !Pathfinder.inBetween(
                 targetPose.getTranslation().minus(currentPose.getTranslation()).getAngle(),
                 anglesToVerticesBounds.getFirst().minus(Rotation2d.fromDegrees(5.0)),
                 anglesToVerticesBounds.getSecond().plus(Rotation2d.fromDegrees(5.0))
-        );
+        ) || targetPose.getTranslation().getDistance(currentPose.getTranslation()) < lowestDistance;
     }
 
     private Pair<Rotation2d, Rotation2d> getBound(List<Rotation2d> angles) {
