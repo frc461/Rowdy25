@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.autos.AutoManager;
 import frc.robot.constants.Constants;
+import frc.robot.util.DoubleTrueTrigger;
 import frc.robot.util.FieldUtil;
 import frc.robot.util.SysID;
 
@@ -29,42 +30,39 @@ public class RobotContainer {
     private final SysID sysID = new SysID(robotStates.swerve);
 
     private final CommandXboxController driverXbox = new CommandXboxController(0);
-    /* Driver Tentative:
+    /* Driver:
      * POV buttons / D-pad:
-     * Up: Click - outtake, stow
-     * Down: Click - manually temp toggle disable all auto aligning
-     * Left: Click - Net algae score state, Click again - Outtake, stow
-     * Right: Click - Processor algae score state, Click again - Outtake, stow
+     * Up: Click - Zero gyro
+     * Down: Click - Sync gyro (with pose estimation)
+     * Left: Hold - manual lower climb
+     * Right: Hold - manual higher climb
      *
      * Triggers:
-     * Left: Rotate CCW (hold or double click - FAST)
-     * Right: Rotate CW (hold or double click - FAST)
+     * Left: Rotate CCW (double click - FAST)
+     * Right: Rotate CW (double click - FAST)
      *
      * Joysticks:
      * Left: Translation
      * Right:
-     * Left Button: Reset position to coral left-far side, Hold: Reset gyro
-     * Right Button: Reset position to coral right-far side
+     * Left Button: Reset position to coral left side
+     * Right Button: Reset position to coral right side
      *
      * Bumpers:
-     * Left: Click - wait until coral is in view then align with then intake coral (ground)
-     * Right: Click - wait until algae is in view then align with then intake algae (ground)
+     * Left: Hold - pathfind to left branch of nearest reef side, net, left coral station, if it has coral, algae, or neither, respectively, and automatically set the robot state when near
+     *      Release: Score if applicable
+     * Right: Hold - pathfind to right branch of nearest reef side, processor, right coral station, if it has coral, algae, or neither, respectively, and automatically set the robot state when near
+     *      Release: Score if applicable
+     * Left + Right: Hold - pathfind to nearest side of reef to intake algae if robot doesn't have algae
      *
      * Buttons:
      *
-     * A:
-     *     No Coral: Click - Climb state, Click Again - stow slowly
-     *     Coral: Click - L4 score state, Click Again - outtake, stow
+     * A: Click - toggle auto align
      *
      * B:
-     *     No Coral: Click - Higher algae pickup state, stow automatically, Click Again - stow
-     *     Coral: Click - L1 score state, Click Again - outtake, stow
      *
      * X:
-     *     No Coral: Click - Lower algae pickup state, stow automatically, Click Again - stow
-     *     Coral: Click - L3 score state, Click Again - outtake, stow
      *
-     * Y: Pathfind to nearest coral station
+     * Y:
      */
 
     private final CommandXboxController opXbox = new CommandXboxController(1);
@@ -152,6 +150,15 @@ public class RobotContainer {
                 ),
                 robotStates.intake::hasCoral
         ));
+        driverXbox.leftBumper().onFalse(new ConditionalCommand(
+                new InstantCommand(robotStates::toggleAutoLevelCoralState),
+                new ConditionalCommand(
+                        new InstantCommand(robotStates::toggleNetState),
+                        Commands.none(),
+                        robotStates.netState
+                ),
+                robotStates.autoState
+        ));
         driverXbox.rightBumper().whileTrue(new ConditionalCommand(
                 robotStates.swerve.pathFindToNearestRightBranch(robotStates.elevator::getPosition),
                 new ConditionalCommand(
@@ -161,6 +168,15 @@ public class RobotContainer {
                 ),
                 robotStates.intake::hasCoral
         ));
+        driverXbox.rightBumper().onFalse(new ConditionalCommand(
+                new InstantCommand(robotStates::toggleAutoLevelCoralState),
+                new ConditionalCommand(
+                        new InstantCommand(robotStates::toggleProcessorState),
+                        Commands.none(),
+                        robotStates.processorState
+                ),
+                robotStates.autoState
+        ));
 
         opXbox.povDown().onTrue(new InstantCommand(() -> robotStates.setCurrentAutoLevel(FieldUtil.Reef.Level.L1)));
 
@@ -169,6 +185,14 @@ public class RobotContainer {
         opXbox.povLeft().onTrue(new InstantCommand(() -> robotStates.setCurrentAutoLevel(FieldUtil.Reef.Level.L2)));
 
         opXbox.povUp().onTrue(new InstantCommand(() -> robotStates.setCurrentAutoLevel(FieldUtil.Reef.Level.L4)));
+
+        DoubleTrueTrigger.doubleTrue(opXbox.povDown(), 0.5).onTrue(new InstantCommand(robotStates::toggleL1CoralState));
+
+        DoubleTrueTrigger.doubleTrue(opXbox.povRight(), 0.5).onTrue(new InstantCommand(robotStates::toggleL3CoralState));
+
+        DoubleTrueTrigger.doubleTrue(opXbox.povLeft(), 0.5).onTrue(new InstantCommand(robotStates::toggleL2CoralState));
+
+        DoubleTrueTrigger.doubleTrue(opXbox.povUp(), 0.5).onTrue(new InstantCommand(robotStates::toggleL4CoralState));
 
         opXbox.leftTrigger().onTrue(new InstantCommand(() -> robotStates.intake.setIntakeState(true)));
         opXbox.leftTrigger().onFalse(new InstantCommand(robotStates.intake::setIdleState));

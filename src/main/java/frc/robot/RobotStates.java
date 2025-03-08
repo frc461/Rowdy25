@@ -58,6 +58,7 @@ public class RobotStates {
 
     private State currentState;
     private FieldUtil.Reef.Level currentAutoLevel = FieldUtil.Reef.Level.L2;
+    private boolean isAuto = false;
     private final SendableChooser<State> stateChooser = new SendableChooser<>();
 
     public final Trigger stowState = new Trigger(() -> currentState == State.STOW);
@@ -76,6 +77,8 @@ public class RobotStates {
     public final Trigger netState = new Trigger(() -> currentState == State.NET);
     public final Trigger prepareClimbState = new Trigger(() -> currentState == State.PREPARE_CLIMB);
     public final Trigger climbState = new Trigger(() -> currentState == State.CLIMB);
+
+    public final Trigger autoState = new Trigger(() -> isAuto);
 
     public final Trigger atState = new Trigger(() -> elevator.isAtTarget() && pivot.isAtTarget() && wrist.isAtTarget());
 
@@ -111,6 +114,15 @@ public class RobotStates {
         Arrays.stream(State.values()).forEach(state -> stateChooser.addOption(state.name(), state));
         stateChooser.onChange(state -> currentState = stateChooser.getSelected());
         SmartDashboard.putData("Robot State Chooser", stateChooser);
+    }
+
+    public State getAutoLevelState() {
+        return switch (currentAutoLevel) {
+            case L1 -> State.L1_CORAL;
+            case L2 -> State.L2_CORAL;
+            case L3 -> State.L3_CORAL;
+            case L4 -> State.L4_CORAL;
+        };
     }
 
     public void setCurrentAutoLevel(FieldUtil.Reef.Level level) {
@@ -166,6 +178,7 @@ public class RobotStates {
     }
 
     public void toggleAutoLevelCoralState() {
+        isAuto = !isAuto;
         switch (currentAutoLevel) {
             case L1 -> toggleL1CoralState();
             case L2 -> toggleL2CoralState();
@@ -207,6 +220,16 @@ public class RobotStates {
     }
 
     public void configureToggleStateTriggers() { // TODO: OPTIMIZE STATE TRANSITIONS
+        autoState.whileTrue(
+                Commands.run(
+                        () -> {
+                            if (currentState != getAutoLevelState()) {
+                                toggleAutoLevelCoralState();
+                            }
+                        }
+                )
+        );
+
         stowState.onTrue(
                 new InstantCommand(swerve::setIdleMode)
                         .andThen(climb::reset)
