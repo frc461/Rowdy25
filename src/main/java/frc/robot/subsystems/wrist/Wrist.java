@@ -12,7 +12,7 @@ import frc.robot.util.EquationUtil;
 
 public class Wrist extends SubsystemBase {
     public enum State {
-        MANUAL(Constants.WristConstants.LOWER_LIMIT.apply(50.0)),
+        MANUAL(Constants.WristConstants.LOWER_LIMIT.apply(0.0, 50.0)),
         STOW(Constants.WristConstants.STOW),
         CORAL_STATION(Constants.WristConstants.CORAL_STATION),
         GROUND_CORAL(Constants.WristConstants.GROUND_CORAL),
@@ -113,7 +113,7 @@ public class Wrist extends SubsystemBase {
     public void setTarget(double pivotPosition, double elevatorPosition) {
         this.target = MathUtil.clamp(
                 getState() == State.MANUAL ? lastManualPosition : getState().position,
-                Constants.WristConstants.LOWER_LIMIT.apply(pivotPosition),
+                Constants.WristConstants.LOWER_LIMIT.apply(elevatorPosition, pivotPosition),
                 Constants.WristConstants.UPPER_LIMIT.apply(elevatorPosition)
         );
     }
@@ -186,7 +186,7 @@ public class Wrist extends SubsystemBase {
     public void moveWrist(double axisValue, double pivotPosition, double elevatorPosition) {
         wrist.set(axisValue > 0
                 ? axisValue * EquationUtil.expOutput(Constants.WristConstants.UPPER_LIMIT.apply(elevatorPosition) - getPosition(), 1, 5, 10)
-                : axisValue * EquationUtil.expOutput(getPosition() - Constants.WristConstants.LOWER_LIMIT.apply(pivotPosition), 1, 5, 10));
+                : axisValue * EquationUtil.expOutput(getPosition() - Constants.WristConstants.LOWER_LIMIT.apply(elevatorPosition, pivotPosition), 1, 5, 10));
     }
 
     @Override
