@@ -225,14 +225,14 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                         fieldCentric,
                         elevatorHeight,
                         Pathfinder.calculateClosePose(
-                                FieldUtil.Reef.getNearestRobotPosesAtBranchPair(localizer.getStrategyPose()).getFirst(),
+                                localizer.nearestRobotPosesAtBranchPair.getFirst(),
                                 Constants.AutoConstants.DISTANCE_TOLERANCE_TO_DRIVE_INTO
                         )
                 ).andThen(robotStates::toggleAutoLevelCoralState).andThen(new DirectMoveToPoseCommand(
                         this,
                         fieldCentric,
                         elevatorHeight,
-                        FieldUtil.Reef.getNearestRobotPosesAtBranchPair(localizer.getStrategyPose()).getFirst()
+                        localizer.nearestRobotPosesAtBranchPair.getFirst()
                 )),
                 Set.of(this)
         );
@@ -245,14 +245,14 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                         fieldCentric,
                         elevatorHeight,
                         Pathfinder.calculateClosePose(
-                                FieldUtil.Reef.getNearestRobotPosesAtBranchPair(localizer.getStrategyPose()).getSecond(),
+                                localizer.nearestRobotPosesAtBranchPair.getSecond(),
                                 Constants.AutoConstants.DISTANCE_TOLERANCE_TO_DRIVE_INTO
                         )
                 ).andThen(robotStates::toggleAutoLevelCoralState).andThen(new DirectMoveToPoseCommand(
                         this,
                         fieldCentric,
                         elevatorHeight,
-                        FieldUtil.Reef.getNearestRobotPosesAtBranchPair(localizer.getStrategyPose()).getSecond()
+                        localizer.nearestRobotPosesAtBranchPair.getSecond()
                 )),
                 Set.of(this)
         );
@@ -265,22 +265,18 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                         fieldCentric,
                         elevatorHeight,
                         Pathfinder.calculateClosePose(
-                                FieldUtil.Reef.getNearestRobotPoseAtAlgaeOnReef(localizer.getStrategyPose()),
+                                localizer.nearestRobotPoseAtAlgaeReef,
                                 Constants.AutoConstants.DISTANCE_TOLERANCE_TO_DRIVE_INTO,
-                                FieldUtil.Reef.getAlgaeReefLevelFromTag(
-                                        FieldUtil.Reef.getNearestReefTag(localizer.getStrategyPose())
-                                ) == FieldUtil.Reef.AlgaeLocation.HIGH ? Rotation2d.kZero : Rotation2d.kPi
+                                localizer.nearestAlgaeIsHigh ? Rotation2d.kZero : Rotation2d.kPi
                         )
-                ).andThen(() -> robotStates.toggleNearestReefAlgaeState(
-                        FieldUtil.Reef.getAlgaeReefLevelFromTag(
-                                FieldUtil.Reef.getNearestReefTag(localizer.getStrategyPose())
-                        ) == FieldUtil.Reef.AlgaeLocation.HIGH
-                )).andThen(new DirectMoveToPoseCommand(
-                        this,
-                        fieldCentric,
-                        elevatorHeight,
-                        FieldUtil.Reef.getNearestRobotPoseAtAlgaeOnReef(localizer.getStrategyPose())
-                )),
+                )
+                        .andThen(() -> robotStates.toggleNearestReefAlgaeState(localizer.nearestAlgaeIsHigh))
+                        .andThen(new DirectMoveToPoseCommand(
+                                this,
+                                fieldCentric,
+                                elevatorHeight,
+                                localizer.nearestRobotPoseAtAlgaeReef
+                        )),
                 Set.of(this)
         );
     }
@@ -292,14 +288,14 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                         fieldCentric,
                         elevatorHeight,
                         Pathfinder.calculateClosePose(
-                                FieldUtil.AlgaeScoring.getRobotPoseAtNet(),
+                                localizer.robotPoseAtNet,
                                 Constants.AutoConstants.DISTANCE_TOLERANCE_TO_DRIVE_INTO
                         )
                 ).andThen(robotStates::toggleNetState).andThen(new DirectMoveToPoseCommand(
                         this,
                         fieldCentric,
                         elevatorHeight,
-                        FieldUtil.AlgaeScoring.getRobotPoseAtNet()
+                        localizer.robotPoseAtNet
                 )),
                 Set.of(this)
         );
@@ -312,7 +308,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                         fieldCentric,
                         elevatorHeight,
                         Pathfinder.calculateClosePose(
-                                FieldUtil.AlgaeScoring.getRobotPoseAtProcessor(),
+                                localizer.robotPoseAtProcessor,
                                 Constants.AutoConstants.DISTANCE_TOLERANCE_TO_DRIVE_INTO,
                                 Rotation2d.kPi
                         )
@@ -320,7 +316,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                         this,
                         fieldCentric,
                         elevatorHeight,
-                        FieldUtil.AlgaeScoring.getRobotPoseAtProcessor()
+                        localizer.robotPoseAtProcessor
                 )),
                 Set.of(this)
         );

@@ -1,9 +1,9 @@
 package frc.robot.subsystems.vision;
 
+import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -35,6 +35,15 @@ public class Localizer {
     private Pose2d currentTemporaryTargetPose = new Pose2d();
     private boolean hasCalibratedOnceWhenNear = false;
 
+    public final Pose2d robotPoseAtProcessor;
+    public final Pose2d robotPoseAtNet;
+    public Pose2d nearestRobotPoseAtCoralStation = new Pose2d();
+    public Pose2d nearestRobotPoseAtAlgaeReef = new Pose2d();
+    public Pair<Pose2d, Pose2d> nearestRobotPosesAtBranchPair = new Pair<>(new Pose2d(), new Pose2d());
+    public Pose2d nearestRobotPoseAtBranch = new Pose2d();
+    public Pose2d nearestReefTagPose = new Pose2d();
+    public boolean nearestAlgaeIsHigh = false;
+
     public Localizer(Swerve swerve) {
         this.swerve = swerve;
 
@@ -53,6 +62,9 @@ public class Localizer {
 
         configureQuestOffset();
         LimelightUtil.configureRobotToCameraOffset();
+
+        robotPoseAtProcessor = FieldUtil.AlgaeScoring.getRobotPoseAtProcessor();
+        robotPoseAtNet = FieldUtil.AlgaeScoring.getRobotPoseAtNet();
     }
 
     public Pose2d getStrategyPose() {
@@ -79,78 +91,26 @@ public class Localizer {
         return QuestNavUtil.getRobotPose();
     }
 
-    public Translation2d getTranslationToNearestCoralStation() {
-        Pose2d currentPose = getStrategyPose();
-        Translation2d tagTranslation = FieldUtil.CoralStation.getNearestCoralStationTagPose(currentPose).getTranslation();
-        return tagTranslation.minus(currentPose.getTranslation());
-    }
-
-    public double getAngleToNearestCoralStation() {
-        return getTranslationToNearestCoralStation().getAngle().getDegrees();
-    }
-
     public double getNearestCoralStationHeading() {
-        return FieldUtil.CoralStation.getNearestCoralStationTagPose(getStrategyPose()).getRotation().getDegrees();
-    }
-
-    public Translation2d getTranslationToNearestReefSide() {
-        Pose2d currentPose = getStrategyPose();
-        Translation2d tagTranslation = FieldUtil.Reef.getNearestReefTagPose(currentPose).getTranslation();
-        return tagTranslation.minus(currentPose.getTranslation());
-    }
-
-    public double getAngleToNearestReefSide() {
-        return getTranslationToNearestReefSide().getAngle().getDegrees();
+        return nearestRobotPoseAtCoralStation.getRotation().getDegrees();
     }
 
     public double getNearestReefSideHeading() {
-        return FieldUtil.Reef.getNearestReefTagPose(getStrategyPose()).getRotation().rotateBy(Rotation2d.kPi).getDegrees();
-    }
-
-    public Translation2d getTranslationToNearestBranch() {
-        Pose2d currentPose = getStrategyPose();
-        Translation2d nearestBranch = FieldUtil.Reef.getNearestBranchPose(currentPose).getTranslation();
-        return nearestBranch.minus(currentPose.getTranslation());
-    }
-
-    public double getAngleToNearestBranch() {
-        return getTranslationToNearestBranch().getAngle().getDegrees();
+        return nearestReefTagPose.getRotation().rotateBy(Rotation2d.kPi).getDegrees();
     }
 
     public boolean atBranch() {
         return getStrategyPose().getTranslation().getDistance(
-                FieldUtil.Reef.getNearestRobotPoseAtBranch(getStrategyPose()).getTranslation()
+                nearestRobotPoseAtBranch.getTranslation()
         ) < Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_ACCEPT;
     }
 
-    public Translation2d getTranslationToNearestAlgaeScoringLocation() {
-        Pose2d currentPose = getStrategyPose();
-        Translation2d tagTranslation = FieldUtil.AlgaeScoring.getNearestAlgaeScoringTagPose(currentPose).getTranslation();
-        return tagTranslation.minus(currentPose.getTranslation());
-    }
-
-    public double getAngleToNearestAlgaeScoringLocation() {
-        return getTranslationToNearestAlgaeScoringLocation().getAngle().getDegrees();
-    }
-
-    public double getNearestAlgaeScoringHeading() {
-        return FieldUtil.AlgaeScoring.getNearestAlgaeScoringTagPose(getStrategyPose()).getRotation().rotateBy(Rotation2d.kPi).getDegrees();
-    }
-
     public double getProcessorScoringHeading() {
-        return FieldUtil.AlgaeScoring.getProcessorTagPose().getRotation().rotateBy(Rotation2d.kPi).getDegrees();
+        return robotPoseAtProcessor.getRotation().getDegrees();
     }
 
     public double getNetScoringHeading() {
-        return FieldUtil.AlgaeScoring.getNetTagPose().getRotation().rotateBy(Rotation2d.kPi).getDegrees();
-    }
-
-    public boolean nearestAlgaeIsHigh() {
-        return FieldUtil.Reef.getAlgaeReefLevelFromTag(FieldUtil.Reef.getNearestReefTag(getStrategyPose())) == FieldUtil.Reef.AlgaeLocation.HIGH;
-    }
-
-    public boolean nearestAlgaeScoringIsNet() {
-        return FieldUtil.AlgaeScoring.getAlgaeScoringFromTag(FieldUtil.AlgaeScoring.getNearestAlgaeScoringTag(getStrategyPose())) == FieldUtil.AlgaeScoring.ScoringLocation.NET;
+        return robotPoseAtNet.getRotation().getDegrees();
     }
 
     public void setCurrentTemporaryTargetPose(Pose2d temporaryTargetPose) {
@@ -240,11 +200,24 @@ public class Localizer {
         }
     }
 
+    private void updateFieldUtilityPoses() {
+        nearestRobotPoseAtCoralStation = FieldUtil.CoralStation.getNearestRobotPoseAtCoralStation(getStrategyPose());
+        nearestRobotPoseAtAlgaeReef = FieldUtil.Reef.getNearestRobotPoseAtAlgaeReef(getStrategyPose());
+        nearestRobotPoseAtBranch = FieldUtil.Reef.getNearestRobotPoseAtBranch(getStrategyPose());
+        nearestRobotPosesAtBranchPair = FieldUtil.Reef.getNearestRobotPosesAtBranchPair(getStrategyPose());
+        nearestReefTagPose = FieldUtil.Reef.getNearestReefTagPose(getStrategyPose());
+        nearestAlgaeIsHigh = FieldUtil.Reef.getAlgaeReefLevelFromTag(FieldUtil.Reef.getNearestReefTag(getStrategyPose())) == FieldUtil.Reef.AlgaeLocation.HIGH;
+    }
+
     public void periodic() {
+        localizationTelemetry.publishValues();
+
         poseEstimator.update(this.swerve.getState().RawHeading, this.swerve.getState().ModulePositions);
         updatePhotonPoseEstimation();
         updateQuestNavPose();
+
         setLocalizationStrategyFromChooser();
-        localizationTelemetry.publishValues();
+
+        updateFieldUtilityPoses();
     }
 }
