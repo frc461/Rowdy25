@@ -89,7 +89,10 @@ public class PathfindToPoseAvoidingReefCommand extends Command {
         double velocity = MathUtil.clamp(
                 Math.max(
                         EquationUtil.expOutput(smoothTemporaryTargetPose.getTranslation().getDistance(currentPose.getTranslation()), 0.02, 50),
-                        Math.min(EquationUtil.linearOutput(smoothTemporaryTargetPose.getTranslation().getDistance(currentPose.getTranslation()), 4.0), 4.0)
+                        Math.max(
+                                Math.min(EquationUtil.linearOutput(smoothTemporaryTargetPose.getTranslation().getDistance(currentPose.getTranslation()), 2.0), 4.0),
+                                Math.min(EquationUtil.linearOutput(smoothTemporaryTargetPose.getTranslation().getDistance(currentPose.getTranslation()), 2.5), 2.5)
+                        )
                 ),
                 -Constants.MAX_CONTROLLED_VEL.apply(elevatorHeight.getAsDouble()),
                 Constants.MAX_CONTROLLED_VEL.apply(elevatorHeight.getAsDouble())
@@ -126,11 +129,11 @@ public class PathfindToPoseAvoidingReefCommand extends Command {
             return temporaryPose;
         }
 
-        if (smoothTemporaryTargetPose.getTranslation().getDistance(temporaryPose.getTranslation()) > 0.05) {
+        if (smoothTemporaryTargetPose.getTranslation().getDistance(temporaryPose.getTranslation()) > 0.075) {
             Rotation2d headingToTemporaryPose = temporaryPose.getTranslation().minus(smoothTemporaryTargetPose.getTranslation()).getAngle();
             return new Pose2d(
                     new Pose2d(smoothTemporaryTargetPose.getTranslation(), headingToTemporaryPose)
-                            .plus(new Transform2d(0.05, 0, Rotation2d.kZero))
+                            .plus(new Transform2d(0.075, 0, Rotation2d.kZero))
                             .getTranslation(),
                     smoothTemporaryTargetPose.getRotation().interpolate(temporaryPose.getRotation(), 0.25)
             );
@@ -153,7 +156,7 @@ public class PathfindToPoseAvoidingReefCommand extends Command {
             Rotation2d reefCenterAngleToTargetPose = targetPose.getTranslation().minus(FieldUtil.Reef.getReefCenter()).getAngle();
             Rotation2d temporaryTargetAngle =
                     reefCenterAngleToRobot.rotateBy(Rotation2d.fromDegrees(Math.copySign(
-                            35.0,
+                            40.0,
                             reefCenterAngleToTargetPose.minus(reefCenterAngleToRobot).getDegrees()
                     )));
             return new Pose2d(
@@ -203,8 +206,6 @@ public class PathfindToPoseAvoidingReefCommand extends Command {
 
         Pair<Rotation2d, Rotation2d> anglesToVerticesBounds = getBound(anglesToEachVertex);
         double lowestDistance = distancesToEachVertex.stream().mapToDouble(Double::doubleValue).min().orElse(0.0);
-        System.out.println(lowestDistance);
-        System.out.println("Target pose distance: " + targetPose.getTranslation().getDistance(currentPose.getTranslation()));
 
         return !Pathfinder.inBetween(
                 targetPose.getTranslation().minus(currentPose.getTranslation()).getAngle(),
