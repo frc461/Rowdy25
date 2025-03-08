@@ -67,8 +67,8 @@ public final class CompConstants {
         public static final double P = 0.3;
         public static final double I = 0.0;
         public static final double D = 0.0;
-        public static final double EXPO_V = V / 0.9; // 90% of the actual max velocity, as it will allocate 1 / 0.9 = 1.1111 times the voltage to 1 rps
-        public static final double EXPO_A = A / 0.02; // 2% of the actual max accel
+        public static final double EXPO_V = V / 0.95; // 95% of the actual max velocity, as it will allocate 1 / 0.9 = 1.1111 times the voltage to 1 rps
+        public static final double EXPO_A = A / 0.045; // 4.5% of the actual max accel
         public static final double SAFE_TOLERANCE = 5.0;
         public static final double AT_TARGET_TOLERANCE = 2.5;
 
@@ -81,7 +81,7 @@ public final class CompConstants {
         public static final double GROUND_ALGAE = 0;
         public static final double L1_CORAL = 0;
         public static final double L2_CORAL = 0;
-        public static final double L3_CORAL = 18.1;
+        public static final double L3_CORAL = 15.5;
         public static final double L4_CORAL = 45.5;
         public static final double LOW_REEF_ALGAE = 2.0;
         public static final double HIGH_REEF_ALGAE = 3.0;
@@ -126,8 +126,8 @@ public final class CompConstants {
         // presets
         public static final double LOWER_LIMIT = 0;
         public static final double UPPER_LIMIT = 105;
-        public static final double STOW = 58;
-        public static final double CORAL_STATION = 58;
+        public static final double STOW = 55;
+        public static final double CORAL_STATION = 55;
         public static final double GROUND_CORAL = 3.5;
         public static final double GROUND_ALGAE = 4.5;
         public static final double L1_CORAL = 31.5;
@@ -168,14 +168,14 @@ public final class CompConstants {
         public static final double AT_TARGET_TOLERANCE = 2.5;
 
         // presets
-        public static final BiFunction<Double, Double, Double> LOWER_LIMIT = (elevatorPosition, pivotPosition) -> (double) (pivotPosition < 45 ? 160 : elevatorPosition > 1.5 && elevatorPosition < 12 ? 115 : 45); // TODO SHOP: TEST THIS (WHEN MAKING ROBOT STATE TRANSITIONS MORE EFFICIENT)
+        public static final BiFunction<Double, Double, Double> LOWER_LIMIT = (elevatorPosition, pivotPosition) -> (double) (pivotPosition < 30 ? 160 : elevatorPosition > 1.5 && elevatorPosition < 12 ? 115 : 45); // TODO SHOP: TEST THIS (WHEN MAKING ROBOT STATE TRANSITIONS MORE EFFICIENT)
         public static final Function<Double, Double> UPPER_LIMIT = (elevatorPosition) -> (double) (elevatorPosition > 8 ? 295 : 160);
         public static final double STOW = 115;
         public static final double CORAL_STATION = 115;
         public static final double GROUND_CORAL = 150;
         public static final double GROUND_ALGAE = 150;
         public static final double L1_CORAL = 160;
-        public static final double L2_CORAL = 40;
+        public static final double L2_CORAL = 55;
         public static final double L3_CORAL = 55;
         public static final double L4_CORAL = 75;
         public static final double LOW_REEF_ALGAE = 131;
