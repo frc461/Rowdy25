@@ -166,21 +166,13 @@ public class RobotContainer {
                         .unless(() -> robotStates.intake.hasAlgae() || robotStates.intake.hasCoral())
         );
 
-        opXbox.povDown().onTrue(new InstantCommand(() -> robotStates.setCurrentAutoLevel(FieldUtil.Reef.Level.L1)));
+        opXbox.povDown().onTrue(new InstantCommand(() -> robotStates.setCurrentAutoLevel(FieldUtil.Reef.Level.L4)));
 
-        opXbox.povRight().onTrue(new InstantCommand(() -> robotStates.setCurrentAutoLevel(FieldUtil.Reef.Level.L3)));
+        opXbox.povRight().onTrue(new InstantCommand(() -> robotStates.setCurrentAutoLevel(FieldUtil.Reef.Level.L1)));
 
-        opXbox.povLeft().onTrue(new InstantCommand(() -> robotStates.setCurrentAutoLevel(FieldUtil.Reef.Level.L2)));
+        opXbox.povLeft().onTrue(new InstantCommand(() -> robotStates.setCurrentAutoLevel(FieldUtil.Reef.Level.L3)));
 
-        opXbox.povUp().onTrue(new InstantCommand(() -> robotStates.setCurrentAutoLevel(FieldUtil.Reef.Level.L4)));
-
-        DoubleTrueTrigger.doubleTrue(opXbox.povDown(), 0.5).onTrue(new InstantCommand(robotStates::toggleL1CoralState));
-
-        DoubleTrueTrigger.doubleTrue(opXbox.povRight(), 0.5).onTrue(new InstantCommand(robotStates::toggleL3CoralState));
-
-        DoubleTrueTrigger.doubleTrue(opXbox.povLeft(), 0.5).onTrue(new InstantCommand(robotStates::toggleL2CoralState));
-
-        DoubleTrueTrigger.doubleTrue(opXbox.povUp(), 0.5).onTrue(new InstantCommand(robotStates::toggleL4CoralState));
+        opXbox.povUp().onTrue(new InstantCommand(() -> robotStates.setCurrentAutoLevel(FieldUtil.Reef.Level.L2)));
 
         opXbox.leftTrigger().onTrue(new InstantCommand(() -> robotStates.intake.setIntakeState(true)));
         opXbox.leftTrigger().onFalse(new InstantCommand(robotStates.intake::setIdleState));
