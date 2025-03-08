@@ -68,14 +68,14 @@ public class RobotContainer {
     private final CommandXboxController opXbox = new CommandXboxController(1);
     /* Currently Allocated For Operator:
      * POV buttons / D-pad:
-     * Up: Click - L2 score state, Click Again - outtake, stow
-     * Down: Click - L4 score state, Click Again - outtake, stow
-     * Left: Click - L3 score state, Click Again - outtake, stow
-     * Right: Click - L1 score state, Click Again - outtake, stow
+     * Up: Click - L4 auto preset, Double Click - toggle L4 preset
+     * Down: Click - L1 auto preset, Double Click - toggle L1 preset
+     * Left: Click - L2 auto preset, Double Click - toggle L2 preset
+     * Right: Click - L3 auto preset, Double Click - toggle L3 preset
      *
      * Triggers:
-     * Left: Hold - Outtake
-     * Right: Hold - intake
+     * Left: Hold - intake
+     * Right: Hold - outtake
      *
      * Joysticks:
      * Left: Move elevator (x), rotate pivot (y)
@@ -84,9 +84,8 @@ public class RobotContainer {
      * Right Button: Click - Processor algae score state, Click again - Outtake, stow
      *
      * Bumpers:
-     * Left: Click - wait until coral is in view then align with then intake coral (ground)
+     * Left: Click - ???
      * Right: Click - Stow
-     * TENTATIVE: Right: Click - wait until algae is in view then align with then intake algae (ground)
      *
      * Buttons:
      * A: Click - Climb state, Click Again - stow slowly
@@ -199,7 +198,10 @@ public class RobotContainer {
         opXbox.rightTrigger().onTrue(new InstantCommand(robotStates.intake::setOuttakeState));
         opXbox.rightTrigger().onFalse(new InstantCommand(robotStates.intake::setIdleState));
 
-        opXbox.leftBumper().onTrue(new InstantCommand(robotStates::toggleAutoLevelCoralState));
+        opXbox.leftStick().onTrue(new InstantCommand(robotStates::toggleNetState));
+        opXbox.rightStick().onTrue(new InstantCommand(robotStates::toggleProcessorState));
+
+        opXbox.leftBumper().onTrue(new InstantCommand(robotStates::toggleAutoLevelCoralState)); // TODO: IMPLEMENT LIST OF CORAL
         opXbox.rightBumper().onTrue(new InstantCommand(robotStates::setStowState));
 
         opXbox.a().onTrue(new InstantCommand(robotStates::escalateClimb));
