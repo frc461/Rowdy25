@@ -130,7 +130,7 @@ public final class CompConstants {
         public static final double CORAL_STATION = 55;
         public static final double GROUND_CORAL = 3.5;
         public static final double GROUND_ALGAE = 4.5;
-        public static final double L1_CORAL = 31.5;
+        public static final double L1_CORAL = 42.5;
         public static final double L2_CORAL = 100.0;
         public static final double L3_CORAL = 100.6;
         public static final double L4_CORAL = 93.5;
@@ -174,7 +174,7 @@ public final class CompConstants {
         public static final double CORAL_STATION = 115;
         public static final double GROUND_CORAL = 150;
         public static final double GROUND_ALGAE = 150;
-        public static final double L1_CORAL = 145;
+        public static final double L1_CORAL = 96.5;
         public static final double L2_CORAL = 55;
         public static final double L3_CORAL = 55;
         public static final double L4_CORAL = 75;
