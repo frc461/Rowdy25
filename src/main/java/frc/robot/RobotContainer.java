@@ -140,6 +140,7 @@ public class RobotContainer {
         driverXbox.leftStick().onTrue(new InstantCommand(() -> robotStates.swerve.localizer.setPoses(Constants.CENTER_OF_RIGHT_CORAL_STATION)));
         driverXbox.rightStick().onTrue(new InstantCommand(() -> robotStates.swerve.localizer.setPoses(Constants.CENTER_OF_LEFT_CORAL_STATION)));
 
+        // TODO SHOP: TEST ALL OF THIS
         driverXbox.leftBumper().whileTrue(new ConditionalCommand(
                 robotStates.swerve.pathFindToNearestLeftBranch(robotStates.elevator::getPosition),
                 new ConditionalCommand(
@@ -149,15 +150,6 @@ public class RobotContainer {
                 ),
                 robotStates.intake::hasCoral
         ));
-//        driverXbox.leftBumper().onFalse(new ConditionalCommand(
-//                new InstantCommand(robotStates::toggleAutoLevelCoralState),
-//                new ConditionalCommand(
-//                        new InstantCommand(robotStates::toggleNetState),
-//                        Commands.none(),
-//                        robotStates.netState
-//                ),
-//                robotStates.autoState
-//        ));
         driverXbox.rightBumper().whileTrue(new ConditionalCommand(
                 robotStates.swerve.pathFindToNearestRightBranch(robotStates.elevator::getPosition),
                 new ConditionalCommand(
@@ -167,15 +159,10 @@ public class RobotContainer {
                 ),
                 robotStates.intake::hasCoral
         ));
-//        driverXbox.rightBumper().onFalse(new ConditionalCommand(
-//                new InstantCommand(robotStates::toggleAutoLevelCoralState),
-//                new ConditionalCommand(
-//                        new InstantCommand(robotStates::toggleProcessorState),
-//                        Commands.none(),
-//                        robotStates.processorState
-//                ),
-//                robotStates.autoState
-//        ));
+        driverXbox.leftBumper().and(driverXbox.rightBumper()).whileTrue(
+                robotStates.swerve.pathFindToNearestAlgaeOnReef(robotStates.elevator::getPosition)
+                        .unless(() -> robotStates.intake.hasAlgae() || robotStates.intake.hasCoral())
+        );
 
         opXbox.povDown().onTrue(new InstantCommand(() -> robotStates.setCurrentAutoLevel(FieldUtil.Reef.Level.L1)));
 

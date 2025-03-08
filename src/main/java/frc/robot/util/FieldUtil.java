@@ -270,6 +270,13 @@ public final class FieldUtil {
                 default -> null;
             };
         }
+
+        public static Pose2d getNearestRobotPoseAtAlgaeOnReef(Pose2d currentPose) {
+            if (getAlgaeReefLevelFromTag(getNearestReefTag(currentPose)) == AlgaeLocation.HIGH) {
+                return getNearestReefTagPose(currentPose).plus(new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0, 0, Rotation2d.kPi));
+            }
+            return getNearestReefTagPose(currentPose).plus(new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0 + Units.inchesToMeters(4), 0, Rotation2d.kZero));
+        }
     }
 
     public static class AlgaeScoring {
