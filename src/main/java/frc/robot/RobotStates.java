@@ -58,7 +58,6 @@ public class RobotStates {
 
     private State currentState = State.STOW;
     private FieldUtil.Reef.Level currentAutoLevel = FieldUtil.Reef.Level.L2;
-    private boolean isAutoLevelToggledOn = false;
     private boolean isAutoScoreToggledOn = false;
     private final SendableChooser<State> stateChooser = new SendableChooser<>();
 
@@ -79,7 +78,8 @@ public class RobotStates {
     public final Trigger prepareClimbState = new Trigger(() -> currentState == State.PREPARE_CLIMB);
     public final Trigger climbState = new Trigger(() -> currentState == State.CLIMB);
 
-    public final Trigger autoLevelState = new Trigger(() -> isAutoLevelToggledOn);
+    private final Trigger isListening = l1CoralState.or(l2CoralState).or(l3CoralState).or(l4CoralState);
+    private boolean needsUpdate = false;
 
     public final Trigger atState = new Trigger(() -> elevator.isAtTarget() && pivot.isAtTarget() && wrist.isAtTarget());
 
@@ -126,6 +126,7 @@ public class RobotStates {
 
     public void setCurrentAutoLevel(FieldUtil.Reef.Level level) {
         currentAutoLevel = level;
+        needsUpdate = isListening.getAsBoolean();
     }
 
     public void setStowState() {
@@ -193,7 +194,6 @@ public class RobotStates {
     }
 
     public void toggleAutoLevelCoralState() {
-        isAutoLevelToggledOn = !isAutoLevelToggledOn;
         switch (currentAutoLevel) {
             case L1 -> toggleL1CoralState();
             case L2 -> toggleL2CoralState();
@@ -239,14 +239,9 @@ public class RobotStates {
     }
 
     public void configureToggleStateTriggers() { // TODO: OPTIMIZE STATE TRANSITIONS
-        autoLevelState.whileTrue(
-                Commands.run(
-                        () -> {
-                            if (currentState != getAutoLevelState()) {
-                                toggleAutoLevelCoralState();
-                            }
-                        }
-                )
+        isListening.and(() -> needsUpdate).onTrue(
+                new InstantCommand(this::toggleAutoLevelCoralState)
+                        .andThen(() -> needsUpdate = false)
         );
 
         stowState.onTrue(
@@ -255,6 +250,7 @@ public class RobotStates {
                         .andThen(intake::setIdleState)
                         .andThen(wrist::setStowState)
                         .andThen(new WaitUntilCommand(wrist::nearTarget))
+                        .andThen(movePivotToPerpendicular())
                         .andThen(elevator::setStowState)
                         .andThen(new WaitUntilCommand(elevator::nearTarget))
                         .andThen(pivot::setStowState)
@@ -507,13 +503,21 @@ public class RobotStates {
     private Command transition(Pivot.State pivotState) {
         return new ConditionalCommand(
                 new InstantCommand(wrist::setStowState)
-                        .andThen(new WaitUntilCommand(wrist::nearTarget)),
+                        .andThen(new WaitUntilCommand(wrist::nearTarget))
+                        .andThen(movePivotToPerpendicular()),
                 new InstantCommand(wrist::setStowState)
                         .andThen(new WaitUntilCommand(wrist::nearTarget))
+                        .andThen(movePivotToPerpendicular())
                         .andThen(elevator::setStowState)
                         .andThen(new WaitUntilCommand(elevator::nearTarget)),
                 () -> pivot.isAtState(pivotState)
         );
+    }
+
+    private Command movePivotToPerpendicular() {
+        return new InstantCommand(pivot::setPerpendicularState)
+                .andThen(new WaitUntilCommand(pivot::nearTarget))
+                .onlyIf(() -> pivot.getPosition() > 90);
     }
 
     public void publishValues() {

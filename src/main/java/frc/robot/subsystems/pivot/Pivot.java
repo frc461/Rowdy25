@@ -18,6 +18,7 @@ public class Pivot extends SubsystemBase {
     public enum State {
         MANUAL(Constants.PivotConstants.LOWER_LIMIT),
         STOW(Constants.PivotConstants.STOW),
+        PERPENDICULAR(90.0),
         CORAL_STATION(Constants.PivotConstants.CORAL_STATION),
         GROUND_CORAL(Constants.PivotConstants.GROUND_CORAL),
         GROUND_ALGAE(Constants.PivotConstants.GROUND_ALGAE),
@@ -178,6 +179,10 @@ public class Pivot extends SubsystemBase {
 
     public void setStowState() {
         setState(State.STOW);
+    }
+
+    public void setPerpendicularState() {
+        setState(State.PERPENDICULAR);
     }
 
     public void setCoralStationState() {
