@@ -7,6 +7,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.RobotStates;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.drivetrain.Swerve;
 import frc.robot.util.*;
@@ -99,10 +100,20 @@ public class Localizer {
         return nearestReefTagPose.getRotation().rotateBy(Rotation2d.kPi).getDegrees();
     }
 
-    public boolean atBranch() {
-        return getStrategyPose().getTranslation().getDistance(
-                nearestRobotPoseAtBranch.getTranslation()
-        ) < Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_ACCEPT;
+    public boolean atScoringLocation(RobotStates.State robotState) {
+        Pose2d currentPose = getStrategyPose();
+        return switch (robotState) {
+            case L1_CORAL, L2_CORAL, L3_CORAL, L4_CORAL -> currentPose.getTranslation().getDistance(
+                    nearestRobotPoseAtBranch.getTranslation()
+            ) < Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_ACCEPT;
+            case PROCESSOR -> currentPose.getTranslation().getDistance(
+                    robotPoseAtProcessor.getTranslation()
+            ) < Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_ACCEPT;
+            case NET -> currentPose.getTranslation().getDistance(
+                    robotPoseAtNet.getTranslation()
+            ) < Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_ACCEPT;
+            default -> false;
+        };
     }
 
     public double getProcessorScoringHeading() {

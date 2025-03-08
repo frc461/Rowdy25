@@ -142,7 +142,8 @@ public class RobotContainer {
 
         // TODO SHOP: TEST ALL OF THIS
         driverXbox.leftBumper().whileTrue(new ConditionalCommand(
-                robotStates.swerve.pathFindToNearestLeftBranch(robotStates, robotStates.elevator::getPosition),
+                robotStates.swerve.pathFindToNearestLeftBranch(robotStates, robotStates.elevator::getPosition)
+                        .unless(robotStates.l1CoralState),
                 new ConditionalCommand(
                         robotStates.swerve.pathFindToNet(robotStates, robotStates.elevator::getPosition),
                         robotStates.swerve.pathFindToLeftCoralStation(robotStates, robotStates.elevator::getPosition),
@@ -151,7 +152,8 @@ public class RobotContainer {
                 robotStates.intake::hasCoral
         ));
         driverXbox.rightBumper().whileTrue(new ConditionalCommand(
-                robotStates.swerve.pathFindToNearestRightBranch(robotStates, robotStates.elevator::getPosition),
+                robotStates.swerve.pathFindToNearestRightBranch(robotStates, robotStates.elevator::getPosition)
+                        .unless(robotStates.l1CoralState),
                 new ConditionalCommand(
                         robotStates.swerve.pathFindToProcessor(robotStates, robotStates.elevator::getPosition),
                         robotStates.swerve.pathFindToRightCoralStation(robotStates, robotStates.elevator::getPosition),

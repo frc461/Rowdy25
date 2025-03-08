@@ -143,8 +143,7 @@ public final class AutoManager {
                     toCoralStationPath,
                     () -> {
                         try {
-                            return new InstantCommand(robotStates::resetCurrentAutoLevel)
-                                    .andThen(AutoBuilder.followPath(PathPlannerPath.fromPathFile(toCoralStationPath)));
+                            return AutoBuilder.followPath(PathPlannerPath.fromPathFile(toCoralStationPath));
                         } catch (IOException | ParseException e) {
                             DriverStation.reportError("Failed to load path: " + e.getMessage(), e.getStackTrace());
                             return Commands.none();
