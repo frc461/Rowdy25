@@ -149,15 +149,15 @@ public class RobotContainer {
                 ),
                 robotStates.intake::hasCoral
         ));
-        driverXbox.leftBumper().onFalse(new ConditionalCommand(
-                new InstantCommand(robotStates::toggleAutoLevelCoralState),
-                new ConditionalCommand(
-                        new InstantCommand(robotStates::toggleNetState),
-                        Commands.none(),
-                        robotStates.netState
-                ),
-                robotStates.autoState
-        ));
+//        driverXbox.leftBumper().onFalse(new ConditionalCommand(
+//                new InstantCommand(robotStates::toggleAutoLevelCoralState),
+//                new ConditionalCommand(
+//                        new InstantCommand(robotStates::toggleNetState),
+//                        Commands.none(),
+//                        robotStates.netState
+//                ),
+//                robotStates.autoState
+//        ));
         driverXbox.rightBumper().whileTrue(new ConditionalCommand(
                 robotStates.swerve.pathFindToNearestRightBranch(robotStates.elevator::getPosition),
                 new ConditionalCommand(
@@ -167,15 +167,15 @@ public class RobotContainer {
                 ),
                 robotStates.intake::hasCoral
         ));
-        driverXbox.rightBumper().onFalse(new ConditionalCommand(
-                new InstantCommand(robotStates::toggleAutoLevelCoralState),
-                new ConditionalCommand(
-                        new InstantCommand(robotStates::toggleProcessorState),
-                        Commands.none(),
-                        robotStates.processorState
-                ),
-                robotStates.autoState
-        ));
+//        driverXbox.rightBumper().onFalse(new ConditionalCommand(
+//                new InstantCommand(robotStates::toggleAutoLevelCoralState),
+//                new ConditionalCommand(
+//                        new InstantCommand(robotStates::toggleProcessorState),
+//                        Commands.none(),
+//                        robotStates.processorState
+//                ),
+//                robotStates.autoState
+//        ));
 
         opXbox.povDown().onTrue(new InstantCommand(() -> robotStates.setCurrentAutoLevel(FieldUtil.Reef.Level.L1)));
 

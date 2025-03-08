@@ -20,10 +20,8 @@ public final class QuestNavUtil {
 
     // Transformation applied to QuestNav pose to adjust origin to the pose estimator's origin
     public static final Transform2d robotToCameraOffset = new Transform2d(
-            new Translation2d(
-                    Constants.VisionConstants.QuestNavConstants.QUEST_FORWARD,
-                    Constants.VisionConstants.QuestNavConstants.QUEST_LEFT
-            ),
+            Constants.VisionConstants.QuestNavConstants.QUEST_FORWARD,
+            Constants.VisionConstants.QuestNavConstants.QUEST_LEFT,
             new Rotation2d(Units.degreesToRadians(Constants.VisionConstants.QuestNavConstants.QUEST_YAW))
     );
 

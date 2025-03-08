@@ -129,10 +129,9 @@ public class PathfindToPoseAvoidingReefCommand extends Command {
         if (smoothTemporaryTargetPose.getTranslation().getDistance(temporaryPose.getTranslation()) > 0.05) {
             Rotation2d headingToTemporaryPose = temporaryPose.getTranslation().minus(smoothTemporaryTargetPose.getTranslation()).getAngle();
             return new Pose2d(
-                    new Pose2d(smoothTemporaryTargetPose.getTranslation(), headingToTemporaryPose).plus(new Transform2d(
-                            new Translation2d(0.05, 0),
-                            Rotation2d.kZero
-                    )).getTranslation(),
+                    new Pose2d(smoothTemporaryTargetPose.getTranslation(), headingToTemporaryPose)
+                            .plus(new Transform2d(0.05, 0, Rotation2d.kZero))
+                            .getTranslation(),
                     smoothTemporaryTargetPose.getRotation().interpolate(temporaryPose.getRotation(), 0.25)
             );
         }
@@ -147,10 +146,7 @@ public class PathfindToPoseAvoidingReefCommand extends Command {
             return targetPose;
         } else if (currentPose.getTranslation().getDistance(FieldUtil.Reef.getReefCenter()) < FieldUtil.Reef.REEF_APOTHEM + Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 1.3) {
             Translation2d targetTranslation = new Pose2d(FieldUtil.Reef.getReefCenter(), FieldUtil.Reef.getNearestReefTagPose(currentPose).getRotation())
-                    .plus(new Transform2d(
-                            new Translation2d(2.8, 0),
-                            Rotation2d.kZero
-                    ))
+                    .plus(new Transform2d(2.8, 0, Rotation2d.kZero))
                     .getTranslation();
             return new Pose2d(targetTranslation, currentPose.getRotation());
         } else {
@@ -161,10 +157,9 @@ public class PathfindToPoseAvoidingReefCommand extends Command {
                             reefCenterAngleToTargetPose.minus(reefCenterAngleToRobot).getDegrees()
                     )));
             return new Pose2d(
-                    new Pose2d(FieldUtil.Reef.getReefCenter(), temporaryTargetAngle).plus(new Transform2d(
-                            new Translation2d(2.5, 0),
-                            Rotation2d.kZero
-                    )).getTranslation(),
+                    new Pose2d(FieldUtil.Reef.getReefCenter(), temporaryTargetAngle)
+                            .plus(new Transform2d(2.5, 0, Rotation2d.kZero))
+                            .getTranslation(),
                     currentPose.getRotation().interpolate(targetPose.getRotation(), 0.25)
             );
         }
@@ -173,19 +168,23 @@ public class PathfindToPoseAvoidingReefCommand extends Command {
     private boolean sameSideAsTargetPose(Pose2d currentPose) {
         List<Pose2d> robotCorners = List.of(
                 currentPose.plus(new Transform2d(
-                        new Translation2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0, Constants.ROBOT_WIDTH_WITH_BUMPERS.in(Meters) / 2.0),
+                        Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0,
+                        Constants.ROBOT_WIDTH_WITH_BUMPERS.in(Meters) / 2.0,
                         Rotation2d.kZero
                 )),
                 currentPose.plus(new Transform2d(
-                        new Translation2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0, -Constants.ROBOT_WIDTH_WITH_BUMPERS.in(Meters) / 2.0),
+                        Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0,
+                        -Constants.ROBOT_WIDTH_WITH_BUMPERS.in(Meters) / 2.0,
                         Rotation2d.kZero
                 )),
                 currentPose.plus(new Transform2d(
-                        new Translation2d(-Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0, Constants.ROBOT_WIDTH_WITH_BUMPERS.in(Meters) / 2.0),
+                        -Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0,
+                        Constants.ROBOT_WIDTH_WITH_BUMPERS.in(Meters) / 2.0,
                         Rotation2d.kZero
                 )),
                 currentPose.plus(new Transform2d(
-                        new Translation2d(-Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0, -Constants.ROBOT_WIDTH_WITH_BUMPERS.in(Meters) / 2.0),
+                        -Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0,
+                        -Constants.ROBOT_WIDTH_WITH_BUMPERS.in(Meters) / 2.0,
                         Rotation2d.kZero
                 ))
         );

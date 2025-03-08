@@ -117,7 +117,7 @@ public final class FieldUtil {
 
         public static List<Pose2d> getRobotPosesAtEachCoralStation() {
             return getCoralStationTagPoses().stream().map(coralStationTagPose -> coralStationTagPose.plus(
-                    new Transform2d(new Translation2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0, 0), Rotation2d.kZero)
+                    new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0, 0, Rotation2d.kZero)
             )).toList();
         }
 
@@ -196,19 +196,19 @@ public final class FieldUtil {
         public static List<Pose2d> getReefCorners() {
             return Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red
                     ? List.of(
-                            new Pose2d(RED_REEF_CENTER, Rotation2d.fromDegrees(-30)).plus(new Transform2d(new Translation2d(REEF_APOTHEM * 2 / Math.sqrt(3), 0), Rotation2d.kZero)),
-                            new Pose2d(RED_REEF_CENTER, Rotation2d.fromDegrees(30)).plus(new Transform2d(new Translation2d(REEF_APOTHEM * 2 / Math.sqrt(3), 0), Rotation2d.kZero)),
-                            new Pose2d(RED_REEF_CENTER, Rotation2d.fromDegrees(90)).plus(new Transform2d(new Translation2d(REEF_APOTHEM * 2 / Math.sqrt(3), 0), Rotation2d.kZero)),
-                            new Pose2d(RED_REEF_CENTER, Rotation2d.fromDegrees(150)).plus(new Transform2d(new Translation2d(REEF_APOTHEM * 2 / Math.sqrt(3), 0), Rotation2d.kZero)),
-                            new Pose2d(RED_REEF_CENTER, Rotation2d.fromDegrees(-150)).plus(new Transform2d(new Translation2d(REEF_APOTHEM * 2 / Math.sqrt(3), 0), Rotation2d.kZero)),
-                            new Pose2d(RED_REEF_CENTER, Rotation2d.fromDegrees(-90)).plus(new Transform2d(new Translation2d(REEF_APOTHEM * 2 / Math.sqrt(3), 0), Rotation2d.kZero))
+                            new Pose2d(RED_REEF_CENTER, Rotation2d.fromDegrees(-30)).plus(new Transform2d(REEF_APOTHEM * 2 / Math.sqrt(3), 0, Rotation2d.kZero)),
+                            new Pose2d(RED_REEF_CENTER, Rotation2d.fromDegrees(30)).plus(new Transform2d(REEF_APOTHEM * 2 / Math.sqrt(3), 0, Rotation2d.kZero)),
+                            new Pose2d(RED_REEF_CENTER, Rotation2d.fromDegrees(90)).plus(new Transform2d(REEF_APOTHEM * 2 / Math.sqrt(3), 0, Rotation2d.kZero)),
+                            new Pose2d(RED_REEF_CENTER, Rotation2d.fromDegrees(150)).plus(new Transform2d(REEF_APOTHEM * 2 / Math.sqrt(3), 0, Rotation2d.kZero)),
+                            new Pose2d(RED_REEF_CENTER, Rotation2d.fromDegrees(-150)).plus(new Transform2d(REEF_APOTHEM * 2 / Math.sqrt(3), 0, Rotation2d.kZero)),
+                            new Pose2d(RED_REEF_CENTER, Rotation2d.fromDegrees(-90)).plus(new Transform2d(REEF_APOTHEM * 2 / Math.sqrt(3), 0, Rotation2d.kZero))
                     ) : List.of(
-                            new Pose2d(BLUE_REEF_CENTER, Rotation2d.fromDegrees(150)).plus(new Transform2d(new Translation2d(REEF_APOTHEM * 2 / Math.sqrt(3), 0), Rotation2d.kZero)),
-                            new Pose2d(BLUE_REEF_CENTER, Rotation2d.fromDegrees(-150)).plus(new Transform2d(new Translation2d(REEF_APOTHEM * 2 / Math.sqrt(3), 0), Rotation2d.kZero)),
-                            new Pose2d(BLUE_REEF_CENTER, Rotation2d.fromDegrees(-90)).plus(new Transform2d(new Translation2d(REEF_APOTHEM * 2 / Math.sqrt(3), 0), Rotation2d.kZero)),
-                            new Pose2d(BLUE_REEF_CENTER, Rotation2d.fromDegrees(-30)).plus(new Transform2d(new Translation2d(REEF_APOTHEM * 2 / Math.sqrt(3), 0), Rotation2d.kZero)),
-                            new Pose2d(BLUE_REEF_CENTER, Rotation2d.fromDegrees(30)).plus(new Transform2d(new Translation2d(REEF_APOTHEM * 2 / Math.sqrt(3), 0), Rotation2d.kZero)),
-                            new Pose2d(BLUE_REEF_CENTER, Rotation2d.fromDegrees(90)).plus(new Transform2d(new Translation2d(REEF_APOTHEM * 2 / Math.sqrt(3), 0), Rotation2d.kZero))
+                            new Pose2d(BLUE_REEF_CENTER, Rotation2d.fromDegrees(150)).plus(new Transform2d(REEF_APOTHEM * 2 / Math.sqrt(3), 0, Rotation2d.kZero)),
+                            new Pose2d(BLUE_REEF_CENTER, Rotation2d.fromDegrees(-150)).plus(new Transform2d(REEF_APOTHEM * 2 / Math.sqrt(3), 0, Rotation2d.kZero)),
+                            new Pose2d(BLUE_REEF_CENTER, Rotation2d.fromDegrees(-90)).plus(new Transform2d(REEF_APOTHEM * 2 / Math.sqrt(3), 0, Rotation2d.kZero)),
+                            new Pose2d(BLUE_REEF_CENTER, Rotation2d.fromDegrees(-30)).plus(new Transform2d(REEF_APOTHEM * 2 / Math.sqrt(3), 0, Rotation2d.kZero)),
+                            new Pose2d(BLUE_REEF_CENTER, Rotation2d.fromDegrees(30)).plus(new Transform2d(REEF_APOTHEM * 2 / Math.sqrt(3), 0, Rotation2d.kZero)),
+                            new Pose2d(BLUE_REEF_CENTER, Rotation2d.fromDegrees(90)).plus(new Transform2d(REEF_APOTHEM * 2 / Math.sqrt(3), 0, Rotation2d.kZero))
                     );
         }
 
@@ -298,11 +298,11 @@ public final class FieldUtil {
         }
 
         public static Pose2d getRobotPoseAtProcessor() {
-            return getProcessorTagPose().plus(new Transform2d(new Translation2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0, 0), Rotation2d.kZero));
+            return getProcessorTagPose().plus(new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0, 0, Rotation2d.kZero));
         }
 
         public static Pose2d getRobotPoseAtNet() {
-            return getNetTagPose().plus(new Transform2d(new Translation2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0, 0), Rotation2d.kPi));
+            return getNetTagPose().plus(new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0, 0, Rotation2d.kPi));
         }
 
         public static Pose2d getNearestAlgaeScoringTagPose(Pose2d currentPose) {

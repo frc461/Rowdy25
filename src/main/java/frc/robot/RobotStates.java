@@ -56,7 +56,7 @@ public class RobotStates {
     public final Pivot pivot = new Pivot();
     public final Wrist wrist = new Wrist();
 
-    private State currentState;
+    private State currentState = State.STOW;
     private FieldUtil.Reef.Level currentAutoLevel = FieldUtil.Reef.Level.L2;
     private boolean isAuto = false;
     private final SendableChooser<State> stateChooser = new SendableChooser<>();
@@ -107,8 +107,6 @@ public class RobotStates {
     private final StringPublisher robotStatesPub = robotStatesTelemetryTable.getStringTopic("Current Robot State").publish();
 
     public RobotStates() {
-        currentState = State.STOW;
-
         Lights.configureLights();
 
         Arrays.stream(State.values()).forEach(state -> stateChooser.addOption(state.name(), state));
