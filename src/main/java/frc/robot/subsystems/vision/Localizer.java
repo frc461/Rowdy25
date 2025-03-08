@@ -100,20 +100,18 @@ public class Localizer {
         return nearestReefTagPose.getRotation().rotateBy(Rotation2d.kPi).getDegrees();
     }
 
-    public boolean atScoringLocation(RobotStates.State robotState) {
+    public double getDistanceToScoringLocation(RobotStates.State robotState) {
         Pose2d currentPose = getStrategyPose();
         return switch (robotState) {
-            case L1_CORAL, L2_CORAL, L3_CORAL, L4_CORAL -> currentPose.getTranslation().getDistance(
-                    nearestRobotPoseAtBranch.getTranslation()
-            ) < Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_ACCEPT;
-            case PROCESSOR -> currentPose.getTranslation().getDistance(
-                    robotPoseAtProcessor.getTranslation()
-            ) < Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_ACCEPT;
-            case NET -> currentPose.getTranslation().getDistance(
-                    robotPoseAtNet.getTranslation()
-            ) < Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_ACCEPT;
-            default -> false;
+            case L1_CORAL, L2_CORAL, L3_CORAL, L4_CORAL -> currentPose.getTranslation().getDistance(nearestRobotPoseAtBranch.getTranslation());
+            case PROCESSOR -> currentPose.getTranslation().getDistance(robotPoseAtProcessor.getTranslation());
+            case NET -> currentPose.getTranslation().getDistance(robotPoseAtNet.getTranslation());
+            default -> 0.0;
         };
+    }
+
+    public boolean atScoringLocation(RobotStates.State robotState) {
+        return getDistanceToScoringLocation(robotState) < Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_ACCEPT;
     }
 
     public double getProcessorScoringHeading() {

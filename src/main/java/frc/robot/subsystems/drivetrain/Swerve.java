@@ -187,7 +187,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                                 Constants.AutoConstants.DISTANCE_TOLERANCE_TO_DRIVE_INTO,
                                 Rotation2d.kPi
                         )
-                ).andThen(robotStates::toggleCoralStationState).andThen(new DirectMoveToPoseCommand(
+                ).andThen(robotStates::setStowState).andThen(robotStates::toggleCoralStationState).andThen(new DirectMoveToPoseCommand(
                         this,
                         fieldCentric,
                         elevatorHeight,
@@ -208,7 +208,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                                 Constants.AutoConstants.DISTANCE_TOLERANCE_TO_DRIVE_INTO,
                                 Rotation2d.kPi
                         )
-                ).andThen(robotStates::toggleCoralStationState).andThen(new DirectMoveToPoseCommand(
+                ).andThen(robotStates::setStowState).andThen(robotStates::toggleCoralStationState).andThen(new DirectMoveToPoseCommand(
                         this,
                         fieldCentric,
                         elevatorHeight,
@@ -228,7 +228,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                                 localizer.nearestRobotPosesAtBranchPair.getFirst(),
                                 Constants.AutoConstants.DISTANCE_TOLERANCE_TO_DRIVE_INTO
                         )
-                ).andThen(robotStates::toggleAutoLevelCoralState).andThen(new DirectMoveToPoseCommand(
+                ).andThen(robotStates::setStowState).andThen(() -> robotStates.toggleAutoLevelCoralState(autoHeading)).andThen(new DirectMoveToPoseCommand(
                         this,
                         fieldCentric,
                         elevatorHeight,
@@ -248,7 +248,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                                 localizer.nearestRobotPosesAtBranchPair.getSecond(),
                                 Constants.AutoConstants.DISTANCE_TOLERANCE_TO_DRIVE_INTO
                         )
-                ).andThen(robotStates::toggleAutoLevelCoralState).andThen(new DirectMoveToPoseCommand(
+                ).andThen(robotStates::setStowState).andThen(() -> robotStates.toggleAutoLevelCoralState(autoHeading)).andThen(new DirectMoveToPoseCommand(
                         this,
                         fieldCentric,
                         elevatorHeight,
@@ -269,8 +269,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                                 Constants.AutoConstants.DISTANCE_TOLERANCE_TO_DRIVE_INTO,
                                 localizer.nearestAlgaeIsHigh ? Rotation2d.kZero : Rotation2d.kPi
                         )
-                )
-                        .andThen(() -> robotStates.toggleNearestReefAlgaeState(localizer.nearestAlgaeIsHigh))
+                ).andThen(robotStates::setStowState).andThen(() -> robotStates.toggleNearestReefAlgaeState(localizer.nearestAlgaeIsHigh))
                         .andThen(new DirectMoveToPoseCommand(
                                 this,
                                 fieldCentric,
@@ -291,7 +290,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                                 localizer.robotPoseAtNet,
                                 Constants.AutoConstants.DISTANCE_TOLERANCE_TO_DRIVE_INTO
                         )
-                ).andThen(robotStates::toggleNetState).andThen(new DirectMoveToPoseCommand(
+                ).andThen(robotStates::setStowState).andThen(robotStates::toggleNetState).andThen(new DirectMoveToPoseCommand(
                         this,
                         fieldCentric,
                         elevatorHeight,
@@ -312,7 +311,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                                 Constants.AutoConstants.DISTANCE_TOLERANCE_TO_DRIVE_INTO,
                                 Rotation2d.kPi
                         )
-                ).andThen(robotStates::toggleProcessorState).andThen(new DirectMoveToPoseCommand(
+                ).andThen(robotStates::setStowState).andThen(robotStates::toggleProcessorState).andThen(new DirectMoveToPoseCommand(
                         this,
                         fieldCentric,
                         elevatorHeight,

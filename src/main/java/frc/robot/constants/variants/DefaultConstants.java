@@ -265,7 +265,7 @@ public final class DefaultConstants {
         public static final double CURRENT_LIMIT = 40;
         public static final InvertedValue MOTOR_INVERT = InvertedValue.Clockwise_Positive;
         public static final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Coast;
-        public static final double DEFAULT_PROXIMITY_OBJECT_DETECTION_THRESHOLD = 0.1;
+        public static final double DEFAULT_PROXIMITY_OBJECT_DETECTION_THRESHOLD = 0.13;
     }
 
     public final static class PivotConstants {

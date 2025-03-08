@@ -3,6 +3,7 @@ package frc.robot.subsystems.vision;
 import dev.doglog.DogLog;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.networktables.*;
+import frc.robot.RobotStates;
 import frc.robot.constants.Constants;
 import frc.robot.util.vision.LimelightUtil;
 import frc.robot.util.vision.PhotonUtil;
@@ -28,6 +29,8 @@ public class LocalizationTelemetry {
     private final StringPublisher temporaryTargetPosePrettyPub = localizationTelemetryTable.getStringTopic("Temporary Target Pose").publish();
     private final StringPublisher questPosePrettyPub = localizationTelemetryTable.getStringTopic("Quest-Based Pose").publish();
     private final StringPublisher localizationStrategyPub = localizationTelemetryTable.getStringTopic("Localization Strategy").publish();
+    private final DoublePublisher distanceToCoralScoringLocation = localizationTelemetryTable.getDoubleTopic("DistanceToCoralScoringLocation").publish();
+    private final BooleanPublisher atCoralScoringLocation = localizationTelemetryTable.getBooleanTopic("AtScoringLocation").publish();
 
     private final StringPublisher megaTagOnePosePrettyPub = limelightTelemetryTable.getStringTopic("MegaTagOne Pose").publish();
     private final StringPublisher megaTagTwoPosePrettyPub = limelightTelemetryTable.getStringTopic("MegaTagTwo Pose").publish();
@@ -68,6 +71,8 @@ public class LocalizationTelemetry {
 
         nearestTagDistPub.set(LimelightUtil.getNearestTagDist());
         canAddLLMeasurementsPub.set(LimelightUtil.isTagClear());
+        distanceToCoralScoringLocation.set(localizer.getDistanceToScoringLocation(RobotStates.State.L4_CORAL));
+        atCoralScoringLocation.set(localizer.atScoringLocation(RobotStates.State.L4_CORAL));
 
         photonColorHasAlgaeTargetPub.set(PhotonUtil.Color.hasAlgaeTargets());
         photonColorHasCoralTargetPub.set(PhotonUtil.Color.hasCoralTargets());
