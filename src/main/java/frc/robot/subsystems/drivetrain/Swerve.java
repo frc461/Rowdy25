@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import frc.robot.RobotStates;
 import frc.robot.autos.Pathfinder;
 import frc.robot.commands.DirectMoveToPoseCommand;
 import frc.robot.commands.PathfindToPoseAvoidingReefCommand;
@@ -175,7 +176,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
         return new DirectMoveToObjectCommand(this, robotCentric, objectObtained, objectLabelClass);
     }
 
-    public Command pathFindToLeftCoralStation(DoubleSupplier elevatorHeight) {
+    public Command pathFindToLeftCoralStation(RobotStates robotStates, DoubleSupplier elevatorHeight) {
         return Commands.defer(
                 () -> new PathfindToPoseAvoidingReefCommand(
                         this,
@@ -186,7 +187,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                                 Constants.AutoConstants.DISTANCE_TOLERANCE_TO_DRIVE_INTO,
                                 Rotation2d.kPi
                         )
-                ).andThen(new DirectMoveToPoseCommand(
+                ).andThen(robotStates::toggleCoralStationState).andThen(new DirectMoveToPoseCommand(
                         this,
                         fieldCentric,
                         elevatorHeight,
@@ -196,7 +197,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
         );
     }
 
-    public Command pathFindToRightCoralStation(DoubleSupplier elevatorHeight) {
+    public Command pathFindToRightCoralStation(RobotStates robotStates, DoubleSupplier elevatorHeight) {
         return Commands.defer(
                 () -> new PathfindToPoseAvoidingReefCommand(
                         this,
@@ -207,7 +208,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                                 Constants.AutoConstants.DISTANCE_TOLERANCE_TO_DRIVE_INTO,
                                 Rotation2d.kPi
                         )
-                ).andThen(new DirectMoveToPoseCommand(
+                ).andThen(robotStates::toggleCoralStationState).andThen(new DirectMoveToPoseCommand(
                         this,
                         fieldCentric,
                         elevatorHeight,
@@ -217,7 +218,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
         );
     }
 
-    public Command pathFindToNearestLeftBranch(DoubleSupplier elevatorHeight) {
+    public Command pathFindToNearestLeftBranch(RobotStates robotStates, DoubleSupplier elevatorHeight) {
         return Commands.defer(
                 () -> new PathfindToPoseAvoidingReefCommand(
                         this,
@@ -227,7 +228,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                                 FieldUtil.Reef.getNearestRobotPosesAtBranchPair(localizer.getStrategyPose()).getFirst(),
                                 Constants.AutoConstants.DISTANCE_TOLERANCE_TO_DRIVE_INTO
                         )
-                ).andThen(new DirectMoveToPoseCommand(
+                ).andThen(robotStates::toggleAutoLevelCoralState).andThen(new DirectMoveToPoseCommand(
                         this,
                         fieldCentric,
                         elevatorHeight,
@@ -237,7 +238,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
         );
     }
 
-    public Command pathFindToNearestRightBranch(DoubleSupplier elevatorHeight) {
+    public Command pathFindToNearestRightBranch(RobotStates robotStates, DoubleSupplier elevatorHeight) {
         return Commands.defer(
                 () -> new PathfindToPoseAvoidingReefCommand(
                         this,
@@ -247,7 +248,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                                 FieldUtil.Reef.getNearestRobotPosesAtBranchPair(localizer.getStrategyPose()).getSecond(),
                                 Constants.AutoConstants.DISTANCE_TOLERANCE_TO_DRIVE_INTO
                         )
-                ).andThen(new DirectMoveToPoseCommand(
+                ).andThen(robotStates::toggleAutoLevelCoralState).andThen(new DirectMoveToPoseCommand(
                         this,
                         fieldCentric,
                         elevatorHeight,
@@ -257,7 +258,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
         );
     }
 
-    public Command pathFindToNearestAlgaeOnReef(DoubleSupplier elevatorHeight) {
+    public Command pathFindToNearestAlgaeOnReef(RobotStates robotStates, DoubleSupplier elevatorHeight) {
         return Commands.defer(
                 () -> new PathfindToPoseAvoidingReefCommand(
                         this,
@@ -270,7 +271,11 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                                         FieldUtil.Reef.getNearestReefTag(localizer.getStrategyPose())
                                 ) == FieldUtil.Reef.AlgaeLocation.HIGH ? Rotation2d.kZero : Rotation2d.kPi
                         )
-                ).andThen(new DirectMoveToPoseCommand(
+                ).andThen(() -> robotStates.toggleNearestReefAlgaeState(
+                        FieldUtil.Reef.getAlgaeReefLevelFromTag(
+                                FieldUtil.Reef.getNearestReefTag(localizer.getStrategyPose())
+                        ) == FieldUtil.Reef.AlgaeLocation.HIGH
+                )).andThen(new DirectMoveToPoseCommand(
                         this,
                         fieldCentric,
                         elevatorHeight,
@@ -280,7 +285,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
         );
     }
 
-    public Command pathFindToNet(DoubleSupplier elevatorHeight) {
+    public Command pathFindToNet(RobotStates robotStates, DoubleSupplier elevatorHeight) {
         return Commands.defer(
                 () -> new PathfindToPoseAvoidingReefCommand(
                         this,
@@ -290,7 +295,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                                 FieldUtil.AlgaeScoring.getRobotPoseAtNet(),
                                 Constants.AutoConstants.DISTANCE_TOLERANCE_TO_DRIVE_INTO
                         )
-                ).andThen(new DirectMoveToPoseCommand(
+                ).andThen(robotStates::toggleNetState).andThen(new DirectMoveToPoseCommand(
                         this,
                         fieldCentric,
                         elevatorHeight,
@@ -300,7 +305,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
         );
     }
 
-    public Command pathFindToProcessor(DoubleSupplier elevatorHeight) {
+    public Command pathFindToProcessor(RobotStates robotStates, DoubleSupplier elevatorHeight) {
         return Commands.defer(
                 () -> new PathfindToPoseAvoidingReefCommand(
                         this,
@@ -311,7 +316,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                                 Constants.AutoConstants.DISTANCE_TOLERANCE_TO_DRIVE_INTO,
                                 Rotation2d.kPi
                         )
-                ).andThen(new DirectMoveToPoseCommand(
+                ).andThen(robotStates::toggleProcessorState).andThen(new DirectMoveToPoseCommand(
                         this,
                         fieldCentric,
                         elevatorHeight,

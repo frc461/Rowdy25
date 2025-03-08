@@ -142,25 +142,25 @@ public class RobotContainer {
 
         // TODO SHOP: TEST ALL OF THIS
         driverXbox.leftBumper().whileTrue(new ConditionalCommand(
-                robotStates.swerve.pathFindToNearestLeftBranch(robotStates.elevator::getPosition),
+                robotStates.swerve.pathFindToNearestLeftBranch(robotStates, robotStates.elevator::getPosition),
                 new ConditionalCommand(
-                        robotStates.swerve.pathFindToNet(robotStates.elevator::getPosition),
-                        robotStates.swerve.pathFindToLeftCoralStation(robotStates.elevator::getPosition),
+                        robotStates.swerve.pathFindToNet(robotStates, robotStates.elevator::getPosition),
+                        robotStates.swerve.pathFindToLeftCoralStation(robotStates, robotStates.elevator::getPosition),
                         robotStates.intake::hasAlgae
                 ),
                 robotStates.intake::hasCoral
         ));
         driverXbox.rightBumper().whileTrue(new ConditionalCommand(
-                robotStates.swerve.pathFindToNearestRightBranch(robotStates.elevator::getPosition),
+                robotStates.swerve.pathFindToNearestRightBranch(robotStates, robotStates.elevator::getPosition),
                 new ConditionalCommand(
-                        robotStates.swerve.pathFindToProcessor(robotStates.elevator::getPosition),
-                        robotStates.swerve.pathFindToRightCoralStation(robotStates.elevator::getPosition),
+                        robotStates.swerve.pathFindToProcessor(robotStates, robotStates.elevator::getPosition),
+                        robotStates.swerve.pathFindToRightCoralStation(robotStates, robotStates.elevator::getPosition),
                         robotStates.intake::hasAlgae
                 ),
                 robotStates.intake::hasCoral
         ));
         driverXbox.leftBumper().and(driverXbox.rightBumper()).whileTrue(
-                robotStates.swerve.pathFindToNearestAlgaeOnReef(robotStates.elevator::getPosition)
+                robotStates.swerve.pathFindToNearestAlgaeOnReef(robotStates, robotStates.elevator::getPosition)
                         .unless(() -> robotStates.intake.hasAlgae() || robotStates.intake.hasCoral())
         );
 
