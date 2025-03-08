@@ -15,7 +15,6 @@ import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.autos.AutoManager;
 import frc.robot.constants.Constants;
-import frc.robot.util.DoubleTrueTrigger;
 import frc.robot.util.FieldUtil;
 import frc.robot.util.SysID;
 
@@ -142,27 +141,27 @@ public class RobotContainer {
 
         // TODO SHOP: TEST ALL OF THIS
         driverXbox.leftBumper().whileTrue(new ConditionalCommand(
-                robotStates.swerve.pathFindToNearestLeftBranch(robotStates, robotStates.elevator::getPosition)
+                robotStates.swerve.pathFindToNearestLeftBranch(robotStates)
                         .unless(robotStates.l1CoralState),
                 new ConditionalCommand(
-                        robotStates.swerve.pathFindToNet(robotStates, robotStates.elevator::getPosition),
-                        robotStates.swerve.pathFindToLeftCoralStation(robotStates, robotStates.elevator::getPosition),
+                        robotStates.swerve.pathFindToNet(robotStates),
+                        robotStates.swerve.pathFindToLeftCoralStation(robotStates),
                         robotStates.intake::hasAlgae
                 ),
                 robotStates.intake::hasCoral
         ));
         driverXbox.rightBumper().whileTrue(new ConditionalCommand(
-                robotStates.swerve.pathFindToNearestRightBranch(robotStates, robotStates.elevator::getPosition)
+                robotStates.swerve.pathFindToNearestRightBranch(robotStates)
                         .unless(robotStates.l1CoralState),
                 new ConditionalCommand(
-                        robotStates.swerve.pathFindToProcessor(robotStates, robotStates.elevator::getPosition),
-                        robotStates.swerve.pathFindToRightCoralStation(robotStates, robotStates.elevator::getPosition),
+                        robotStates.swerve.pathFindToProcessor(robotStates),
+                        robotStates.swerve.pathFindToRightCoralStation(robotStates),
                         robotStates.intake::hasAlgae
                 ),
                 robotStates.intake::hasCoral
         ));
         driverXbox.leftBumper().and(driverXbox.rightBumper()).whileTrue(
-                robotStates.swerve.pathFindToNearestAlgaeOnReef(robotStates, robotStates.elevator::getPosition)
+                robotStates.swerve.pathFindToNearestAlgaeOnReef(robotStates)
                         .unless(() -> robotStates.intake.hasAlgae() || robotStates.intake.hasCoral())
         );
 
