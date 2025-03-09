@@ -60,10 +60,7 @@ public class DirectMoveToPoseCommand extends Command {
         Pose2d currentPose = swerve.localizer.getStrategyPose();
 
         double velocity = MathUtil.clamp(
-                Math.max(
-                        EquationUtil.expOutput(targetPose.getTranslation().getDistance(currentPose.getTranslation()), 0.05, 50), // TODO SHOP: TEST THIS FURTHER
-                        Math.min(EquationUtil.linearOutput(targetPose.getTranslation().getDistance(currentPose.getTranslation()), 1.0), 1.0)
-                ),
+                EquationUtil.expOutput(targetPose.getTranslation().getDistance(currentPose.getTranslation()), 0.05, 50), // TODO SHOP: TEST THIS FURTHER
                 -Constants.MAX_CONTROLLED_VEL.apply(elevatorHeight.getAsDouble()),
                 Constants.MAX_CONTROLLED_VEL.apply(elevatorHeight.getAsDouble())
         );

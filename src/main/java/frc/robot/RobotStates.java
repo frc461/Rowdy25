@@ -349,7 +349,7 @@ public class RobotStates {
                         .andThen(new WaitUntilCommand(elevator::nearTarget))
                         .andThen(wrist::setL2CoralState)
                         .andThen(
-                                new WaitUntilCommand(atL2CoralState.and(() -> swerve.localizer.atScoringLocation(currentState))) // TODO SHOP: TEST AT SCORING LOCATION STATE IN AUTO BEFORE TESTING IT HERE
+                                new WaitUntilCommand(atL2CoralState.and(() -> swerve.localizer.atScoringLocation(currentState)))
                                         .andThen(this::toggleL2CoralState)
                                         .onlyIf(() -> isAutoScoreToggledOn)
                         )

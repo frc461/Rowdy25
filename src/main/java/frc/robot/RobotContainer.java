@@ -139,7 +139,6 @@ public class RobotContainer {
         driverXbox.leftStick().onTrue(new InstantCommand(() -> robotStates.swerve.localizer.setPoses(Constants.CENTER_OF_RIGHT_CORAL_STATION)));
         driverXbox.rightStick().onTrue(new InstantCommand(() -> robotStates.swerve.localizer.setPoses(Constants.CENTER_OF_LEFT_CORAL_STATION)));
 
-        // TODO SHOP: TEST ALL OF THIS
         driverXbox.leftBumper().whileTrue(new ConditionalCommand(
                 robotStates.swerve.pathFindToNearestLeftBranch(robotStates)
                         .unless(robotStates.l1CoralState),
@@ -160,6 +159,7 @@ public class RobotContainer {
                 ),
                 robotStates.intake::hasCoral
         ));
+        // TODO SHOP: TEST ALGAE OFF REEF
         driverXbox.leftBumper().and(driverXbox.rightBumper()).whileTrue(
                 robotStates.swerve.pathFindToNearestAlgaeOnReef(robotStates)
                         .unless(() -> robotStates.intake.hasAlgae() || robotStates.intake.hasCoral())
