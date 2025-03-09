@@ -25,7 +25,6 @@ import frc.robot.util.FieldUtil;
 import frc.robot.util.vision.PhotonUtil;
 
 import java.util.Arrays;
-import java.util.Set;
 
 import dev.doglog.DogLog;
 
@@ -59,7 +58,6 @@ public class RobotStates {
 
     private State currentState = State.STOW;
     private FieldUtil.Reef.Level currentAutoLevel = FieldUtil.Reef.Level.L2;
-    private boolean isAutoScoreToggledOn = false;
     private final SendableChooser<State> stateChooser = new SendableChooser<>();
 
     public final Trigger stowState = new Trigger(() -> currentState == State.STOW);
@@ -116,18 +114,13 @@ public class RobotStates {
         SmartDashboard.putData("Robot State Chooser", stateChooser);
     }
 
-    public State getAutoLevelState() {
-        return switch (currentAutoLevel) {
-            case L1 -> State.L1_CORAL;
-            case L2 -> State.L2_CORAL;
-            case L3 -> State.L3_CORAL;
-            case L4 -> State.L4_CORAL;
-        };
-    }
-
     public void setCurrentAutoLevel(FieldUtil.Reef.Level level) {
         currentAutoLevel = level;
         needsUpdate = isListening.getAsBoolean();
+    }
+
+    public boolean atScoringLocation() {
+        return swerve.localizer.atScoringLocation(currentState);
     }
 
     public void setStowState() {
@@ -158,52 +151,28 @@ public class RobotStates {
         currentState = currentState == State.GROUND_ALGAE ? State.STOW : State.GROUND_ALGAE;
     }
 
-    public void toggleL1CoralState(boolean autoScore) {
-        currentState = currentState == State.L1_CORAL ? State.OUTTAKE : State.L1_CORAL;
-        isAutoScoreToggledOn = currentState == State.L1_CORAL && autoScore;
-    }
-
     public void toggleL1CoralState() {
-        toggleL1CoralState(false);
-    }
-
-    public void toggleL2CoralState(boolean autoScore) {
-        currentState = currentState == State.L2_CORAL ? State.INTAKE_OUT : State.L2_CORAL;
-        isAutoScoreToggledOn = currentState == State.L2_CORAL && autoScore;
+        currentState = currentState == State.L1_CORAL ? State.OUTTAKE : State.L1_CORAL;
     }
 
     public void toggleL2CoralState() {
-        toggleL2CoralState(false);
-    }
-
-    public void toggleL3CoralState(boolean autoScore) {
-        currentState = currentState == State.L3_CORAL ? State.INTAKE_OUT : State.L3_CORAL;
-        isAutoScoreToggledOn = currentState == State.L3_CORAL && autoScore;
+        currentState = currentState == State.L2_CORAL ? State.INTAKE_OUT : State.L2_CORAL;
     }
 
     public void toggleL3CoralState() {
-        toggleL3CoralState(false);
-    }
-
-    public void toggleL4CoralState(boolean autoScore) {
-        currentState = currentState == State.L4_CORAL ? State.INTAKE_OUT : State.L4_CORAL;
-        isAutoScoreToggledOn = currentState == State.L4_CORAL && autoScore;
+        currentState = currentState == State.L3_CORAL ? State.INTAKE_OUT : State.L3_CORAL;
     }
 
     public void toggleL4CoralState() {
-        toggleL4CoralState(false);
+        currentState = currentState == State.L4_CORAL ? State.INTAKE_OUT : State.L4_CORAL;
     }
 
     public void toggleAutoLevelCoralState() {
-        toggleAutoLevelCoralState(false);
-    }
-
-    public void toggleAutoLevelCoralState(boolean autoScore) {
         switch (currentAutoLevel) {
-            case L1 -> toggleL1CoralState(autoScore);
-            case L2 -> toggleL2CoralState(autoScore);
-            case L3 -> toggleL3CoralState(autoScore);
-            case L4 -> toggleL4CoralState(autoScore);
+            case L1 -> toggleL1CoralState();
+            case L2 -> toggleL2CoralState();
+            case L3 -> toggleL3CoralState();
+            case L4 -> toggleL4CoralState();
         }
     }
 
@@ -223,7 +192,6 @@ public class RobotStates {
 
     public void toggleProcessorState(boolean autoScore) {
         currentState = currentState == State.PROCESSOR ? State.OUTTAKE : State.PROCESSOR;
-        isAutoScoreToggledOn = currentState == State.PROCESSOR && autoScore;
     }
 
     public void toggleProcessorState() {
@@ -232,7 +200,6 @@ public class RobotStates {
 
     public void toggleNetState(boolean autoScore) {
         currentState = currentState == State.NET ? State.OUTTAKE : State.NET;
-        isAutoScoreToggledOn = currentState == State.NET && autoScore;
     }
 
     public void toggleNetState() {
@@ -348,11 +315,6 @@ public class RobotStates {
                         .andThen(elevator::setL2CoralState)
                         .andThen(new WaitUntilCommand(elevator::nearTarget))
                         .andThen(wrist::setL2CoralState)
-                        .andThen(
-                                new WaitUntilCommand(atL2CoralState.and(() -> swerve.localizer.atScoringLocation(currentState)))
-                                        .andThen(this::toggleL2CoralState)
-                                        .onlyIf(() -> isAutoScoreToggledOn)
-                        )
                         .until(() -> !l2CoralState.getAsBoolean())
         );
 
@@ -366,11 +328,6 @@ public class RobotStates {
                         .andThen(elevator::setL3CoralState)
                         .andThen(new WaitUntilCommand(elevator::nearTarget))
                         .andThen(wrist::setL3CoralState)
-                        .andThen(
-                                new WaitUntilCommand(() -> swerve.localizer.atScoringLocation(currentState) && atL3CoralState.getAsBoolean())
-                                        .andThen(this::toggleL3CoralState)
-                                        .onlyIf(() -> isAutoScoreToggledOn)
-                        )
                         .until(() -> !l3CoralState.getAsBoolean())
         );
 
@@ -384,11 +341,6 @@ public class RobotStates {
                         .andThen(elevator::setL4CoralState)
                         .andThen(new WaitUntilCommand(elevator::nearTarget))
                         .andThen(wrist::setL4CoralState)
-                        .andThen(
-                                new WaitUntilCommand(() -> swerve.localizer.atScoringLocation(currentState) && atL4CoralState.getAsBoolean())
-                                        .andThen(this::toggleL4CoralState)
-                                        .onlyIf(() -> isAutoScoreToggledOn)
-                        )
                         .until(() -> !l4CoralState.getAsBoolean())
         );
 
@@ -429,11 +381,6 @@ public class RobotStates {
                         .andThen(elevator::setProcessorState)
                         .andThen(new WaitUntilCommand(elevator::nearTarget))
                         .andThen(pivot::setProcessorState)
-                        .andThen(
-                                new WaitUntilCommand(() -> swerve.localizer.atScoringLocation(currentState) && atProcessorState.getAsBoolean())
-                                        .andThen(this::toggleProcessorState)
-                                        .onlyIf(() -> isAutoScoreToggledOn)
-                        )
                         .until(() -> !processorState.getAsBoolean())
         );
 
@@ -446,11 +393,6 @@ public class RobotStates {
                         .andThen(elevator::setNetState)
                         .andThen(new WaitUntilCommand(elevator::nearTarget))
                         .andThen(wrist::setNetState)
-                        .andThen(
-                                new WaitUntilCommand(() -> swerve.localizer.atScoringLocation(currentState) && atNetState.getAsBoolean())
-                                        .andThen(this::toggleNetState)
-                                        .onlyIf(() -> isAutoScoreToggledOn)
-                        )
                         .until(() -> !netState.getAsBoolean())
         );
 

@@ -17,10 +17,7 @@ import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.Subsystem;
+import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.RobotStates;
 import frc.robot.autos.Pathfinder;
 import frc.robot.commands.DirectMoveToPoseCommand;
@@ -229,12 +226,16 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                                 localizer.nearestRobotPosesAtBranchPair.getFirst(),
                                 Constants.AutoConstants.DISTANCE_TOLERANCE_TO_DRIVE_INTO
                         )
-                ).andThen(robotStates::setStowState).andThen(() -> robotStates.toggleAutoLevelCoralState(autoHeading)).andThen(new DirectMoveToPoseCommand(
+                ).andThen(robotStates::setStowState).andThen(robotStates::toggleAutoLevelCoralState).andThen(new DirectMoveToPoseCommand(
                         this,
                         fieldCentric,
                         robotStates.elevator::getPosition,
                         localizer.nearestRobotPosesAtBranchPair.getFirst()
-                )),
+                )).andThen(
+                        new WaitUntilCommand(robotStates.atAutoScoreState.and(robotStates::atScoringLocation))
+                                .andThen(robotStates::toggleAutoLevelCoralState)
+                .onlyIf(() -> autoHeading)
+                ),
                 Set.of(this)
         );
     }
@@ -249,12 +250,16 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                                 localizer.nearestRobotPosesAtBranchPair.getSecond(),
                                 Constants.AutoConstants.DISTANCE_TOLERANCE_TO_DRIVE_INTO
                         )
-                ).andThen(robotStates::setStowState).andThen(() -> robotStates.toggleAutoLevelCoralState(autoHeading)).andThen(new DirectMoveToPoseCommand(
+                ).andThen(robotStates::setStowState).andThen(robotStates::toggleAutoLevelCoralState).andThen(new DirectMoveToPoseCommand(
                         this,
                         fieldCentric,
                         robotStates.elevator::getPosition,
                         localizer.nearestRobotPosesAtBranchPair.getSecond()
-                )),
+                )).andThen(
+                        new WaitUntilCommand(robotStates.atAutoScoreState.and(robotStates::atScoringLocation))
+                                .andThen(robotStates::toggleAutoLevelCoralState)
+                                .onlyIf(() -> autoHeading)
+                ),
                 Set.of(this)
         );
     }
@@ -270,12 +275,16 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                                         FieldUtil.Reef.ScoringLocation.getPose(location),
                                         Constants.AutoConstants.DISTANCE_TOLERANCE_TO_DRIVE_INTO
                                 )
-                        )).andThen(robotStates::setStowState).andThen(() -> robotStates.toggleAutoLevelCoralState(autoHeading)).andThen(new DirectMoveToPoseCommand(
+                        )).andThen(robotStates::setStowState).andThen(robotStates::toggleAutoLevelCoralState).andThen(new DirectMoveToPoseCommand(
                                 this,
                                 fieldCentric,
                                 robotStates.elevator::getPosition,
                                 FieldUtil.Reef.ScoringLocation.getPose(location)
-                        )),
+                        )).andThen(
+                                new WaitUntilCommand(robotStates.atAutoScoreState.and(robotStates::atScoringLocation))
+                                        .andThen(robotStates::toggleAutoLevelCoralState)
+                                        .onlyIf(() -> autoHeading)
+                        ),
                 Set.of(this)
         );
     }
@@ -317,7 +326,11 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                         fieldCentric,
                         robotStates.elevator::getPosition,
                         localizer.robotPoseAtNet
-                )),
+                )).andThen(
+                        new WaitUntilCommand(robotStates.atNetState.and(robotStates::atScoringLocation))
+                                .andThen(robotStates::toggleNetState)
+                                .onlyIf(() -> autoHeading)
+                ),
                 Set.of(this)
         );
     }
@@ -338,7 +351,11 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                         fieldCentric,
                         robotStates.elevator::getPosition,
                         localizer.robotPoseAtProcessor
-                )),
+                )).andThen(
+                        new WaitUntilCommand(robotStates.atProcessorState.and(robotStates::atScoringLocation))
+                                .andThen(robotStates::toggleProcessorState)
+                                .onlyIf(() -> autoHeading)
+                ),
                 Set.of(this)
         );
     }
