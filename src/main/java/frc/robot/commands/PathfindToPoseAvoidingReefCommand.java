@@ -86,11 +86,11 @@ public class PathfindToPoseAvoidingReefCommand extends Command {
         smoothTemporaryTargetPose = getSmoothTargetPose(temporaryTargetPose);
         swerve.localizer.setCurrentTemporaryTargetPose(smoothTemporaryTargetPose);
 
-        double velocity = MathUtil.clamp(
+        double velocity = MathUtil.clamp( // TODO: TEST THIS
                 Math.max(
                         EquationUtil.expOutput(smoothTemporaryTargetPose.getTranslation().getDistance(currentPose.getTranslation()), 0.02, 50),
                         Math.max(
-                                Math.min(EquationUtil.linearOutput(smoothTemporaryTargetPose.getTranslation().getDistance(currentPose.getTranslation()), 2.0), 4.0),
+                                Math.min(EquationUtil.linearOutput(smoothTemporaryTargetPose.getTranslation().getDistance(currentPose.getTranslation()), 2.0), 5.0),
                                 Math.min(EquationUtil.linearOutput(smoothTemporaryTargetPose.getTranslation().getDistance(currentPose.getTranslation()), 2.5), 2.5)
                         )
                 ),
@@ -129,11 +129,11 @@ public class PathfindToPoseAvoidingReefCommand extends Command {
             return temporaryPose;
         }
 
-        if (smoothTemporaryTargetPose.getTranslation().getDistance(temporaryPose.getTranslation()) > 0.075) {
+        if (smoothTemporaryTargetPose.getTranslation().getDistance(temporaryPose.getTranslation()) > 0.085) {
             Rotation2d headingToTemporaryPose = temporaryPose.getTranslation().minus(smoothTemporaryTargetPose.getTranslation()).getAngle();
             return new Pose2d(
                     new Pose2d(smoothTemporaryTargetPose.getTranslation(), headingToTemporaryPose)
-                            .plus(new Transform2d(0.075, 0, Rotation2d.kZero))
+                            .plus(new Transform2d(0.085, 0, Rotation2d.kZero))
                             .getTranslation(),
                     smoothTemporaryTargetPose.getRotation().interpolate(temporaryPose.getRotation(), 0.25)
             );
