@@ -68,9 +68,9 @@ public final class CompConstants {
         public static final double I = 0.0;
         public static final double D = 0.0;
         public static final double EXPO_V = V / 0.95; // 95% of the actual max velocity, as it will allocate 1 / 0.9 = 1.1111 times the voltage to 1 rps
-        public static final double EXPO_A = A / 0.045; // 4.5% of the actual max accel
-        public static final double SAFE_TOLERANCE = 5.0;
-        public static final double AT_TARGET_TOLERANCE = 2.5;
+        public static final double EXPO_A = A / 0.055; // 5.5% of the actual max accel
+        public static final double SAFE_TOLERANCE = 12.0;
+        public static final double AT_TARGET_TOLERANCE = 2.0;
 
         // presets
         public static final double LOWER_LIMIT = 0;
@@ -119,7 +119,7 @@ public final class CompConstants {
         public static final double I = 0;
         public static final double D = 0.0;
         public static final double EXPO_V = V / 0.4; // 40% of the actual max velocity, as it will allocate 1 / 0.4 = 2.5 times the voltage to 1 rps
-        public static final double EXPO_A = A / 0.015; // 1.5% of the actual max acceleration
+        public static final double EXPO_A = A / 0.01; // 1% of the actual max acceleration
         public static final double SAFE_TOLERANCE = 15.0;
         public static final double AT_TARGET_TOLERANCE = 2.5;
 
@@ -162,7 +162,7 @@ public final class CompConstants {
         public static final double P = 0.2;
         public static final double I = 0.0;
         public static final double D = 0.0;
-        public static final double EXPO_V = V / 0.8; // 80% of the actual max velocity, as it will allocate 1 / 0.8 = 1.25 times the voltage to 1 rps
+        public static final double EXPO_V = V / 0.9; // 90% of the actual max velocity, as it will allocate 1 / 0.8 = 1.25 times the voltage to 1 rps
         public static final double EXPO_A = A / 0.08; // 8% of the actual max accel
         public static final double SAFE_TOLERANCE = 25.0;
         public static final double AT_TARGET_TOLERANCE = 2.5;

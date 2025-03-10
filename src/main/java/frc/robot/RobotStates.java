@@ -210,7 +210,7 @@ public class RobotStates {
         currentState = (currentState == State.CLIMB || currentState == State.PREPARE_CLIMB) ? State.CLIMB : State.PREPARE_CLIMB;
     }
 
-    public void configureToggleStateTriggers() { // TODO: OPTIMIZE STATE TRANSITIONS
+    public void configureToggleStateTriggers() { // TODO: OPTIMIZE STATE TRANSITIONS BY STARTING PIVOT AND ELEVATOR TOGETHER, THEN WRIST
         isListening.and(() -> needsUpdate).onTrue(
                 new InstantCommand(this::toggleAutoLevelCoralState)
                         .andThen(() -> needsUpdate = false)
@@ -221,7 +221,6 @@ public class RobotStates {
                         .andThen(climb::reset)
                         .andThen(intake::setIdleState)
                         .andThen(wrist::setStowState)
-                        .andThen(new WaitUntilCommand(wrist::nearTarget))
                         .andThen(movePivotToPerpendicular())
                         .andThen(elevator::setStowState)
                         .andThen(new WaitUntilCommand(elevator::nearTarget))
@@ -450,10 +449,8 @@ public class RobotStates {
     private Command transition(Pivot.State pivotState) {
         return new ConditionalCommand(
                 new InstantCommand(wrist::setStowState)
-                        .andThen(new WaitUntilCommand(wrist::nearTarget))
                         .andThen(movePivotToPerpendicular()),
                 new InstantCommand(wrist::setStowState)
-                        .andThen(new WaitUntilCommand(wrist::nearTarget))
                         .andThen(movePivotToPerpendicular())
                         .andThen(elevator::setStowState)
                         .andThen(new WaitUntilCommand(elevator::nearTarget)),
