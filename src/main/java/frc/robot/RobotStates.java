@@ -210,7 +210,26 @@ public class RobotStates {
         currentState = (currentState == State.CLIMB || currentState == State.PREPARE_CLIMB) ? State.CLIMB : State.PREPARE_CLIMB;
     }
 
-    public void configureToggleStateTriggers() { // TODO: OPTIMIZE STATE TRANSITIONS BY STARTING PIVOT AND ELEVATOR TOGETHER, THEN WRIST
+    private Command transition(Pivot.State pivotState) {
+        return new ConditionalCommand(
+                new InstantCommand(wrist::setStowState)
+                        .andThen(movePivotToPerpendicular()),
+                new InstantCommand(wrist::setStowState)
+                        .andThen(movePivotToPerpendicular())
+                        .andThen(elevator::setStowState)
+                        .andThen(new WaitUntilCommand(elevator::nearTarget)),
+                () -> pivot.isAtState(pivotState)
+        );
+    }
+
+    private Command movePivotToPerpendicular() {
+        return new InstantCommand(pivot::setPerpendicularState)
+                .andThen(new WaitUntilCommand(pivot::nearTarget))
+                .onlyIf(() -> pivot.getPosition() > 90);
+    }
+
+    public void configureToggleStateTriggers() { // TODO SHOP: TEST/OPTIMIZE STATE TRANSITIONS BY STARTING PIVOT AND ELEVATOR TOGETHER, THEN WRIST
+        // TODO: INTEGRATED FUNCTION TO DETERMINE ORDER TO TRANSITION STATES
         isListening.and(() -> needsUpdate).onTrue(
                 new InstantCommand(this::toggleAutoLevelCoralState)
                         .andThen(() -> needsUpdate = false)
@@ -412,8 +431,8 @@ public class RobotStates {
                 new InstantCommand(climb::escalateClimb)
         );
     }
-
     /* Each subsystem will execute their corresponding command periodically */
+
     public void setDefaultCommands(CommandXboxController driverXbox, CommandXboxController opXbox) {
         /* Note that X is defined as forward according to WPILib convention,
         and Y is defined as to the left according to WPILib convention.
@@ -444,24 +463,6 @@ public class RobotStates {
         wrist.setDefaultCommand(
                 new WristCommand(wrist, () -> -opXbox.getRightY(), pivot::getPosition, elevator::getPosition, this)
         );
-    }
-
-    private Command transition(Pivot.State pivotState) {
-        return new ConditionalCommand(
-                new InstantCommand(wrist::setStowState)
-                        .andThen(movePivotToPerpendicular()),
-                new InstantCommand(wrist::setStowState)
-                        .andThen(movePivotToPerpendicular())
-                        .andThen(elevator::setStowState)
-                        .andThen(new WaitUntilCommand(elevator::nearTarget)),
-                () -> pivot.isAtState(pivotState)
-        );
-    }
-
-    private Command movePivotToPerpendicular() {
-        return new InstantCommand(pivot::setPerpendicularState)
-                .andThen(new WaitUntilCommand(pivot::nearTarget))
-                .onlyIf(() -> pivot.getPosition() > 90);
     }
 
     public void publishValues() {
