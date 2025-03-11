@@ -32,6 +32,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.units.measure.*;
 import edu.wpi.first.wpilibj.DriverStation;
+import frc.robot.constants.Constants;
 import frc.robot.util.FieldUtil;
 import org.json.simple.parser.ParseException;
 
@@ -69,6 +70,19 @@ public final class DefaultConstants {
                             .plus(new Transform2d(ROBOT_LENGTH_WITH_BUMPERS.div(2).in(Meters), 0, Rotation2d.kZero))
                     : FieldUtil.AprilTag.ID_12.pose2d
                             .plus(new Transform2d(ROBOT_LENGTH_WITH_BUMPERS.div(2).in(Meters), 0, Rotation2d.kZero));
+
+    public static final Pose2d FAR_LEFT_CORAL_STATION =
+            ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red
+                    ? new Pose2d(Units.inchesToMeters(623.07), Units.inchesToMeters(0), FieldUtil.AprilTag.ID_1.pose2d.getRotation())
+                            .plus(new Transform2d(ROBOT_LENGTH_WITH_BUMPERS.div(2).in(Meters), Constants.ROBOT_WIDTH_WITH_BUMPERS.div(2).unaryMinus().in(Meters), Rotation2d.kZero))
+                    : new Pose2d(Units.inchesToMeters(67.82), Units.inchesToMeters(316.63), FieldUtil.AprilTag.ID_13.pose2d.getRotation())
+                            .plus(new Transform2d(ROBOT_LENGTH_WITH_BUMPERS.div(2).in(Meters), Constants.ROBOT_WIDTH_WITH_BUMPERS.div(2).unaryMinus().in(Meters), Rotation2d.kZero));
+    public static final Pose2d FAR_RIGHT_CORAL_STATION =
+            ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red
+                    ? new Pose2d(Units.inchesToMeters(623.07), Units.inchesToMeters(316.63), FieldUtil.AprilTag.ID_2.pose2d.getRotation())
+                            .plus(new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.div(2).in(Meters), Constants.ROBOT_WIDTH_WITH_BUMPERS.div(2).in(Meters), Rotation2d.kZero))
+                    : new Pose2d(Units.inchesToMeters(67.82), Units.inchesToMeters(0), FieldUtil.AprilTag.ID_12.pose2d.getRotation())
+                            .plus(new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.div(2).in(Meters), Constants.ROBOT_WIDTH_WITH_BUMPERS.div(2).in(Meters), Rotation2d.kZero));
 
     // kSpeedAt12Volts desired top speed
     public static final double MAX_VEL = SwerveConstants.SPEED_AT_12_VOLTS.in(MetersPerSecond);
@@ -113,7 +127,8 @@ public final class DefaultConstants {
         public static final double OBJECT_SEARCH_DEGREE_SLANT = 30.0;
         public static final double DEGREE_TOLERANCE_TO_ACCEPT = 2.5;
         public static final double TRANSLATION_TOLERANCE_TO_ACCEPT = 0.03;
-        public static final double DISTANCE_TOLERANCE_TO_DRIVE_INTO = 0.5;
+        public static final double TRANSLATION_TOLERANCE_TO_DIRECT_DRIVE = 0.5;
+        public static final double TRANSLATION_TOLERANCE_TO_TRANSITION = 1.0;
     }
 
     public static final class VisionConstants {

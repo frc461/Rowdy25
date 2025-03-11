@@ -48,6 +48,8 @@ public final class Constants {
 
     public static Pose2d CENTER_OF_LEFT_CORAL_STATION;
     public static Pose2d CENTER_OF_RIGHT_CORAL_STATION;
+    public static Pose2d FAR_LEFT_CORAL_STATION;
+    public static Pose2d FAR_RIGHT_CORAL_STATION;
 
     // kSpeedAt12Volts desired top speed
     public static double MAX_VEL;
@@ -79,7 +81,8 @@ public final class Constants {
         public static double OBJECT_SEARCH_DEGREE_SLANT;
         public static double DEGREE_TOLERANCE_TO_ACCEPT;
         public static double TRANSLATION_TOLERANCE_TO_ACCEPT;
-        public static double DISTANCE_TOLERANCE_TO_DRIVE_INTO;
+        public static double TRANSLATION_TOLERANCE_TO_DIRECT_DRIVE;
+        public static double TRANSLATION_TOLERANCE_TO_TRANSITION;
     }
 
     public static final class VisionConstants {

@@ -61,6 +61,8 @@ public enum RobotIdentity {
         Constants.ALLIANCE_SUPPLIER = DefaultConstants.ALLIANCE_SUPPLIER;
         Constants.CENTER_OF_LEFT_CORAL_STATION = DefaultConstants.CENTER_OF_LEFT_CORAL_STATION;
         Constants.CENTER_OF_RIGHT_CORAL_STATION = DefaultConstants.CENTER_OF_RIGHT_CORAL_STATION;
+        Constants.FAR_LEFT_CORAL_STATION = DefaultConstants.FAR_LEFT_CORAL_STATION;
+        Constants.FAR_RIGHT_CORAL_STATION = DefaultConstants.FAR_RIGHT_CORAL_STATION;
         Constants.MAX_VEL = DefaultConstants.MAX_VEL;
         Constants.MAX_CONTROLLED_VEL = DefaultConstants.MAX_CONTROLLED_VEL;
         Constants.MAX_ANGULAR_VEL = DefaultConstants.MAX_ANGULAR_VEL;
@@ -82,7 +84,8 @@ public enum RobotIdentity {
         Constants.AutoConstants.OBJECT_SEARCH_DEGREE_SLANT = DefaultConstants.AutoConstants.OBJECT_SEARCH_DEGREE_SLANT;
         Constants.AutoConstants.DEGREE_TOLERANCE_TO_ACCEPT = DefaultConstants.AutoConstants.DEGREE_TOLERANCE_TO_ACCEPT;
         Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_ACCEPT = DefaultConstants.AutoConstants.TRANSLATION_TOLERANCE_TO_ACCEPT;
-        Constants.AutoConstants.DISTANCE_TOLERANCE_TO_DRIVE_INTO = DefaultConstants.AutoConstants.DISTANCE_TOLERANCE_TO_DRIVE_INTO;
+        Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_DIRECT_DRIVE = DefaultConstants.AutoConstants.TRANSLATION_TOLERANCE_TO_DIRECT_DRIVE;
+        Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_TRANSITION = DefaultConstants.AutoConstants.TRANSLATION_TOLERANCE_TO_TRANSITION;
 
         Constants.VisionConstants.ODOM_STD_DEV = DefaultConstants.VisionConstants.ODOM_STD_DEV;
         Constants.VisionConstants.VISION_STD_DEV_MULTITAG_FUNCTION = DefaultConstants.VisionConstants.VISION_STD_DEV_MULTITAG_FUNCTION;

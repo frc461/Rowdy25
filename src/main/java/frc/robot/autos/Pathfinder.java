@@ -37,7 +37,7 @@ public final class Pathfinder {
                         nearestAlgaeScoringPose.getTranslation(),
                         nearestAlgaeScoringPose.getRotation().rotateBy(Rotation2d.kPi)
                 ),
-                Constants.AutoConstants.DISTANCE_TOLERANCE_TO_DRIVE_INTO,
+                Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_DIRECT_DRIVE,
                 1.0
         );
     }
@@ -45,7 +45,7 @@ public final class Pathfinder {
     public static Command pathFindToNearestCoralScoringLocation(Pose2d currentPose) {
         return Pathfinder.pathFindToClosePose(
                 FieldUtil.Reef.getNearestRobotPoseAtBranch(currentPose),
-                Constants.AutoConstants.DISTANCE_TOLERANCE_TO_DRIVE_INTO,
+                Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_DIRECT_DRIVE,
                 1.0
         );
     }
@@ -169,11 +169,11 @@ public final class Pathfinder {
         Pose2d centerStation1Pose = FieldUtil.AprilTag.ID_13.pose2d
                     .plus(new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.div(2).in(Meters), Constants.ROBOT_WIDTH_WITH_BUMPERS.div(2).unaryMinus().in(Meters), Rotation2d.kZero));
         Pose2d centerStation2Pose = FieldUtil.AprilTag.ID_12.pose2d
-                    .plus(new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.div(2).in(Meters), Constants.ROBOT_WIDTH_WITH_BUMPERS.div(2).in(Meters), Rotation2d.fromDegrees(0)));
+                    .plus(new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.div(2).in(Meters), Constants.ROBOT_WIDTH_WITH_BUMPERS.div(2).in(Meters), Rotation2d.kZero));
         Pose2d farStation1Pose = new Pose2d(Units.inchesToMeters(67.02), Units.inchesToMeters(317), FieldUtil.AprilTag.ID_13.pose2d.getRotation())
                     .plus(new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.div(2).in(Meters), Constants.ROBOT_WIDTH_WITH_BUMPERS.div(2).unaryMinus().in(Meters), Rotation2d.kZero));
         Pose2d farStation2Pose = new Pose2d(Units.inchesToMeters(67.02), Units.inchesToMeters(0), FieldUtil.AprilTag.ID_12.pose2d.getRotation())
-                    .plus(new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.div(2).in(Meters), Constants.ROBOT_WIDTH_WITH_BUMPERS.div(2).in(Meters), Rotation2d.fromDegrees(0)));
+                    .plus(new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.div(2).in(Meters), Constants.ROBOT_WIDTH_WITH_BUMPERS.div(2).in(Meters), Rotation2d.kZero));
         Pose2d interpolatedStation1Pose = centerStation1Pose.interpolate(farStation1Pose, 0.75);
         Pose2d interpolatedStation2Pose = centerStation2Pose.interpolate(farStation2Pose, 0.75);
         System.out.println("station-1: X: " + interpolatedStation1Pose.getX() + ", Y: " + interpolatedStation1Pose.getY() + ", Angle: " + interpolatedStation1Pose.getRotation().getDegrees());
