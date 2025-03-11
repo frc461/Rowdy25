@@ -40,6 +40,7 @@ public class PathfindToPoseAvoidingReefCommand extends Command {
     private final PIDController yawController;
     private final DoubleSupplier elevatorHeight;
     private final Pose2d targetPose;
+    private final double endVelocity;
     private Pose2d smoothTemporaryTargetPose;
     private boolean xPosDone, yPosDone, yawDone, end;
 
@@ -48,6 +49,16 @@ public class PathfindToPoseAvoidingReefCommand extends Command {
             SwerveRequest.FieldCentric fieldCentric,
             DoubleSupplier elevatorHeight,
             Pose2d targetPose
+    ) {
+        this(swerve, fieldCentric, elevatorHeight, targetPose, 0.0);
+    }
+
+    public PathfindToPoseAvoidingReefCommand(
+            Swerve swerve,
+            SwerveRequest.FieldCentric fieldCentric,
+            DoubleSupplier elevatorHeight,
+            Pose2d targetPose,
+            double endVelocity
     ) {
         this.swerve = swerve;
         this.fieldCentric = fieldCentric;
@@ -62,6 +73,8 @@ public class PathfindToPoseAvoidingReefCommand extends Command {
         this.elevatorHeight = elevatorHeight;
 
         this.targetPose = targetPose;
+        this.endVelocity = MathUtil.clamp(endVelocity, -Constants.MAX_VEL, Constants.MAX_VEL);
+
         smoothTemporaryTargetPose = null;
         xPosDone = false;
         yPosDone = false;
@@ -82,14 +95,18 @@ public class PathfindToPoseAvoidingReefCommand extends Command {
     @Override
     public void execute() {
         Pose2d currentPose = swerve.localizer.getStrategyPose();
-        Pose2d temporaryTargetPose = getTemporaryTargetPose(currentPose);
-        smoothTemporaryTargetPose = getSmoothTargetPose(temporaryTargetPose);
+        smoothTemporaryTargetPose = getSmoothTargetPose(getTemporaryTargetPose(currentPose));
         swerve.localizer.setCurrentTemporaryTargetPose(smoothTemporaryTargetPose);
 
         double velocity = MathUtil.clamp(
                 Math.max(
-                        EquationUtil.expOutput(smoothTemporaryTargetPose.getTranslation().getDistance(currentPose.getTranslation()), 0.02, 50),
-                        Math.min(EquationUtil.linearOutput(smoothTemporaryTargetPose.getTranslation().getDistance(currentPose.getTranslation()), 3.0), 5.0)
+                        Math.min(endVelocity, 5.0) + EquationUtil.expOutput(
+                                smoothTemporaryTargetPose.getTranslation().getDistance(currentPose.getTranslation()),
+                                1 - Math.max(endVelocity - 4.0, 0),
+                                0.025,
+                                50
+                        ),
+                        Math.min(EquationUtil.linearOutput(smoothTemporaryTargetPose.getTranslation().getDistance(currentPose.getTranslation()), 3.0, -0.5), 5.0)
                 ),
                 -Constants.MAX_CONTROLLED_VEL.apply(elevatorHeight.getAsDouble()),
                 Constants.MAX_CONTROLLED_VEL.apply(elevatorHeight.getAsDouble())
@@ -153,7 +170,7 @@ public class PathfindToPoseAvoidingReefCommand extends Command {
             Rotation2d reefCenterAngleToTargetPose = targetPose.getTranslation().minus(FieldUtil.Reef.getReefCenter()).getAngle();
             Rotation2d temporaryTargetAngle =
                     reefCenterAngleToRobot.rotateBy(Rotation2d.fromDegrees(Math.copySign(
-                            55.0,
+                            45.0,
                             reefCenterAngleToTargetPose.minus(reefCenterAngleToRobot).getDegrees()
                     )));
             return new Pose2d(

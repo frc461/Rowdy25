@@ -174,7 +174,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
         return new DirectMoveToObjectCommand(this, robotCentric, objectObtained, objectLabelClass);
     }
 
-    public Command pathFindToLeftCoralStation(RobotStates robotStates) {
+    public Command pathFindToLeftCoralStation(RobotStates robotStates) { // TODO: TEST TRANSITIONING STATE VIA OTHER BRANCHED WAIT UNTIL WITHIN COMMAND SO IT CAN PATHFIND DIRECTLY TO IT
         return Commands.defer(
                 () -> new PathfindToPoseAvoidingReefCommand(
                         this,
@@ -216,7 +216,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
         );
     }
 
-    public Command pathFindToNearestLeftBranch(RobotStates robotStates) {
+    public Command pathFindToNearestLeftBranch(RobotStates robotStates) { // TODO: TEST TRANSITIONING STATE VIA OTHER BRANCHED WAIT UNTIL WITHIN COMMAND
         return Commands.defer(
                 () -> new PathfindToPoseAvoidingReefCommand(
                         this,
@@ -225,7 +225,8 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                         Pathfinder.calculateClosePose(
                                 localizer.nearestRobotPosesAtBranchPair.getFirst(),
                                 Constants.AutoConstants.DISTANCE_TOLERANCE_TO_DRIVE_INTO
-                        )
+                        ),
+                        0.5 // TODO SHOP: TEST THIS
                 ).andThen(() -> robotStates.toggleAutoLevelCoralState(true)).andThen(new DirectMoveToPoseCommand(
                         this,
                         fieldCentric,
@@ -249,7 +250,8 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                         Pathfinder.calculateClosePose(
                                 localizer.nearestRobotPosesAtBranchPair.getSecond(),
                                 Constants.AutoConstants.DISTANCE_TOLERANCE_TO_DRIVE_INTO
-                        )
+                        ),
+                        0.5
                 ).andThen(() -> robotStates.toggleAutoLevelCoralState(true)).andThen(new DirectMoveToPoseCommand(
                         this,
                         fieldCentric,
