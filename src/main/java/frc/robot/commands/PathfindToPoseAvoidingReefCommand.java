@@ -102,7 +102,7 @@ public class PathfindToPoseAvoidingReefCommand extends Command {
                 Math.max(
                         Math.min(endVelocity, 5.0) + EquationUtil.expOutput(
                                 smoothTemporaryTargetPose.getTranslation().getDistance(currentPose.getTranslation()),
-                                1 - Math.max(endVelocity - 4.0, 0),
+                                1 - Math.min(1, Math.max(endVelocity - 4.0, 0)),
                                 0.025,
                                 50
                         ),
@@ -133,6 +133,9 @@ public class PathfindToPoseAvoidingReefCommand extends Command {
                 < Constants.AutoConstants.DEGREE_TOLERANCE_TO_ACCEPT;
 
         if (xPosDone && yPosDone && yawDone) {
+            if (endVelocity == 0) {
+                swerve.forceStop();
+            }
             swerve.consistentHeading = currentPose.getRotation().getDegrees();
             end = true;
         }
