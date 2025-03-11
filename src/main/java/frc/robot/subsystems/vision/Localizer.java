@@ -114,6 +114,10 @@ public class Localizer {
         return getDistanceToScoringLocation(robotState) < Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_ACCEPT;
     }
 
+    public boolean nearScoringLocation(RobotStates.State robotState) {
+        return getDistanceToScoringLocation(robotState) < Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_TRANSITION;
+    }
+
     public double getProcessorScoringHeading() {
         return robotPoseAtProcessor.getRotation().getDegrees();
     }

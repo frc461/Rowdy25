@@ -118,6 +118,10 @@ public class RobotStates {
         return swerve.localizer.atScoringLocation(currentState);
     }
 
+    public boolean nearScoringLocation(RobotStates.State robotState) {
+        return swerve.localizer.nearScoringLocation(robotState);
+    }
+
     public void setStowState() {
         currentState = State.STOW;
     }
