@@ -57,7 +57,7 @@ public class RobotStates {
     public final Wrist wrist = new Wrist();
 
     private State currentState = State.STOW;
-    private FieldUtil.Reef.Level currentAutoLevel = FieldUtil.Reef.Level.L2;
+    private FieldUtil.Reef.Level currentAutoLevel = FieldUtil.Reef.Level.L4;
     private final SendableChooser<State> stateChooser = new SendableChooser<>();
 
     public final Trigger stowState = new Trigger(() -> currentState == State.STOW);
