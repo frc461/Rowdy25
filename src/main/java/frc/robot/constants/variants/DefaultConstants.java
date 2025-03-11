@@ -74,15 +74,15 @@ public final class DefaultConstants {
     public static final Pose2d FAR_LEFT_CORAL_STATION =
             ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red
                     ? new Pose2d(Units.inchesToMeters(623.07), Units.inchesToMeters(0), FieldUtil.AprilTag.ID_1.pose2d.getRotation())
-                            .plus(new Transform2d(ROBOT_LENGTH_WITH_BUMPERS.div(2).in(Meters), Constants.ROBOT_WIDTH_WITH_BUMPERS.div(2).unaryMinus().in(Meters), Rotation2d.kZero))
+                            .plus(new Transform2d(ROBOT_LENGTH_WITH_BUMPERS.div(2).in(Meters), ROBOT_WIDTH_WITH_BUMPERS.div(2).unaryMinus().in(Meters), Rotation2d.kZero))
                     : new Pose2d(Units.inchesToMeters(67.82), Units.inchesToMeters(316.63), FieldUtil.AprilTag.ID_13.pose2d.getRotation())
-                            .plus(new Transform2d(ROBOT_LENGTH_WITH_BUMPERS.div(2).in(Meters), Constants.ROBOT_WIDTH_WITH_BUMPERS.div(2).unaryMinus().in(Meters), Rotation2d.kZero));
+                            .plus(new Transform2d(ROBOT_LENGTH_WITH_BUMPERS.div(2).in(Meters), ROBOT_WIDTH_WITH_BUMPERS.div(2).unaryMinus().in(Meters), Rotation2d.kZero));
     public static final Pose2d FAR_RIGHT_CORAL_STATION =
             ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red
                     ? new Pose2d(Units.inchesToMeters(623.07), Units.inchesToMeters(316.63), FieldUtil.AprilTag.ID_2.pose2d.getRotation())
-                            .plus(new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.div(2).in(Meters), Constants.ROBOT_WIDTH_WITH_BUMPERS.div(2).in(Meters), Rotation2d.kZero))
+                            .plus(new Transform2d(ROBOT_LENGTH_WITH_BUMPERS.div(2).in(Meters), ROBOT_WIDTH_WITH_BUMPERS.div(2).in(Meters), Rotation2d.kZero))
                     : new Pose2d(Units.inchesToMeters(67.82), Units.inchesToMeters(0), FieldUtil.AprilTag.ID_12.pose2d.getRotation())
-                            .plus(new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.div(2).in(Meters), Constants.ROBOT_WIDTH_WITH_BUMPERS.div(2).in(Meters), Rotation2d.kZero));
+                            .plus(new Transform2d(ROBOT_LENGTH_WITH_BUMPERS.div(2).in(Meters), ROBOT_WIDTH_WITH_BUMPERS.div(2).in(Meters), Rotation2d.kZero));
 
     // kSpeedAt12Volts desired top speed
     public static final double MAX_VEL = SwerveConstants.SPEED_AT_12_VOLTS.in(MetersPerSecond);
