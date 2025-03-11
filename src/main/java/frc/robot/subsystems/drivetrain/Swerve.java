@@ -180,8 +180,8 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                         this,
                         fieldCentric,
                         robotStates.elevator::getPosition,
-                        FieldUtil.CoralStation.getRobotPosesAtEachCoralStation().get(0).interpolate(Constants.FAR_LEFT_CORAL_STATION, 0.75)
-                ).alongWith(new WaitUntilCommand(() -> robotStates.nearScoringLocation(RobotStates.State.L4_CORAL)).andThen(() -> robotStates.toggleCoralStationState(true))),
+                        FieldUtil.CoralStation.getRobotPosesAtEachCoralStation().get(0).interpolate(Constants.FAR_LEFT_CORAL_STATION, 0.5)
+                ).alongWith(new WaitUntilCommand(() -> robotStates.nearStateLocation(RobotStates.State.CORAL_STATION)).andThen(() -> robotStates.toggleCoralStationState(true))),
                 Set.of(this)
         );
     }
@@ -192,8 +192,8 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                         this,
                         fieldCentric,
                         robotStates.elevator::getPosition,
-                        FieldUtil.CoralStation.getRobotPosesAtEachCoralStation().get(1).interpolate(Constants.FAR_RIGHT_CORAL_STATION, 0.75)
-                ).alongWith(new WaitUntilCommand(() -> robotStates.nearScoringLocation(RobotStates.State.L4_CORAL)).andThen(() -> robotStates.toggleCoralStationState(true))),
+                        FieldUtil.CoralStation.getRobotPosesAtEachCoralStation().get(1).interpolate(Constants.FAR_RIGHT_CORAL_STATION, 0.5)
+                ).alongWith(new WaitUntilCommand(() -> robotStates.nearStateLocation(RobotStates.State.CORAL_STATION)).andThen(() -> robotStates.toggleCoralStationState(true))),
                 Set.of(this)
         );
     }
@@ -213,12 +213,13 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                         this,
                         fieldCentric,
                         robotStates.elevator::getPosition,
-                        localizer.nearestRobotPosesAtBranchPair.getFirst()
+                        localizer.nearestRobotPosesAtBranchPair.getFirst(),
+                        1.5
                 )).andThen(
                         new WaitUntilCommand(robotStates.atAutoScoreState.and(robotStates::atScoringLocation))
                                 .andThen(robotStates::toggleAutoLevelCoralState)
                                 .onlyIf(() -> autoHeading)
-                ).alongWith(new WaitUntilCommand(() -> robotStates.nearScoringLocation(RobotStates.State.L4_CORAL)).andThen(() -> robotStates.toggleAutoLevelCoralState(true))), // TODO SHOP: TEST THIS
+                ).alongWith(new WaitUntilCommand(() -> robotStates.nearStateLocation(RobotStates.State.L4_CORAL)).andThen(() -> robotStates.toggleAutoLevelCoralState(true))), // TODO SHOP: TEST THIS
                 Set.of(this)
         );
     }
@@ -238,12 +239,13 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                         this,
                         fieldCentric,
                         robotStates.elevator::getPosition,
-                        localizer.nearestRobotPosesAtBranchPair.getSecond()
+                        localizer.nearestRobotPosesAtBranchPair.getSecond(),
+                        1.5
                 )).andThen(
                         new WaitUntilCommand(robotStates.atAutoScoreState.and(robotStates::atScoringLocation))
                                 .andThen(robotStates::toggleAutoLevelCoralState)
                                 .onlyIf(() -> autoHeading)
-                ).alongWith(new WaitUntilCommand(() -> robotStates.nearScoringLocation(RobotStates.State.L4_CORAL)).andThen(() -> robotStates.toggleAutoLevelCoralState(true))),
+                ).alongWith(new WaitUntilCommand(() -> robotStates.nearStateLocation(RobotStates.State.L4_CORAL)).andThen(() -> robotStates.toggleAutoLevelCoralState(true))),
                 Set.of(this)
         );
     }
@@ -264,11 +266,12 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                                 this,
                                 fieldCentric,
                                 robotStates.elevator::getPosition,
-                                FieldUtil.Reef.ScoringLocation.getPose(location)
+                                FieldUtil.Reef.ScoringLocation.getPose(location),
+                                1.5
                         )).andThen(
                                 new WaitUntilCommand(robotStates.atAutoScoreState.and(robotStates::atScoringLocation))
                                         .andThen(robotStates::toggleAutoLevelCoralState)
-                        ).alongWith(new WaitUntilCommand(() -> robotStates.nearScoringLocation(RobotStates.State.L4_CORAL)).andThen(() -> robotStates.toggleAutoLevelCoralState(true))),
+                        ).alongWith(new WaitUntilCommand(() -> robotStates.nearStateLocation(RobotStates.State.L4_CORAL)).andThen(() -> robotStates.toggleAutoLevelCoralState(true))),
                 Set.of(this)
         );
     }
@@ -284,13 +287,12 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                                 Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_DIRECT_DRIVE,
                                 localizer.nearestAlgaeIsHigh ? Rotation2d.kZero : Rotation2d.kPi
                         )
-                ).andThen(() -> robotStates.toggleNearestReefAlgaeState(localizer.nearestAlgaeIsHigh, true))
-                        .andThen(new DirectMoveToPoseCommand(
-                                this,
-                                fieldCentric,
-                                robotStates.elevator::getPosition,
-                                localizer.nearestRobotPoseAtAlgaeReef
-                        )),
+                ).andThen(() -> robotStates.toggleNearestReefAlgaeState(localizer.nearestAlgaeIsHigh, true)).andThen(new DirectMoveToPoseCommand(
+                        this,
+                        fieldCentric,
+                        robotStates.elevator::getPosition,
+                        localizer.nearestRobotPoseAtAlgaeReef
+                )),
                 Set.of(this)
         );
     }

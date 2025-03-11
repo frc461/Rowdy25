@@ -106,6 +106,7 @@ public class Localizer {
             case L1_CORAL, L2_CORAL, L3_CORAL, L4_CORAL -> currentPose.getTranslation().getDistance(nearestRobotPoseAtBranch.getTranslation());
             case PROCESSOR -> currentPose.getTranslation().getDistance(robotPoseAtProcessor.getTranslation());
             case NET -> currentPose.getTranslation().getDistance(robotPoseAtNet.getTranslation());
+            case CORAL_STATION -> currentPose.getTranslation().getDistance(nearestRobotPoseAtCoralStation.getTranslation());
             default -> 0.0;
         };
     }
@@ -114,7 +115,7 @@ public class Localizer {
         return getDistanceToScoringLocation(robotState) < Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_ACCEPT;
     }
 
-    public boolean nearScoringLocation(RobotStates.State robotState) {
+    public boolean nearStateLocation(RobotStates.State robotState) {
         return getDistanceToScoringLocation(robotState) < Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_TRANSITION;
     }
 
