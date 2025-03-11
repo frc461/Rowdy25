@@ -129,6 +129,7 @@ public final class AutoManager {
         triggersToBind.add(autoEventLooper.addTrigger(
                 firstPath,
                 () -> new InstantCommand(() -> robotStates.swerve.localizer.setPoses(getStartingPose(startPosition)))
+                        .andThen(robotStates::setStowState)
                         .andThen(robotStates.swerve.pathFindToScoringLocation(robotStates, firstScoringLocation.getFirst(), firstScoringLocation.getSecond()))
         ));
 

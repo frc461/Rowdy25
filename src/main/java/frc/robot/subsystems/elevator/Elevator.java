@@ -111,6 +111,10 @@ public class Elevator extends SubsystemBase {
         return error < Constants.ElevatorConstants.AT_TARGET_TOLERANCE;
     }
 
+    public boolean goingDown(State state) {
+        return getPosition() >= state.position;
+    }
+
 	private void setState(State state) {
 		currentState = state;
 	}
