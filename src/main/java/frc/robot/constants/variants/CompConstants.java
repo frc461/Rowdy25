@@ -151,7 +151,7 @@ public final class CompConstants {
         public static final Translation2d AXIS_TO_ZERO_COM = new Translation2d(-10.440589, 33.398821).minus(AXIS_POSITION);
 
         // encoder config
-        public static final double ENCODER_ABSOLUTE_OFFSET = -0.1967753092;
+        public static final double ENCODER_ABSOLUTE_OFFSET = -0.15820176865;
         public static final SensorDirectionValue ENCODER_INVERT = SensorDirectionValue.Clockwise_Positive;
 
         // pid & tolerance
@@ -169,8 +169,8 @@ public final class CompConstants {
         // presets
         public static final BiFunction<Double, Double, Double> LOWER_LIMIT = (elevatorPosition, pivotPosition) -> (double) (pivotPosition < 30 ? 160 : elevatorPosition > 1.5 && elevatorPosition < 12 ? 115 : 45);
         public static final Function<Double, Double> UPPER_LIMIT = (elevatorPosition) -> (double) (elevatorPosition > 8 ? 295 : 160);
-        public static final double STOW = 115;
-        public static final double CORAL_STATION = 115;
+        public static final double STOW = 125;
+        public static final double CORAL_STATION = 125;
         public static final double GROUND_CORAL = 150;
         public static final double GROUND_ALGAE = 150;
         public static final double L1_CORAL = 96.5;
@@ -179,7 +179,7 @@ public final class CompConstants {
         public static final double L4_CORAL = 75;
         public static final double LOW_REEF_ALGAE = 131;
         public static final double HIGH_REEF_ALGAE = 160;
-        public static final double PROCESSOR = 150;
+        public static final double PROCESSOR = 160;
         public static final double NET = 175;
 
     }
