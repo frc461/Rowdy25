@@ -174,7 +174,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
         return new DirectMoveToObjectCommand(this, robotCentric, objectObtained, objectLabelClass);
     }
 
-    public Command pathFindToLeftCoralStation(RobotStates robotStates) { // TODO: TEST PATHFINDING DIRECTLY TO IT
+    public Command pathFindToLeftCoralStation(RobotStates robotStates) {
         return Commands.defer(
                 () -> new PathfindToPoseAvoidingReefCommand(
                         this,
@@ -208,7 +208,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                                 localizer.nearestRobotPosesAtBranchPair.getFirst(),
                                 Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_DIRECT_DRIVE
                         )
-                ).andThen(new DirectMoveToPoseCommand(
+                ).andThen(() -> robotStates.toggleAutoLevelCoralState(true)).andThen(new DirectMoveToPoseCommand(
                         this,
                         fieldCentric,
                         robotStates.elevator::getPosition,
@@ -217,7 +217,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                         new WaitUntilCommand(robotStates.atAutoScoreState.and(robotStates::atScoringLocation))
                                 .andThen(robotStates::toggleAutoLevelCoralState)
                                 .onlyIf(() -> autoHeading)
-                ).alongWith(new WaitUntilCommand(() -> robotStates.nearStateLocation(RobotStates.State.L4_CORAL)).andThen(() -> robotStates.toggleAutoLevelCoralState(true))), // TODO SHOP: TEST THIS
+                ),
                 Set.of(this)
         );
     }
@@ -232,7 +232,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                                 localizer.nearestRobotPosesAtBranchPair.getSecond(),
                                 Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_DIRECT_DRIVE
                         )
-                ).andThen(new DirectMoveToPoseCommand(
+                ).andThen(() -> robotStates.toggleAutoLevelCoralState(true)).andThen(new DirectMoveToPoseCommand(
                         this,
                         fieldCentric,
                         robotStates.elevator::getPosition,
@@ -241,7 +241,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                         new WaitUntilCommand(robotStates.atAutoScoreState.and(robotStates::atScoringLocation))
                                 .andThen(robotStates::toggleAutoLevelCoralState)
                                 .onlyIf(() -> autoHeading)
-                ).alongWith(new WaitUntilCommand(() -> robotStates.nearStateLocation(RobotStates.State.L4_CORAL)).andThen(() -> robotStates.toggleAutoLevelCoralState(true))),
+                ),
                 Set.of(this)
         );
     }
@@ -257,7 +257,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                                         FieldUtil.Reef.ScoringLocation.getPose(location),
                                         Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_DIRECT_DRIVE
                                 )
-                        )).andThen(new DirectMoveToPoseCommand(
+                        )).andThen(() -> robotStates.toggleAutoLevelCoralState(true)).andThen(new DirectMoveToPoseCommand(
                                 this,
                                 fieldCentric,
                                 robotStates.elevator::getPosition,
@@ -266,12 +266,12 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                         )).andThen(
                                 new WaitUntilCommand(robotStates.atAutoScoreState.and(robotStates::atScoringLocation))
                                         .andThen(robotStates::toggleAutoLevelCoralState)
-                        ).alongWith(new WaitUntilCommand(() -> robotStates.nearStateLocation(RobotStates.State.L4_CORAL)).andThen(() -> robotStates.toggleAutoLevelCoralState(true))),
+                        ),
                 Set.of(this)
         );
     }
 
-    public Command pathFindToNearestAlgaeOnReef(RobotStates robotStates) { // TODO SHOP: MAKE MORE EFFICIENT IF CORAL SCORING WORKS
+    public Command pathFindToNearestAlgaeOnReef(RobotStates robotStates) {
         return Commands.defer(
                 () -> new PathfindToPoseAvoidingReefCommand(
                         this,
