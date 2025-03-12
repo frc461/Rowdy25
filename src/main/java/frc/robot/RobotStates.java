@@ -245,12 +245,15 @@ public class RobotStates {
 
     private Command orderedTransition(Runnable setPivotState, Runnable setElevatorState, Elevator.State elevatorState, Runnable setWristState) {
         if (elevator.goingDown(elevatorState)) {
-            return new InstantCommand(setWristState)
+            return new InstantCommand(wrist::setStowState) // TODO SHOP: TEST THIS
                     .andThen(movePivotToPerpendicular())
+                    .andThen(setPivotState)
                     .andThen(setElevatorState)
-                    .andThen(setPivotState);
+                    .andThen(new WaitUntilCommand(elevator::nearTarget))
+                    .andThen(setWristState);
         }
         return movePivotToPerpendicular()
+                .andThen(wrist::setStowState)
                 .andThen(setPivotState)
                 .andThen(new WaitUntilCommand(pivot::nearTarget))
                 .andThen(setElevatorState)
@@ -258,8 +261,7 @@ public class RobotStates {
                 .andThen(setWristState);
     }
 
-    public void configureToggleStateTriggers() { // TODO SHOP: TEST/OPTIMIZE STATE TRANSITIONS BY STARTING PIVOT AND ELEVATOR TOGETHER, THEN WRIST
-        // TODO: INTEGRATED FUNCTION TO DETERMINE ORDER TO TRANSITION STATES
+    public void configureToggleStateTriggers() {
         isListening.and(() -> needsUpdate).onTrue(
                 new InstantCommand(this::toggleAutoLevelCoralState)
                         .andThen(() -> needsUpdate = false)

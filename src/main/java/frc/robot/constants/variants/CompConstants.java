@@ -168,7 +168,7 @@ public final class CompConstants {
         public static final double AT_TARGET_TOLERANCE = 2.5;
 
         // presets
-        public static final BiFunction<Double, Double, Double> LOWER_LIMIT = (elevatorPosition, pivotPosition) -> (double) (pivotPosition < 30 ? 160 : elevatorPosition > 1.5 && elevatorPosition < 12 ? 115 : 45); // TODO SHOP: TEST THIS (WHEN MAKING ROBOT STATE TRANSITIONS MORE EFFICIENT)
+        public static final BiFunction<Double, Double, Double> LOWER_LIMIT = (elevatorPosition, pivotPosition) -> (double) (pivotPosition < 30 ? 160 : elevatorPosition > 1.5 && elevatorPosition < 12 ? 115 : 45);
         public static final Function<Double, Double> UPPER_LIMIT = (elevatorPosition) -> (double) (elevatorPosition > 8 ? 295 : 160);
         public static final double STOW = 115;
         public static final double CORAL_STATION = 115;
@@ -186,7 +186,7 @@ public final class CompConstants {
     }
 
     public static final class SwerveConstants {
-        public static final double PATH_TRANSLATION_CONTROLLER_P = 2.0; // TODO SHOP: TUNE PATH FOLLOWING KP
+        public static final double PATH_TRANSLATION_CONTROLLER_P = 2.0;
         public static final double PATH_ROTATION_CONTROLLER_P = 2.0;
 
         public static final double ANGULAR_POSITION_P = 0.035;
