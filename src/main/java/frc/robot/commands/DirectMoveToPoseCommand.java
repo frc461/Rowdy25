@@ -51,7 +51,7 @@ public class DirectMoveToPoseCommand extends Command {
         this.elevatorHeight = elevatorHeight;
 
         this.targetPose = targetPose;
-        this.maxVelocity = MathUtil.clamp(maxVelocity, -Constants.MAX_VEL, Constants.MAX_VEL);
+        this.maxVelocity = MathUtil.clamp(maxVelocity, 0, Constants.MAX_VEL);
         xPosDone = false;
         yPosDone = false;
         yawDone = false;
@@ -70,15 +70,16 @@ public class DirectMoveToPoseCommand extends Command {
     @Override
     public void execute() {
         Pose2d currentPose = swerve.localizer.getStrategyPose();
+        double safeMaxVelocity = MathUtil.clamp(maxVelocity, 0, Constants.MAX_CONTROLLED_VEL.apply(elevatorHeight.getAsDouble()));
 
         double velocity = MathUtil.clamp(
                 EquationUtil.expOutput(
                         targetPose.getTranslation().getDistance(currentPose.getTranslation()),
-                        maxVelocity,
-                        0.02 * maxVelocity * Math.log(maxVelocity * Math.exp(2.5) + maxVelocity - 1), // TODO SHOP: TEST THIS
-                        50 / maxVelocity
+                        safeMaxVelocity,
+                        0.022 * safeMaxVelocity * Math.log(safeMaxVelocity * Math.exp(2.5) + safeMaxVelocity - 1), // TODO SHOP: TEST THIS
+                        25 / safeMaxVelocity
                 ),
-                -Constants.MAX_CONTROLLED_VEL.apply(elevatorHeight.getAsDouble()),
+                0,
                 Constants.MAX_CONTROLLED_VEL.apply(elevatorHeight.getAsDouble())
         );
 

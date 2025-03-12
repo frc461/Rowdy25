@@ -207,8 +207,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                         Pathfinder.calculateClosePose(
                                 localizer.nearestRobotPosesAtBranchPair.getFirst(),
                                 Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_DIRECT_DRIVE
-                        ),
-                        0.5 // TODO SHOP: TEST THIS
+                        )
                 ).andThen(new DirectMoveToPoseCommand(
                         this,
                         fieldCentric,
@@ -232,8 +231,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                         Pathfinder.calculateClosePose(
                                 localizer.nearestRobotPosesAtBranchPair.getSecond(),
                                 Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_DIRECT_DRIVE
-                        ),
-                        0.5
+                        )
                 ).andThen(new DirectMoveToPoseCommand(
                         this,
                         fieldCentric,
@@ -258,8 +256,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                                 Pathfinder.calculateClosePose(
                                         FieldUtil.Reef.ScoringLocation.getPose(location),
                                         Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_DIRECT_DRIVE
-                                ),
-                                0.5
+                                )
                         )).andThen(new DirectMoveToPoseCommand(
                                 this,
                                 fieldCentric,
