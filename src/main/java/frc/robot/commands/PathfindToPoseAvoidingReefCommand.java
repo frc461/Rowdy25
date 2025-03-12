@@ -100,11 +100,13 @@ public class PathfindToPoseAvoidingReefCommand extends Command {
         double safeMaxVelocity = MathUtil.clamp(maxVelocity, 0, Constants.MAX_CONTROLLED_VEL.apply(elevatorHeight.getAsDouble()));
 
         double velocity = MathUtil.clamp(
-                EquationUtil.expOutput(
-                        smoothTemporaryTargetPose.getTranslation().getDistance(currentPose.getTranslation()),
-                        safeMaxVelocity,
-                        0.022 * safeMaxVelocity * Math.log(safeMaxVelocity * Math.exp(2.5) + safeMaxVelocity - 1),
-                        25 / safeMaxVelocity
+                Math.max(
+                        EquationUtil.expOutput(
+                                smoothTemporaryTargetPose.getTranslation().getDistance(currentPose.getTranslation()),
+                                0.05,
+                                50
+                        ),
+                        Math.min(EquationUtil.linearOutput(smoothTemporaryTargetPose.getTranslation().getDistance(currentPose.getTranslation()), 3, -0.5), safeMaxVelocity)
                 ),
                 0,
                 Constants.MAX_CONTROLLED_VEL.apply(elevatorHeight.getAsDouble())
