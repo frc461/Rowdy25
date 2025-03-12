@@ -136,8 +136,8 @@ public class RobotContainer {
         driverXbox.povRight().onTrue(new InstantCommand(() -> robotStates.climb.manualClimb(0.9)));
         driverXbox.povRight().onFalse(new InstantCommand(() -> robotStates.climb.stopClimb(false)));
 
-        driverXbox.leftStick().onTrue(new InstantCommand(() -> robotStates.swerve.localizer.setPoses(Constants.CENTER_OF_RIGHT_CORAL_STATION)));
-        driverXbox.rightStick().onTrue(new InstantCommand(() -> robotStates.swerve.localizer.setPoses(Constants.CENTER_OF_LEFT_CORAL_STATION)));
+        driverXbox.leftStick().onTrue(new InstantCommand(() -> robotStates.swerve.localizer.setPoses(Constants.CENTER_OF_RIGHT_CORAL_STATION.apply(Constants.ALLIANCE_SUPPLIER))));
+        driverXbox.rightStick().onTrue(new InstantCommand(() -> robotStates.swerve.localizer.setPoses(Constants.CENTER_OF_LEFT_CORAL_STATION.apply(Constants.ALLIANCE_SUPPLIER))));
 
         // TODO SHOP: TEST ALL THIS WITH ONLY SWERVE AUTO-SCORING (NOT ROBOTSTATES)
         driverXbox.leftBumper().whileTrue(new ConditionalCommand(

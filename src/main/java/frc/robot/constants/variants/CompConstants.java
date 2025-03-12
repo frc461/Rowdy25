@@ -9,7 +9,6 @@ import com.ctre.phoenix6.swerve.SwerveModuleConstantsFactory;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.*;
-import frc.robot.util.EquationUtil;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;

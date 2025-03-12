@@ -57,28 +57,28 @@ public final class DefaultConstants {
 
     public static final Supplier<DriverStation.Alliance> ALLIANCE_SUPPLIER = () -> DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue);
 
-    public static final Pose2d CENTER_OF_LEFT_CORAL_STATION =
-            ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red
+    public static final Function<Supplier<DriverStation.Alliance>, Pose2d> CENTER_OF_LEFT_CORAL_STATION = allianceSupplier ->
+            allianceSupplier.get() == DriverStation.Alliance.Red
                     ? FieldUtil.AprilTag.ID_1.pose2d
                             .plus(new Transform2d(ROBOT_LENGTH_WITH_BUMPERS.div(2).in(Meters), 0, Rotation2d.kZero))
                     : FieldUtil.AprilTag.ID_13.pose2d
                             .plus(new Transform2d(ROBOT_LENGTH_WITH_BUMPERS.div(2).in(Meters), 0, Rotation2d.kZero));
 
-    public static final Pose2d CENTER_OF_RIGHT_CORAL_STATION =
-            ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red
+    public static final Function<Supplier<DriverStation.Alliance>, Pose2d> CENTER_OF_RIGHT_CORAL_STATION = allianceSupplier ->
+            allianceSupplier.get() == DriverStation.Alliance.Red
                     ? FieldUtil.AprilTag.ID_2.pose2d
                             .plus(new Transform2d(ROBOT_LENGTH_WITH_BUMPERS.div(2).in(Meters), 0, Rotation2d.kZero))
                     : FieldUtil.AprilTag.ID_12.pose2d
                             .plus(new Transform2d(ROBOT_LENGTH_WITH_BUMPERS.div(2).in(Meters), 0, Rotation2d.kZero));
 
-    public static final Pose2d FAR_LEFT_CORAL_STATION =
-            ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red
+    public static final Function<Supplier<DriverStation.Alliance>, Pose2d> FAR_LEFT_CORAL_STATION = allianceSupplier ->
+            allianceSupplier.get() == DriverStation.Alliance.Red
                     ? new Pose2d(Units.inchesToMeters(623.07), Units.inchesToMeters(0), FieldUtil.AprilTag.ID_1.pose2d.getRotation())
                             .plus(new Transform2d(ROBOT_LENGTH_WITH_BUMPERS.div(2).in(Meters), ROBOT_WIDTH_WITH_BUMPERS.div(2).unaryMinus().in(Meters), Rotation2d.kZero))
                     : new Pose2d(Units.inchesToMeters(67.82), Units.inchesToMeters(316.63), FieldUtil.AprilTag.ID_13.pose2d.getRotation())
                             .plus(new Transform2d(ROBOT_LENGTH_WITH_BUMPERS.div(2).in(Meters), ROBOT_WIDTH_WITH_BUMPERS.div(2).unaryMinus().in(Meters), Rotation2d.kZero));
-    public static final Pose2d FAR_RIGHT_CORAL_STATION =
-            ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red
+    public static final Function<Supplier<DriverStation.Alliance>, Pose2d> FAR_RIGHT_CORAL_STATION = allianceSupplier ->
+            allianceSupplier.get() == DriverStation.Alliance.Red
                     ? new Pose2d(Units.inchesToMeters(623.07), Units.inchesToMeters(316.63), FieldUtil.AprilTag.ID_2.pose2d.getRotation())
                             .plus(new Transform2d(ROBOT_LENGTH_WITH_BUMPERS.div(2).in(Meters), ROBOT_WIDTH_WITH_BUMPERS.div(2).in(Meters), Rotation2d.kZero))
                     : new Pose2d(Units.inchesToMeters(67.82), Units.inchesToMeters(0), FieldUtil.AprilTag.ID_12.pose2d.getRotation())
