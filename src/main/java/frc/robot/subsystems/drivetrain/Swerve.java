@@ -212,12 +212,17 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                         this,
                         fieldCentric,
                         robotStates.elevator::getPosition,
-                        localizer.nearestRobotPosesAtBranchPair.getFirst()
+                        localizer.nearestRobotPosesAtBranchPair.getFirst(),
+                        0.5 // TODO SHOP: TRY SLOWER MAX VELOCITY WHEN LINING UP
                 )).andThen(
                         new WaitUntilCommand(robotStates.atAutoScoreState.and(robotStates::atScoringLocation))
                                 .andThen(robotStates::toggleAutoLevelCoralState)
                                 .onlyIf(() -> autoHeading)
-                ),
+                ).alongWith(
+                        new WaitUntilCommand(() -> robotStates.nearStateLocation(RobotStates.State.L4_CORAL))
+                                .andThen(() -> robotStates.toggleAutoLevelCoralState(true))
+                                .unless(() -> robotStates.getCurrentAutoLevel() == FieldUtil.Reef.Level.L4)
+                ), // TODO SHOP: TRY THIS AND ALSO A HYBRID WITH SLOWER MAX VELOCITY
                 Set.of(this)
         );
     }

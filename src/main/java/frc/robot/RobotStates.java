@@ -109,6 +109,10 @@ public class RobotStates {
         SmartDashboard.putData("Robot State Chooser", stateChooser);
     }
 
+    public FieldUtil.Reef.Level getCurrentAutoLevel() {
+        return currentAutoLevel;
+    }
+
     public void setCurrentAutoLevel(FieldUtil.Reef.Level level) {
         currentAutoLevel = level;
         needsUpdate = isListening.getAsBoolean();

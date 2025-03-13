@@ -95,7 +95,7 @@ public class PathfindToPoseAvoidingReefCommand extends Command {
     @Override
     public void execute() {
         Pose2d currentPose = swerve.localizer.getStrategyPose();
-        smoothTemporaryTargetPose = getSmoothTargetPose(getTemporaryTargetPose(currentPose));
+        smoothTemporaryTargetPose = getSmoothTargetPose(getTemporaryTargetPose(currentPose)); // TODO: FIX SOMETIMES IT SETS TO CORAL STATION AUTOMATICALLY WHEN REEF IS IN WAY
         swerve.localizer.setCurrentTemporaryTargetPose(smoothTemporaryTargetPose);
         double safeMaxVelocity = MathUtil.clamp(maxVelocity, 0, Constants.MAX_CONTROLLED_VEL.apply(elevatorHeight.getAsDouble()));
 
