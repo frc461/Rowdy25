@@ -103,7 +103,7 @@ public final class CompConstants {
         public static final Translation2d AXIS_POSITION = new Translation2d(-9.417377, 9.257139);
 
         // encoder config
-        public static final double ENCODER_ABSOLUTE_OFFSET = 0.43799031573;
+        public static final double ENCODER_ABSOLUTE_OFFSET = 0.59277615014;
         public static final SensorDirectionValue ENCODER_INVERT = SensorDirectionValue.CounterClockwise_Positive;
 
         // ratchet config
