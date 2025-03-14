@@ -266,8 +266,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                                 this,
                                 fieldCentric,
                                 robotStates.elevator::getPosition,
-                                FieldUtil.Reef.ScoringLocation.getPose(location),
-                                1.5
+                                FieldUtil.Reef.ScoringLocation.getPose(location)
                         )).andThen(
                                 new WaitUntilCommand(robotStates.atAutoScoreState.and(robotStates::atScoringLocation))
                                         .andThen(robotStates::toggleAutoLevelCoralState)

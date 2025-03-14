@@ -109,33 +109,12 @@ public final class AutoManager {
         List<AutoTrigger> triggersToBind = new ArrayList<>();
         Pair<FieldUtil.Reef.ScoringLocation, FieldUtil.Reef.Level> firstScoringLocation = currentScoringLocations.get(0);
         String firstPath = this.startPosition.index + "," + firstScoringLocation.getFirst().name();
-//
-//        triggersToBind.add(autoEventLooper.addTrigger(
-//                firstPath,
-//                () -> {
-//                    try {
-//                        PathPlannerPath path = PathPlannerPath.fromPathFile(firstPath);
-//
-//                        return new InstantCommand(() -> robotStates.setCurrentAutoLevel(firstScoringLocation.getSecond()))
-//                                .andThen(() -> robotStates.swerve.localizer.setPoses(getStartingPose(path)))
-//                                .andThen(AutoBuilder.followPath(path));
-//                    } catch (IOException | ParseException e) {
-//                        DriverStation.reportError("Failed to load path: " + e.getMessage(), e.getStackTrace());
-//                        return Commands.none();
-//                    }
-//                }
-//        ));
 
         triggersToBind.add(autoEventLooper.addTrigger(
                 firstPath,
                 () -> new InstantCommand(() -> robotStates.swerve.localizer.setPoses(getStartingPose(startPosition)))
                         .andThen(robotStates::setStowState)
                         .andThen(robotStates.swerve.pathFindToScoringLocation(robotStates, firstScoringLocation.getFirst(), firstScoringLocation.getSecond()))
-        ));
-
-        triggersToBind.add(autoEventLooper.addTrigger(
-                "waitForOuttake",
-                () -> new WaitUntilCommand(robotStates.stowState)
                         .andThen(new WaitCommand(0.5))
         ));
 
@@ -152,57 +131,14 @@ public final class AutoManager {
                             FieldUtil.Reef.ScoringLocation.getPose(currentScoringLocation.getFirst()),
                             FieldUtil.Reef.ScoringLocation.getPose(nextScoringLocation.getFirst())
                     ) : this.coralStationOverride;
-            String toCoralStationPath = currentScoringLocation.getFirst().name() + "," + coralStation;
+            String pathPair = currentScoringLocation.getFirst().name() + "," + nextScoringLocation.getFirst().name();
 
-//            triggersToBind.add(autoEventLooper.addTrigger(
-//                    toCoralStationPath,
-//                    () -> {
-//                        try {
-//                            return AutoBuilder.followPath(PathPlannerPath.fromPathFile(toCoralStationPath));
-//                        } catch (IOException | ParseException e) {
-//                            DriverStation.reportError("Failed to load path: " + e.getMessage(), e.getStackTrace());
-//                            return Commands.none();
-//                        }
-//                    }
-//            ));
-
-            triggersToBind.add(autoEventLooper.addTrigger(
-                    toCoralStationPath,
-                    () -> {
-                        if (coralStation.equals("station-1")) {
-                            return robotStates.swerve.pathFindToLeftCoralStation(robotStates);
-                        }
-                        return robotStates.swerve.pathFindToRightCoralStation(robotStates);
-                    }
-            ));
-
-            triggersToBind.add(autoEventLooper.addTrigger("waitUntilHasObject", () ->
-                    new WaitUntilCommand(() -> robotStates.stowState.getAsBoolean() || robotStates.intake.hasCoral())));
-
-            String fromCoralStationPath = coralStation + "," + nextScoringLocation.getFirst().name();
-
-//            triggersToBind.add(autoEventLooper.addTrigger(
-//                    fromCoralStationPath,
-//                    () -> {
-//                        try {
-//                            return new InstantCommand(() -> robotStates.setCurrentAutoLevel(nextScoringLocation.getSecond()))
-//                                    .andThen(AutoBuilder.followPath(PathPlannerPath.fromPathFile(fromCoralStationPath)));
-//                        } catch (IOException | ParseException e) {
-//                            DriverStation.reportError("Failed to load path: " + e.getMessage(), e.getStackTrace());
-//                            return Commands.none();
-//                        }
-//                    }
-//            ));
-
-            triggersToBind.add(autoEventLooper.addTrigger(
-                    fromCoralStationPath,
-                    () -> new InstantCommand(() -> robotStates.setCurrentAutoLevel(nextScoringLocation.getSecond()))
+            triggersToBind.add(autoEventLooper.addTrigger( // TODO SHOP: TEST THIS
+                    pathPair,
+                    () -> getPathFindingCommandToCoralStation(robotStates, coralStation)
+                            .andThen(new WaitUntilCommand(() -> robotStates.stowState.getAsBoolean() || robotStates.intake.hasCoral()))
+                            .andThen(() -> robotStates.setCurrentAutoLevel(nextScoringLocation.getSecond()))
                             .andThen(robotStates.swerve.pathFindToScoringLocation(robotStates, nextScoringLocation.getFirst(), nextScoringLocation.getSecond()))
-            ));
-
-            triggersToBind.add(autoEventLooper.addTrigger(
-                    "waitForOuttake",
-                    () -> new WaitUntilCommand(robotStates.stowState)
                             .andThen(new WaitCommand(0.5))
             ));
         }
@@ -236,5 +172,12 @@ public final class AutoManager {
     private Pose2d getStartingPose(StartPosition startPosition) {
         Pose2d startingPoseBlue = StartPosition.getStartingPosition(startPosition);
         return Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red ? FlippingUtil.flipFieldPose(startingPoseBlue) : startingPoseBlue;
+    }
+
+    private Command getPathFindingCommandToCoralStation(RobotStates robotStates, String coralStation) {
+        if (coralStation.equals("station-1")) {
+            return robotStates.swerve.pathFindToLeftCoralStation(robotStates);
+        }
+        return robotStates.swerve.pathFindToRightCoralStation(robotStates);
     }
 }
