@@ -181,7 +181,8 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                         fieldCentric,
                         robotStates.elevator::getPosition,
                         FieldUtil.CoralStation.getRobotPosesAtEachCoralStation().get(0).interpolate(Constants.FAR_LEFT_CORAL_STATION.apply(Constants.ALLIANCE_SUPPLIER), 0.25)
-                ).alongWith(new WaitUntilCommand(() -> robotStates.nearStateLocation(RobotStates.State.CORAL_STATION)).andThen(() -> robotStates.toggleCoralStationState(true))),
+                ).until(robotStates.intake::hasCoral) // TODO: ADD A MOTOR STALL TIMER
+                        .alongWith(new WaitUntilCommand(() -> robotStates.nearStateLocation(RobotStates.State.CORAL_STATION)).andThen(() -> robotStates.toggleCoralStationState(true))),
                 Set.of(this)
         );
     }
@@ -193,7 +194,8 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                         fieldCentric,
                         robotStates.elevator::getPosition,
                         FieldUtil.CoralStation.getRobotPosesAtEachCoralStation().get(1).interpolate(Constants.FAR_RIGHT_CORAL_STATION.apply(Constants.ALLIANCE_SUPPLIER), 0.25)
-                ).alongWith(new WaitUntilCommand(() -> robotStates.nearStateLocation(RobotStates.State.CORAL_STATION)).andThen(() -> robotStates.toggleCoralStationState(true))),
+                ).until(robotStates.intake::hasCoral)
+                        .alongWith(new WaitUntilCommand(() -> robotStates.nearStateLocation(RobotStates.State.CORAL_STATION)).andThen(() -> robotStates.toggleCoralStationState(true))),
                 Set.of(this)
         );
     }
