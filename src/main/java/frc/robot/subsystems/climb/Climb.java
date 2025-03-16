@@ -9,6 +9,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.servohub.ServoChannel;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.Constants;
 
 public class Climb extends SubsystemBase {
@@ -48,6 +49,8 @@ public class Climb extends SubsystemBase {
 	private final TalonFX climb;
     private final TalonFX intake;
     private final ServoChannel ratchet;
+    private final Trigger isIntakeStalling;
+
     private double error;
 
     private final ClimbTelemetry climbTelemetry = new ClimbTelemetry(this);
@@ -76,6 +79,7 @@ public class Climb extends SubsystemBase {
                         .withSupplyCurrentLimit(Constants.ClimbConstants.INTAKE_CURRENT_LIMIT))
         );
 
+        isIntakeStalling = new Trigger(() -> intake.getStatorCurrent().getValueAsDouble() > Constants.ClimbConstants.INTAKE_CURRENT_LIMIT).debounce(0.75); // TODO SHOP: TEST STALLING ESPECIALLY DEBOUNCE THRESHOLD
 
         ratchet = Constants.SERVO_HUB.getServoChannel(Constants.ClimbConstants.RATCHET_CHANNEL);
         ratchet.setPowered(true);
@@ -110,7 +114,7 @@ public class Climb extends SubsystemBase {
     }
 
     public void manualClimb(double value) {
-        if (value > 0) {
+        if (value >= 0) {
             currentIntakeState = IntakeState.INTAKE;
         } else {
             currentIntakeState = IntakeState.IDLE; // TODO SHOP: REMOVE? MIGHT BE UNNECESSARY
@@ -163,7 +167,7 @@ public class Climb extends SubsystemBase {
 
         switch (getIntakeState()) {
             case INTAKE:
-                if (intake.getVelocity().getValueAsDouble() < 0.1 && intake.getSupplyCurrent().getValueAsDouble() > 20) {
+                if (isIntakeStalling.getAsBoolean()) {
                     currentIntakeState = IntakeState.IDLE; // TODO SHOP: TEST INTAKE STALLING LOGIC
                 } else {
                     intake.set(0.6);
