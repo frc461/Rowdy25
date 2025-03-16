@@ -9,7 +9,6 @@ import com.ctre.phoenix6.swerve.SwerveModuleConstantsFactory;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.*;
-import frc.robot.util.EquationUtil;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -83,8 +82,8 @@ public final class CompConstants {
         public static final double L2_CORAL = 0;
         public static final double L3_CORAL = 15.5;
         public static final double L4_CORAL = 45.5;
-        public static final double LOW_REEF_ALGAE = 2.0;
-        public static final double HIGH_REEF_ALGAE = 3.0;
+        public static final double LOW_REEF_ALGAE = 13.0;
+        public static final double HIGH_REEF_ALGAE = 18.5;
         public static final double PROCESSOR = 0;
         public static final double NET = 44;
     }
@@ -104,7 +103,7 @@ public final class CompConstants {
         public static final Translation2d AXIS_POSITION = new Translation2d(-9.417377, 9.257139);
 
         // encoder config
-        public static final double ENCODER_ABSOLUTE_OFFSET = 0.43799031573;
+        public static final double ENCODER_ABSOLUTE_OFFSET = 0.59277615014;
         public static final SensorDirectionValue ENCODER_INVERT = SensorDirectionValue.CounterClockwise_Positive;
 
         // ratchet config
@@ -130,12 +129,12 @@ public final class CompConstants {
         public static final double CORAL_STATION = 55;
         public static final double GROUND_CORAL = 3.5;
         public static final double GROUND_ALGAE = 4.5;
-        public static final double L1_CORAL = 42.5;
+        public static final double L1_CORAL = 38.0;
         public static final double L2_CORAL = 100.0;
         public static final double L3_CORAL = 100.6;
         public static final double L4_CORAL = 93.5;
-        public static final double LOW_REEF_ALGAE = 32.5;
-        public static final double HIGH_REEF_ALGAE = 105;
+        public static final double LOW_REEF_ALGAE = 52;
+        public static final double HIGH_REEF_ALGAE = 91;
         public static final double PROCESSOR = 22;
         public static final double NET = 90;
     }
@@ -152,7 +151,7 @@ public final class CompConstants {
         public static final Translation2d AXIS_TO_ZERO_COM = new Translation2d(-10.440589, 33.398821).minus(AXIS_POSITION);
 
         // encoder config
-        public static final double ENCODER_ABSOLUTE_OFFSET = -0.1967753092;
+        public static final double ENCODER_ABSOLUTE_OFFSET = -0.15820176865;
         public static final SensorDirectionValue ENCODER_INVERT = SensorDirectionValue.Clockwise_Positive;
 
         // pid & tolerance
@@ -170,17 +169,17 @@ public final class CompConstants {
         // presets
         public static final BiFunction<Double, Double, Double> LOWER_LIMIT = (elevatorPosition, pivotPosition) -> (double) (pivotPosition < 30 ? 160 : elevatorPosition > 1.5 && elevatorPosition < 12 ? 115 : 45);
         public static final Function<Double, Double> UPPER_LIMIT = (elevatorPosition) -> (double) (elevatorPosition > 8 ? 295 : 160);
-        public static final double STOW = 115;
-        public static final double CORAL_STATION = 115;
+        public static final double STOW = 120;
+        public static final double CORAL_STATION = 120;
         public static final double GROUND_CORAL = 150;
         public static final double GROUND_ALGAE = 150;
         public static final double L1_CORAL = 96.5;
         public static final double L2_CORAL = 55;
         public static final double L3_CORAL = 55;
-        public static final double L4_CORAL = 75;
-        public static final double LOW_REEF_ALGAE = 131;
-        public static final double HIGH_REEF_ALGAE = 160;
-        public static final double PROCESSOR = 150;
+        public static final double L4_CORAL = 78;
+        public static final double LOW_REEF_ALGAE = 65.5;
+        public static final double HIGH_REEF_ALGAE = 260;
+        public static final double PROCESSOR = 160;
         public static final double NET = 175;
 
     }
@@ -227,7 +226,7 @@ public final class CompConstants {
         private static final SwerveModuleConstants.SteerFeedbackType STEER_FEEDBACK_TYPE = SwerveModuleConstants.SteerFeedbackType.FusedCANcoder;
 
         // The stator current at which the wheels start to slip;
-        private static final Current SLIP_CURRENT = Amps.of(65.0);
+        public static final Current SLIP_CURRENT = Amps.of(65.0);
 
         // Initial configs for the drive and steer motors and the CANcoder; these cannot be null.
         // Some configs will be overwritten; check the `with*InitialConfigs()` API documentation.

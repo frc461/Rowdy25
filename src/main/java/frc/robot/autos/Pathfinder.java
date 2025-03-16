@@ -180,5 +180,8 @@ public final class Pathfinder {
         System.out.println("station-2: X: " + interpolatedStation2Pose.getX() + ", Y: " + interpolatedStation2Pose.getY() + ", Angle: " + interpolatedStation2Pose.getRotation().getDegrees());
         System.out.println("far station-1: X: " + farStation1Pose.getX() + ", Y: " + farStation1Pose.getY() + ", Angle: " + farStation1Pose.getRotation().getDegrees());
         System.out.println("far station-2: X: " + farStation2Pose.getX() + ", Y: " + farStation2Pose.getY() + ", Angle: " + farStation2Pose.getRotation().getDegrees());
+
+        double multiplier = 0.04 * 5 * Math.log(5 * Math.exp(2.5) + 5 - 1);
+        System.out.println("Velocity function multiplier: " + multiplier);
     }
 }

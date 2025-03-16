@@ -23,6 +23,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DriverStation;
 
@@ -46,10 +47,10 @@ public final class Constants {
 
     public static Supplier<DriverStation.Alliance> ALLIANCE_SUPPLIER;
 
-    public static Pose2d CENTER_OF_LEFT_CORAL_STATION;
-    public static Pose2d CENTER_OF_RIGHT_CORAL_STATION;
-    public static Pose2d FAR_LEFT_CORAL_STATION;
-    public static Pose2d FAR_RIGHT_CORAL_STATION;
+    public static Function<Supplier<DriverStation.Alliance>, Pose2d> CENTER_OF_LEFT_CORAL_STATION;
+    public static Function<Supplier<DriverStation.Alliance>, Pose2d> CENTER_OF_RIGHT_CORAL_STATION;
+    public static Function<Supplier<DriverStation.Alliance>, Pose2d> FAR_LEFT_CORAL_STATION;
+    public static Function<Supplier<DriverStation.Alliance>, Pose2d> FAR_RIGHT_CORAL_STATION;
 
     // kSpeedAt12Volts desired top speed
     public static double MAX_VEL;
@@ -345,6 +346,7 @@ public final class Constants {
         public static double ANGULAR_MINIMUM_ANGLE;
         public static double ANGULAR_MAXIMUM_ANGLE;
 
+        public static Current SLIP_CURRENT;
         public static AudioConfigs AUDIO_CONFIGS;
 
         public static SwerveDrivetrainConstants SWERVE_DRIVETRAIN_CONSTANTS;
