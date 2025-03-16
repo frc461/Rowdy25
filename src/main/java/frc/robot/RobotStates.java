@@ -42,6 +42,7 @@ public class RobotStates {
         L2_CORAL,
         L3_CORAL,
         L4_CORAL, // TODO: TRY L4 PREPARE STATE
+        L4_PREPARE_CORAL,
         LOW_REEF_ALGAE,
         HIGH_REEF_ALGAE,
         PROCESSOR,
@@ -72,6 +73,7 @@ public class RobotStates {
     public final Trigger l2CoralState = new Trigger(() -> currentState == State.L2_CORAL);
     public final Trigger l3CoralState = new Trigger(() -> currentState == State.L3_CORAL);
     public final Trigger l4CoralState = new Trigger(() -> currentState == State.L4_CORAL);
+    public final Trigger l4PrepareCoralState = new Trigger(() -> currentState == State.L4_PREPARE_CORAL);
     public final Trigger lowReefAlgaeState = new Trigger(() -> currentState == State.LOW_REEF_ALGAE);
     public final Trigger highReefAlgaeState = new Trigger(() -> currentState == State.HIGH_REEF_ALGAE);
     public final Trigger processorState = new Trigger(() -> currentState == State.PROCESSOR);
@@ -92,6 +94,7 @@ public class RobotStates {
     public final Trigger atL2CoralState = new Trigger(() -> wrist.isAtState(Wrist.State.L2_CORAL)).and(() -> elevator.isAtState(Elevator.State.L2_CORAL)).and(() -> pivot.isAtState(Pivot.State.L2_CORAL));
     public final Trigger atL3CoralState = new Trigger(() -> wrist.isAtState(Wrist.State.L3_CORAL)).and(() -> elevator.isAtState(Elevator.State.L3_CORAL)).and(() -> pivot.isAtState(Pivot.State.L3_CORAL));
     public final Trigger atL4CoralState = new Trigger(() -> wrist.isAtState(Wrist.State.L4_CORAL)).and(() -> elevator.isAtState(Elevator.State.L4_CORAL)).and(() -> pivot.isAtState(Pivot.State.L4_CORAL));
+    public final Trigger atL4PrepareCoralState = new Trigger(() -> wrist.isAtState(Wrist.State.STOW)).and(() -> elevator.isAtState(Elevator.State.STOW)).and(() -> pivot.isAtState(Pivot.State.L4_CORAL));
     public final Trigger atLowReefAlgaeState = new Trigger(() -> wrist.isAtState(Wrist.State.LOW_REEF_ALGAE)).and(() -> elevator.isAtState(Elevator.State.LOW_REEF_ALGAE)).and(() -> pivot.isAtState(Pivot.State.LOW_REEF_ALGAE));
     public final Trigger atHighReefAlgaeState= new Trigger(() -> wrist.isAtState(Wrist.State.HIGH_REEF_ALGAE)).and(() -> elevator.isAtState(Elevator.State.HIGH_REEF_ALGAE)).and(() -> pivot.isAtState(Pivot.State.HIGH_REEF_ALGAE));
     public final Trigger atProcessorState = new Trigger(() -> wrist.isAtState(Wrist.State.PROCESSOR)).and(() -> elevator.isAtState(Elevator.State.PROCESSOR)).and(() -> pivot.isAtState(Pivot.State.PROCESSOR));
@@ -196,6 +199,14 @@ public class RobotStates {
         toggleL4CoralState(false);
     }
 
+    public void toggleL4PrepareCoralState(boolean override) {
+        currentState = currentState == State.L4_PREPARE_CORAL && !override ? State.STOW : State.L4_PREPARE_CORAL;
+    }
+
+    public void toggleL4PrepareCoralState() {
+        toggleL4PrepareCoralState(false);
+    }
+
     public void toggleAutoLevelCoralState(boolean override) {
         switch (currentAutoLevel) {
             case L1 -> toggleL1CoralState(override);
@@ -207,6 +218,15 @@ public class RobotStates {
 
     public void toggleAutoLevelCoralState() {
         toggleAutoLevelCoralState(false);
+    }
+
+    public void togglePrepareAutoLevelCoralState(boolean override) {
+        switch (currentAutoLevel) {
+            case L1 -> toggleL1CoralState(override);
+            case L2 -> toggleL2CoralState(override);
+            case L3 -> toggleL3CoralState(override);
+            case L4 -> toggleL4PrepareCoralState(override);
+        }
     }
 
     public void toggleLowReefAlgaeState() {
@@ -374,6 +394,14 @@ public class RobotStates {
                         .andThen(intake::setIdleState)
                         .andThen(orderedTransition(pivot::setL4CoralState, elevator::setL4CoralState, Elevator.State.L4_CORAL, wrist::setL4CoralState))
                         .until(() -> !l4CoralState.getAsBoolean())
+        );
+
+        l4PrepareCoralState.onTrue(
+                new InstantCommand(swerve::setBranchHeadingMode)
+                        .unless(DriverStation::isAutonomousEnabled)
+                        .andThen(intake::setIdleState)
+                        .andThen(orderedTransition(pivot::setL4CoralState, elevator::setStowState, Elevator.State.STOW, wrist::setStowState))
+                        .until(() -> !l4PrepareCoralState.getAsBoolean())
         );
 
         lowReefAlgaeState.onTrue(
