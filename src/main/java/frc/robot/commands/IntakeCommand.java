@@ -32,6 +32,9 @@ public class IntakeCommand extends Command {
             case OUTTAKE:
                 intake.setIntakeSpeed(-0.5);
                 break;
+            case OUTTAKE_L1:
+                intake.setIntakeSpeed(-0.3);
+                break;
             case HAS_ALGAE:
                 intake.pulseIntake();
                 break;

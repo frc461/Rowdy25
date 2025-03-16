@@ -25,7 +25,8 @@ public class Intake extends SubsystemBase {
         INTAKE,
         INTAKE_OUT,
         INTAKE_OVERRIDE,
-        OUTTAKE
+        OUTTAKE,
+        OUTTAKE_L1
     }
 
     private State currentState;
@@ -131,6 +132,10 @@ public class Intake extends SubsystemBase {
 
     public void setOuttakeState() {
         setState(State.OUTTAKE);
+    }
+
+    public void setOuttakeL1State() {
+        setState(State.OUTTAKE_L1);
     }
 
     public void setIntakeSpeed(double speed) {

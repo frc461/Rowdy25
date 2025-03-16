@@ -33,6 +33,7 @@ public class RobotStates {
         STOW,
         MANUAL,
         OUTTAKE,
+        OUTTAKE_L1,
         INTAKE_OUT,
         CORAL_STATION,
         GROUND_CORAL,
@@ -62,6 +63,7 @@ public class RobotStates {
 
     public final Trigger stowState = new Trigger(() -> currentState == State.STOW);
     public final Trigger outtakeState = new Trigger(() -> currentState == State.OUTTAKE);
+    public final Trigger outtakeL1State = new Trigger(() -> currentState == State.OUTTAKE_L1);
     public final Trigger intakeOutState = new Trigger(() -> currentState == State.INTAKE_OUT);
     public final Trigger coralStationState = new Trigger(() -> currentState == State.CORAL_STATION);
     public final Trigger groundCoralState = new Trigger(() -> currentState == State.GROUND_CORAL);
@@ -138,6 +140,10 @@ public class RobotStates {
         currentState = State.OUTTAKE;
     }
 
+    public void setOuttakeL1State() {
+        currentState = State.OUTTAKE_L1;
+    }
+
     public void setIntakeOutState() {
         currentState = State.INTAKE_OUT;
     }
@@ -159,7 +165,7 @@ public class RobotStates {
     }
 
     public void toggleL1CoralState(boolean override) {
-        currentState = currentState == State.L1_CORAL && !override ? State.OUTTAKE : State.L1_CORAL;
+        currentState = currentState == State.L1_CORAL && !override ? State.OUTTAKE_L1 : State.L1_CORAL;
     }
 
     public void toggleL1CoralState() {
@@ -281,6 +287,13 @@ public class RobotStates {
         outtakeState.onTrue(
                 new InstantCommand(swerve::setIdleMode)
                         .andThen(intake::setOuttakeState)
+                        .andThen(new WaitUntilCommand(() -> !intake.hasAlgae() && !intake.hasCoral()))
+                        .andThen(this::setStowState)
+        );
+
+        outtakeL1State.onTrue(
+                new InstantCommand(swerve::setIdleMode)
+                        .andThen(intake::setOuttakeL1State)
                         .andThen(new WaitUntilCommand(() -> !intake.hasAlgae() && !intake.hasCoral()))
                         .andThen(this::setStowState)
         );
