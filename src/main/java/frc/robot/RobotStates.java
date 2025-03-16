@@ -378,7 +378,7 @@ public class RobotStates {
 
         lowReefAlgaeState.onTrue(
                 new InstantCommand(swerve::setReefTagOppositeHeadingMode)
-                        .andThen(intake::setOuttakeState)
+                        .andThen(intake::setIntakeState)
                         .andThen(orderedTransition(pivot::setLowReefAlgaeState, elevator::setLowReefAlgaeState, Elevator.State.LOW_REEF_ALGAE, wrist::setLowReefAlgaeState))
                         .andThen(new WaitUntilCommand(intake::atIdleState))
                         .andThen(this::setStowState)

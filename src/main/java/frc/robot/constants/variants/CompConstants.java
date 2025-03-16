@@ -82,8 +82,8 @@ public final class CompConstants {
         public static final double L2_CORAL = 0;
         public static final double L3_CORAL = 15.5;
         public static final double L4_CORAL = 45.5;
-        public static final double LOW_REEF_ALGAE = 2.0;
-        public static final double HIGH_REEF_ALGAE = 3.0;
+        public static final double LOW_REEF_ALGAE = 13.0;
+        public static final double HIGH_REEF_ALGAE = 18.5;
         public static final double PROCESSOR = 0;
         public static final double NET = 44;
     }
@@ -133,8 +133,8 @@ public final class CompConstants {
         public static final double L2_CORAL = 100.0;
         public static final double L3_CORAL = 100.6;
         public static final double L4_CORAL = 93.5;
-        public static final double LOW_REEF_ALGAE = 32.5;
-        public static final double HIGH_REEF_ALGAE = 105;
+        public static final double LOW_REEF_ALGAE = 52;
+        public static final double HIGH_REEF_ALGAE = 91;
         public static final double PROCESSOR = 22;
         public static final double NET = 90;
     }
@@ -169,16 +169,16 @@ public final class CompConstants {
         // presets
         public static final BiFunction<Double, Double, Double> LOWER_LIMIT = (elevatorPosition, pivotPosition) -> (double) (pivotPosition < 30 ? 160 : elevatorPosition > 1.5 && elevatorPosition < 12 ? 115 : 45);
         public static final Function<Double, Double> UPPER_LIMIT = (elevatorPosition) -> (double) (elevatorPosition > 8 ? 295 : 160);
-        public static final double STOW = 125;
-        public static final double CORAL_STATION = 125;
+        public static final double STOW = 120;
+        public static final double CORAL_STATION = 120;
         public static final double GROUND_CORAL = 150;
         public static final double GROUND_ALGAE = 150;
         public static final double L1_CORAL = 96.5;
         public static final double L2_CORAL = 55;
         public static final double L3_CORAL = 55;
-        public static final double L4_CORAL = 75;
-        public static final double LOW_REEF_ALGAE = 131;
-        public static final double HIGH_REEF_ALGAE = 160;
+        public static final double L4_CORAL = 78;
+        public static final double LOW_REEF_ALGAE = 65.5;
+        public static final double HIGH_REEF_ALGAE = 260;
         public static final double PROCESSOR = 160;
         public static final double NET = 175;
 
