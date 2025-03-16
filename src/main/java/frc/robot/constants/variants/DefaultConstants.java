@@ -215,6 +215,12 @@ public final class DefaultConstants {
         public static final ServoChannel.ChannelId RATCHET_CHANNEL = ServoChannel.ChannelId.kChannelId1;
         public static final int RATCHET_ON = 1115;
         public static final int RATCHET_OFF = 1250;
+
+        // intake
+        public static final int INTAKE_ID = 10;
+        public static final double INTAKE_CURRENT_LIMIT = 40;
+        public static final InvertedValue INTAKE_MOTOR_INVERT = InvertedValue.Clockwise_Positive;
+
         
         // presets
         public static final double IDLE = 0;

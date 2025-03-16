@@ -26,6 +26,11 @@ public class Climb extends SubsystemBase {
         }
     }
 
+    public enum IntakeState {
+        IDLE,
+        INTAKE;
+    }
+
     public enum RatchetState {
         ON(Constants.ClimbConstants.RATCHET_ON),
         OFF(Constants.ClimbConstants.RATCHET_OFF);
@@ -38,8 +43,10 @@ public class Climb extends SubsystemBase {
     }
 
     private State currentState;
+    private IntakeState currentIntakeState;
 
 	private final TalonFX climb;
+    private final TalonFX intake;
     private final ServoChannel ratchet;
     private double error;
 
@@ -58,6 +65,18 @@ public class Climb extends SubsystemBase {
                         .withSupplyCurrentLimit(Constants.ClimbConstants.CURRENT_LIMIT))
         );
 
+        currentIntakeState = IntakeState.IDLE;
+        intake = new TalonFX(Constants.ClimbConstants.INTAKE_ID);
+        intake.getConfigurator().apply(new TalonFXConfiguration()
+                .withFeedback(new FeedbackConfigs())
+                .withMotorOutput(new MotorOutputConfigs()
+                        .withInverted(Constants.ClimbConstants.INTAKE_MOTOR_INVERT)
+                        .withNeutralMode(NeutralModeValue.Coast))
+                .withCurrentLimits(new CurrentLimitsConfigs()
+                        .withSupplyCurrentLimit(Constants.ClimbConstants.INTAKE_CURRENT_LIMIT))
+        );
+
+
         ratchet = Constants.SERVO_HUB.getServoChannel(Constants.ClimbConstants.RATCHET_CHANNEL);
         ratchet.setPowered(true);
         ratchet.setEnabled(true);
@@ -70,6 +89,10 @@ public class Climb extends SubsystemBase {
 		return currentState;
 	}
 
+    public IntakeState getIntakeState() {
+        return currentIntakeState;
+    }
+ 
     public double getPosition() {
         return climb.getRotorPosition().getValueAsDouble();
     }
@@ -87,6 +110,12 @@ public class Climb extends SubsystemBase {
     }
 
     public void manualClimb(double value) {
+        if (value > 0) {
+            currentIntakeState = IntakeState.INTAKE;
+        } else {
+            currentIntakeState = IntakeState.IDLE; // TODO SHOP: REMOVE? MIGHT BE UNNECESSARY
+        }
+
         currentState = State.MANUAL;
         climb.set(value);
     }
@@ -115,6 +144,7 @@ public class Climb extends SubsystemBase {
                 }
                 break;
             case PREPARE_CLIMB:
+                currentIntakeState = IntakeState.INTAKE;
                 if (Math.abs(error) > 7.5) {
                     climb.set(error < 0 ? 0.6 : -0.2);
                 } else {
@@ -122,11 +152,25 @@ public class Climb extends SubsystemBase {
                 }
                 break;
             case CLIMB:
+                currentIntakeState = IntakeState.IDLE;
                 if (error > 7.5) {
                     climb.set(-0.6);
                 } else {
                     climb.set(0.0);
                 }
+                break;
+        }
+
+        switch (getIntakeState()) {
+            case INTAKE:
+                if (intake.getVelocity().getValueAsDouble() < 0.1 && intake.getSupplyCurrent().getValueAsDouble() > 20) {
+                    currentIntakeState = IntakeState.IDLE; // TODO SHOP: TEST INTAKE STALLING LOGIC
+                } else {
+                    intake.set(0.6);
+                }
+                break;
+            case IDLE:
+                intake.set(0.0);
                 break;
         }
 

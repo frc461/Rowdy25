@@ -163,10 +163,15 @@ public final class Constants {
         public static int RATCHET_ON;
         public static int RATCHET_OFF;
 
+        // intake
+        public static int INTAKE_ID;
+        public static double INTAKE_CURRENT_LIMIT;
+        public static InvertedValue INTAKE_MOTOR_INVERT;
+
         // presets
         public static double STOW;
         public static double PREPARE_CLIMB;
-        public static double CLIMB;
+        public static double CLIMB; 
     }
 
     public final static class ElevatorConstants {
