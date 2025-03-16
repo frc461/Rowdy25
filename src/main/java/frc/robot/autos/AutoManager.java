@@ -52,7 +52,7 @@ public final class AutoManager {
     private List<Pair<FieldUtil.Reef.ScoringLocation, FieldUtil.Reef.Level>> scoringLocations = null;
     private String coralStationOverride = null;
 
-    public AutoManager(RobotStates robotStates) { // TODO SHOP: TEST AUTO
+    public AutoManager(RobotStates robotStates) {
 
         SendableChooser<StartPosition> startPositionChooser = new SendableChooser<>();
         for (StartPosition position : StartPosition.values()) {
@@ -61,7 +61,7 @@ public final class AutoManager {
         SmartDashboard.putData("Start Position", startPositionChooser);
         startPositionChooser.onChange(startPosition -> {
             this.startPosition = startPosition;
-            if (this.startPosition != null && !this.scoringLocations.isEmpty()) {
+            if (this.startPosition != null && this.scoringLocations != null && !this.scoringLocations.isEmpty()) {
                 currentCommand = generateAutoEventLooper(robotStates).cmd();
             }
         });
@@ -75,18 +75,18 @@ public final class AutoManager {
         SmartDashboard.putData("Scoring Locations", scoringLocationsChooser);
         scoringLocationsChooser.onChange(scoringLocations -> {
             this.scoringLocations = scoringLocations;
-            if (startPosition != null && !this.scoringLocations.isEmpty()) {
+            if (startPosition != null && this.scoringLocations != null && !this.scoringLocations.isEmpty()) {
                 currentCommand = generateAutoEventLooper(robotStates).cmd();
             }
         });
 
         SendableChooser<String> coralStationOverrideChooser = new SendableChooser<>();
-        coralStationOverrideChooser.addOption("Driver Left Coral Station", "station-1"); // TODO SHOP: TEST CORAL PREFERENCE
+        coralStationOverrideChooser.addOption("Driver Left Coral Station", "station-1");
         coralStationOverrideChooser.addOption("Driver Right Coral Station", "station-2");
         SmartDashboard.putData("Coral Station Preference", coralStationOverrideChooser);
         coralStationOverrideChooser.onChange(coralStationOverride -> {
             this.coralStationOverride = coralStationOverride;
-            if (startPosition != null && !this.scoringLocations.isEmpty()) {
+            if (startPosition != null && this.scoringLocations != null && !this.scoringLocations.isEmpty()) {
                 currentCommand = generateAutoEventLooper(robotStates).cmd();
             }
         });
@@ -125,7 +125,7 @@ public final class AutoManager {
 
             Pair<FieldUtil.Reef.ScoringLocation, FieldUtil.Reef.Level> nextScoringLocation = currentScoringLocations.get(0);
 
-            triggersToBind.add(autoEventLooper.addTrigger( // TODO SHOP: TEST THIS
+            triggersToBind.add(autoEventLooper.addTrigger(
                     currentScoringLocation.getFirst().name() + "," + nextScoringLocation.getFirst().name(),
                     () -> getPathFindingCommandToCoralStation(robotStates, currentScoringLocation.getFirst(), nextScoringLocation.getFirst())
                             .andThen(new WaitUntilCommand(() -> robotStates.stowState.getAsBoolean() || robotStates.intake.hasCoral()))
