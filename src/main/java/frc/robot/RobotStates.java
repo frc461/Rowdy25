@@ -41,7 +41,7 @@ public class RobotStates {
         L1_CORAL,
         L2_CORAL,
         L3_CORAL,
-        L4_CORAL, // TODO: TRY L4 PREPARE STATE
+        L4_CORAL,
         L4_PREPARE_CORAL,
         LOW_REEF_ALGAE,
         HIGH_REEF_ALGAE,

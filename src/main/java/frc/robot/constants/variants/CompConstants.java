@@ -226,7 +226,7 @@ public final class CompConstants {
         private static final SwerveModuleConstants.SteerFeedbackType STEER_FEEDBACK_TYPE = SwerveModuleConstants.SteerFeedbackType.FusedCANcoder;
 
         // The stator current at which the wheels start to slip;
-        private static final Current SLIP_CURRENT = Amps.of(65.0);
+        public static final Current SLIP_CURRENT = Amps.of(65.0);
 
         // Initial configs for the drive and steer motors and the CANcoder; these cannot be null.
         // Some configs will be overwritten; check the `with*InitialConfigs()` API documentation.

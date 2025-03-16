@@ -273,6 +273,7 @@ public enum RobotIdentity {
         Constants.SwerveConstants.ANGULAR_OBJECT_DETECTION_D = DefaultConstants.SwerveConstants.ANGULAR_OBJECT_DETECTION_D;
         Constants.SwerveConstants.ANGULAR_MINIMUM_ANGLE = DefaultConstants.SwerveConstants.ANGULAR_MINIMUM_ANGLE;
         Constants.SwerveConstants.ANGULAR_MAXIMUM_ANGLE = DefaultConstants.SwerveConstants.ANGULAR_MAXIMUM_ANGLE;
+        Constants.SwerveConstants.SLIP_CURRENT = DefaultConstants.SwerveConstants.SLIP_CURRENT;
         Constants.SwerveConstants.AUDIO_CONFIGS = DefaultConstants.SwerveConstants.AUDIO_CONFIGS;
         Constants.SwerveConstants.SWERVE_DRIVETRAIN_CONSTANTS = DefaultConstants.SwerveConstants.SWERVE_DRIVETRAIN_CONSTANTS;
         Constants.SwerveConstants.FRONT_LEFT = DefaultConstants.SwerveConstants.FrontLeft.FRONT_LEFT;
@@ -412,6 +413,7 @@ public enum RobotIdentity {
         Constants.SwerveConstants.ANGULAR_OBJECT_DETECTION_D = CompConstants.SwerveConstants.ANGULAR_OBJECT_DETECTION_D;
         Constants.SwerveConstants.ANGULAR_MINIMUM_ANGLE = CompConstants.SwerveConstants.ANGULAR_MINIMUM_ANGLE;
         Constants.SwerveConstants.ANGULAR_MAXIMUM_ANGLE = CompConstants.SwerveConstants.ANGULAR_MAXIMUM_ANGLE;
+        Constants.SwerveConstants.SLIP_CURRENT = CompConstants.SwerveConstants.SLIP_CURRENT;
         Constants.SwerveConstants.FRONT_LEFT = CompConstants.SwerveConstants.FrontLeft.FRONT_LEFT;
         Constants.SwerveConstants.FRONT_RIGHT = CompConstants.SwerveConstants.FrontRight.FRONT_RIGHT;
         Constants.SwerveConstants.BACK_LEFT = CompConstants.SwerveConstants.BackLeft.BACK_LEFT;

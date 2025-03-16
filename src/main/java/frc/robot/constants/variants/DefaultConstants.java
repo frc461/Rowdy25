@@ -427,7 +427,7 @@ public final class DefaultConstants {
         private static final SteerFeedbackType STEER_FEEDBACK_TYPE = SteerFeedbackType.FusedCANcoder;
 
         // The stator current at which the wheels start to slip;
-        private static final Current SLIP_CURRENT = Amps.of(65.0);
+        public static final Current SLIP_CURRENT = Amps.of(65.0);
 
         public static final AudioConfigs AUDIO_CONFIGS = new AudioConfigs().withAllowMusicDurDisable(true);
 
