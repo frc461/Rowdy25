@@ -4,7 +4,6 @@ import com.ctre.phoenix6.configs.*;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -53,7 +52,7 @@ public class Elevator extends SubsystemBase {
                         .withSensorToMechanismRatio(Constants.ElevatorConstants.ROTOR_TO_INCH_RATIO))
                 .withMotorOutput(new MotorOutputConfigs()
                         .withInverted(Constants.ElevatorConstants.MOTOR_INVERT)
-                        .withNeutralMode(NeutralModeValue.Coast))
+                        .withNeutralMode(Constants.ElevatorConstants.NEUTRAL_MODE))
                 .withCurrentLimits(new CurrentLimitsConfigs()
                         .withSupplyCurrentLimit(Constants.ElevatorConstants.CURRENT_LIMIT))
                 .withAudio(new AudioConfigs().withBeepOnConfig(false)
@@ -187,7 +186,7 @@ public class Elevator extends SubsystemBase {
         elevator.setControl(request.withPosition(getTarget()).withFeedForward(Constants.ElevatorConstants.G.apply(pivotPosition)));
     }
 
-    public void moveElevator(double axisValue) {
+    public void move(double axisValue) {
         checkLimitSwitch();
         elevator.set(axisValue > 0
                 ? axisValue * EquationUtil.expOutput(Constants.ElevatorConstants.UPPER_LIMIT - getPosition(), 1, 0.5, 10)

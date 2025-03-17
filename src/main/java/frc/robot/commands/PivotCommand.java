@@ -5,7 +5,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotStates;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.pivot.Pivot;
-import frc.robot.util.GravityGainsCalculator;
 
 import java.util.function.DoubleSupplier;
 
@@ -31,7 +30,7 @@ public class PivotCommand extends Command {
         if (axisValue != 0.0) {
             pivot.setManualState();
             robotStates.setManualState();
-            pivot.movePivot(axisValue);
+            pivot.move(axisValue);
         } else {
             pivot.holdTarget(elevatorPosition.getAsDouble(), wristPosition.getAsDouble());
         }

@@ -28,7 +28,7 @@ public class ElevatorCommand extends Command {
         if (axisValue != 0.0) {
             elevator.setManualState();
             robotStates.setManualState();
-            elevator.moveElevator(axisValue);
+            elevator.move(axisValue);
         } else {
             elevator.holdTarget(pivotPosition.getAsDouble());
         }

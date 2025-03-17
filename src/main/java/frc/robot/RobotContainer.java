@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.autos.AutoManager;
 import frc.robot.constants.Constants;
 import frc.robot.util.FieldUtil;
@@ -131,10 +132,10 @@ public class RobotContainer {
 
         driverXbox.povUp().onTrue(new InstantCommand(() -> robotStates.swerve.localizer.setRotations(Rotation2d.kZero)));
         driverXbox.povDown().onTrue(new InstantCommand(robotStates.swerve.localizer::syncRotations));
-        driverXbox.povLeft().onTrue(new InstantCommand(() -> robotStates.climb.manualClimb(-0.9)));
-        driverXbox.povLeft().onFalse(new InstantCommand(() -> robotStates.climb.stopClimb(true)));
-        driverXbox.povRight().onTrue(new InstantCommand(() -> robotStates.climb.manualClimb(0.9)));
-        driverXbox.povRight().onFalse(new InstantCommand(() -> robotStates.climb.stopClimb(false)));
+        driverXbox.povLeft().onTrue(new InstantCommand(() -> robotStates.climb.move(-0.9)));
+        driverXbox.povLeft().onFalse(new InstantCommand(() -> robotStates.climb.stop(true)));
+        driverXbox.povRight().onTrue(new InstantCommand(() -> robotStates.climb.move(0.9)));
+        driverXbox.povRight().onFalse(new InstantCommand(() -> robotStates.climb.stop(false)));
 
         new Trigger(() -> Math.hypot(driverXbox.getLeftX(), driverXbox.getLeftY()) > 0.75).onTrue(
                 new InstantCommand(() -> driverXbox.setRumble(GenericHID.RumbleType.kBothRumble, 1.0))

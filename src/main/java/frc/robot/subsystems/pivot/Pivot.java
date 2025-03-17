@@ -238,7 +238,7 @@ public class Pivot extends SubsystemBase {
         pivot.setControl(request.withPosition(getTarget()).withFeedForward(currentG));
     }
 
-    public void movePivot(double axisValue) {
+    public void move(double axisValue) {
         pivot.set(axisValue > 0
                 ? axisValue * EquationUtil.expOutput(Constants.PivotConstants.UPPER_LIMIT - getPosition(), 1, 5, 10)
                 : axisValue * EquationUtil.expOutput(getPosition() - Constants.PivotConstants.LOWER_LIMIT, 1, 5, 10));

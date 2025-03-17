@@ -183,7 +183,7 @@ public class Wrist extends SubsystemBase {
         wrist.setControl(request.withPosition(target).withFeedForward(Constants.WristConstants.G.apply(getPosition(), pivotPosition)));
     }
 
-    public void moveWrist(double axisValue, double pivotPosition, double elevatorPosition) {
+    public void move(double axisValue, double pivotPosition, double elevatorPosition) {
         wrist.set(axisValue > 0
                 ? axisValue * EquationUtil.expOutput(Constants.WristConstants.UPPER_LIMIT.apply(elevatorPosition) - getPosition(), 1, 5, 10)
                 : axisValue * EquationUtil.expOutput(getPosition() - Constants.WristConstants.LOWER_LIMIT.apply(elevatorPosition, pivotPosition), 1, 5, 10));

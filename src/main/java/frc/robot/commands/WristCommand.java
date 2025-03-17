@@ -30,7 +30,7 @@ public class WristCommand extends Command {
         if (axisValue != 0.0) {
             wrist.setManualState();
             robotStates.setManualState();
-            wrist.moveWrist(axisValue, pivotPosition.getAsDouble(), elevatorPosition.getAsDouble());
+            wrist.move(axisValue, pivotPosition.getAsDouble(), elevatorPosition.getAsDouble());
         } else {
             wrist.holdTarget(pivotPosition.getAsDouble());
         }

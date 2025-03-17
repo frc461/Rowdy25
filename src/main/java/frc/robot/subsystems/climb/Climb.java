@@ -109,11 +109,11 @@ public class Climb extends SubsystemBase {
         return getState() == State.CLIMB || getState() == State.MANUAL_LATCH ? RatchetState.OFF.pulseWidth : RatchetState.ON.pulseWidth;
     }
 
-    public void escalateClimb() {
+    public void escalate() {
         currentState = (currentState == State.CLIMB || currentState == State.PREPARE_CLIMB) ? State.CLIMB : State.PREPARE_CLIMB;
     }
 
-    public void manualClimb(double value) {
+    public void move(double value) {
         if (value >= 0) {
             currentIntakeState = IntakeState.INTAKE;
         } else {
@@ -124,7 +124,7 @@ public class Climb extends SubsystemBase {
         climb.set(value);
     }
 
-    public void stopClimb(boolean latched) {
+    public void stop(boolean latched) {
         currentState = latched ? State.MANUAL_LATCH : State.MANUAL;
         climb.set(0.0);
     }
