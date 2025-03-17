@@ -87,7 +87,7 @@ public class Pivot extends SubsystemBase {
                 .withFeedback(new FeedbackConfigs().withRemoteCANcoder(encoder)
                         .withSensorToMechanismRatio(Constants.PivotConstants.SENSOR_TO_DEGREE_RATIO))
                 .withMotorOutput(new MotorOutputConfigs()
-                        .withInverted(Constants.PivotConstants.PIVOT_INVERT)
+                        .withInverted(Constants.PivotConstants.MOTOR_INVERT)
                         .withNeutralMode(Constants.PivotConstants.NEUTRAL_MODE))
                 .withCurrentLimits(new CurrentLimitsConfigs()
                         .withSupplyCurrentLimit(Constants.PivotConstants.CURRENT_LIMIT))

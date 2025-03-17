@@ -95,7 +95,7 @@ public final class CompConstants {
 
     public final static class PivotConstants {
         // motor config
-        public static final InvertedValue PIVOT_INVERT = InvertedValue.Clockwise_Positive;
+        public static final InvertedValue MOTOR_INVERT = InvertedValue.Clockwise_Positive;
 
         // mechanism characterization
         private static final double ROTOR_TO_MECHANISM_RATIO = 107.6923;

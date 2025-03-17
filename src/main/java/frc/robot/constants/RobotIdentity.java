@@ -195,7 +195,7 @@ public enum RobotIdentity {
         Constants.PivotConstants.LEAD_ID = DefaultConstants.PivotConstants.LEAD_ID;
         Constants.PivotConstants.FOLLOWER_ID = DefaultConstants.PivotConstants.FOLLOWER_ID;
         Constants.PivotConstants.CURRENT_LIMIT = DefaultConstants.PivotConstants.CURRENT_LIMIT;
-        Constants.PivotConstants.PIVOT_INVERT = DefaultConstants.PivotConstants.PIVOT_INVERT;
+        Constants.PivotConstants.MOTOR_INVERT = DefaultConstants.PivotConstants.MOTOR_INVERT;
         Constants.PivotConstants.NEUTRAL_MODE = DefaultConstants.PivotConstants.NEUTRAL_MODE;
         Constants.PivotConstants.SENSOR_TO_DEGREE_RATIO = DefaultConstants.PivotConstants.SENSOR_TO_DEGREE_RATIO;
         Constants.PivotConstants.AXIS_POSITION = DefaultConstants.PivotConstants.AXIS_POSITION;
@@ -344,7 +344,7 @@ public enum RobotIdentity {
         Constants.IntakeConstants.MOTOR_INVERT = CompConstants.IntakeConstants.MOTOR_INVERT;
         Constants.IntakeConstants.BEAMBREAK_ID = CompConstants.IntakeConstants.BEAMBREAK_ID;
 
-        Constants.PivotConstants.PIVOT_INVERT = CompConstants.PivotConstants.PIVOT_INVERT;
+        Constants.PivotConstants.MOTOR_INVERT = CompConstants.PivotConstants.MOTOR_INVERT;
         Constants.PivotConstants.SENSOR_TO_DEGREE_RATIO = CompConstants.PivotConstants.SENSOR_TO_DEGREE_RATIO;
         Constants.PivotConstants.AXIS_POSITION = CompConstants.PivotConstants.AXIS_POSITION;
         Constants.PivotConstants.ENCODER_ABSOLUTE_OFFSET = CompConstants.PivotConstants.ENCODER_ABSOLUTE_OFFSET;

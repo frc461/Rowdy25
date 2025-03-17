@@ -238,7 +238,7 @@ public final class Constants {
         public static int LEAD_ID;
         public static int FOLLOWER_ID;
         public static double CURRENT_LIMIT;
-        public static InvertedValue PIVOT_INVERT;
+        public static InvertedValue MOTOR_INVERT;
         public static NeutralModeValue NEUTRAL_MODE;
 
         // mechanism characterization

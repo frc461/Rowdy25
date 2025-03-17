@@ -32,7 +32,6 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.units.measure.*;
 import edu.wpi.first.wpilibj.DriverStation;
-import frc.robot.constants.Constants;
 import frc.robot.util.FieldUtil;
 import org.json.simple.parser.ParseException;
 
@@ -294,7 +293,7 @@ public final class DefaultConstants {
         public static final int LEAD_ID = 51;
         public static final int FOLLOWER_ID = 52;
         public static final double CURRENT_LIMIT = 40;
-        public static final InvertedValue PIVOT_INVERT = InvertedValue.Clockwise_Positive;
+        public static final InvertedValue MOTOR_INVERT = InvertedValue.Clockwise_Positive;
         public static final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Coast;
 
         // mechanism characterization
