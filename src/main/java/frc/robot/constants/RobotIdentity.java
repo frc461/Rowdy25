@@ -184,8 +184,8 @@ public enum RobotIdentity {
         Constants.ElevatorConstants.NET = DefaultConstants.ElevatorConstants.NET;
         Constants.ElevatorConstants.CLIMB = DefaultConstants.ElevatorConstants.CLIMB;
 
-        Constants.IntakeConstants.MOTOR_ID = DefaultConstants.IntakeConstants.MOTOR_ID;
-        Constants.IntakeConstants.SENSOR_ID = DefaultConstants.IntakeConstants.SENSOR_ID;
+        Constants.IntakeConstants.LEAD_ID = DefaultConstants.IntakeConstants.LEAD_ID;
+        Constants.IntakeConstants.FOLLOWER_ID = DefaultConstants.IntakeConstants.FOLLOWER_ID;
         Constants.IntakeConstants.BEAMBREAK_ID = DefaultConstants.IntakeConstants.BEAMBREAK_ID;
         Constants.IntakeConstants.CURRENT_LIMIT = DefaultConstants.IntakeConstants.CURRENT_LIMIT;
         Constants.IntakeConstants.MOTOR_INVERT = DefaultConstants.IntakeConstants.MOTOR_INVERT;

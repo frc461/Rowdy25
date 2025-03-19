@@ -265,7 +265,7 @@ public final class DefaultConstants {
         public static final double UPPER_LIMIT = 46;
         public static final double STOW = 0;
         public static final double CORAL_STATION = 0;
-        public static final double GROUND_CORAL = 0;
+        public static final double GROUND_CORAL = 5;
         public static final double GROUND_ALGAE = 0;
         public static final double L1_CORAL = 0;
         public static final double L2_CORAL = 0;
@@ -279,11 +279,11 @@ public final class DefaultConstants {
     }
 
     public final static class IntakeConstants {
-        public static final int MOTOR_ID = 41;
-        public static final int SENSOR_ID = 42;
+        public static final int LEAD_ID = 41;
+        public static final int FOLLOWER_ID = 42;
         public static final int BEAMBREAK_ID = 4;
         public static final double CURRENT_LIMIT = 40;
-        public static final InvertedValue MOTOR_INVERT = InvertedValue.Clockwise_Positive;
+        public static final InvertedValue MOTOR_INVERT = InvertedValue.CounterClockwise_Positive;
         public static final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Coast;
         public static final double DEFAULT_PROXIMITY_OBJECT_DETECTION_THRESHOLD = 0.13;
     }
@@ -303,7 +303,7 @@ public final class DefaultConstants {
 
         // encoder config
         public static final int ENCODER_ID = 53;
-        public static final double ENCODER_ABSOLUTE_OFFSET = 0.06250135632;
+        public static final double ENCODER_ABSOLUTE_OFFSET = 0.10205281573;
         public static final SensorDirectionValue ENCODER_INVERT = SensorDirectionValue.CounterClockwise_Positive;
 
         // ratchet config
@@ -313,8 +313,8 @@ public final class DefaultConstants {
 
         // pid & tolerance
         public static final double G = 0.2269;
-        public static final double V = 7.55 / 2 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps) -> V / (rotor rps)
-        public static final double A = 0.02 / 2 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps^2) -> V / (rotor rps^2)
+        public static final double V = 6.35 / 2 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps) -> V / (rotor rps)
+        public static final double A = 0.09 / 2 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps^2) -> V / (rotor rps^2)
         public static final double P = 0.15;
         public static final double I = 0;
         public static final double D = 0.01;
@@ -328,7 +328,7 @@ public final class DefaultConstants {
         public static final double UPPER_LIMIT = 105;
         public static final double STOW = 50;
         public static final double CORAL_STATION = 50;
-        public static final double GROUND_CORAL = 3.5;
+        public static final double GROUND_CORAL = 0.1;
         public static final double GROUND_ALGAE = 4.5;
         public static final double L1_CORAL = 31.5;
         public static final double L2_CORAL = 100.0;
@@ -357,7 +357,7 @@ public final class DefaultConstants {
 
         // encoder config
         public static final int ENCODER_ID = 62;
-        public static final double ENCODER_ABSOLUTE_OFFSET =  0.43460869667;
+        public static final double ENCODER_ABSOLUTE_OFFSET =  0.44803710922;
         public static final SensorDirectionValue ENCODER_INVERT = SensorDirectionValue.Clockwise_Positive;
 
         // pid & tolerance
@@ -373,11 +373,11 @@ public final class DefaultConstants {
         public static final double AT_TARGET_TOLERANCE = 2.5;
 
         // presets
-        public static final BiFunction<Double, Double, Double> LOWER_LIMIT = (elevatorPosition, pivotPosition) -> (double) (pivotPosition < 45 ? 125 : elevatorPosition > 1.5 && elevatorPosition < 12 ? 125 : 45);
-        public static final Function<Double, Double> UPPER_LIMIT = (elevatorPosition) -> (double) (elevatorPosition > 8 ? 295 : 160);
+        public static final BiFunction<Double, Double, Double> LOWER_LIMIT = (elevatorPosition, pivotPosition) -> (double) (pivotPosition < 45 ? 85 : elevatorPosition > 1.5 && elevatorPosition < 12 ? 85 : 45);
+        public static final Function<Double, Double> UPPER_LIMIT = (elevatorPosition) -> (double) (elevatorPosition > 4 ? 295 : 160);
         public static final double STOW = 125;
         public static final double CORAL_STATION = 125;
-        public static final double GROUND_CORAL = 150;
+        public static final double GROUND_CORAL = 105;
         public static final double GROUND_ALGAE = 150;
         public static final double L1_CORAL = 125;
         public static final double L2_CORAL = 55;

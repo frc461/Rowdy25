@@ -1,12 +1,9 @@
 package frc.robot.subsystems.intake;
 
 import com.ctre.phoenix6.configs.*;
+import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.TalonFX;
 
-import com.reduxrobotics.canand.CanandEventLoop;
-import com.reduxrobotics.sensors.canandcolor.Canandcolor;
-import com.reduxrobotics.sensors.canandcolor.ColorPeriod;
-import com.reduxrobotics.sensors.canandcolor.ProximityPeriod;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.util.Color;
@@ -31,8 +28,7 @@ public class Intake extends SubsystemBase {
 
     private State currentState;
 
-    private final TalonFX motor;
-    private final Canandcolor canandcolor;
+    private final TalonFX intake;
     private final DigitalInput beamBreak;
     private final Timer pulseTimer = new Timer();
 
@@ -42,9 +38,9 @@ public class Intake extends SubsystemBase {
     public DoubleConsumer setProximityObjectDetectionThreshold = threshold -> proximityObjectDetectionThreshold = threshold;
 
     public Intake() { // TODO: IMPLEMENT STALL DETECTION (HIGH AMPAGE FOR AN EXTENDED PERIOD OF TIME)
-        motor = new TalonFX(Constants.IntakeConstants.MOTOR_ID);
+        intake = new TalonFX(Constants.IntakeConstants.LEAD_ID);
 
-        motor.getConfigurator().apply(new TalonFXConfiguration()
+        intake.getConfigurator().apply(new TalonFXConfiguration()
                 .withMotorOutput(new MotorOutputConfigs()
                         .withInverted(Constants.IntakeConstants.MOTOR_INVERT)
                         .withNeutralMode(Constants.IntakeConstants.NEUTRAL_MODE))
@@ -54,17 +50,10 @@ public class Intake extends SubsystemBase {
                         .withBeepOnBoot(false)
                         .withAllowMusicDurDisable(true)));
 
-        CanandEventLoop.getInstance();
-        canandcolor = new Canandcolor(Constants.IntakeConstants.SENSOR_ID);
-        canandcolor.setSettings(
-                canandcolor.getSettings()
-                        .setAlignProximityFramesToIntegrationPeriod(true)
-                        .setProximityIntegrationPeriod(ProximityPeriod.k5ms)
-                        .setAlignColorFramesToIntegrationPeriod(true)
-                        .setColorIntegrationPeriod(ColorPeriod.k25ms)
-                        .setDigoutFramePeriod(0.02)
-        );
-        canandcolor.setLampLEDBrightness(0.0);
+        try (TalonFX intake2 = new TalonFX(Constants.IntakeConstants.FOLLOWER_ID)) {
+            intake2.setControl(new Follower(Constants.IntakeConstants.LEAD_ID, false));
+        }
+
         beamBreak = new DigitalInput(Constants.IntakeConstants.BEAMBREAK_ID);
         currentState = State.IDLE;
         pulseTimer.start();
@@ -74,24 +63,16 @@ public class Intake extends SubsystemBase {
         return currentState;
     }
 
-    public double[] getColorReading() {
-        return new double[] { canandcolor.getBlue(), canandcolor.getGreen(), canandcolor.getRed() };
-    }
-
-    public double getProximity() {
-        return canandcolor.getProximity();
-    }
-
     public boolean beamBreakBroken() {
         return !beamBreak.get();
     }
 
     public boolean hasCoral() {
-        return beamBreakBroken() || getProximity() < proximityObjectDetectionThreshold;
+        return false;
     }
 
     public boolean hasAlgae() {
-        return canandcolor.getColor().toWpilibColor().equals(Color.kAqua); // TODO SHOP: TUNE THIS
+        return false; // TODO SHOP: TUNE THIS
     }
 
     public boolean atIdleState() {
@@ -139,7 +120,7 @@ public class Intake extends SubsystemBase {
     }
 
     public void setIntakeSpeed(double speed) {
-        motor.set(speed);
+        intake.set(speed);
     }
 
     public void pulseIntake() {

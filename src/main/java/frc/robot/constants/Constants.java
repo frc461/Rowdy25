@@ -224,8 +224,8 @@ public final class Constants {
 
     public final static class IntakeConstants {
         // basic configs
-        public static int MOTOR_ID;
-        public static int SENSOR_ID;
+        public static int LEAD_ID;
+        public static int FOLLOWER_ID;
         public static int BEAMBREAK_ID;
         public static double CURRENT_LIMIT;
         public static InvertedValue MOTOR_INVERT;

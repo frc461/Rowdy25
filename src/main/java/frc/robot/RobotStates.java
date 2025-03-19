@@ -52,7 +52,7 @@ public class RobotStates {
     }
 
     public final Swerve swerve = new Swerve();
-    public final Climb climb = new Climb();
+//    public final Climb climb = new Climb();
     public final Elevator elevator = new Elevator();
     public final Intake intake = new Intake();
     public final Pivot pivot = new Pivot();
