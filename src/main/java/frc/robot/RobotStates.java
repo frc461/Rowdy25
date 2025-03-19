@@ -299,7 +299,7 @@ public class RobotStates {
 
         stowState.onTrue(
                 new InstantCommand(swerve::setIdleMode)
-                        .andThen(climb::reset)
+//                        .andThen(climb::reset)
                         .andThen(intake::setIdleState)
                         .andThen(orderedTransition(pivot::setStowState, elevator::setStowState, Elevator.State.STOW, wrist::setStowState))
         );
@@ -440,14 +440,15 @@ public class RobotStates {
 
         prepareClimbState.onTrue(
                 new InstantCommand(swerve::setIdleMode)
-                        .andThen(climb::escalate)
+//                        .andThen(climb::escalate)
                         .andThen(intake::setIdleState)
                         .andThen(orderedTransition(pivot::setClimbState, elevator::setClimbState, Elevator.State.CLIMB, wrist::setClimbState))
                         .until(() -> !prepareClimbState.getAsBoolean())
         );
 
         climbState.onTrue(
-                new InstantCommand(climb::escalate)
+//                new InstantCommand(climb::escalate)
+                new InstantCommand()
         );
     }
     /* Each subsystem will execute their corresponding command periodically */

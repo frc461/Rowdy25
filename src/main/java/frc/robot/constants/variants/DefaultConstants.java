@@ -205,7 +205,7 @@ public final class DefaultConstants {
 
     public final static class ClimbConstants {
         // motor config
-        public static final int ID = 0;
+        public static final int ID = 55;
         public static final double CURRENT_LIMIT = 40;
         public static final InvertedValue MOTOR_INVERT = InvertedValue.Clockwise_Positive;
         public static final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Coast;
@@ -216,7 +216,7 @@ public final class DefaultConstants {
         public static final int RATCHET_OFF = 1250;
 
         // intake
-        public static final int INTAKE_ID = 10;
+        public static final int INTAKE_ID = 56;
         public static final double INTAKE_CURRENT_LIMIT = 40;
         public static final InvertedValue INTAKE_MOTOR_INVERT = InvertedValue.Clockwise_Positive;
 
@@ -275,7 +275,7 @@ public final class DefaultConstants {
         public static final double HIGH_REEF_ALGAE = 3.0;
         public static final double PROCESSOR = 0;
         public static final double NET = 44;
-        public static final double CLIMB = 8;
+        public static final double CLIMB = 0;
     }
 
     public final static class IntakeConstants {
@@ -387,7 +387,7 @@ public final class DefaultConstants {
         public static final double HIGH_REEF_ALGAE = 160;
         public static final double PROCESSOR = 150;
         public static final double NET = 175;
-        public static final double CLIMB = 180;
+        public static final double CLIMB = 125;
     }
 
     public static final class SwerveConstants {

@@ -132,9 +132,9 @@ public class RobotContainer {
 
         driverXbox.povUp().onTrue(new InstantCommand(() -> robotStates.swerve.localizer.setRotations(Rotation2d.kZero)));
         driverXbox.povDown().onTrue(new InstantCommand(robotStates.swerve.localizer::syncRotations));
-        driverXbox.povLeft().onTrue(new InstantCommand(() -> robotStates.climb.move(-0.9)));
+        driverXbox.povLeft().onTrue(new InstantCommand(() -> robotStates.climb.move(-0.6)));
         driverXbox.povLeft().onFalse(new InstantCommand(() -> robotStates.climb.stop(true)));
-        driverXbox.povRight().onTrue(new InstantCommand(() -> robotStates.climb.move(0.9)));
+        driverXbox.povRight().onTrue(new InstantCommand(() -> robotStates.climb.move(0.6)));
         driverXbox.povRight().onFalse(new InstantCommand(() -> robotStates.climb.stop(false)));
 
         new Trigger(() -> Math.hypot(driverXbox.getLeftX(), driverXbox.getLeftY()) > 0.75).onTrue(
