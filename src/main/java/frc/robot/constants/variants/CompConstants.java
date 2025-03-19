@@ -67,7 +67,7 @@ public final class CompConstants {
         public static final double I = 0.0;
         public static final double D = 0.0;
         public static final double EXPO_V = V / 0.98; // 98% of the actual max velocity, as it will allocate 1 / 0.9 = 1.1111 times the voltage to 1 rps
-        public static final double EXPO_A = A / 0.04; // 4% of the actual max accel
+        public static final double EXPO_A = A / 0.03; // 3% of the actual max accel
         public static final double SAFE_TOLERANCE = 12.0;
         public static final double AT_TARGET_TOLERANCE = 2.0;
 
@@ -112,13 +112,13 @@ public final class CompConstants {
 
         // pid & tolerance
         public static final double G = 0.2269;
-        public static final double V = 6.35 / 2 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps) -> V / (rotor rps)
-        public static final double A = 0.06 / 2 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps^2) -> V / (rotor rps^2)
-        public static final double P = 0.15;
-        public static final double I = 0;
-        public static final double D = 0.0;
-        public static final double EXPO_V = V / 0.25; // 40% of the actual max velocity, as it will allocate 1 / 0.4 = 2.5 times the voltage to 1 rps
-        public static final double EXPO_A = A / 0.01; // 1% of the actual max acceleration
+        public static final double V = 7.35 / 2 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps) -> V / (rotor rps)
+        public static final double A = 0.09 / 2 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps^2) -> V / (rotor rps^2)
+        public static final double P = 0.35; // TODO: TUNE
+        public static final double I = 0.001;
+        public static final double D = 0.0195;
+        public static final double EXPO_V = V / 0.3; // 30% of the actual max velocity, as it will allocate 1 / 0.4 = 2.5 times the voltage to 1 rps
+        public static final double EXPO_A = A / 0.01; // 1.0% of the actual max acceleration
         public static final double SAFE_TOLERANCE = 20.0;
         public static final double AT_TARGET_TOLERANCE = 2.5;
 
@@ -155,14 +155,14 @@ public final class CompConstants {
         public static final SensorDirectionValue ENCODER_INVERT = SensorDirectionValue.Clockwise_Positive;
 
         // pid & tolerance
-        public static final BiFunction<Double, Double, Double> G = (wristDeg, pivotDeg) -> 0.14 * Math.sin(Math.toRadians(wristDeg - (90 - pivotDeg)));
-        public static final double V = 0.7 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps) -> V / (rotor rps)
-        public static final double A = 0.015 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps^2) -> V / (rotor rps^2)
-        public static final double P = 0.2;
+        public static final BiFunction<Double, Double, Double> G = (wristDeg, pivotDeg) -> 0.17 * Math.sin(Math.toRadians(wristDeg - (90 - pivotDeg)));
+        public static final double V = 0.69 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps) -> V / (rotor rps)
+        public static final double A = 0.02 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps^2) -> V / (rotor rps^2)
+        public static final double P = 0.1; // TODO: TUNE
         public static final double I = 0.0;
         public static final double D = 0.0;
         public static final double EXPO_V = V / 0.9; // 90% of the actual max velocity, as it will allocate 1 / 0.8 = 1.25 times the voltage to 1 rps
-        public static final double EXPO_A = A / 0.08; // 8% of the actual max accel
+        public static final double EXPO_A = A / 0.12; // 8% of the actual max accel
         public static final double SAFE_TOLERANCE = 25.0;
         public static final double AT_TARGET_TOLERANCE = 2.5;
 
