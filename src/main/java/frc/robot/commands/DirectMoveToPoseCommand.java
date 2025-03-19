@@ -76,6 +76,7 @@ public class DirectMoveToPoseCommand extends Command {
                 Math.max(
                         EquationUtil.expOutput(
                                 targetPose.getTranslation().getDistance(currentPose.getTranslation()),
+                                Math.min(safeMaxVelocity, 1),
                                 0.05,
                                 50
                         ),

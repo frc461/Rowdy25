@@ -103,6 +103,7 @@ public class PathfindToPoseAvoidingReefCommand extends Command {
                 Math.max(
                         EquationUtil.expOutput(
                                 smoothTemporaryTargetPose.getTranslation().getDistance(currentPose.getTranslation()),
+                                Math.min(safeMaxVelocity, 1),
                                 0.05,
                                 50
                         ),
