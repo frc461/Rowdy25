@@ -103,7 +103,7 @@ public final class CompConstants {
         public static final Translation2d AXIS_POSITION = new Translation2d(-9.417377, 9.257139);
 
         // encoder config
-        public static final double ENCODER_ABSOLUTE_OFFSET = 0.59277615014;
+        public static final double ENCODER_ABSOLUTE_OFFSET = 0.58838229706;
         public static final SensorDirectionValue ENCODER_INVERT = SensorDirectionValue.CounterClockwise_Positive;
 
         // ratchet config
@@ -112,11 +112,11 @@ public final class CompConstants {
 
         // pid & tolerance
         public static final double G = 0.2269;
-        public static final double V = 7.35 / 2 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps) -> V / (rotor rps)
+        public static final double V = 6.35 / 2 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps) -> V / (rotor rps)
         public static final double A = 0.09 / 2 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps^2) -> V / (rotor rps^2)
-        public static final double P = 0.35; // TODO: TUNE
-        public static final double I = 0.001;
-        public static final double D = 0.0195;
+        public static final double P = 0.15; // TODO: TUNE
+        public static final double I = 0;
+        public static final double D = 0.01;
         public static final double EXPO_V = V / 0.3; // 30% of the actual max velocity, as it will allocate 1 / 0.4 = 2.5 times the voltage to 1 rps
         public static final double EXPO_A = A / 0.01; // 1.0% of the actual max acceleration
         public static final double SAFE_TOLERANCE = 20.0;
