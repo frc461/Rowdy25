@@ -77,8 +77,8 @@ public class DirectMoveToPoseCommand extends Command {
                 EquationUtil.expOutput(
                         targetPose.getTranslation().getDistance(currentPose.getTranslation()),
                         safeMaxVelocity,
-                        0.04 * safeMaxVelocity * Math.log(safeMaxVelocity * Math.exp(2.5) + safeMaxVelocity - 1),
-                        15 / safeMaxVelocity
+                        1.0 / 10.0 * Math.pow(safeMaxVelocity, 0.5) * Math.log(safeMaxVelocity * Math.exp(2.5) + safeMaxVelocity - 1), // TODO SHOP: TEST THESE VALUES
+                        10.0 / Math.pow(safeMaxVelocity, 0.7)
                 ),
                 0,
                 Constants.MAX_CONTROLLED_VEL.apply(elevatorHeight.getAsDouble())

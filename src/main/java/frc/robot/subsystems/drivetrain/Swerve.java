@@ -228,7 +228,8 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                         this,
                         fieldCentric,
                         robotStates.elevator::getPosition,
-                        localizer.nearestRobotPosesAtBranchPair.getFirst()
+                        localizer.nearestRobotPosesAtBranchPair.getFirst(),
+                        robotStates.getCurrentAutoLevel() == FieldUtil.Reef.Level.L4 ? 0.35 : 1.0 // TODO SHOP: TEST THIS
                 )).andThen(
                         new WaitUntilCommand(robotStates.atAutoScoreState.and(robotStates::atScoringLocation))
                                 .andThen(robotStates::toggleAutoLevelCoralState)
@@ -255,7 +256,8 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                         this,
                         fieldCentric,
                         robotStates.elevator::getPosition,
-                        localizer.nearestRobotPosesAtBranchPair.getSecond()
+                        localizer.nearestRobotPosesAtBranchPair.getSecond(),
+                        robotStates.getCurrentAutoLevel() == FieldUtil.Reef.Level.L4 ? 0.35 : 1.0
                 )).andThen(
                         new WaitUntilCommand(robotStates.atAutoScoreState.and(robotStates::atScoringLocation))
                                 .andThen(robotStates::toggleAutoLevelCoralState)
@@ -283,7 +285,8 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                                 this,
                                 fieldCentric,
                                 robotStates.elevator::getPosition,
-                                FieldUtil.Reef.ScoringLocation.getPose(location)
+                                FieldUtil.Reef.ScoringLocation.getPose(location),
+                                robotStates.getCurrentAutoLevel() == FieldUtil.Reef.Level.L4 ? 0.35 : 1.0
                         )).andThen(
                                 new WaitUntilCommand(robotStates.atAutoScoreState.and(robotStates::atScoringLocation))
                                         .andThen(robotStates::toggleAutoLevelCoralState)
