@@ -154,26 +154,31 @@ public final class FieldUtil {
         public static final Transform2d ROBOT_AT_LEFT_BRANCH_OFFSET_FROM_TAG = new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0, Units.inchesToMeters(-6.469731), Rotation2d.kPi);
         public static final Transform2d ROBOT_AT_RIGHT_BRANCH_OFFSET_FROM_TAG = new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0, Units.inchesToMeters(6.469731), Rotation2d.kPi);
 
-        public static final Transform2d LEFT_BRANCH_OFFSET_FROM_TAG = new Transform2d(Units.inchesToMeters(-9.664797), Units.inchesToMeters(-6.469731), Rotation2d.kZero);
-        public static final Transform2d RIGHT_BRANCH_OFFSET_FROM_TAG = new Transform2d(Units.inchesToMeters(-9.664797), Units.inchesToMeters(6.469731), Rotation2d.kZero);
+        public static final Transform2d LEFT_BRANCH_OFFSET_FROM_TAG = new Transform2d(Units.inchesToMeters(-1.207349), Units.inchesToMeters(-6.469731), Rotation2d.kZero);
+        public static final Transform2d RIGHT_BRANCH_OFFSET_FROM_TAG = new Transform2d(Units.inchesToMeters(-1.207349), Units.inchesToMeters(6.469731), Rotation2d.kZero);
+
+        public static final Transform2d BRANCH_TO_ROBOT_OFFSET = new Transform2d(Units.inchesToMeters(1.207349) + Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0, 0.0, Rotation2d.kPi);
+
+        public static final Transform2d LEFT_BRANCH_OFFSET_FROM_REEF_CENTER = new Transform2d(Units.inchesToMeters(30.738196), Units.inchesToMeters(-6.968853), Rotation2d.kZero);
+        public static final Transform2d RIGHT_BRANCH_OFFSET_FROM_REEF_CENTER = new Transform2d(Units.inchesToMeters(30.738196), Units.inchesToMeters(6.968853), Rotation2d.kZero);
 
         public enum ScoringLocation {
             A, B, C, D, E, F, G, H, I, J, K, L;
 
             public static Pose2d getPose(ScoringLocation location) {
                 return switch (location) {
-                    case A -> getRobotPosesAtEachBranch().get(0);
-                    case B -> getRobotPosesAtEachBranch().get(1);
-                    case C -> getRobotPosesAtEachBranch().get(2);
-                    case D -> getRobotPosesAtEachBranch().get(3);
-                    case E -> getRobotPosesAtEachBranch().get(4);
-                    case F -> getRobotPosesAtEachBranch().get(5);
-                    case G -> getRobotPosesAtEachBranch().get(6);
-                    case H -> getRobotPosesAtEachBranch().get(7);
-                    case I -> getRobotPosesAtEachBranch().get(8);
-                    case J -> getRobotPosesAtEachBranch().get(9);
-                    case K -> getRobotPosesAtEachBranch().get(10);
-                    case L -> getRobotPosesAtEachBranch().get(11);
+                    case A -> getRobotPosesAtEachBranchUsingReefCenter().get(0);
+                    case B -> getRobotPosesAtEachBranchUsingReefCenter().get(1);
+                    case C -> getRobotPosesAtEachBranchUsingReefCenter().get(2);
+                    case D -> getRobotPosesAtEachBranchUsingReefCenter().get(3);
+                    case E -> getRobotPosesAtEachBranchUsingReefCenter().get(4);
+                    case F -> getRobotPosesAtEachBranchUsingReefCenter().get(5);
+                    case G -> getRobotPosesAtEachBranchUsingReefCenter().get(6);
+                    case H -> getRobotPosesAtEachBranchUsingReefCenter().get(7);
+                    case I -> getRobotPosesAtEachBranchUsingReefCenter().get(8);
+                    case J -> getRobotPosesAtEachBranchUsingReefCenter().get(9);
+                    case K -> getRobotPosesAtEachBranchUsingReefCenter().get(10);
+                    case L -> getRobotPosesAtEachBranchUsingReefCenter().get(11);
                 };
             }
         }
@@ -234,6 +239,26 @@ public final class FieldUtil {
             return branchPoses;
         }
 
+        public static List<Pose2d> getRobotPosesAtEachBranchUsingReefCenter() { // Where robot should be to be centered at branches (to score)
+            List<Pose2d> robotPosesAtEachBranch = new ArrayList<>();
+            getReefTagPoses().forEach(reefTagPose -> {
+                Pose2d reefCenterRotatedToSide = new Pose2d(getReefCenter(), reefTagPose.getRotation());
+                robotPosesAtEachBranch.add(reefCenterRotatedToSide.plus(LEFT_BRANCH_OFFSET_FROM_REEF_CENTER).plus(BRANCH_TO_ROBOT_OFFSET));
+                robotPosesAtEachBranch.add(reefCenterRotatedToSide.plus(RIGHT_BRANCH_OFFSET_FROM_REEF_CENTER).plus(BRANCH_TO_ROBOT_OFFSET));
+            });
+            return robotPosesAtEachBranch;
+        }
+
+        public static List<Pose2d> getBranchPosesUsingReefCenter() { // Where branches are relative to reef center
+            List<Pose2d> branchPoses = new ArrayList<>();
+            getReefTagPoses().forEach(reefTagPose -> {
+                Pose2d reefCenterRotatedToSide = new Pose2d(getReefCenter(), reefTagPose.getRotation());
+                branchPoses.add(reefCenterRotatedToSide.plus(LEFT_BRANCH_OFFSET_FROM_REEF_CENTER));
+                branchPoses.add(reefCenterRotatedToSide.plus(RIGHT_BRANCH_OFFSET_FROM_REEF_CENTER));
+            });
+            return branchPoses;
+        }
+
         public static Pose2d getNearestReefTagPose(Pose2d currentPose) {
             return currentPose.nearest(getReefTagPoses());
         }
@@ -251,6 +276,19 @@ public final class FieldUtil {
             return new Pair<>(
                     nearestReefTagPose.plus(ROBOT_AT_LEFT_BRANCH_OFFSET_FROM_TAG),
                     nearestReefTagPose.plus(ROBOT_AT_RIGHT_BRANCH_OFFSET_FROM_TAG)
+            );
+        }
+
+        public static Pose2d getNearestRobotPoseAtBranchUsingReefCenter(Pose2d currentPose) {
+            return currentPose.nearest(getRobotPosesAtEachBranchUsingReefCenter());
+        }
+
+        public static Pair<Pose2d, Pose2d> getNearestRobotPosesAtBranchPairUsingReefCenter(Pose2d currentPose) {
+            Pose2d nearestReefTagPose = getNearestReefTagPose(currentPose);
+            Pose2d reefCenterRotatedToNearestSide = new Pose2d(getReefCenter(), nearestReefTagPose.getRotation());
+            return new Pair<>(
+                    reefCenterRotatedToNearestSide.plus(LEFT_BRANCH_OFFSET_FROM_REEF_CENTER).plus(BRANCH_TO_ROBOT_OFFSET),
+                    reefCenterRotatedToNearestSide.plus(RIGHT_BRANCH_OFFSET_FROM_REEF_CENTER).plus(BRANCH_TO_ROBOT_OFFSET)
             );
         }
 
