@@ -225,7 +225,7 @@ public class RobotStates {
             case L1 -> toggleL1CoralState(override);
             case L2 -> toggleL2CoralState(override);
             case L3 -> toggleL3CoralState(override);
-            case L4 -> toggleL4PrepareCoralState(override);
+            case L4 -> toggleL4CoralState(override);
         }
     }
 

@@ -6,7 +6,6 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.*;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.autos.Pathfinder;
 import frc.robot.constants.Constants;
@@ -42,8 +41,8 @@ public class PathfindToPoseAvoidingReefCommand extends Command {
     private final DoubleSupplier elevatorHeight;
     private final Pose2d targetPose;
     private final double maxVelocity;
+    private final boolean smooth;
     private Pose2d smoothTemporaryTargetPose;
-    private double xVel, yVel, rotVel, xOrigVel, yOrigVel, rotOrigVel, transitionPoll;
     private boolean xPosDone, yPosDone, yawDone, end;
 
     public PathfindToPoseAvoidingReefCommand(
@@ -52,7 +51,7 @@ public class PathfindToPoseAvoidingReefCommand extends Command {
             DoubleSupplier elevatorHeight,
             Pose2d targetPose
     ) {
-        this(swerve, fieldCentric, elevatorHeight, targetPose, Constants.MAX_VEL);
+        this(swerve, fieldCentric, elevatorHeight, targetPose, Constants.MAX_VEL, true);
     }
 
     public PathfindToPoseAvoidingReefCommand(
@@ -60,7 +59,18 @@ public class PathfindToPoseAvoidingReefCommand extends Command {
             SwerveRequest.FieldCentric fieldCentric,
             DoubleSupplier elevatorHeight,
             Pose2d targetPose,
-            double maxVelocity
+            boolean smooth
+    ) {
+        this(swerve, fieldCentric, elevatorHeight, targetPose, Constants.MAX_VEL, smooth);
+    }
+
+    public PathfindToPoseAvoidingReefCommand(
+            Swerve swerve,
+            SwerveRequest.FieldCentric fieldCentric,
+            DoubleSupplier elevatorHeight,
+            Pose2d targetPose,
+            double maxVelocity,
+            boolean smooth
     ) {
         this.swerve = swerve;
         this.fieldCentric = fieldCentric;
@@ -76,15 +86,9 @@ public class PathfindToPoseAvoidingReefCommand extends Command {
 
         this.targetPose = targetPose;
         this.maxVelocity = MathUtil.clamp(maxVelocity, 0, Constants.MAX_VEL);
+        this.smooth = smooth;
 
         smoothTemporaryTargetPose = null;
-        xVel = 0;
-        yVel = 0;
-        rotVel = 0;
-        xOrigVel = 0;
-        yOrigVel = 0;
-        rotOrigVel = 0;
-        transitionPoll = 0;
         xPosDone = false;
         yPosDone = false;
         yawDone = false;
@@ -95,16 +99,6 @@ public class PathfindToPoseAvoidingReefCommand extends Command {
     @Override
     public void initialize() {
         smoothTemporaryTargetPose = null;
-        ChassisSpeeds chassisSpeeds = swerve.getState().Speeds;
-        Translation2d fieldRelativeTranslation = new Translation2d(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond)
-                .rotateBy(swerve.localizer.getStrategyPose().getRotation().unaryMinus());
-        xVel = fieldRelativeTranslation.getX();
-        yVel = fieldRelativeTranslation.getY();
-        rotVel = chassisSpeeds.omegaRadiansPerSecond;
-        xOrigVel = fieldRelativeTranslation.getX();
-        yOrigVel = fieldRelativeTranslation.getY();
-        rotOrigVel = chassisSpeeds.omegaRadiansPerSecond;
-        transitionPoll = 0;
         xPosDone = false;
         yPosDone = false;
         yawDone = false;
@@ -118,35 +112,45 @@ public class PathfindToPoseAvoidingReefCommand extends Command {
         swerve.localizer.setCurrentTemporaryTargetPose(smoothTemporaryTargetPose);
         double safeMaxVelocity = MathUtil.clamp(maxVelocity, 0, Constants.MAX_CONTROLLED_VEL.apply(elevatorHeight.getAsDouble()));
 
-        double velocity = MathUtil.clamp(
-                EquationUtil.expOutput(
-                        smoothTemporaryTargetPose.getTranslation().getDistance(currentPose.getTranslation()),
-                        safeMaxVelocity,
-                        1.0 / 10.0 * Math.pow(safeMaxVelocity, 0.5) * Math.log(safeMaxVelocity * Math.exp(2.5) + safeMaxVelocity - 1), // TODO SHOP: TEST THESE VALUES
-                        10.0 / Math.pow(safeMaxVelocity, 0.7)
-                ),
-                0,
-                Constants.MAX_CONTROLLED_VEL.apply(elevatorHeight.getAsDouble())
-        );
+        double velocity = smooth
+                ? MathUtil.clamp(
+                        Math.max(
+                                EquationUtil.expOutput(
+                                        smoothTemporaryTargetPose.getTranslation().getDistance(currentPose.getTranslation()),
+                                        Math.min(safeMaxVelocity, 2),
+                                        Math.min(safeMaxVelocity, 2) / 7.0,
+                                        15 / Math.min(safeMaxVelocity, 2)
+                                ),
+                                Math.min(EquationUtil.linearOutput(smoothTemporaryTargetPose.getTranslation().getDistance(currentPose.getTranslation()), 4, -3), safeMaxVelocity)
+                        ),
+                        0,
+                        Constants.MAX_CONTROLLED_VEL.apply(elevatorHeight.getAsDouble())
+                ) : MathUtil.clamp(
+                        Math.max(
+                                EquationUtil.expOutput(
+                                        smoothTemporaryTargetPose.getTranslation().getDistance(currentPose.getTranslation()),
+                                        Math.min(safeMaxVelocity, 1),
+                                        Math.min(safeMaxVelocity, 1) / 20.0,
+                                        50 / Math.min(safeMaxVelocity, 1)
+                                ),
+                                Math.min(EquationUtil.linearOutput(smoothTemporaryTargetPose.getTranslation().getDistance(currentPose.getTranslation()), 4, -0.5), safeMaxVelocity)
+                        ),
+                        0,
+                        Constants.MAX_CONTROLLED_VEL.apply(elevatorHeight.getAsDouble())
+                );
 
         double velocityHeadingRadians = Math.atan2(smoothTemporaryTargetPose.getY() - currentPose.getY(), smoothTemporaryTargetPose.getX() - currentPose.getX());
-
-        updateVelocities(
-                Math.cos(velocityHeadingRadians) * velocity,
-                Math.sin(velocityHeadingRadians) * velocity,
-                yawController.calculate(
-                                currentPose.getRotation().getDegrees(),
-                                smoothTemporaryTargetPose.getRotation().getDegrees()
-                        ) * Constants.MAX_CONTROLLED_ANGULAR_VEL.apply(elevatorHeight.getAsDouble())
-        );
 
         swerve.setControl(
                 fieldCentric.withDriveRequestType(SwerveModule.DriveRequestType.Velocity)
                         .withDeadband(0.0)
                         .withForwardPerspective(SwerveRequest.ForwardPerspectiveValue.BlueAlliance)
-                        .withVelocityX(xVel)
-                        .withVelocityY(yVel)
-                        .withRotationalRate(rotVel)
+                        .withVelocityX(Math.cos(velocityHeadingRadians) * velocity)
+                        .withVelocityY(Math.sin(velocityHeadingRadians) * velocity)
+                        .withRotationalRate(yawController.calculate(
+                                currentPose.getRotation().getDegrees(),
+                                smoothTemporaryTargetPose.getRotation().getDegrees()
+                        ) * Constants.MAX_CONTROLLED_ANGULAR_VEL.apply(elevatorHeight.getAsDouble()))
         );
 
         xPosDone = Math.abs(currentPose.getX() - targetPose.getX())
@@ -161,13 +165,6 @@ public class PathfindToPoseAvoidingReefCommand extends Command {
             swerve.consistentHeading = currentPose.getRotation().getDegrees();
             end = true;
         }
-    }
-
-    private void updateVelocities(double xTargetVel, double yTargetVel, double rotTargetVel) {
-        transitionPoll++;
-        xVel = Math.pow(0.9, transitionPoll) * xOrigVel + (1 - Math.pow(0.9, transitionPoll)) * xTargetVel;
-        yVel = Math.pow(0.9, transitionPoll) * yOrigVel + (1 - Math.pow(0.9, transitionPoll)) * yTargetVel;
-        rotVel = Math.pow(0.9, transitionPoll) * rotOrigVel + (1 - Math.pow(0.9, transitionPoll)) * rotTargetVel;
     }
 
     private Pose2d getSmoothTargetPose(Pose2d temporaryPose) {
