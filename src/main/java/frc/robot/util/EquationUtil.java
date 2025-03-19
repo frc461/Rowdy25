@@ -20,4 +20,12 @@ public final class EquationUtil {
     public static double linearOutput(double error, double kP) { // An inline kP controller
         return linearOutput(error, kP, 0);
     }
+
+    public static double polyOutput(double error, double power, double offset) {
+        return Math.pow(error, power) + offset;
+    }
+
+    public static double polyOutput(double error, double power) {
+        return polyOutput(error, power, 0);
+    }
 }
