@@ -42,6 +42,7 @@ public class SwerveTelemetry {
     private final DoublePublisher driveTimestamp = driveStateTable.getDoubleTopic("Timestamp").publish();
     private final DoublePublisher driveOdometryFrequency = driveStateTable.getDoubleTopic("OdometryFrequency").publish();
     private final DoubleArrayPublisher currentCurrent = driveStateTable.getDoubleArrayTopic("Current Amp Currents").publish();
+    private final BooleanPublisher isStuck = driveStateTable.getBooleanTopic("Drivetrain is stuck").publish();
 
     /* Mechanisms to represent the swerve module states */
     private final Mechanism2d[] moduleMechanisms = new Mechanism2d[] {
@@ -100,6 +101,7 @@ public class SwerveTelemetry {
         }
 
         currentCurrent.set(currents); // sets the current current to currents
+        isStuck.set(swerve.isStuck());
 
         SignalLogger.writeDoubleArray("DriveState/Pose", poseArray);
         SignalLogger.writeDoubleArray("DriveState/ModuleStates", moduleStatesArray);
