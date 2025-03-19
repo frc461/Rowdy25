@@ -225,6 +225,10 @@ public class PathfindToPoseAvoidingReefCommand extends Command {
 
         return !Pathfinder.inBetween(
                 targetPose.getTranslation().minus(currentPose.getTranslation()).getAngle(),
+                anglesToVerticesBounds.getFirst(),
+                anglesToVerticesBounds.getSecond()
+        ) && !Pathfinder.inBetween(
+                targetPose.getTranslation().minus(currentPose.getTranslation()).getAngle(),
                 anglesToVerticesBounds.getFirst().minus(Rotation2d.fromDegrees(15.0)),
                 anglesToVerticesBounds.getSecond().plus(Rotation2d.fromDegrees(15.0))
         ) || targetPose.getTranslation().getDistance(currentPose.getTranslation()) < lowestDistance;
