@@ -90,6 +90,7 @@ public class DirectMoveToPoseCommand extends Command {
 
         swerve.setControl(
                 fieldCentric.withDriveRequestType(SwerveModule.DriveRequestType.Velocity)
+                        .withDeadband(0.0)
                         .withForwardPerspective(SwerveRequest.ForwardPerspectiveValue.BlueAlliance)
                         .withVelocityX(Math.cos(velocityHeadingRadians) * velocity)
                         .withVelocityY(Math.sin(velocityHeadingRadians) * velocity)
