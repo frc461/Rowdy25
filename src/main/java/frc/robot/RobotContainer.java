@@ -137,15 +137,14 @@ public class RobotContainer {
         driverXbox.povRight().onTrue(new InstantCommand(() -> robotStates.climb.move(0.6)));
         driverXbox.povRight().onFalse(new InstantCommand(() -> robotStates.climb.stop(false)));
 
-        new Trigger(() -> Math.hypot(driverXbox.getLeftX(), driverXbox.getLeftY()) > 0.75).onTrue(
-                new InstantCommand(() -> driverXbox.setRumble(GenericHID.RumbleType.kBothRumble, 1.0))
-                        .andThen(new WaitUntilCommand(() -> Math.hypot(driverXbox.getLeftX(), driverXbox.getLeftY()) < 0.75))
-                        .andThen(() -> driverXbox.setRumble(GenericHID.RumbleType.kBothRumble, 0))
-        );
+//        new Trigger(() -> Math.hypot(driverXbox.getLeftX(), driverXbox.getLeftY()) > 0.75).onTrue(
+//                new InstantCommand(() -> driverXbox.setRumble(GenericHID.RumbleType.kBothRumble, 1.0))
+//                        .andThen(new WaitUntilCommand(() -> Math.hypot(driverXbox.getLeftX(), driverXbox.getLeftY()) < 0.75))
+//                        .andThen(() -> driverXbox.setRumble(GenericHID.RumbleType.kBothRumble, 0))
+//        );
         driverXbox.leftStick().onTrue(new InstantCommand(() -> robotStates.swerve.localizer.setPoses(Constants.CENTER_OF_RIGHT_CORAL_STATION.apply(Constants.ALLIANCE_SUPPLIER))));
         driverXbox.rightStick().onTrue(new InstantCommand(() -> robotStates.swerve.localizer.setPoses(Constants.CENTER_OF_LEFT_CORAL_STATION.apply(Constants.ALLIANCE_SUPPLIER))));
 
-        // TODO SHOP: TEST ALL THIS WITH ONLY SWERVE AUTO-SCORING (NOT ROBOTSTATES)
         driverXbox.leftBumper().whileTrue(new ConditionalCommand(
                 robotStates.swerve.pathFindToNearestLeftBranch(robotStates)
                         .unless(robotStates.l1CoralState),
