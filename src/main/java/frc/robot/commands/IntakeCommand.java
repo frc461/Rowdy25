@@ -15,12 +15,14 @@ public class IntakeCommand extends Command {
     public void execute() {
         switch (intake.getState()) {
             case INTAKE:
-                if (!intake.hasCoral() && !intake.hasAlgae()) {
-                    intake.setIntakeSpeed(0.6);
-                } else if (intake.hasCoral() && !intake.beamBreakBroken()) {
-                    intake.setIntakeSpeed(0.15);
-                } else {
+                if (intake.hasCoral() || intake.hasAlgae()) {
                     intake.setIdleState();
+                } else if (intake.coralEntered() && !intake.beamBreakBroken()) {
+                    intake.setIntakeSpeed(0.15);
+                } else if (intake.beamBreakBroken() && !intake.coralEntered()) {
+                    intake.setIntakeSpeed(-0.15);
+                } else {
+                    intake.setIntakeSpeed(0.6);
                 }
                 break;
             case INTAKE_OUT:

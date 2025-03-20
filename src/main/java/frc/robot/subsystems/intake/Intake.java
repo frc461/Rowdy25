@@ -86,8 +86,16 @@ public class Intake extends SubsystemBase {
         return !beamBreak.get();
     }
 
+    public boolean coralEntered() {
+        return getProximity() < proximityObjectDetectionThreshold;
+    }
+
+    public boolean barelyHasCoral() {
+        return beamBreakBroken() || coralEntered();
+    }
+
     public boolean hasCoral() {
-        return beamBreakBroken() || getProximity() < proximityObjectDetectionThreshold;
+        return beamBreakBroken() && coralEntered();
     }
 
     public boolean hasAlgae() {

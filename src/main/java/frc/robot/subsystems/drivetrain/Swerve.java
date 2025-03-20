@@ -205,7 +205,9 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                         fieldCentric,
                         robotStates.elevator::getPosition,
                         FieldUtil.CoralStation.getRobotPosesAtEachCoralStation().get(0).interpolate(Constants.FAR_LEFT_CORAL_STATION.apply(Constants.ALLIANCE_SUPPLIER), 0.25)
-                ).until(this::isStuck)
+                ).until(() -> isStuck() // TODO SHOP: TEST THIS
+                                && localizer.getStrategyPose().getTranslation().getDistance(localizer.nearestRobotPoseAtCoralStation.getTranslation()) < Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_ACCEPT * 5
+                                || robotStates.intake.coralEntered())
                         .alongWith(new WaitUntilCommand(() -> robotStates.nearStateLocation(RobotStates.State.CORAL_STATION)).andThen(() -> robotStates.toggleCoralStationState(true))),
                 Set.of(this)
         );
@@ -218,7 +220,9 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                         fieldCentric,
                         robotStates.elevator::getPosition,
                         FieldUtil.CoralStation.getRobotPosesAtEachCoralStation().get(1).interpolate(Constants.FAR_RIGHT_CORAL_STATION.apply(Constants.ALLIANCE_SUPPLIER), 0.25)
-                ).until(this::isStuck)
+                ).until(() -> isStuck()
+                                && localizer.getStrategyPose().getTranslation().getDistance(localizer.nearestRobotPoseAtCoralStation.getTranslation()) < Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_ACCEPT * 5
+                                || robotStates.intake.coralEntered())
                         .alongWith(new WaitUntilCommand(() -> robotStates.nearStateLocation(RobotStates.State.CORAL_STATION)).andThen(() -> robotStates.toggleCoralStationState(true))),
                 Set.of(this)
         );

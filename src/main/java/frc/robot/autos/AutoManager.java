@@ -128,7 +128,7 @@ public final class AutoManager {
             triggersToBind.add(autoEventLooper.addTrigger(
                     currentScoringLocation.getFirst().name() + "," + nextScoringLocation.getFirst().name(),
                     () -> getPathFindingCommandToCoralStation(robotStates, currentScoringLocation.getFirst(), nextScoringLocation.getFirst())
-                            .andThen(new WaitUntilCommand(() -> robotStates.stowState.getAsBoolean() || robotStates.intake.hasCoral()))
+                            .andThen(new WaitUntilCommand(() -> robotStates.stowState.getAsBoolean() || robotStates.intake.coralEntered()))
                             .andThen(robotStates.swerve.pathFindToScoringLocation(robotStates, nextScoringLocation.getFirst(), nextScoringLocation.getSecond()))
                             .andThen(new WaitCommand(0.5))
             ));
