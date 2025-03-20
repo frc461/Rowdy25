@@ -51,6 +51,7 @@ public final class AutoManager {
     private StartPosition startPosition = null;
     private List<Pair<FieldUtil.Reef.ScoringLocation, FieldUtil.Reef.Level>> scoringLocations = null;
     private String coralStationOverride = null;
+    private boolean push = false; // Whether to push alliance partner off first
 
     public AutoManager(RobotStates robotStates) {
 
@@ -91,6 +92,17 @@ public final class AutoManager {
             }
         });
 
+        SendableChooser<Boolean> pushChooser = new SendableChooser<>();
+        pushChooser.addOption("Push", true);
+        pushChooser.addOption("Don't Push", false);
+        SmartDashboard.putData("Push Alliance Partner First", pushChooser);
+        pushChooser.onChange(push -> {
+            this.push = push;
+            if (startPosition != null && this.scoringLocations != null && !this.scoringLocations.isEmpty()) {
+                currentCommand = generateAutoEventLooper(robotStates).cmd();
+            }
+        });
+
         currentCommand = Commands.none();
     }
 
@@ -103,16 +115,28 @@ public final class AutoManager {
             RobotStates robotStates
     ) {
         List<Pair<FieldUtil.Reef.ScoringLocation, FieldUtil.Reef.Level>> currentScoringLocations = new ArrayList<>(this.scoringLocations);
-        AutoEventLooper autoEventLooper = new AutoEventLooper("AutoEventLooper");
 
+        AutoEventLooper autoEventLooper = new AutoEventLooper("AutoEventLooper");
         List<AutoTrigger> triggersToBind = new ArrayList<>();
+
+        triggersToBind.add(autoEventLooper.addTrigger(
+                "start",
+                () -> new InstantCommand(() -> robotStates.swerve.localizer.setPoses(getStartingPose(startPosition)))
+                        .andThen(robotStates::setStowState)
+        ));
+
+        if (push) {
+            triggersToBind.add(autoEventLooper.addTrigger(
+                    "push",
+                    robotStates.swerve::pushAlliancePartnerOut
+            ));
+        }
+
         Pair<FieldUtil.Reef.ScoringLocation, FieldUtil.Reef.Level> firstScoringLocation = currentScoringLocations.get(0);
 
         triggersToBind.add(autoEventLooper.addTrigger(
                 this.startPosition.index + "," + firstScoringLocation.getFirst().name(),
-                () -> new InstantCommand(() -> robotStates.swerve.localizer.setPoses(getStartingPose(startPosition)))
-                        .andThen(robotStates::setStowState)
-                        .andThen(robotStates.swerve.pathFindToScoringLocation(robotStates, firstScoringLocation.getFirst(), firstScoringLocation.getSecond()))
+                () -> robotStates.swerve.pathFindToScoringLocation(robotStates, firstScoringLocation.getFirst(), firstScoringLocation.getSecond())
                         .andThen(new WaitCommand(0.5))
         ));
 

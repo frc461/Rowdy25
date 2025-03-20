@@ -198,6 +198,12 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
         return new DirectMoveToObjectCommand(this, robotCentric, objectObtained, objectLabelClass);
     }
 
+    public Command pushAlliancePartnerOut() {
+        return applyRequest(() -> robotCentric.withVelocityX(-1.0))
+                .withDeadline(new WaitCommand(0.5))
+                .andThen(this::forceStop);
+    }
+
     public Command pathFindToLeftCoralStation(RobotStates robotStates) {
         return Commands.defer(
                 () -> new PathfindToPoseAvoidingReefCommand(
