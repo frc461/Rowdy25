@@ -248,8 +248,8 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                         robotStates.getCurrentAutoLevel() == FieldUtil.Reef.Level.L4
                 )).andThen(
                         new WaitUntilCommand(robotStates.atAutoScoreState.and(robotStates::atScoringLocation))
-                                .andThen(robotStates::toggleAutoLevelCoralState)
                                 .withDeadline(new WaitCommand(1))
+                                .andThen(robotStates::toggleAutoLevelCoralState)
                                 .onlyIf(() -> autoHeading)
                 ).alongWith(
                         new WaitUntilCommand(() -> robotStates.nearStateLocation(RobotStates.State.L4_CORAL))
@@ -279,8 +279,8 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                         robotStates.getCurrentAutoLevel() == FieldUtil.Reef.Level.L4
                 )).andThen(
                         new WaitUntilCommand(robotStates.atAutoScoreState.and(robotStates::atScoringLocation))
-                                .andThen(robotStates::toggleAutoLevelCoralState)
                                 .withDeadline(new WaitCommand(1))
+                                .andThen(robotStates::toggleAutoLevelCoralState)
                                 .onlyIf(() -> autoHeading)
                 ).alongWith(
                         new WaitUntilCommand(() -> robotStates.nearStateLocation(RobotStates.State.L4_CORAL))
@@ -311,8 +311,8 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                                 robotStates.getCurrentAutoLevel() == FieldUtil.Reef.Level.L4
                         )).andThen(
                                 new WaitUntilCommand(robotStates.atAutoScoreState.and(robotStates::atScoringLocation))
-                                        .andThen(robotStates::toggleAutoLevelCoralState)
                                         .withDeadline(new WaitCommand(1))
+                                        .andThen(robotStates::toggleAutoLevelCoralState)
                         ).alongWith(
                                 new WaitUntilCommand(() -> robotStates.nearStateLocation(RobotStates.State.L4_CORAL))
                                         .andThen(() -> robotStates.togglePrepareAutoLevelCoralState(true))
