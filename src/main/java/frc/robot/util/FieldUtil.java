@@ -61,6 +61,10 @@ public final class FieldUtil {
             pose2d = pose3d.toPose2d();
         }
 
+        public static final List<AprilTag> FILTER = List.of( // TODO SHOP: TEST FILTER
+                ID_6, ID_7, ID_8, ID_9, ID_10, ID_11, ID_17, ID_18, ID_19, ID_20, ID_21, ID_22
+        );
+
         public static AprilTag getTag(double tagID) {
             return switch ((int) tagID) {
                 case 1 -> AprilTag.ID_1;
