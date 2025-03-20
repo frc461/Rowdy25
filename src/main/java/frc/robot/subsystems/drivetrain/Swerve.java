@@ -249,6 +249,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                 )).andThen(
                         new WaitUntilCommand(robotStates.atAutoScoreState.and(robotStates::atScoringLocation))
                                 .andThen(robotStates::toggleAutoLevelCoralState)
+                                .withDeadline(new WaitCommand(1))
                                 .onlyIf(() -> autoHeading)
                 ).alongWith(
                         new WaitUntilCommand(() -> robotStates.nearStateLocation(RobotStates.State.L4_CORAL))
@@ -279,6 +280,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                 )).andThen(
                         new WaitUntilCommand(robotStates.atAutoScoreState.and(robotStates::atScoringLocation))
                                 .andThen(robotStates::toggleAutoLevelCoralState)
+                                .withDeadline(new WaitCommand(1))
                                 .onlyIf(() -> autoHeading)
                 ).alongWith(
                         new WaitUntilCommand(() -> robotStates.nearStateLocation(RobotStates.State.L4_CORAL))
@@ -310,9 +312,10 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                         )).andThen(
                                 new WaitUntilCommand(robotStates.atAutoScoreState.and(robotStates::atScoringLocation))
                                         .andThen(robotStates::toggleAutoLevelCoralState)
+                                        .withDeadline(new WaitCommand(1))
                         ).alongWith(
-                        new WaitUntilCommand(() -> robotStates.nearStateLocation(RobotStates.State.L4_CORAL))
-                                .andThen(() -> robotStates.togglePrepareAutoLevelCoralState(true))
+                                new WaitUntilCommand(() -> robotStates.nearStateLocation(RobotStates.State.L4_CORAL))
+                                        .andThen(() -> robotStates.togglePrepareAutoLevelCoralState(true))
                         ),
                 Set.of(this)
         );
