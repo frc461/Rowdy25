@@ -132,7 +132,7 @@ public final class CompConstants {
         public static final double L1_CORAL = 38.0;
         public static final double L2_CORAL = 100.0;
         public static final double L3_CORAL = 100.6;
-        public static final double L4_CORAL = 93.5;
+        public static final double L4_CORAL = 93.5; // TODO SHOP: TEST 94.5
         public static final double LOW_REEF_ALGAE = 52;
         public static final double HIGH_REEF_ALGAE = 91;
         public static final double PROCESSOR = 22;
