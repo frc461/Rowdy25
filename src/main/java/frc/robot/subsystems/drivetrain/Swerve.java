@@ -333,7 +333,9 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                         this,
                         fieldCentric,
                         robotStates.elevator::getPosition,
-                        localizer.nearestRobotPoseAtAlgaeReef
+                        localizer.nearestRobotPoseAtAlgaeReef,
+                        2.0,
+                        true
                 )),
                 Set.of(this)
         );
