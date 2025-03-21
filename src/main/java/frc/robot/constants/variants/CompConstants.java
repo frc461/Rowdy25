@@ -68,7 +68,7 @@ public final class CompConstants {
         public static final double D = 0.0;
         public static final double EXPO_V = V / 0.98; // 98% of the actual max velocity, as it will allocate 1 / 0.9 = 1.1111 times the voltage to 1 rps
         public static final double EXPO_A = A / 0.03; // 3% of the actual max accel
-        public static final double SAFE_TOLERANCE = 12.0;
+        public static final double SAFE_TOLERANCE = 15.0;
         public static final double AT_TARGET_TOLERANCE = 2.0;
 
         // presets
