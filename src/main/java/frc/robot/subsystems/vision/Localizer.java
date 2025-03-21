@@ -40,8 +40,10 @@ public class Localizer {
     public final Pose2d robotPoseAtNet;
     public Pose2d nearestRobotPoseAtCoralStation = new Pose2d();
     public Pose2d nearestRobotPoseAtAlgaeReef = new Pose2d();
-    public Pair<Pose2d, Pose2d> nearestRobotPosesAtBranchPair = new Pair<>(new Pose2d(), new Pose2d());
     public Pose2d nearestRobotPoseAtBranch = new Pose2d();
+    public Pose2d nearestRobotPoseAtBranchUsingReefCenter = new Pose2d();
+    public Pair<Pose2d, Pose2d> nearestRobotPosesAtBranchPair = new Pair<>(new Pose2d(), new Pose2d());
+    public Pair<Pose2d, Pose2d> nearestRobotPosesAtBranchPairUsingReefCenter = new Pair<>(new Pose2d(), new Pose2d());
     public Pose2d nearestReefTagPose = new Pose2d();
     public boolean nearestAlgaeIsHigh = false;
 
@@ -217,8 +219,10 @@ public class Localizer {
     private void updateFieldUtilityPoses() {
         nearestRobotPoseAtCoralStation = FieldUtil.CoralStation.getNearestRobotPoseAtCoralStation(getStrategyPose());
         nearestRobotPoseAtAlgaeReef = FieldUtil.Reef.getNearestRobotPoseAtAlgaeReef(getStrategyPose());
-        nearestRobotPoseAtBranch = FieldUtil.Reef.getNearestRobotPoseAtBranchUsingReefCenter(getStrategyPose());
-        nearestRobotPosesAtBranchPair = FieldUtil.Reef.getNearestRobotPosesAtBranchPairUsingReefCenter(getStrategyPose());
+        nearestRobotPoseAtBranch = FieldUtil.Reef.getNearestRobotPoseAtBranch(getStrategyPose());
+        nearestRobotPoseAtBranchUsingReefCenter = FieldUtil.Reef.getNearestRobotPoseAtBranchUsingReefCenter(getStrategyPose());
+        nearestRobotPosesAtBranchPair = FieldUtil.Reef.getNearestRobotPosesAtBranchPair(getStrategyPose());
+        nearestRobotPosesAtBranchPairUsingReefCenter = FieldUtil.Reef.getNearestRobotPosesAtBranchPairUsingReefCenter(getStrategyPose());
         nearestReefTagPose = FieldUtil.Reef.getNearestReefTagPose(getStrategyPose());
         nearestAlgaeIsHigh = FieldUtil.Reef.getAlgaeReefLevelFromTag(FieldUtil.Reef.getNearestReefTag(getStrategyPose())) == FieldUtil.Reef.AlgaeLocation.HIGH;
     }

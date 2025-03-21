@@ -27,6 +27,8 @@ public class LocalizationTelemetry {
 
     private final StringPublisher poseEstimatePrettyPub = localizationTelemetryTable.getStringTopic("Estimated Pose").publish();
     private final StringPublisher temporaryTargetPosePrettyPub = localizationTelemetryTable.getStringTopic("Temporary Target Pose").publish();
+    private final StringPublisher nearestRobotPoseAtBranchPrettyPub = localizationTelemetryTable.getStringTopic("Nearest Branch Pose April Tag Offset").publish();
+    private final StringPublisher nearestRobotPoseAtBranchUsingReefCenterPrettyPub = localizationTelemetryTable.getStringTopic("Nearest Branch Pose Reef Center Offset").publish();
     private final StringPublisher questPosePrettyPub = localizationTelemetryTable.getStringTopic("Quest-Based Pose").publish();
     private final StringPublisher localizationStrategyPub = localizationTelemetryTable.getStringTopic("Localization Strategy").publish();
     private final DoublePublisher distanceToCoralScoringLocation = localizationTelemetryTable.getDoubleTopic("DistanceToCoralScoringLocation").publish();
@@ -53,6 +55,10 @@ public class LocalizationTelemetry {
     private final DoubleArrayPublisher poseEstimatePub = robotPoseTable.getDoubleArrayTopic("Estimated Pose").publish();
     private final StructPublisher<Pose2d> temporaryTargetPose2dPub = robotPoseTable.getStructTopic("Temporary Target Pose2d", Pose2d.struct).publish();
     private final DoubleArrayPublisher temporaryTargetPosePub = robotPoseTable.getDoubleArrayTopic("Temporary Target Pose").publish();
+    private final StructPublisher<Pose2d> nearestRobotPoseAtBranchPose2dPub = robotPoseTable.getStructTopic("Nearest Branch April Tag Offset Pose2d", Pose2d.struct).publish();
+    private final DoubleArrayPublisher nearestRobotPoseAtBranchPosePub = robotPoseTable.getDoubleArrayTopic("Nearest Branch April Tag Offset Pose").publish();
+    private final StructPublisher<Pose2d> nearestRobotPoseAtBranchUsingReefCenterPose2dPub = robotPoseTable.getStructTopic("Nearest Branch Reef Center Offset Pose2d", Pose2d.struct).publish();
+    private final DoubleArrayPublisher nearestRobotPoseAtBranchUsingReefCenterPosePub = robotPoseTable.getDoubleArrayTopic("Nearest Branch Reef Center Offset Pose").publish();
     private final StructPublisher<Pose2d> questPose2dPub = robotPoseTable.getStructTopic("Quest-Based Pose2d", Pose2d.struct).publish();
     private final DoubleArrayPublisher questPosePub = robotPoseTable.getDoubleArrayTopic("Quest-Based Pose").publish();
     private final StructPublisher<Pose2d> megaTagOnePose2dPub = robotPoseTable.getStructTopic("MegaTagOne Pose2d", Pose2d.struct).publish();
@@ -85,6 +91,8 @@ public class LocalizationTelemetry {
         fieldTypePub.set("Field2d");
         publishPose(pose2dEstimatePub, poseEstimatePub, poseEstimatePrettyPub, localizer.getEstimatedPose());
         publishPose(temporaryTargetPose2dPub, temporaryTargetPosePub, temporaryTargetPosePrettyPub, localizer.getCurrentTemporaryTargetPose());
+        publishPose(nearestRobotPoseAtBranchPose2dPub, nearestRobotPoseAtBranchPosePub, nearestRobotPoseAtBranchPrettyPub, localizer.nearestRobotPoseAtBranch);
+        publishPose(nearestRobotPoseAtBranchUsingReefCenterPose2dPub, nearestRobotPoseAtBranchUsingReefCenterPosePub, nearestRobotPoseAtBranchUsingReefCenterPrettyPub, localizer.nearestRobotPoseAtBranchUsingReefCenter);
         publishPose(questPose2dPub, questPosePub, questPosePrettyPub, localizer.getQuestPose());
         publishPose(megaTagOnePose2dPub, megaTagOnePosePub, megaTagOnePosePrettyPub, LimelightUtil.getMegaTagOnePose());
         publishPose(megaTagTwoPose2dPub, megaTagTwoPosePub, megaTagTwoPosePrettyPub, LimelightUtil.getMegaTagTwoPose());

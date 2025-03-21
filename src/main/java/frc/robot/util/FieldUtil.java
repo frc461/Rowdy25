@@ -155,8 +155,8 @@ public final class FieldUtil {
             return getAngleFromReefCenter(pose.getTranslation());
         }
 
-        public static final Transform2d ROBOT_AT_LEFT_BRANCH_OFFSET_FROM_TAG = new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0, Units.inchesToMeters(-6.469731), Rotation2d.kPi);
-        public static final Transform2d ROBOT_AT_RIGHT_BRANCH_OFFSET_FROM_TAG = new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0, Units.inchesToMeters(6.469731), Rotation2d.kPi);
+        public static final Transform2d ROBOT_AT_LEFT_BRANCH_OFFSET_FROM_TAG = new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0, Units.inchesToMeters(-6.969731), Rotation2d.kPi);
+        public static final Transform2d ROBOT_AT_RIGHT_BRANCH_OFFSET_FROM_TAG = new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0, Units.inchesToMeters(6.969731), Rotation2d.kPi);
 
         public static final Transform2d LEFT_BRANCH_OFFSET_FROM_TAG = new Transform2d(Units.inchesToMeters(-1.207349), Units.inchesToMeters(-6.469731), Rotation2d.kZero);
         public static final Transform2d RIGHT_BRANCH_OFFSET_FROM_TAG = new Transform2d(Units.inchesToMeters(-1.207349), Units.inchesToMeters(6.469731), Rotation2d.kZero);
