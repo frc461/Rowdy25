@@ -132,7 +132,7 @@ public final class CompConstants {
         public static final double L1_CORAL = 38.0;
         public static final double L2_CORAL = 100.0;
         public static final double L3_CORAL = 100.6;
-        public static final double L4_CORAL = 95.0; // TODO SHOP: TEST 94.5
+        public static final double L4_CORAL = 95.0;
         public static final double LOW_REEF_ALGAE = 52;
         public static final double HIGH_REEF_ALGAE = 91;
         public static final double PROCESSOR = 22;
@@ -158,7 +158,7 @@ public final class CompConstants {
         public static final BiFunction<Double, Double, Double> G = (wristDeg, pivotDeg) -> 0.17 * Math.sin(Math.toRadians(wristDeg - (90 - pivotDeg)));
         public static final double V = 0.69 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps) -> V / (rotor rps)
         public static final double A = 0.02 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps^2) -> V / (rotor rps^2)
-        public static final double P = 0.1; // TODO: TUNE
+        public static final double P = 0.1;
         public static final double I = 0.0;
         public static final double D = 0.0;
         public static final double EXPO_V = V / 0.9; // 90% of the actual max velocity, as it will allocate 1 / 0.8 = 1.25 times the voltage to 1 rps
