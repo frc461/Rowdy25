@@ -1,10 +1,9 @@
 package frc.robot.autos;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
-import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.FlippingUtil;
 import edu.wpi.first.math.Pair;
@@ -20,7 +19,6 @@ import frc.robot.autos.routines.AutoTrigger;
 import frc.robot.constants.Constants;
 import frc.robot.util.FieldUtil;
 import frc.robot.util.MultipleChooser;
-import org.json.simple.parser.ParseException;
 
 public final class AutoManager {
     private Command currentCommand;
@@ -137,7 +135,6 @@ public final class AutoManager {
         triggersToBind.add(autoEventLooper.addTrigger(
                 this.startPosition.index + "," + firstScoringLocation.getFirst().name(),
                 () -> robotStates.swerve.pathFindToScoringLocation(robotStates, firstScoringLocation.getFirst(), firstScoringLocation.getSecond())
-                        .andThen(new WaitCommand(0.5))
         ));
 
         while (!currentScoringLocations.isEmpty()) {
@@ -149,12 +146,16 @@ public final class AutoManager {
 
             Pair<FieldUtil.Reef.ScoringLocation, FieldUtil.Reef.Level> nextScoringLocation = currentScoringLocations.get(0);
 
+            AtomicBoolean scoringNext = new AtomicBoolean(false);
+
             triggersToBind.add(autoEventLooper.addTrigger(
                     currentScoringLocation.getFirst().name() + "," + nextScoringLocation.getFirst().name(),
-                    () -> getPathFindingCommandToCoralStation(robotStates, currentScoringLocation.getFirst(), nextScoringLocation.getFirst())
+                    () -> new WaitCommand(0.5)
+                            .andThen(getPathFindingCommandToCoralStation(robotStates, currentScoringLocation.getFirst(), nextScoringLocation.getFirst()))
                             .andThen(new WaitUntilCommand(() -> robotStates.stowState.getAsBoolean() || robotStates.intake.coralEntered()))
+                            .andThen(() -> scoringNext.set(true))
                             .andThen(robotStates.swerve.pathFindToScoringLocation(robotStates, nextScoringLocation.getFirst(), nextScoringLocation.getSecond()))
-                            .andThen(new WaitCommand(0.5))
+                            .until(() -> scoringNext.get() && !robotStates.intake.barelyHasCoral() && !robotStates.atScoringLocation())
             ));
         }
 
@@ -162,6 +163,7 @@ public final class AutoManager {
 
         while (!triggersToBind.isEmpty()) {
             AutoTrigger currentTrigger = triggersToBind.remove(0);
+            currentTrigger.interrupt().onTrue(currentTrigger.cmd());
             currentTrigger.done().onTrue(triggersToBind.isEmpty() ? Commands.none() : triggersToBind.get(0).cmd());
         }
 
