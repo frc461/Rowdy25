@@ -254,7 +254,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                         robotStates.getCurrentAutoLevel() == FieldUtil.Reef.Level.L4
                 )).andThen(
                         new WaitUntilCommand(robotStates.atAutoScoreState.and(robotStates::atScoringLocation))
-                                .raceWith(new WaitCommand(1))
+                                .raceWith(new WaitCommand(0.5))
                                 .andThen(robotStates::toggleAutoLevelCoralState)
                                 .onlyIf(() -> autoHeading)
                 ).alongWith(
@@ -285,7 +285,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                         robotStates.getCurrentAutoLevel() == FieldUtil.Reef.Level.L4
                 )).andThen(
                         new WaitUntilCommand(robotStates.atAutoScoreState.and(robotStates::atScoringLocation))
-                                .raceWith(new WaitCommand(1))
+                                .raceWith(new WaitCommand(0.5))
                                 .andThen(robotStates::toggleAutoLevelCoralState)
                                 .onlyIf(() -> autoHeading)
                 ).alongWith(
