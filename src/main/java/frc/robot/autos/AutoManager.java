@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.RobotStates;
 import frc.robot.autos.routines.AutoEventLooper;
 import frc.robot.autos.routines.AutoTrigger;
@@ -147,15 +148,19 @@ public final class AutoManager {
             Pair<FieldUtil.Reef.ScoringLocation, FieldUtil.Reef.Level> nextScoringLocation = currentScoringLocations.get(0);
 
             AtomicBoolean scoringNext = new AtomicBoolean(false);
-
-            triggersToBind.add(autoEventLooper.addTrigger(
-                    currentScoringLocation.getFirst().name() + "," + nextScoringLocation.getFirst().name(),
-                    () -> new WaitCommand(0.5)
+            Command routineSegmentCommand = new WaitCommand(0.5)
                             .andThen(getPathFindingCommandToCoralStation(robotStates, currentScoringLocation.getFirst(), nextScoringLocation.getFirst()))
                             .andThen(new WaitUntilCommand(() -> robotStates.stowState.getAsBoolean() || robotStates.intake.coralEntered()))
                             .andThen(() -> scoringNext.set(true))
-                            .andThen(robotStates.swerve.pathFindToScoringLocation(robotStates, nextScoringLocation.getFirst(), nextScoringLocation.getSecond()))
-                            .until(() -> scoringNext.get() && !robotStates.intake.barelyHasCoral() && !robotStates.atScoringLocation())
+                            .andThen(robotStates.swerve.pathFindToScoringLocation(robotStates, nextScoringLocation.getFirst(), nextScoringLocation.getSecond()));
+
+            Trigger dropsCoralTrigger = new Trigger(() -> scoringNext.get() && !robotStates.intake.barelyHasCoral() && !robotStates.atScoringLocation());
+            dropsCoralTrigger.onTrue(new InstantCommand(routineSegmentCommand::cancel));
+            autoEventLooper.observe(dropsCoralTrigger);
+
+            triggersToBind.add(autoEventLooper.addTrigger(
+                    currentScoringLocation.getFirst().name() + "," + nextScoringLocation.getFirst().name(),
+                    () -> routineSegmentCommand
             ));
         }
 
