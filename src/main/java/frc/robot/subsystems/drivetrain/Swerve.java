@@ -250,7 +250,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                         fieldCentric,
                         robotStates.elevator::getPosition,
                         localizer.nearestRobotPosesAtBranchPair.getFirst(),
-                        robotStates.getCurrentAutoLevel() == FieldUtil.Reef.Level.L4 ? 0.75 : 2.0,
+                        robotStates.getCurrentAutoLevel() == FieldUtil.Reef.Level.L4 ? 1.0 : 2.0,
                         robotStates.getCurrentAutoLevel() == FieldUtil.Reef.Level.L4
                 )).andThen(
                         new WaitUntilCommand(robotStates.atAutoScoreState.and(robotStates::atScoringLocation))
@@ -281,7 +281,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                         fieldCentric,
                         robotStates.elevator::getPosition,
                         localizer.nearestRobotPosesAtBranchPair.getSecond(),
-                        robotStates.getCurrentAutoLevel() == FieldUtil.Reef.Level.L4 ? 0.75 : 2.0,
+                        robotStates.getCurrentAutoLevel() == FieldUtil.Reef.Level.L4 ? 1.0 : 2.0,
                         robotStates.getCurrentAutoLevel() == FieldUtil.Reef.Level.L4
                 )).andThen(
                         new WaitUntilCommand(robotStates.atAutoScoreState.and(robotStates::atScoringLocation))
@@ -317,7 +317,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                                 robotStates.getCurrentAutoLevel() == FieldUtil.Reef.Level.L4
                         )).andThen(
                                 new WaitUntilCommand(robotStates.atAutoScoreState.and(robotStates::atScoringLocation))
-                                        .raceWith(new WaitCommand(1))
+                                        .raceWith(new WaitCommand(0.35))
                                         .andThen(robotStates::toggleAutoLevelCoralState)
                         ).alongWith(
                                 new WaitUntilCommand(() -> robotStates.nearStateLocation(RobotStates.State.L4_CORAL))
