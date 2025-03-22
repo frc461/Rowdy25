@@ -244,7 +244,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                                 localizer.nearestRobotPosesAtBranchPair.getFirst(),
                                 Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_DIRECT_DRIVE
                         ),
-                        robotStates.getCurrentAutoLevel() == FieldUtil.Reef.Level.L4
+                        false
                 ).andThen(() -> robotStates.toggleAutoLevelCoralState(true)).andThen(new DirectMoveToPoseCommand(
                         this,
                         fieldCentric,
@@ -275,7 +275,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                                 localizer.nearestRobotPosesAtBranchPair.getSecond(),
                                 Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_DIRECT_DRIVE
                         ),
-                        robotStates.getCurrentAutoLevel() == FieldUtil.Reef.Level.L4
+                        false
                 ).andThen(() -> robotStates.toggleAutoLevelCoralState(true)).andThen(new DirectMoveToPoseCommand(
                         this,
                         fieldCentric,
@@ -307,7 +307,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                                         FieldUtil.Reef.ScoringLocation.getPose(location),
                                         Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_DIRECT_DRIVE
                                 ),
-                                robotStates.getCurrentAutoLevel() == FieldUtil.Reef.Level.L4
+                                false
                         )).andThen(() -> robotStates.toggleAutoLevelCoralState(true)).andThen(new DirectMoveToPoseCommand(
                                 this,
                                 fieldCentric,
