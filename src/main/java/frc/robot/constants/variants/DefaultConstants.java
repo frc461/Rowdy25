@@ -318,8 +318,8 @@ public final class DefaultConstants {
         public static final double P = 0.15;
         public static final double I = 0;
         public static final double D = 0.01;
-        public static final double EXPO_V = V / 0.75; // 75% of the actual max velocity, as it will allocate 1 / 0.75 = 1.33333 times the voltage to 1 rps
-        public static final double EXPO_A = A / 0.0075; // 0.75% of the actual max acceleration
+        public static final double EXPO_V = V / 0.3; // 30% of the actual max velocity, as it will allocate 1 / 0.75 = 1.33333 times the voltage to 1 rps
+        public static final double EXPO_A = A / 0.01; // 1.0% of the actual max acceleration
         public static final double SAFE_TOLERANCE = 15.0;
         public static final double AT_TARGET_TOLERANCE = 2.5;
 
