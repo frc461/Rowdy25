@@ -41,7 +41,7 @@ public class Intake extends SubsystemBase {
 
     private final IntakeTelemetry intakeTelemetry = new IntakeTelemetry(this);
 
-    private Trigger coralStuck;
+    public Trigger coralStuck;
     private double proximityObjectDetectionThreshold = Constants.IntakeConstants.DEFAULT_PROXIMITY_OBJECT_DETECTION_THRESHOLD;
     public DoubleConsumer setProximityObjectDetectionThreshold = threshold -> proximityObjectDetectionThreshold = threshold;
 
