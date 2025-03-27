@@ -18,11 +18,22 @@ public class IntakeCommand extends Command {
                 if (intake.hasCoral() || intake.hasAlgae()) {
                     intake.setIdleState();
                 } else if (intake.coralEntered() && !intake.beamBreakBroken()) {
-                    intake.setIntakeSpeed(0.15);
+                    intake.setIntakeSlowState();
                 } else if (intake.beamBreakBroken() && !intake.coralEntered()) {
-                    intake.setIntakeSpeed(-0.15);
+                    intake.setOuttakeSlowState();
                 } else {
                     intake.setIntakeSpeed(0.6);
+                }
+                break;
+            case INTAKE_SLOW:
+                if (intake.hasCoral() || intake.hasAlgae()) {
+                    intake.setIdleState();
+                } else if (intake.coralEntered() && !intake.beamBreakBroken()) {
+                    intake.setIntakeSpeed(0.15);
+                } else if (intake.beamBreakBroken() && !intake.coralEntered()) {
+                    intake.setOuttakeSlowState();
+                } else {
+                    intake.setIntakeState(false);
                 }
                 break;
             case INTAKE_OUT:
@@ -33,6 +44,17 @@ public class IntakeCommand extends Command {
                 break;
             case OUTTAKE:
                 intake.setIntakeSpeed(-0.5);
+                break;
+            case OUTTAKE_SLOW:
+                if (intake.hasCoral() || intake.hasAlgae()) {
+                    intake.setIdleState();
+                } else if (intake.coralEntered() && !intake.beamBreakBroken()) {
+                    intake.setIntakeSlowState();
+                } else if (intake.beamBreakBroken() && !intake.coralEntered()) {
+                    intake.setIntakeSpeed(-0.15);
+                } else {
+                    intake.setIntakeState(false);
+                }
                 break;
             case OUTTAKE_L1:
                 intake.setIntakeSpeed(-0.3);
