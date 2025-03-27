@@ -70,6 +70,10 @@ public class Intake extends SubsystemBase {
         pulseTimer.start();
     }
 
+    public double getCurrent() {
+        return motor.getStatorCurrent().getValueAsDouble();
+    }
+
     public State getState() {
         return currentState;
     }

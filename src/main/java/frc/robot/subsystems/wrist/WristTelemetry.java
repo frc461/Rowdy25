@@ -21,6 +21,7 @@ public class WristTelemetry {
     private final StringPublisher wristStatePub = wristTelemetryTable.getStringTopic("Wrist State").publish();
     private final BooleanPublisher wristAtTargetPub = wristTelemetryTable.getBooleanTopic("Wrist At Target").publish();
     private final BooleanPublisher wristNearTargetPub = wristTelemetryTable.getBooleanTopic("Wrist Near Target").publish();
+    private final DoublePublisher wristCurrentPub = wristTelemetryTable.getDoubleTopic("Wrist Current").publish();
 
     public void publishValues() {
         wristPositionPub.set(wrist.getPosition());
@@ -29,6 +30,7 @@ public class WristTelemetry {
         wristStatePub.set(wrist.getState().toString());
         wristAtTargetPub.set(wrist.isAtTarget());
         wristNearTargetPub.set(wrist.nearTarget());
+        wristCurrentPub.set(wrist.getCurrent());
 
         logValues();
     }

@@ -20,6 +20,7 @@ public class IntakeTelemetry {
     private final DoublePublisher proximityPub = intakeTelemetryTable.getDoubleTopic("Canandcolor Proximity").publish();
     private final DoublePublisher proximityObjectDetectionThreshold = intakeTelemetryTable.getDoubleTopic("Canandcolor Proximity Object Detection Threshold").publish();
     private final DoubleSubscriber setProximityObjectDetectionThreshold = intakeTelemetryTable.getDoubleTopic("Canandcolor Proximity Object Detection Threshold").subscribe(Constants.IntakeConstants.DEFAULT_PROXIMITY_OBJECT_DETECTION_THRESHOLD);
+    private final DoublePublisher intakeCurrentPub = intakeTelemetryTable.getDoubleTopic("Intake Current").publish();
 
     public void publishValues() {
         rgbPub.set(intake.getColorReading());
@@ -30,6 +31,7 @@ public class IntakeTelemetry {
         proximityPub.set(intake.getProximity());
         proximityObjectDetectionThreshold.set(setProximityObjectDetectionThreshold.get(Constants.IntakeConstants.DEFAULT_PROXIMITY_OBJECT_DETECTION_THRESHOLD));
         intake.setProximityObjectDetectionThreshold.accept(setProximityObjectDetectionThreshold.get(Constants.IntakeConstants.DEFAULT_PROXIMITY_OBJECT_DETECTION_THRESHOLD));
+        intakeCurrentPub.set(intake.getCurrent());
 
         logValues();
     }
