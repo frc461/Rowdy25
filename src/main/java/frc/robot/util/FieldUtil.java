@@ -277,6 +277,18 @@ public final class FieldUtil {
 
         public static Pair<Pose2d, Pose2d> getNearestRobotPosesAtBranchPair(Pose2d currentPose) {
             Pose2d nearestReefTagPose = getNearestReefTagPose(currentPose);
+            String nearestReefTagName = getNearestReefTag(currentPose).name();
+            if (nearestReefTagName.equals("ID_20")
+                    || nearestReefTagName.equals("ID_21")
+                    || nearestReefTagName.equals("ID_22")
+                    || nearestReefTagName.equals("ID_9")
+                    || nearestReefTagName.equals("ID_10")
+                    || nearestReefTagName.equals("ID_11")) {
+                return new Pair<>(
+                        nearestReefTagPose.plus(ROBOT_AT_RIGHT_BRANCH_OFFSET_FROM_TAG),
+                        nearestReefTagPose.plus(ROBOT_AT_LEFT_BRANCH_OFFSET_FROM_TAG)
+                );
+            }
             return new Pair<>(
                     nearestReefTagPose.plus(ROBOT_AT_LEFT_BRANCH_OFFSET_FROM_TAG),
                     nearestReefTagPose.plus(ROBOT_AT_RIGHT_BRANCH_OFFSET_FROM_TAG)
