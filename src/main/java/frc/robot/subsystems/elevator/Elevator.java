@@ -82,6 +82,10 @@ public class Elevator extends SubsystemBase {
         lastManualPosition = State.STOW.position;
     }
 
+    public double getCurrent() {
+        return elevator.getStatorCurrent().getValueAsDouble();
+    }
+
 	public State getState() {
 		return currentState;
 	}

@@ -251,10 +251,9 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                         robotStates.elevator::getPosition,
                         localizer.nearestRobotPosesAtBranchPair.getFirst(),
                         robotStates.getCurrentAutoLevel() == FieldUtil.Reef.Level.L4 ? 1.0 : 2.0,
-                        robotStates.getCurrentAutoLevel() == FieldUtil.Reef.Level.L4
+                        true
                 )).andThen(
                         new WaitUntilCommand(robotStates.atAutoScoreState.and(robotStates::atScoringLocation))
-                                .raceWith(new WaitCommand(0.5))
                                 .andThen(robotStates::toggleAutoLevelCoralState)
                                 .onlyIf(() -> autoHeading)
                 ).alongWith(
@@ -282,10 +281,9 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                         robotStates.elevator::getPosition,
                         localizer.nearestRobotPosesAtBranchPair.getSecond(),
                         robotStates.getCurrentAutoLevel() == FieldUtil.Reef.Level.L4 ? 1.0 : 2.0,
-                        robotStates.getCurrentAutoLevel() == FieldUtil.Reef.Level.L4
+                        true
                 )).andThen(
                         new WaitUntilCommand(robotStates.atAutoScoreState.and(robotStates::atScoringLocation))
-                                .raceWith(new WaitCommand(0.5))
                                 .andThen(robotStates::toggleAutoLevelCoralState)
                                 .onlyIf(() -> autoHeading)
                 ).alongWith(
@@ -308,16 +306,16 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                                         Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_DIRECT_DRIVE
                                 ),
                                 false
-                        )).andThen(() -> robotStates.toggleAutoLevelCoralState(true)).andThen(new DirectMoveToPoseCommand(
+                        )).andThen(() -> robotStates.toggleAutoLevelCoralState(true)).andThen((new DirectMoveToPoseCommand(
                                 this,
                                 fieldCentric,
                                 robotStates.elevator::getPosition,
                                 FieldUtil.Reef.ScoringLocation.getPose(location),
                                 robotStates.getCurrentAutoLevel() == FieldUtil.Reef.Level.L4 ? 1.0 : 2.0,
-                                robotStates.getCurrentAutoLevel() == FieldUtil.Reef.Level.L4
-                        )).andThen(
+                                true
+                        )).raceWith(new WaitCommand(1.5))).andThen(
                                 new WaitUntilCommand(robotStates.atAutoScoreState.and(robotStates::atScoringLocation))
-                                        .raceWith(new WaitCommand(0.35))
+                                        .raceWith(new WaitCommand(0.65))
                                         .andThen(robotStates::toggleAutoLevelCoralState)
                         ).alongWith(
                                 new WaitUntilCommand(() -> robotStates.nearStateLocation(RobotStates.State.L4_CORAL))

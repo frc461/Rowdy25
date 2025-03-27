@@ -14,7 +14,6 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import static edu.wpi.first.units.Units.*;
-import static edu.wpi.first.units.Units.Inches;
 
 public final class CompConstants {
     public final static class PhotonConstants {
@@ -80,7 +79,7 @@ public final class CompConstants {
         public static final double GROUND_ALGAE = 0;
         public static final double L1_CORAL = 0;
         public static final double L2_CORAL = 0;
-        public static final double L3_CORAL = 15.5;
+        public static final double L3_CORAL = 18.5;
         public static final double L4_CORAL = 45.5;
         public static final double LOW_REEF_ALGAE = 13.0;
         public static final double HIGH_REEF_ALGAE = 18.5;
@@ -125,14 +124,14 @@ public final class CompConstants {
         // presets
         public static final double LOWER_LIMIT = 0;
         public static final double UPPER_LIMIT = 105;
-        public static final double STOW = 55;
-        public static final double CORAL_STATION = 55;
+        public static final double STOW = 56;
+        public static final double CORAL_STATION = 56;
         public static final double GROUND_CORAL = 3.5;
         public static final double GROUND_ALGAE = 4.5;
         public static final double L1_CORAL = 38.0;
-        public static final double L2_CORAL = 100.0;
-        public static final double L3_CORAL = 100.6;
-        public static final double L4_CORAL = 95.0;
+        public static final double L2_CORAL = 95.0;
+        public static final double L3_CORAL = 95.0;
+        public static final double L4_CORAL = 96.0;
         public static final double LOW_REEF_ALGAE = 52;
         public static final double HIGH_REEF_ALGAE = 91;
         public static final double PROCESSOR = 22;
@@ -174,9 +173,9 @@ public final class CompConstants {
         public static final double GROUND_CORAL = 150;
         public static final double GROUND_ALGAE = 150;
         public static final double L1_CORAL = 96.5;
-        public static final double L2_CORAL = 55;
-        public static final double L3_CORAL = 55;
-        public static final double L4_CORAL = 78;
+        public static final double L2_CORAL = 45;
+        public static final double L3_CORAL = 60;
+        public static final double L4_CORAL = 75;
         public static final double LOW_REEF_ALGAE = 65.5;
         public static final double HIGH_REEF_ALGAE = 260;
         public static final double PROCESSOR = 160;
@@ -291,7 +290,7 @@ public final class CompConstants {
             private static final int DRIVE_MOTOR_ID = 1;
             private static final int STEER_MOTOR_ID = 11;
             private static final int ENCODER_ID = 21;
-            public static final Angle ENCODER_OFFSET = Rotations.of(0.4365234375);
+            public static final Angle ENCODER_OFFSET = Rotations.of(-1.81684412 + 0.0555555555555556 - 0.56982421875 + 0.51904296875); //0.4365234375);
             private static final boolean STEER_MOTOR_INVERTED = true;
             private static final boolean CANCODER_INVERTED = false;
 

@@ -82,6 +82,10 @@ public class Wrist extends SubsystemBase {
         lastManualPosition = State.STOW.position;
     }
 
+    public double getCurrent() {
+        return wrist.getStatorCurrent().getValueAsDouble();
+    }
+
     public State getState() {
         return currentState;
     }

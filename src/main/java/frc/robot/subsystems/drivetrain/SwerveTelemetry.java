@@ -39,6 +39,7 @@ public class SwerveTelemetry {
     private final StructArrayPublisher<SwerveModuleState> driveModuleStates = driveStateTable.getStructArrayTopic("ModuleStates", SwerveModuleState.struct).publish();
     private final StructArrayPublisher<SwerveModuleState> driveModuleTargets = driveStateTable.getStructArrayTopic("ModuleTargets", SwerveModuleState.struct).publish();
     private final StructArrayPublisher<SwerveModulePosition> driveModulePositions = driveStateTable.getStructArrayTopic("ModulePositions", SwerveModulePosition.struct).publish();
+    private final DoubleArrayPublisher cancoderAngles = driveStateTable.getDoubleArrayTopic("Module Cancoder positions").publish();
     private final DoublePublisher driveTimestamp = driveStateTable.getDoubleTopic("Timestamp").publish();
     private final DoublePublisher driveOdometryFrequency = driveStateTable.getDoubleTopic("OdometryFrequency").publish();
     private final DoubleArrayPublisher currentCurrent = driveStateTable.getDoubleArrayTopic("Current Amp Currents").publish();
@@ -87,6 +88,7 @@ public class SwerveTelemetry {
         driveOdometryFrequency.set(1.0 / state.OdometryPeriod);
 
         double[] currents = new double[4];
+        double[] positions = new double[4];
 
         /* Also write to log file */
         poseArray[0] = state.Pose.getX();
@@ -98,10 +100,12 @@ public class SwerveTelemetry {
             moduleTargetsArray[i * 2] = state.ModuleTargets[i].angle.getRadians();
             moduleTargetsArray[i * 2 + 1] = state.ModuleTargets[i].speedMetersPerSecond;
             currents[i] = swerve.getModule(i).getDriveMotor().getStatorCurrent().getValueAsDouble();
+            positions[i] = swerve.getModule(i).getEncoder().getPosition().getValueAsDouble();
         }
 
         currentCurrent.set(currents); // sets the current current to currents
         isStuck.set(swerve.isStuck());
+        cancoderAngles.set(positions);
 
         SignalLogger.writeDoubleArray("DriveState/Pose", poseArray);
         SignalLogger.writeDoubleArray("DriveState/ModuleStates", moduleStatesArray);
