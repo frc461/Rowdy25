@@ -268,9 +268,9 @@ public final class DefaultConstants {
         public static final double GROUND_CORAL = 5;
         public static final double GROUND_ALGAE = 0;
         public static final double L1_CORAL = 0;
-        public static final double L2_CORAL = 0;
-        public static final double L3_CORAL = 17.2;
-        public static final double L4_CORAL = 41.5;
+        public static final double L2_CORAL = 5.5;
+        public static final double L3_CORAL = 26.4;
+        public static final double L4_CORAL = 42.5;
         public static final double LOW_REEF_ALGAE = 2.0;
         public static final double HIGH_REEF_ALGAE = 3.0;
         public static final double PROCESSOR = 0;
@@ -282,7 +282,7 @@ public final class DefaultConstants {
         public static final int LEAD_ID = 41;
         public static final int FOLLOWER_ID = 42;
         public static final int BEAMBREAK_ID = 4;
-        public static final double CURRENT_LIMIT = 40;
+        public static final double CURRENT_LIMIT = 60;
         public static final InvertedValue MOTOR_INVERT = InvertedValue.CounterClockwise_Positive;
         public static final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Coast;
         public static final double DEFAULT_PROXIMITY_OBJECT_DETECTION_THRESHOLD = 0.13;
@@ -318,22 +318,22 @@ public final class DefaultConstants {
         public static final double P = 0.15;
         public static final double I = 0;
         public static final double D = 0.01;
-        public static final double EXPO_V = V / 0.3; // 30% of the actual max velocity, as it will allocate 1 / 0.75 = 1.33333 times the voltage to 1 rps
-        public static final double EXPO_A = A / 0.01; // 1.0% of the actual max acceleration
+        public static final double EXPO_V = V / 0.2; // 30% of the actual max velocity, as it will allocate 1 / 0.75 = 1.33333 times the voltage to 1 rps
+        public static final double EXPO_A = A / 0.0075; // 1.0% of the actual max acceleration
         public static final double SAFE_TOLERANCE = 15.0;
         public static final double AT_TARGET_TOLERANCE = 2.5;
 
         // presets
         public static final double LOWER_LIMIT = 0;
         public static final double UPPER_LIMIT = 105;
-        public static final double STOW = 50;
+        public static final double STOW = 80;
         public static final double CORAL_STATION = 50;
         public static final double GROUND_CORAL = 0.1;
         public static final double GROUND_ALGAE = 4.5;
         public static final double L1_CORAL = 31.5;
-        public static final double L2_CORAL = 100.0;
-        public static final double L3_CORAL = 100.6;
-        public static final double L4_CORAL = 90.5;
+        public static final double L2_CORAL = 43.2;
+        public static final double L3_CORAL = 57.8;
+        public static final double L4_CORAL = 69;
         public static final double LOW_REEF_ALGAE = 32.5;
         public static final double HIGH_REEF_ALGAE = 105;
         public static final double PROCESSOR = 22.1;
@@ -357,7 +357,7 @@ public final class DefaultConstants {
 
         // encoder config
         public static final int ENCODER_ID = 62;
-        public static final double ENCODER_ABSOLUTE_OFFSET =  0.44803710922;
+        public static final double ENCODER_ABSOLUTE_OFFSET = 0.600814886997;
         public static final SensorDirectionValue ENCODER_INVERT = SensorDirectionValue.Clockwise_Positive;
 
         // pid & tolerance
@@ -380,9 +380,9 @@ public final class DefaultConstants {
         public static final double GROUND_CORAL = 105;
         public static final double GROUND_ALGAE = 150;
         public static final double L1_CORAL = 125;
-        public static final double L2_CORAL = 55;
-        public static final double L3_CORAL = 55;
-        public static final double L4_CORAL = 285;
+        public static final double L2_CORAL = 182;
+        public static final double L3_CORAL = 52.5;
+        public static final double L4_CORAL = 135;
         public static final double LOW_REEF_ALGAE = 131.0;
         public static final double HIGH_REEF_ALGAE = 160;
         public static final double PROCESSOR = 150;
@@ -544,7 +544,7 @@ public final class DefaultConstants {
             private static final int DRIVE_MOTOR_ID = 3;
             private static final int STEER_MOTOR_ID = 13;
             private static final int ENCODER_ID = 23;
-            public static final Angle ENCODER_OFFSET = Rotations.of(-0.146728515625);
+            public static final Angle ENCODER_OFFSET = Rotations.of(-0.146728515625 + 0.55859375);
             private static final boolean STEER_MOTOR_INVERTED = true;
             private static final boolean CANCODER_INVERTED = false;
 
