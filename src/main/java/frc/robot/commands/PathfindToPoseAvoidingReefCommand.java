@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.autos.Pathfinder;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.drivetrain.Swerve;
-import frc.robot.util.EquationUtil;
 import frc.robot.util.FieldUtil;
 import frc.robot.util.PhoenixProfiledPIDController;
 
@@ -44,7 +43,6 @@ public class PathfindToPoseAvoidingReefCommand extends Command {
     private final DoubleSupplier elevatorHeight;
     private final Pose2d targetPose;
     private final double maxVelocity;
-    private final boolean smooth;
     private Pose2d smoothTemporaryTargetPose;
     private boolean xPosDone, yPosDone, yawDone, end;
 
@@ -54,7 +52,7 @@ public class PathfindToPoseAvoidingReefCommand extends Command {
             DoubleSupplier elevatorHeight,
             Pose2d targetPose
     ) {
-        this(swerve, fieldCentric, elevatorHeight, targetPose, Constants.MAX_VEL, true);
+        this(swerve, fieldCentric, elevatorHeight, targetPose, Constants.MAX_VEL);
     }
 
     public PathfindToPoseAvoidingReefCommand(
@@ -62,18 +60,7 @@ public class PathfindToPoseAvoidingReefCommand extends Command {
             SwerveRequest.FieldCentric fieldCentric,
             DoubleSupplier elevatorHeight,
             Pose2d targetPose,
-            boolean smooth
-    ) {
-        this(swerve, fieldCentric, elevatorHeight, targetPose, Constants.MAX_VEL, smooth);
-    }
-
-    public PathfindToPoseAvoidingReefCommand(
-            Swerve swerve,
-            SwerveRequest.FieldCentric fieldCentric,
-            DoubleSupplier elevatorHeight,
-            Pose2d targetPose,
-            double maxVelocity,
-            boolean smooth
+            double maxVelocity
     ) {
         this.swerve = swerve;
         this.fieldCentric = fieldCentric;
@@ -99,7 +86,6 @@ public class PathfindToPoseAvoidingReefCommand extends Command {
 
         this.targetPose = targetPose;
         this.maxVelocity = MathUtil.clamp(maxVelocity, 0, Constants.MAX_VEL);
-        this.smooth = smooth;
 
         smoothTemporaryTargetPose = null;
         xPosDone = false;

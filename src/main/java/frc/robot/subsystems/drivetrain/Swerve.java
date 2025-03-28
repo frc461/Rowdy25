@@ -243,15 +243,13 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                         Pathfinder.calculateClosePose(
                                 localizer.nearestRobotPosesAtBranchPair.getFirst(),
                                 Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_DIRECT_DRIVE
-                        ),
-                        false
+                        )
                 ).andThen(() -> robotStates.toggleAutoLevelCoralState(true)).andThen(new DirectMoveToPoseCommand(
                         this,
                         fieldCentric,
                         robotStates.elevator::getPosition,
                         localizer.nearestRobotPosesAtBranchPair.getFirst(),
-                        robotStates.getCurrentAutoLevel() == FieldUtil.Reef.Level.L4 ? 1.0 : 2.0,
-                        true
+                        robotStates.getCurrentAutoLevel() == FieldUtil.Reef.Level.L4 ? 1.0 : 2.0
                 )).andThen(
                         new WaitUntilCommand(robotStates.atAutoScoreState.and(robotStates::atScoringLocation))
                                 .andThen(robotStates::toggleAutoLevelCoralState)
@@ -273,15 +271,13 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                         Pathfinder.calculateClosePose(
                                 localizer.nearestRobotPosesAtBranchPair.getSecond(),
                                 Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_DIRECT_DRIVE
-                        ),
-                        false
+                        )
                 ).andThen(() -> robotStates.toggleAutoLevelCoralState(true)).andThen(new DirectMoveToPoseCommand(
                         this,
                         fieldCentric,
                         robotStates.elevator::getPosition,
                         localizer.nearestRobotPosesAtBranchPair.getSecond(),
-                        robotStates.getCurrentAutoLevel() == FieldUtil.Reef.Level.L4 ? 1.0 : 2.0,
-                        true
+                        robotStates.getCurrentAutoLevel() == FieldUtil.Reef.Level.L4 ? 1.0 : 2.0
                 )).andThen(
                         new WaitUntilCommand(robotStates.atAutoScoreState.and(robotStates::atScoringLocation))
                                 .andThen(robotStates::toggleAutoLevelCoralState)
@@ -304,15 +300,13 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                                 Pathfinder.calculateClosePose(
                                         FieldUtil.Reef.ScoringLocation.getPose(location),
                                         Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_DIRECT_DRIVE
-                                ),
-                                false
+                                )
                         )).andThen(() -> robotStates.toggleAutoLevelCoralState(true)).andThen((new DirectMoveToPoseCommand(
                                 this,
                                 fieldCentric,
                                 robotStates.elevator::getPosition,
                                 FieldUtil.Reef.ScoringLocation.getPose(location),
-                                robotStates.getCurrentAutoLevel() == FieldUtil.Reef.Level.L4 ? 1.0 : 2.0,
-                                true
+                                robotStates.getCurrentAutoLevel() == FieldUtil.Reef.Level.L4 ? 1.0 : 2.0
                         )).raceWith(Commands.waitSeconds(1.5))).andThen(
                                 new WaitUntilCommand(robotStates.atAutoScoreState.and(robotStates::atScoringLocation))
                                         .andThen(robotStates::toggleAutoLevelCoralState)
@@ -340,8 +334,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                         fieldCentric,
                         robotStates.elevator::getPosition,
                         localizer.nearestRobotPoseAtAlgaeReef,
-                        2.0,
-                        true
+                        2.0
                 )),
                 Set.of(this)
         );
@@ -362,8 +355,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                         fieldCentric,
                         robotStates.elevator::getPosition,
                         localizer.robotPoseAtNet,
-                        1.0,
-                        true
+                        1.0
                 )).andThen(
                         new WaitUntilCommand(robotStates.atNetState.and(robotStates::atScoringLocation))
                                 .andThen(robotStates::toggleNetState)
