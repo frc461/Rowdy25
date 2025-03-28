@@ -334,7 +334,8 @@ public final class Constants {
     }
 
     public static final class SwerveConstants {
-        public static double PATH_TRANSLATION_CONTROLLER_P; // FOR PATHPLANNER
+        public static double PATH_TRANSLATION_CONTROLLER_P; // FOR PATHPLANNER AND TRANSLATIONAL CONTROL
+        public static double PATH_TRANSLATION_CONTROLLER_D;
         public static double PATH_ROTATION_CONTROLLER_P;
 
         public static double ANGULAR_POSITION_P; // FOR ANGULAR ROTATION CONTROL

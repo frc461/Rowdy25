@@ -101,11 +101,17 @@ public class PhoenixProfiledPIDController {
         return calculate(measurement, currentTimestamp);
     }
 
+    public double calculate(double measurement, TrapezoidProfile.Constraints constraints, double currentTimestamp) {
+        setConstraints(constraints);
+        return calculate(measurement, currentTimestamp);
+    }
+
     public double calculate(
             double measurement,
             TrapezoidProfile.State goal,
             TrapezoidProfile.Constraints constraints,
-            double currentTimestamp) {
+            double currentTimestamp
+    ) {
         setConstraints(constraints);
         return calculate(measurement, goal, currentTimestamp);
     }

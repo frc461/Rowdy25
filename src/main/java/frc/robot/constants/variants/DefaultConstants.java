@@ -392,6 +392,7 @@ public final class DefaultConstants {
 
     public static final class SwerveConstants {
         public static final double PATH_TRANSLATION_CONTROLLER_P = 10.0;
+        public static final double PATH_TRANSLATION_CONTROLLER_D = 0.3;
         public static final double PATH_ROTATION_CONTROLLER_P = 7.5;
 
         public static final double ANGULAR_POSITION_P = 0.035;

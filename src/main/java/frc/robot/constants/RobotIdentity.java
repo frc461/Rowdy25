@@ -269,6 +269,7 @@ public enum RobotIdentity {
         Constants.WristConstants.CLIMB = DefaultConstants.WristConstants.CLIMB;
 
         Constants.SwerveConstants.PATH_TRANSLATION_CONTROLLER_P = DefaultConstants.SwerveConstants.PATH_TRANSLATION_CONTROLLER_P;
+        Constants.SwerveConstants.PATH_TRANSLATION_CONTROLLER_D = DefaultConstants.SwerveConstants.PATH_TRANSLATION_CONTROLLER_D;
         Constants.SwerveConstants.PATH_ROTATION_CONTROLLER_P = DefaultConstants.SwerveConstants.PATH_ROTATION_CONTROLLER_P;
         Constants.SwerveConstants.ANGULAR_POSITION_P = DefaultConstants.SwerveConstants.ANGULAR_POSITION_P;
         Constants.SwerveConstants.ANGULAR_POSITION_D = DefaultConstants.SwerveConstants.ANGULAR_POSITION_D;
