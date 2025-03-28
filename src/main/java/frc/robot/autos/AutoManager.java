@@ -172,6 +172,7 @@ public final class AutoManager {
             AutoTrigger currentTrigger = triggersToBind.remove(0);
             currentTrigger.interrupt().onTrue(
                     new InstantCommand(robotStates.intake::setOuttakeL1State)
+                            .andThen(Commands.waitSeconds(0.25))
                             .andThen(currentTrigger.cmd())
             );
             currentTrigger.done().onTrue(triggersToBind.isEmpty() ? Commands.none() : triggersToBind.get(0).cmd());
