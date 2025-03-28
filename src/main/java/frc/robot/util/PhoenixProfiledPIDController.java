@@ -68,57 +68,57 @@ public class PhoenixProfiledPIDController {
         controller.setTolerance(positionalTolerance, Double.POSITIVE_INFINITY);
     }
 
-    public double calculate(double measurement, double currentTimestamp) {
+    public double calculate(double currentPosition, double currentTimestamp) {
         if (controller.isContinuousInputEnabled()) {
             // Get error which is the smallest distance between goal and measurement
             double errorBound = (maxInput - minInput) / 2.0;
-            double goalMinDistance = MathUtil.inputModulus(goal.position - measurement, -errorBound, errorBound);
+            double goalMinDistance = MathUtil.inputModulus(goal.position - currentPosition, -errorBound, errorBound);
             double setpointMinDistance =
-                    MathUtil.inputModulus(setpoint.position - measurement, -errorBound, errorBound);
+                    MathUtil.inputModulus(setpoint.position - currentPosition, -errorBound, errorBound);
 
             // Recompute the profile goal with the smallest error, thus giving the shortest path. The goal
             // may be outside the input range after this operation, but that's OK because the controller
             // will still go there and report an error of zero. In other words, the setpoint only needs to
             // be offset from the measurement by the input range modulus; they don't need to be equal.
-            goal.position = goalMinDistance + measurement;
-            setpoint.position = setpointMinDistance + measurement;
+            goal.position = goalMinDistance + currentPosition;
+            setpoint.position = setpointMinDistance + currentPosition;
         }
 
         double thisPeriod = currentTimestamp - lastTimestamp;
         lastTimestamp = currentTimestamp;
 
         setpoint = profile.calculate(thisPeriod, setpoint, goal);
-        return controller.calculate(measurement, setpoint.position, currentTimestamp);
+        return controller.calculate(currentPosition, setpoint.position, currentTimestamp);
     }
 
-    public double calculate(double measurement, TrapezoidProfile.State goal, double currentTimestamp) {
-        setGoal(goal);
-        return calculate(measurement, currentTimestamp);
+    public double calculate(double currentPosition, TrapezoidProfile.State targetState, double currentTimestamp) {
+        setGoal(targetState);
+        return calculate(currentPosition, currentTimestamp);
     }
 
-    public double calculate(double measurement, double targetPosition, double currentTimestamp) {
+    public double calculate(double currentPosition, double targetPosition, double currentTimestamp) {
         setGoal(new TrapezoidProfile.State(targetPosition, 0));
-        return calculate(measurement, currentTimestamp);
+        return calculate(currentPosition, currentTimestamp);
     }
 
-    public double calculate(double measurement, TrapezoidProfile.Constraints constraints, double currentTimestamp) {
+    public double calculate(double currentPosition, TrapezoidProfile.Constraints constraints, double currentTimestamp) {
         setConstraints(constraints);
-        return calculate(measurement, currentTimestamp);
+        return calculate(currentPosition, currentTimestamp);
     }
 
     public double calculate(
-            double measurement,
+            double currentPosition,
             TrapezoidProfile.State goal,
             TrapezoidProfile.Constraints constraints,
             double currentTimestamp
     ) {
         setConstraints(constraints);
-        return calculate(measurement, goal, currentTimestamp);
+        return calculate(currentPosition, goal, currentTimestamp);
     }
 
-    public void reset(TrapezoidProfile.State measurement, double timestamp) {
+    public void reset(TrapezoidProfile.State currentState, double timestamp) {
         controller.reset();
-        setpoint = measurement;
+        setpoint = currentState;
         lastTimestamp = timestamp;
     }
 
@@ -127,7 +127,7 @@ public class PhoenixProfiledPIDController {
         reset(new TrapezoidProfile.State(currentPosition, currentVelocity), timestamp);
     }
 
-    public void reset(double measuredPosition, double timestamp) {
-        reset(measuredPosition, 0.0, timestamp);
+    public void reset(double currentPosition, double timestamp) {
+        reset(currentPosition, 0.0, timestamp);
     }
 }
