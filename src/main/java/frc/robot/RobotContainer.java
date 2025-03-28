@@ -13,7 +13,6 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.autos.AutoManager;
 import frc.robot.constants.Constants;
 import frc.robot.util.FieldUtil;
@@ -125,7 +124,7 @@ public class RobotContainer {
         driverXbox.a().onTrue(new InstantCommand(robotStates.swerve::toggleAutoHeading)
                         .andThen(
                                 new InstantCommand(() -> driverXbox.setRumble(GenericHID.RumbleType.kBothRumble, 0.5))
-                                        .andThen(new WaitCommand(0.25))
+                                        .andThen(Commands.waitSeconds(0.25))
                                         .andThen(() -> driverXbox.setRumble(GenericHID.RumbleType.kBothRumble, 0))
                                         .onlyIf(robotStates.swerve::isAutoHeading)
                         ));

@@ -148,7 +148,7 @@ public final class AutoManager {
             Pair<FieldUtil.Reef.ScoringLocation, FieldUtil.Reef.Level> nextScoringLocation = currentScoringLocations.get(0);
 
             AtomicBoolean scoringNext = new AtomicBoolean(false);
-            Command routineSegmentCommand = new WaitCommand(0.5)
+            Command routineSegmentCommand = Commands.waitSeconds(0.5)
                     .andThen(getPathFindingCommandToCoralStation(robotStates, currentScoringLocation.getFirst(), nextScoringLocation.getFirst()))
                     .andThen(new WaitUntilCommand(() -> robotStates.stowState.getAsBoolean() || robotStates.intake.coralEntered()))
                     .andThen(() -> scoringNext.set(true))
