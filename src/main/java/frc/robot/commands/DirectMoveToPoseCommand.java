@@ -72,6 +72,14 @@ public class DirectMoveToPoseCommand extends Command {
 
     @Override
     public void initialize() {
+        velocityController.setGoal(new TrapezoidProfile.State(0.0, 0.0));
+        velocityController.reset(
+                swerve.localizer.getStrategyPose().getTranslation().getDistance(targetPose.getTranslation()),
+                Math.hypot(swerve.getState().Speeds.vxMetersPerSecond, swerve.getState().Speeds.vyMetersPerSecond),
+                swerve.getState().Timestamp
+        );
+        velocityController.setTolerance(Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_ACCEPT);
+
         xPosDone = false;
         yPosDone = false;
         yawDone = false;
@@ -84,16 +92,16 @@ public class DirectMoveToPoseCommand extends Command {
         swerve.localizer.setCurrentTemporaryTargetPose(targetPose);
         double safeMaxVelocity = MathUtil.clamp(maxVelocity, 0, Constants.MAX_CONTROLLED_VEL.apply(elevatorHeight.getAsDouble()));
 
-        double velocity = velocityController.calculate(
+        double velocity = Math.abs(velocityController.calculate(
                 currentPose.getTranslation().getDistance(targetPose.getTranslation()),
                 new TrapezoidProfile.Constraints(
                         safeMaxVelocity,
                         Constants.MAX_ACCEL
                 ),
                 swerve.getState().Timestamp
-        );
+        ));
 
-        double velocityHeadingRadians = Math.atan2(targetPose.getY() - currentPose.getY(), targetPose.getX() - currentPose.getX());
+        double velocityHeadingRadians = targetPose.getTranslation().minus(currentPose.getTranslation()).getAngle().getRadians();
 
         swerve.setControl(
                 fieldCentric.withDriveRequestType(SwerveModule.DriveRequestType.Velocity)
@@ -115,10 +123,14 @@ public class DirectMoveToPoseCommand extends Command {
                 < Constants.AutoConstants.DEGREE_TOLERANCE_TO_ACCEPT;
 
         if (xPosDone && yPosDone && yawDone) {
-            swerve.forceStop();
-            swerve.consistentHeading = currentPose.getRotation().getDegrees();
             end = true;
         }
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        swerve.forceStop();
+        swerve.consistentHeading = swerve.localizer.getStrategyPose().getRotation().getDegrees();
     }
 
     @Override

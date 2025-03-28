@@ -98,6 +98,12 @@ public class PathfindToPoseAvoidingReefCommand extends Command {
     @Override
     public void initialize() {
         velocityController.setGoal(new TrapezoidProfile.State(0.0, 0.0));
+        velocityController.reset(
+                swerve.localizer.getStrategyPose().getTranslation().getDistance(targetPose.getTranslation()),
+                Math.hypot(swerve.getState().Speeds.vxMetersPerSecond, swerve.getState().Speeds.vyMetersPerSecond),
+                swerve.getState().Timestamp
+        );
+        velocityController.setTolerance(Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_ACCEPT);
 
         smoothTemporaryTargetPose = null;
         xPosDone = false;
@@ -113,16 +119,16 @@ public class PathfindToPoseAvoidingReefCommand extends Command {
         swerve.localizer.setCurrentTemporaryTargetPose(smoothTemporaryTargetPose);
         double safeMaxVelocity = MathUtil.clamp(maxVelocity, 0, Constants.MAX_CONTROLLED_VEL.apply(elevatorHeight.getAsDouble()));
 
-        double velocity = velocityController.calculate(
-                currentPose.getTranslation().getDistance(smoothTemporaryTargetPose.getTranslation()),
+        double velocity = Math.abs(velocityController.calculate(
+                currentPose.getTranslation().getDistance(targetPose.getTranslation()),
                 new TrapezoidProfile.Constraints(
                         safeMaxVelocity,
                         Constants.MAX_ACCEL
                 ),
                 swerve.getState().Timestamp
-        );
+        ));
 
-        double velocityHeadingRadians = Math.atan2(smoothTemporaryTargetPose.getY() - currentPose.getY(), smoothTemporaryTargetPose.getX() - currentPose.getX());
+        double velocityHeadingRadians = smoothTemporaryTargetPose.getTranslation().minus(currentPose.getTranslation()).getAngle().getRadians();
 
         swerve.setControl(
                 fieldCentric.withDriveRequestType(SwerveModule.DriveRequestType.Velocity)
@@ -144,8 +150,6 @@ public class PathfindToPoseAvoidingReefCommand extends Command {
                 < Constants.AutoConstants.DEGREE_TOLERANCE_TO_ACCEPT;
 
         if (xPosDone && yPosDone && yawDone) {
-            swerve.forceStop();
-            swerve.consistentHeading = currentPose.getRotation().getDegrees();
             end = true;
         }
     }
@@ -176,20 +180,23 @@ public class PathfindToPoseAvoidingReefCommand extends Command {
             return targetPose;
         } else if (currentPose.getTranslation().getDistance(FieldUtil.Reef.getReefCenter()) < FieldUtil.Reef.REEF_APOTHEM + Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 1.3) {
             Translation2d targetTranslation = new Pose2d(FieldUtil.Reef.getReefCenter(), FieldUtil.Reef.getNearestReefTagPose(currentPose).getRotation())
-                    .plus(new Transform2d(3.0, 0, Rotation2d.kZero))
+                    .plus(new Transform2d(2.0, 0, Rotation2d.kZero))
                     .getTranslation();
             return new Pose2d(targetTranslation, currentPose.getRotation());
         } else {
             Rotation2d reefCenterAngleToTargetPose = targetPose.getTranslation().minus(FieldUtil.Reef.getReefCenter()).getAngle();
-            Rotation2d temporaryTargetAngle =
+            Rotation2d temporaryTangentAngle =
                     reefCenterAngleToRobot.rotateBy(Rotation2d.fromDegrees(Math.copySign(
-                            45.0,
+                            90.0,
                             reefCenterAngleToTargetPose.minus(reefCenterAngleToRobot).getDegrees()
                     )));
             return new Pose2d(
-                    new Pose2d(FieldUtil.Reef.getReefCenter(), temporaryTargetAngle)
-                            .plus(new Transform2d(3.0, 0, Rotation2d.kZero))
-                            .getTranslation(),
+                    new Pose2d(
+                            new Pose2d(FieldUtil.Reef.getReefCenter(), reefCenterAngleToRobot)
+                                    .plus(new Transform2d(2.0, 0, Rotation2d.kZero))
+                                    .getTranslation(),
+                            temporaryTangentAngle
+                    ).plus(new Transform2d(1.5, 0, Rotation2d.kZero)).getTranslation(),
                     currentPose.getRotation().interpolate(targetPose.getRotation(), 0.25)
             );
         }
@@ -259,6 +266,12 @@ public class PathfindToPoseAvoidingReefCommand extends Command {
             }
         }
         return new Pair<>(min, max);
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        swerve.forceStop();
+        swerve.consistentHeading = swerve.localizer.getStrategyPose().getRotation().getDegrees();
     }
 
     @Override
