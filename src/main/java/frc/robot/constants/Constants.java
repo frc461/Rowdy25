@@ -107,6 +107,14 @@ public final class Constants {
         }
 
         public static final class PhotonConstants {
+            public static String COLOR_NAME;
+            public static double COLOR_FORWARD;
+            public static double COLOR_LEFT;
+            public static double COLOR_UP;
+            public static double COLOR_ROLL;
+            public static double COLOR_PITCH;
+            public static double COLOR_YAW;
+
             public static String BW_TOP_RIGHT_NAME;
             public static double BW_TOP_RIGHT_FORWARD;
             public static double BW_TOP_RIGHT_LEFT;

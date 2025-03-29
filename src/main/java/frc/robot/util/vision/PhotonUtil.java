@@ -43,7 +43,19 @@ public final class PhotonUtil {
             }
         }
 
-        private static final PhotonCamera COLOR = new PhotonCamera(Constants.NT_INSTANCE, "ArducamColor");
+        private static final PhotonCamera COLOR = new PhotonCamera(Constants.NT_INSTANCE, Constants.VisionConstants.PhotonConstants.COLOR_NAME);
+
+        private static final Transform3d robotToCameraOffset = new Transform3d(
+                Constants.VisionConstants.PhotonConstants.COLOR_FORWARD,
+                Constants.VisionConstants.PhotonConstants.COLOR_LEFT,
+                Constants.VisionConstants.PhotonConstants.COLOR_UP,
+                new Rotation3d(
+                        Units.degreesToRadians(Constants.VisionConstants.PhotonConstants.COLOR_ROLL),
+                        Units.degreesToRadians(Constants.VisionConstants.PhotonConstants.COLOR_PITCH),
+                        Units.degreesToRadians(Constants.VisionConstants.PhotonConstants.COLOR_YAW)
+                )
+        );
+
         private static PhotonPipelineResult latestResult = new PhotonPipelineResult();
 
         public static boolean hasTargets() {
@@ -61,7 +73,7 @@ public final class PhotonUtil {
             return false;
         }
 
-        // TODO WAIT (COLOR CAMERA): TEST ALGAE AND CORAL SPECIFIC TARGETING
+        // TODO SHOP: TEST ALGAE AND CORAL SPECIFIC TARGETING
         public static boolean hasAlgaeTargets() {
             return hasTargets(Color.TargetClass.ALGAE);
         }
@@ -70,38 +82,70 @@ public final class PhotonUtil {
             return hasTargets(Color.TargetClass.CORAL);
         }
 
+        public static Optional<PhotonTrackedTarget> getBestObject() {
+            return hasTargets() ? Optional.of(latestResult.getBestTarget()) : Optional.empty();
+        }
+
+        public static Optional<PhotonTrackedTarget> getBestObject(Color.TargetClass targetClass) {
+            if (hasTargets(targetClass)) {
+                for (PhotonTrackedTarget target : latestResult.getTargets()) {
+                    if (target.getDetectedObjectClassID() == targetClass.id) {
+                        return Optional.of(target);
+                    }
+                }
+            }
+            return Optional.empty();
+        }
+
         public static Color.TargetClass getBestObjectClass() {
-            return hasTargets() ? Color.TargetClass.fromID(latestResult.getBestTarget().getDetectedObjectClassID()) : Color.TargetClass.NONE;
+            return getBestObject().map(bestObject -> TargetClass.fromID(bestObject.getDetectedObjectClassID()))
+                    .orElse(Color.TargetClass.NONE);
         }
 
         public static double getBestObjectYaw() {
-            return hasTargets() ? latestResult.getBestTarget().getYaw() : 0.0;
+            return getBestObject().map(PhotonTrackedTarget::getYaw).orElse(0.0);
         }
 
         public static double getBestObjectPitch() {
-            return hasTargets() ? latestResult.getBestTarget().getPitch() : 0.0;
+            return getBestObject().map(PhotonTrackedTarget::getPitch).orElse(0.0);
         }
 
         public static double getBestObjectYaw(Color.TargetClass targetClass) {
-            if (hasTargets(targetClass)) {
-                for (PhotonTrackedTarget target : latestResult.getTargets()) {
-                    if (target.getDetectedObjectClassID() == targetClass.id) {
-                        return target.getYaw();
-                    }
-                }
-            }
-            return 0.0;
+            return getBestObject(targetClass).map(PhotonTrackedTarget::getYaw).orElse(0.0);
         }
 
         public static double getBestObjectPitch(Color.TargetClass targetClass) {
-            if (hasTargets(targetClass)) {
-                for (PhotonTrackedTarget target : latestResult.getTargets()) {
-                    if (target.getDetectedObjectClassID() == targetClass.id) {
-                        return target.getPitch();
-                    }
-                }
+            return getBestObject(targetClass).map(PhotonTrackedTarget::getPitch).orElse(0.0);
+        }
+
+        public static Optional<Transform2d> getRobotToBestObject(TargetClass targetClass) {
+            if (!hasTargets(targetClass) || getBestObject(targetClass).isEmpty()) {
+                return Optional.empty();
             }
-            return 0.0;
+
+            PhotonTrackedTarget bestTarget = getBestObject(targetClass).get();
+
+            Translation2d camToTagTranslation = new Pose3d(
+                    Translation3d.kZero,
+                    new Rotation3d(
+                            0,
+                            -Math.toRadians(bestTarget.getPitch()),
+                            -Math.toRadians(bestTarget.getYaw())
+                    )
+            ).transformBy(
+                    new Transform3d(
+                            new Translation3d(bestTarget.getBestCameraToTarget().getTranslation().getNorm(), 0, 0),
+                            Rotation3d.kZero
+                    )
+            ).getTranslation().rotateBy(
+                    new Rotation3d(
+                            robotToCameraOffset.getRotation().getX(),
+                            robotToCameraOffset.getRotation().getY(),
+                            0
+                    )
+            ).toTranslation2d();
+
+            return Optional.of(new Transform2d(camToTagTranslation.getX(), camToTagTranslation.getY(), Rotation2d.kZero));
         }
 
         public static void updateResults() {
@@ -347,7 +391,7 @@ public final class PhotonUtil {
                             .transformBy(new Transform2d(camToTagTranslation.getNorm(), 0, Rotation2d.kZero))
                             .getTranslation();
 
-            Pose2d robotPose =
+            Pose2d robotPose = new Pose2d(
                     new Pose2d(
                             fieldToCameraTranslation,
                             headingSample.plus(camera.robotToCameraOffset.getRotation().toRotation2d())
@@ -359,9 +403,9 @@ public final class PhotonUtil {
                                     ).toPose2d(),
                                     Pose2d.kZero
                             )
-                    );
-
-            robotPose = new Pose2d(robotPose.getTranslation(), headingSample);
+                    ).getTranslation(),
+                    headingSample
+            );
 
             return Optional.of(
                     new EstimatedRobotPose(

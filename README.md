@@ -111,6 +111,7 @@ comp bot:
 - [ ] test/configure distance sensor
 
 ground intake:
+- [ ] (dev bot) test object detection
 - [ ] (once assembled) ground intake motor setup + logic revamp
 - [ ] test pathfinding locations and auto scoring
 - [ ] test auto (with dynamic if possible)

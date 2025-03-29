@@ -155,6 +155,14 @@ public final class DefaultConstants {
         }
 
         public static final class PhotonConstants {
+            public static final String COLOR_NAME = "ArducamColor";
+            public static final double COLOR_FORWARD = -0.314091;
+            public static final double COLOR_LEFT = -0.259556;
+            public static final double COLOR_UP = 0.184150;
+            public static final double COLOR_ROLL = 0.0;
+            public static final double COLOR_PITCH = 0.0;
+            public static final double COLOR_YAW = 150.0;
+
             public static final String BW_TOP_RIGHT_NAME = "ArducamBW2";
             public static final double BW_TOP_RIGHT_FORWARD = 0.404;
             public static final double BW_TOP_RIGHT_LEFT = -0.291321;
