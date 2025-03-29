@@ -175,7 +175,7 @@ public class PathfindToPoseAvoidingReefCommand extends Command {
     private Pose2d getTemporaryTargetPose(Pose2d currentPose) {
         Rotation2d reefCenterAngleToRobot = FieldUtil.Reef.getAngleFromReefCenter(currentPose);
 
-        // TODO: REVAMP THIS HOT BUNDLE OF GARBAGE (AND MOVE SAME SIDE... TO OTHER CLASS TO BE ACCESSIBLE WHEN CHECKING WHETHER PATHFINDING IS NEEDED)
+        // TODO SHOP: TEST THIS
         if (sameSideAsTargetPose(currentPose)) {
             return targetPose;
         } else if (currentPose.getTranslation().getDistance(FieldUtil.Reef.getReefCenter()) < FieldUtil.Reef.REEF_APOTHEM + Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 1.3) {
@@ -196,7 +196,11 @@ public class PathfindToPoseAvoidingReefCommand extends Command {
                                     .plus(new Transform2d(2.0, 0, Rotation2d.kZero))
                                     .getTranslation(),
                             temporaryTangentAngle
-                    ).plus(new Transform2d(1.5, 0, Rotation2d.kZero)).getTranslation(),
+                    ).plus(new Transform2d(
+                            Math.min(1.5, Math.abs(reefCenterAngleToTargetPose.minus(reefCenterAngleToRobot).getRadians())),
+                            0,
+                            Rotation2d.kZero
+                    )).getTranslation(),
                     currentPose.getRotation().interpolate(targetPose.getRotation(), 0.25)
             );
         }
