@@ -195,7 +195,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
     }
 
     public Command directMoveToObject(BooleanSupplier objectObtained, PhotonUtil.Color.TargetClass objectLabelClass) {
-        return new DirectMoveToObjectCommand(this, robotCentric, objectObtained, objectLabelClass);
+        return new DirectMoveToObjectCommand(this, fieldCentric, objectObtained, objectLabelClass, 2.5);
     }
 
     public Command pushAlliancePartnerOut() {
