@@ -97,9 +97,12 @@ public class PathfindToPoseAvoidingReefCommand extends Command { // TODO: ORGANI
 
     @Override
     public void initialize() {
+        Pose2d currentPose = swerve.localizer.getStrategyPose();
+
+        updateSmoothTargetPose(getTemporaryTargetPose(currentPose));
         velocityController.setGoal(new TrapezoidProfile.State(0.0, 0.0));
         velocityController.reset(
-                swerve.localizer.getStrategyPose().getTranslation().getDistance(targetPose.getTranslation()),
+                currentPose.getTranslation().getDistance(smoothTemporaryTargetPose.getTranslation()),
                 Math.hypot(swerve.getState().Speeds.vxMetersPerSecond, swerve.getState().Speeds.vyMetersPerSecond),
                 swerve.getState().Timestamp
         );
@@ -120,7 +123,7 @@ public class PathfindToPoseAvoidingReefCommand extends Command { // TODO: ORGANI
         double safeMaxVelocity = MathUtil.clamp(maxVelocity, 0, Constants.MAX_CONTROLLED_VEL.apply(elevatorHeight.getAsDouble()));
 
         double velocity = Math.abs(velocityController.calculate(
-                currentPose.getTranslation().getDistance(targetPose.getTranslation()),
+                currentPose.getTranslation().getDistance(smoothTemporaryTargetPose.getTranslation()),
                 new TrapezoidProfile.Constraints(
                         safeMaxVelocity,
                         Constants.MAX_ACCEL

@@ -117,8 +117,7 @@ public class DirectMoveToObjectCommand extends Command {
         Pose2d currentPose = swerve.localizer.getStrategyPose();
 
         switch (currentStage) {
-            case TO_OBJECT, WAIT:
-                currentStage = CommandStage.TO_OBJECT;
+            case TO_OBJECT:
                 if (PhotonUtil.Color.getRobotToBestObject(objectClass).isPresent()) {
                     Transform2d robotToObject = PhotonUtil.Color.getRobotToBestObject(objectClass).get();
                     targetPose = new Pose2d(
@@ -129,13 +128,28 @@ public class DirectMoveToObjectCommand extends Command {
                             ).inverse()).getTranslation(),
                             robotToObject.getTranslation().getAngle()
                     );
-
-                    velocityController.reset(
-                            currentPose.getTranslation().getDistance(targetPose.getTranslation()),
-                            Math.hypot(swerve.getState().Speeds.vxMetersPerSecond, swerve.getState().Speeds.vyMetersPerSecond),
-                            swerve.getState().Timestamp
+                }
+                break;
+            case WAIT:
+                if (PhotonUtil.Color.getRobotToBestObject(objectClass).isPresent()) {
+                    currentStage = CommandStage.TO_OBJECT;
+                    Transform2d robotToObject = PhotonUtil.Color.getRobotToBestObject(objectClass).get();
+                    targetPose = new Pose2d(
+                            currentPose.plus(robotToObject).plus(new Transform2d(
+                                    Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2 + Units.inchesToMeters(12.0),
+                                    0,
+                                    Rotation2d.kZero
+                            ).inverse()).getTranslation(),
+                            robotToObject.getTranslation().getAngle()
                     );
                 }
+
+                velocityController.reset(
+                        currentPose.getTranslation().getDistance(targetPose.getTranslation()),
+                        Math.hypot(swerve.getState().Speeds.vxMetersPerSecond, swerve.getState().Speeds.vyMetersPerSecond),
+                        swerve.getState().Timestamp
+                );
+                break;
         }
 
         swerve.localizer.setCurrentTemporaryTargetPose(targetPose);
