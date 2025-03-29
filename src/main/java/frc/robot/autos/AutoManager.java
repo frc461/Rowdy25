@@ -148,21 +148,16 @@ public final class AutoManager {
             Pair<FieldUtil.Reef.ScoringLocation, FieldUtil.Reef.Level> nextScoringLocation = currentScoringLocations.get(0);
 
             AtomicBoolean scoringNext = new AtomicBoolean(false);
-            Command routineSegmentCommand = Commands.waitSeconds(0.5)
-                    .andThen(getPathFindingCommandToCoralStation(robotStates, currentScoringLocation.getFirst(), nextScoringLocation.getFirst()))
-                    .andThen(new WaitUntilCommand(() -> robotStates.stowState.getAsBoolean() || robotStates.intake.coralEntered()))
-                    .andThen(() -> scoringNext.set(true))
-                    .andThen(robotStates.swerve.pathFindToScoringLocation(robotStates, nextScoringLocation.getFirst(), nextScoringLocation.getSecond()))
-                    .andThen(() -> scoringNext.set(false));
-
-            Trigger incorrectCoralTrigger = new Trigger(() -> scoringNext.get() && !robotStates.intake.barelyHasCoral() && !robotStates.atScoringLocation())
-                    .or(robotStates.intake.coralStuck);
-            incorrectCoralTrigger.onTrue(new InstantCommand(routineSegmentCommand::cancel));
-            autoEventLooper.observe(incorrectCoralTrigger);
 
             triggersToBind.add(autoEventLooper.addTrigger(
                     currentScoringLocation.getFirst().name() + "," + nextScoringLocation.getFirst().name(),
-                    () -> routineSegmentCommand
+                    () -> Commands.waitSeconds(0.5)
+                            .andThen(getPathFindingCommandToCoralStation(robotStates, currentScoringLocation.getFirst(), nextScoringLocation.getFirst()))
+                            .andThen(new WaitUntilCommand(() -> robotStates.stowState.getAsBoolean() || robotStates.intake.coralEntered()))
+                            .andThen(() -> scoringNext.set(true))
+                            .andThen(robotStates.swerve.pathFindToScoringLocation(robotStates, nextScoringLocation.getFirst(), nextScoringLocation.getSecond()))
+                            .andThen(() -> scoringNext.set(false))
+                            .until(() -> scoringNext.get() && !robotStates.intake.barelyHasCoral() && !robotStates.atScoringLocation() || robotStates.intake.coralStuck.getAsBoolean())
             ));
         }
 
@@ -173,7 +168,7 @@ public final class AutoManager {
             currentTrigger.interrupt().onTrue(
                     new InstantCommand(robotStates.intake::setOuttakeL1State)
                             .andThen(Commands.waitSeconds(0.25))
-                            .andThen(currentTrigger.cmd())
+                            .andThen(currentTrigger.duplicate().cmd())
             );
             currentTrigger.done().onTrue(triggersToBind.isEmpty() ? Commands.none() : triggersToBind.get(0).cmd());
         }
