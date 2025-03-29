@@ -25,6 +25,7 @@ public final class AutoManager {
     private Command currentCommand;
 
     public enum StartPosition {
+        CUSTOM(0),
         DRIVER_FAR_RIGHT(1),
         DRIVER_CENTER_RIGHT(2),
         DRIVER_CENTER(3),
@@ -38,6 +39,7 @@ public final class AutoManager {
 
         private static Pose2d getStartingPosition(StartPosition startPosition) {
             return switch (startPosition) {
+                case CUSTOM -> new Pose2d();
                 case DRIVER_FAR_RIGHT -> new Pose2d(7.152226027397259, 0.8170162671232879, Rotation2d.kPi);
                 case DRIVER_CENTER_RIGHT -> new Pose2d(7.152226027397259, 2.439790239726027, Rotation2d.kPi);
                 case DRIVER_CENTER -> new Pose2d(7.152226027397259, 4.04753852739726, Rotation2d.kPi);
@@ -120,7 +122,11 @@ public final class AutoManager {
 
         triggersToBind.add(autoEventLooper.addTrigger(
                 "start",
-                () -> new InstantCommand(() -> robotStates.swerve.localizer.setPoses(getStartingPose(startPosition)))
+                () -> new InstantCommand(() -> {
+                    if (startPosition.index != 0) {
+                        robotStates.swerve.localizer.setPoses(getStartingPose(startPosition));
+                    }
+                })
                         .andThen(robotStates::setStowState)
         ));
 

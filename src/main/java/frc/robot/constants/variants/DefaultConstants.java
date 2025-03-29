@@ -134,7 +134,7 @@ public final class DefaultConstants {
         public static final Matrix<N3, N1> ODOM_STD_DEV = VecBuilder.fill(0.03, 0.03, Units.degreesToRadians(0.01));
         public static final Function<Double, Matrix<N3, N1>> VISION_STD_DEV_MULTITAG_FUNCTION =
                 dist -> dist < 3.0
-                        ? VecBuilder.fill(Math.min(0.03, 0.03 * dist), Math.min(0.03, 0.03 * dist), Units.degreesToRadians(5.0))
+                        ? VecBuilder.fill(Math.min(0.03, 0.03 * dist), Math.min(0.03, 0.03 * dist), DriverStation.isEnabled() ? Units.degreesToRadians(5.0) : Units.degreesToRadians(0.05))
                         : VecBuilder.fill(0.05 * dist, 0.05 * dist, Units.degreesToRadians(180.0) * dist);
         public static final Function<Double, Matrix<N3, N1>> VISION_STD_DEV_FUNCTION =
                 dist -> dist < 3.0
@@ -396,7 +396,7 @@ public final class DefaultConstants {
 
     public static final class SwerveConstants {
         public static final double PATH_TRANSLATION_CONTROLLER_P = 10.0;
-        public static final double PATH_TRANSLATION_CONTROLLER_D = 0.3;
+        public static final double PATH_TRANSLATION_CONTROLLER_D = 0.01;
         public static final double PATH_ROTATION_CONTROLLER_P = 7.5;
 
         public static final double ANGULAR_POSITION_P = 0.035;
