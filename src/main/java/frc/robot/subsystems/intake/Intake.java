@@ -110,7 +110,7 @@ public class Intake extends SubsystemBase {
     }
 
     public boolean hasAlgae() {
-        return canandcolor.getColor().toWpilibColor().equals(Color.kAqua); // TODO SHOP: TUNE THIS
+        return canandcolor.getColor().toWpilibColor().equals(Color.kAqua);
     }
 
     public boolean atIdleState() {

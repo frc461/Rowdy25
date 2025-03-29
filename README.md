@@ -103,11 +103,12 @@ ground intake:
 - [ ] (if possible) algae intake
 
 Saturday, 3/29/2025 to test:
-
 comp bot:
-- [ ] scoring
-- [ ] dynamic autos
-- [ ] distance sensor
+- [ ] test proximity threshold network table entry, intake stuck
+- [ ] test scoring
+- [ ] test dynamic autos
+- [ ] test bugfix for mid-stow bug going into teleop
+- [ ] test/configure distance sensor
 
 ground intake:
 - [ ] (once assembled) ground intake motor setup + logic revamp

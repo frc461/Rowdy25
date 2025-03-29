@@ -340,7 +340,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
         );
     }
 
-    public Command pathFindToNet(RobotStates robotStates) { // TODO SHOP: TEST NET PATHFINDING
+    public Command pathFindToNet(RobotStates robotStates) { // TODO SHOP: TEST RANDOMIZED NET PATHFINDING
         return Commands.defer(
                 () -> new PathfindToPoseAvoidingReefCommand(
                         this,
