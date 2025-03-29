@@ -4,6 +4,7 @@ import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -25,12 +26,13 @@ public class Localizer {
 
     // localizer is a dependent of swerve
     private final Swerve swerve;
+    private final DigitalInput proximitySensor = new DigitalInput(Constants.VisionConstants.PROXIMITY_SENSOR_DIO_PORT);
     private final LocalizationTelemetry localizationTelemetry = new LocalizationTelemetry(this);
     private final SendableChooser<LocalizationStrategy> localizationChooser = new SendableChooser<>();
 
     private final SwerveDrivePoseEstimator poseEstimator;
 
-    // The pose extrapolation method that the robot will use. It will be set to QuestNav by default.
+    // The pose extrapolation method that the robot will use. It will be set to the pose estimator by default.
     private LocalizationStrategy strategy = LocalizationStrategy.POSE_ESTIMATOR;
 
     private Pose2d currentTemporaryTargetPose = new Pose2d();
@@ -68,6 +70,10 @@ public class Localizer {
 
         robotPoseAtProcessor = FieldUtil.AlgaeScoring.getRobotPoseAtProcessor();
         robotPoseAtNet = FieldUtil.AlgaeScoring.getRobotPoseAtNet();
+    }
+
+    public boolean isNearWall() {
+        return proximitySensor.get();
     }
 
     public Pose2d getStrategyPose() {

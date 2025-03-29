@@ -74,7 +74,7 @@ public class Elevator extends SubsystemBase {
             elevator2.setControl(new Follower(Constants.ElevatorConstants.LEAD_ID, true));
         }
 
-        lowerSwitch = new DigitalInput(Constants.ElevatorConstants.LOWER_LIMIT_SWITCH_ID);
+        lowerSwitch = new DigitalInput(Constants.ElevatorConstants.LOWER_LIMIT_SWITCH_DIO_PORT);
 
         request = new MotionMagicExpoVoltage(0);
 

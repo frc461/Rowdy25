@@ -69,7 +69,7 @@ public class Intake extends SubsystemBase {
                         .setDigoutFramePeriod(0.02)
         );
         canandcolor.setLampLEDBrightness(0.0);
-        beamBreak = new DigitalInput(Constants.IntakeConstants.BEAMBREAK_ID);
+        beamBreak = new DigitalInput(Constants.IntakeConstants.BEAMBREAK_DIO_PORT);
         currentState = State.IDLE;
         pulseTimer.start();
 

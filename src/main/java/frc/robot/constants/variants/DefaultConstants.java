@@ -141,6 +141,8 @@ public final class DefaultConstants {
                         ? VecBuilder.fill(0.075 * dist, 0.075 * dist, Units.degreesToRadians(180.0) * dist)
                         : VecBuilder.fill(0.1 * dist, 0.1 * dist, Units.degreesToRadians(180.0) * dist);
 
+        public static final int PROXIMITY_SENSOR_DIO_PORT = 1;
+
         public static final class LimelightConstants {
             public static final String LIMELIGHT_NT_NAME = "limelight";
 
@@ -232,7 +234,7 @@ public final class DefaultConstants {
         // motor config
         public static final int LEAD_ID = 31;
         public static final int FOLLOWER_ID = 32;
-        public static final int LOWER_LIMIT_SWITCH_ID = 0;
+        public static final int LOWER_LIMIT_SWITCH_DIO_PORT = 0;
         public static final double CURRENT_LIMIT = 40;
         public static final InvertedValue MOTOR_INVERT = InvertedValue.Clockwise_Positive;
         public static final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Coast;
@@ -281,7 +283,7 @@ public final class DefaultConstants {
     public final static class IntakeConstants {
         public static final int MOTOR_ID = 41;
         public static final int SENSOR_ID = 42;
-        public static final int BEAMBREAK_ID = 4;
+        public static final int BEAMBREAK_DIO_PORT = 4;
         public static final double CURRENT_LIMIT = 40;
         public static final InvertedValue MOTOR_INVERT = InvertedValue.Clockwise_Positive;
         public static final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Coast;
