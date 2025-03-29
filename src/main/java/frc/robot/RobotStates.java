@@ -275,8 +275,8 @@ public class RobotStates {
 
     private Command orderedTransition(Runnable setPivotState, Runnable setElevatorState, Elevator.State elevatorState, Runnable setWristState) {
         if (elevator.goingDown(elevatorState)) {
-            return new InstantCommand(wrist::setStowState) // TODO SHOP: TEST THIS
-                    .andThen(movePivotToPerpendicular())
+            return new InstantCommand(wrist::setStowState) // TODO: CHECK IF MOVE THROUGH STOW E.G., L4 TO GROUND
+                    .andThen(movePivotToPerpendicular()) // TODO: DOUBLE-SIDED REEF SCORING
                     .andThen(setPivotState)
                     .andThen(setElevatorState)
                     .andThen(new WaitUntilCommand(elevator::nearTarget))
