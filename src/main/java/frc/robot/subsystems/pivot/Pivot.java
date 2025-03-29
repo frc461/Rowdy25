@@ -168,6 +168,10 @@ public class Pivot extends SubsystemBase {
         return error < Constants.PivotConstants.AT_TARGET_TOLERANCE;
     }
 
+    public boolean goingThroughStow(State state) {
+        return (state.position - State.STOW.position) * (getPosition() - State.STOW.position) < 0;
+    }
+
     private void setState(State newState) {
         currentState = newState;
     }
