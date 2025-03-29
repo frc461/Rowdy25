@@ -125,6 +125,10 @@ public class RobotStates {
         return swerve.localizer.atScoringLocation(currentState);
     }
 
+    public boolean atTransitionStateLocation(RobotStates.State robotState) {
+        return swerve.localizer.atTransitionStateLocation(robotState);
+    }
+
     public boolean nearStateLocation(RobotStates.State robotState) {
         return swerve.localizer.nearStateLocation(robotState);
     }

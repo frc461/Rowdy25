@@ -214,7 +214,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                 ).until(() -> isStuck()
                                 && localizer.getStrategyPose().getTranslation().getDistance(localizer.nearestRobotPoseAtCoralStation.getTranslation()) < Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_ACCEPT * 5
                                 || robotStates.intake.coralEntered())
-                        .alongWith(new WaitUntilCommand(() -> robotStates.nearStateLocation(RobotStates.State.CORAL_STATION)).andThen(() -> robotStates.toggleCoralStationState(true))),
+                        .alongWith(new WaitUntilCommand(() -> robotStates.atTransitionStateLocation(RobotStates.State.CORAL_STATION)).andThen(() -> robotStates.toggleCoralStationState(true))),
                 Set.of(this)
         );
     }
@@ -229,7 +229,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                 ).until(() -> isStuck()
                                 && localizer.getStrategyPose().getTranslation().getDistance(localizer.nearestRobotPoseAtCoralStation.getTranslation()) < Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_ACCEPT * 5
                                 || robotStates.intake.coralEntered())
-                        .alongWith(new WaitUntilCommand(() -> robotStates.nearStateLocation(RobotStates.State.CORAL_STATION)).andThen(() -> robotStates.toggleCoralStationState(true))),
+                        .alongWith(new WaitUntilCommand(() -> robotStates.atTransitionStateLocation(RobotStates.State.CORAL_STATION)).andThen(() -> robotStates.toggleCoralStationState(true))),
                 Set.of(this)
         );
     }
@@ -244,7 +244,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                                 localizer.nearestRobotPosesAtBranchPair.getFirst(),
                                 Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_DIRECT_DRIVE
                         )
-                ).onlyIf(() -> !robotStates.nearStateLocation(RobotStates.State.L4_CORAL)).andThen(new DirectMoveToPoseCommand(
+                ).onlyIf(() -> !robotStates.atTransitionStateLocation(RobotStates.State.L4_CORAL)).andThen(new DirectMoveToPoseCommand(
                         this,
                         fieldCentric,
                         robotStates.elevator::getPosition,
@@ -255,7 +255,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                                 .andThen(robotStates::toggleAutoLevelCoralState)
                                 .onlyIf(() -> autoHeading)
                 ).alongWith(
-                        new WaitUntilCommand(() -> robotStates.nearStateLocation(RobotStates.State.L4_CORAL))
+                        new WaitUntilCommand(() -> robotStates.atTransitionStateLocation(RobotStates.State.L4_CORAL))
                                 .andThen(() -> robotStates.toggleAutoLevelCoralState(true))
                 ),
                 Set.of(this)
@@ -272,7 +272,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                                 localizer.nearestRobotPosesAtBranchPair.getSecond(),
                                 Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_DIRECT_DRIVE
                         )
-                ).onlyIf(() -> !robotStates.nearStateLocation(RobotStates.State.L4_CORAL)).andThen(new DirectMoveToPoseCommand(
+                ).onlyIf(() -> !robotStates.atTransitionStateLocation(RobotStates.State.L4_CORAL)).andThen(new DirectMoveToPoseCommand(
                         this,
                         fieldCentric,
                         robotStates.elevator::getPosition,
@@ -283,7 +283,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                                 .andThen(robotStates::toggleAutoLevelCoralState)
                                 .onlyIf(() -> autoHeading)
                 ).alongWith(
-                        new WaitUntilCommand(() -> robotStates.nearStateLocation(RobotStates.State.L4_CORAL))
+                        new WaitUntilCommand(() -> robotStates.atTransitionStateLocation(RobotStates.State.L4_CORAL))
                                 .andThen(() -> robotStates.toggleAutoLevelCoralState(true))
                 ),
                 Set.of(this)
@@ -307,11 +307,11 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                                 robotStates.elevator::getPosition,
                                 FieldUtil.Reef.ScoringLocation.getPose(location),
                                 robotStates.getCurrentAutoLevel() == FieldUtil.Reef.Level.L4 ? 2.5 : Constants.MAX_VEL
-                        )).andThen( // TODO SHOP: TEST WITHOUT RACING
-                                new WaitUntilCommand(robotStates.atAutoScoreState.and(robotStates::atScoringLocation))
+                        )).raceWith(new WaitUntilCommand(new Trigger(() -> robotStates.nearStateLocation(RobotStates.State.L4_CORAL)).debounce(1))).andThen(
+                                new WaitUntilCommand(robotStates.atAutoScoreState)
                                         .andThen(robotStates::toggleAutoLevelCoralState)
                         ).alongWith(
-                                new WaitUntilCommand(() -> robotStates.nearStateLocation(RobotStates.State.L4_CORAL))
+                                new WaitUntilCommand(() -> robotStates.atTransitionStateLocation(RobotStates.State.L4_CORAL))
                                         .andThen(() -> robotStates.toggleAutoLevelCoralState(true))
                         ),
                 Set.of(this)

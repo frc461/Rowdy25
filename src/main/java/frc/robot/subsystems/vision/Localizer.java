@@ -4,7 +4,6 @@ import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.PWM;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -120,12 +119,16 @@ public class Localizer {
         };
     }
 
-    public boolean atScoringLocation(RobotStates.State robotState) {
-        return getDistanceToScoringLocation(robotState) < Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_ACCEPT;
+    public boolean atTransitionStateLocation(RobotStates.State robotState) {
+        return getDistanceToScoringLocation(robotState) < Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_TRANSITION;
     }
 
     public boolean nearStateLocation(RobotStates.State robotState) {
-        return getDistanceToScoringLocation(robotState) < Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_TRANSITION;
+        return getDistanceToScoringLocation(robotState) < Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_DIRECT_DRIVE;
+    }
+
+    public boolean atScoringLocation(RobotStates.State robotState) {
+        return getDistanceToScoringLocation(robotState) < Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_ACCEPT;
     }
 
     public double getProcessorScoringHeading() {
