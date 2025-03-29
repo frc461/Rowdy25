@@ -225,19 +225,21 @@ public final class PhotonUtil {
 
         public static Optional<EstimatedRobotPose> getMultiTagPose(BWCamera camera) {
             Optional<MultiTargetPNPResult> multiTagResult = getLatestResult(camera).getMultiTagResult();
-            AtomicReference<Optional<EstimatedRobotPose>> optionalPoseToReturn = new AtomicReference<>(Optional.empty());
-            multiTagResult.ifPresent(
+            return multiTagResult.map(
                     multiTargetPNPResult -> {
                         Pose3d bestPose = new Pose3d().plus(multiTargetPNPResult.estimatedPose.best).relativeTo(FieldUtil.ORIGIN).plus(camera.robotToCameraOffset.inverse());
-                        optionalPoseToReturn.set(Optional.of(new EstimatedRobotPose(
-                                bestPose,
-                                getLatestResultTimestamp(camera),
-                                getLatestResult(camera).getTargets(),
-                                Constants.VisionConstants.VISION_STD_DEV_MULTITAG_FUNCTION.apply(getBestTagDist(camera))
-                        )));
+                        if (getLatestResult(camera).getTargets().stream().map(target -> FieldUtil.AprilTag.getTag(target.getFiducialId()))
+                                .filter(tag -> !FieldUtil.AprilTag.FILTER.contains(tag)).toList().isEmpty()) { // Ensure that none of the tags are not in the filtered list
+                            return new EstimatedRobotPose(
+                                    bestPose,
+                                    getLatestResultTimestamp(camera),
+                                    getLatestResult(camera).getTargets(),
+                                    Constants.VisionConstants.VISION_STD_DEV_MULTITAG_FUNCTION.apply(getBestTagDist(camera))
+                            );
+                        }
+                        return null;
                     }
             );
-            return optionalPoseToReturn.get();
         }
 
         public static Optional<EstimatedRobotPose> getSingleTagPose(BWCamera camera, Pose2d currentPose) {
@@ -332,7 +334,13 @@ public final class PhotonUtil {
                 return Optional.empty();
             }
 
-            Pose2d tagPose2d = FieldUtil.AprilTag.getTag(bestTarget.getFiducialId()).pose2d;
+            FieldUtil.AprilTag tag = FieldUtil.AprilTag.getTag(bestTarget.getFiducialId());
+
+            if (!FieldUtil.AprilTag.FILTER.contains(tag)) {
+                return Optional.empty();
+            }
+
+            Pose2d tagPose2d = tag.pose2d;
 
             Translation2d fieldToCameraTranslation =
                     new Pose2d(tagPose2d.getTranslation(), camToTagRotation.plus(Rotation2d.kPi))

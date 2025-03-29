@@ -1,10 +1,9 @@
 package frc.robot.autos;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
-import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.FlippingUtil;
 import edu.wpi.first.math.Pair;
@@ -14,13 +13,13 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.RobotStates;
 import frc.robot.autos.routines.AutoEventLooper;
 import frc.robot.autos.routines.AutoTrigger;
 import frc.robot.constants.Constants;
 import frc.robot.util.FieldUtil;
 import frc.robot.util.MultipleChooser;
-import org.json.simple.parser.ParseException;
 
 public final class AutoManager {
     private Command currentCommand;
@@ -51,6 +50,7 @@ public final class AutoManager {
     private StartPosition startPosition = null;
     private List<Pair<FieldUtil.Reef.ScoringLocation, FieldUtil.Reef.Level>> scoringLocations = null;
     private String coralStationOverride = null;
+    private boolean push = false; // Whether to push alliance partner off first
 
     public AutoManager(RobotStates robotStates) {
 
@@ -91,6 +91,17 @@ public final class AutoManager {
             }
         });
 
+        SendableChooser<Boolean> pushChooser = new SendableChooser<>();
+        pushChooser.addOption("Push", true);
+        pushChooser.addOption("Don't Push", false);
+        SmartDashboard.putData("Push Alliance Partner First", pushChooser);
+        pushChooser.onChange(push -> {
+            this.push = push;
+            if (startPosition != null && this.scoringLocations != null && !this.scoringLocations.isEmpty()) {
+                currentCommand = generateAutoEventLooper(robotStates).cmd();
+            }
+        });
+
         currentCommand = Commands.none();
     }
 
@@ -103,17 +114,28 @@ public final class AutoManager {
             RobotStates robotStates
     ) {
         List<Pair<FieldUtil.Reef.ScoringLocation, FieldUtil.Reef.Level>> currentScoringLocations = new ArrayList<>(this.scoringLocations);
-        AutoEventLooper autoEventLooper = new AutoEventLooper("AutoEventLooper");
 
+        AutoEventLooper autoEventLooper = new AutoEventLooper("AutoEventLooper");
         List<AutoTrigger> triggersToBind = new ArrayList<>();
+
+        triggersToBind.add(autoEventLooper.addTrigger(
+                "start",
+                () -> new InstantCommand(() -> robotStates.swerve.localizer.setPoses(getStartingPose(startPosition)))
+                        .andThen(robotStates::setStowState)
+        ));
+
+        if (push) {
+            triggersToBind.add(autoEventLooper.addTrigger(
+                    "push",
+                    robotStates.swerve::pushAlliancePartnerOut
+            ));
+        }
+
         Pair<FieldUtil.Reef.ScoringLocation, FieldUtil.Reef.Level> firstScoringLocation = currentScoringLocations.get(0);
 
         triggersToBind.add(autoEventLooper.addTrigger(
                 this.startPosition.index + "," + firstScoringLocation.getFirst().name(),
-                () -> new InstantCommand(() -> robotStates.swerve.localizer.setPoses(getStartingPose(startPosition)))
-                        .andThen(robotStates::setStowState)
-                        .andThen(robotStates.swerve.pathFindToScoringLocation(robotStates, firstScoringLocation.getFirst(), firstScoringLocation.getSecond()))
-                        .andThen(new WaitCommand(0.5))
+                () -> robotStates.swerve.pathFindToScoringLocation(robotStates, firstScoringLocation.getFirst(), firstScoringLocation.getSecond())
         ));
 
         while (!currentScoringLocations.isEmpty()) {
@@ -125,12 +147,22 @@ public final class AutoManager {
 
             Pair<FieldUtil.Reef.ScoringLocation, FieldUtil.Reef.Level> nextScoringLocation = currentScoringLocations.get(0);
 
+            AtomicBoolean scoringNext = new AtomicBoolean(false);
+            Command routineSegmentCommand = Commands.waitSeconds(0.5)
+                    .andThen(getPathFindingCommandToCoralStation(robotStates, currentScoringLocation.getFirst(), nextScoringLocation.getFirst()))
+                    .andThen(new WaitUntilCommand(() -> robotStates.stowState.getAsBoolean() || robotStates.intake.coralEntered()))
+                    .andThen(() -> scoringNext.set(true))
+                    .andThen(robotStates.swerve.pathFindToScoringLocation(robotStates, nextScoringLocation.getFirst(), nextScoringLocation.getSecond()))
+                    .andThen(() -> scoringNext.set(false));
+
+            Trigger incorrectCoralTrigger = new Trigger(() -> scoringNext.get() && !robotStates.intake.barelyHasCoral() && !robotStates.atScoringLocation())
+                    .or(robotStates.intake.coralStuck);
+            incorrectCoralTrigger.onTrue(new InstantCommand(routineSegmentCommand::cancel));
+            autoEventLooper.observe(incorrectCoralTrigger);
+
             triggersToBind.add(autoEventLooper.addTrigger(
                     currentScoringLocation.getFirst().name() + "," + nextScoringLocation.getFirst().name(),
-                    () -> getPathFindingCommandToCoralStation(robotStates, currentScoringLocation.getFirst(), nextScoringLocation.getFirst())
-                            .andThen(new WaitUntilCommand(() -> robotStates.stowState.getAsBoolean() || robotStates.intake.hasCoral()))
-                            .andThen(robotStates.swerve.pathFindToScoringLocation(robotStates, nextScoringLocation.getFirst(), nextScoringLocation.getSecond()))
-                            .andThen(new WaitCommand(0.5))
+                    () -> routineSegmentCommand
             ));
         }
 
@@ -138,6 +170,11 @@ public final class AutoManager {
 
         while (!triggersToBind.isEmpty()) {
             AutoTrigger currentTrigger = triggersToBind.remove(0);
+            currentTrigger.interrupt().onTrue(
+                    new InstantCommand(robotStates.intake::setOuttakeL1State)
+                            .andThen(Commands.waitSeconds(0.25))
+                            .andThen(currentTrigger.cmd())
+            );
             currentTrigger.done().onTrue(triggersToBind.isEmpty() ? Commands.none() : triggersToBind.get(0).cmd());
         }
 

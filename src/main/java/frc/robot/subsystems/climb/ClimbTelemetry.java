@@ -17,11 +17,13 @@ public class ClimbTelemetry {
     private final StringPublisher climbStatePub = climbTelemetryTable.getStringTopic("Climb State").publish();
     private final DoublePublisher climbPositionPub = climbTelemetryTable.getDoubleTopic("Climb Position").publish();
     private final DoublePublisher climbTargetPub = climbTelemetryTable.getDoubleTopic("Climb Target").publish();
+    private final DoublePublisher climbCurrentPub = climbTelemetryTable.getDoubleTopic("Climb Curent").publish();
 
     public void publishValues() {
         climbStatePub.set(climb.getState().name());
         climbPositionPub.set(climb.getPosition());
         climbTargetPub.set(climb.getTarget());
+        climbCurrentPub.set(climb.getCurrent());
 
         logValues();
     }

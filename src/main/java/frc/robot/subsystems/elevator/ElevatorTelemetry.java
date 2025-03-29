@@ -23,6 +23,7 @@ public class ElevatorTelemetry {
     private final BooleanPublisher elevatorAtTargetPub = elevatorTelemetryTable.getBooleanTopic("Elevator At Target").publish();
     private final BooleanPublisher elevatorNearTargetPub = elevatorTelemetryTable.getBooleanTopic("Elevator Near Target").publish();
     private final BooleanPublisher elevatorSwitchTriggered = elevatorTelemetryTable.getBooleanTopic("Elevator Limit Switch Triggered").publish();
+    private final DoublePublisher elevatorCurrentPub = elevatorTelemetryTable.getDoubleTopic("Elevator Current").publish();
 
     public void publishValues() {
         elevatorPositionInchesPub.set(elevator.getPosition());
@@ -32,6 +33,7 @@ public class ElevatorTelemetry {
         elevatorAtTargetPub.set(elevator.isAtTarget());
         elevatorNearTargetPub.set(elevator.nearTarget());
         elevatorSwitchTriggered.set(elevator.lowerSwitchTriggered());
+        elevatorCurrentPub.set(elevator.getCurrent());
 
         logValues();
     }

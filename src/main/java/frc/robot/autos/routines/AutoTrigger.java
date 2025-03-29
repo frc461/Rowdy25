@@ -10,6 +10,7 @@ public class AutoTrigger {
     public final String name;
     private final AutoEventLooper auto;
     private final Supplier<Command> triggeredCommand;
+    private Command decoratedCommand = null;
 
     public boolean isActive = false;
     public boolean isFinished = false;
@@ -22,19 +23,22 @@ public class AutoTrigger {
     }
 
     public Command cmd() {
-        return triggeredCommand.get().finallyDo(
-                interrupted -> {
-                    isActive = false;
-                    isFinished = !interrupted;
-                    this.interrupted = interrupted;
-                }
-        ).beforeStarting(
-                () -> {
-                    isActive = true;
-                    isFinished = false;
-                    interrupted = false;
-                }
-        ).withName(name);
+        if (decoratedCommand == null) {
+            decoratedCommand = triggeredCommand.get().finallyDo(
+                    interrupted -> {
+                        isActive = false;
+                        isFinished = !interrupted;
+                        this.interrupted = interrupted;
+                    }
+            ).beforeStarting(
+                    () -> {
+                        isActive = true;
+                        isFinished = false;
+                        interrupted = false;
+                    }
+            ).withName(name);
+        }
+        return decoratedCommand;
     }
 
     /**

@@ -6,12 +6,13 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.*;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.autos.Pathfinder;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.drivetrain.Swerve;
-import frc.robot.util.EquationUtil;
 import frc.robot.util.FieldUtil;
+import frc.robot.util.PhoenixProfiledPIDController;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,10 +39,10 @@ public class PathfindToPoseAvoidingReefCommand extends Command { // TODO: ORGANI
     private final Swerve swerve;
     private final SwerveRequest.FieldCentric fieldCentric;
     private final PIDController yawController;
+    private final PhoenixProfiledPIDController velocityController;
     private final DoubleSupplier elevatorHeight;
     private final Pose2d targetPose;
     private final double maxVelocity;
-    private final boolean smooth;
     private Pose2d smoothTemporaryTargetPose;
     private boolean xPosDone, yPosDone, yawDone, end;
 
@@ -51,7 +52,7 @@ public class PathfindToPoseAvoidingReefCommand extends Command { // TODO: ORGANI
             DoubleSupplier elevatorHeight,
             Pose2d targetPose
     ) {
-        this(swerve, fieldCentric, elevatorHeight, targetPose, Constants.MAX_VEL, true);
+        this(swerve, fieldCentric, elevatorHeight, targetPose, Constants.MAX_VEL);
     }
 
     public PathfindToPoseAvoidingReefCommand(
@@ -59,18 +60,7 @@ public class PathfindToPoseAvoidingReefCommand extends Command { // TODO: ORGANI
             SwerveRequest.FieldCentric fieldCentric,
             DoubleSupplier elevatorHeight,
             Pose2d targetPose,
-            boolean smooth
-    ) {
-        this(swerve, fieldCentric, elevatorHeight, targetPose, Constants.MAX_VEL, smooth);
-    }
-
-    public PathfindToPoseAvoidingReefCommand(
-            Swerve swerve,
-            SwerveRequest.FieldCentric fieldCentric,
-            DoubleSupplier elevatorHeight,
-            Pose2d targetPose,
-            double maxVelocity,
-            boolean smooth
+            double maxVelocity
     ) {
         this.swerve = swerve;
         this.fieldCentric = fieldCentric;
@@ -82,11 +72,20 @@ public class PathfindToPoseAvoidingReefCommand extends Command { // TODO: ORGANI
         );
         yawController.enableContinuousInput(Constants.SwerveConstants.ANGULAR_MINIMUM_ANGLE, Constants.SwerveConstants.ANGULAR_MAXIMUM_ANGLE);
 
+        velocityController = new PhoenixProfiledPIDController(
+                Constants.SwerveConstants.PATH_TRANSLATION_CONTROLLER_P,
+                0.0,
+                Constants.SwerveConstants.PATH_TRANSLATION_CONTROLLER_D,
+                new TrapezoidProfile.Constraints(
+                        Constants.MAX_VEL,
+                        Constants.MAX_ACCEL
+                )
+        );
+
         this.elevatorHeight = elevatorHeight;
 
         this.targetPose = targetPose;
         this.maxVelocity = MathUtil.clamp(maxVelocity, 0, Constants.MAX_VEL);
-        this.smooth = smooth;
 
         smoothTemporaryTargetPose = null;
         xPosDone = false;
@@ -98,6 +97,14 @@ public class PathfindToPoseAvoidingReefCommand extends Command { // TODO: ORGANI
 
     @Override
     public void initialize() {
+        velocityController.setGoal(new TrapezoidProfile.State(0.0, 0.0));
+        velocityController.reset(
+                swerve.localizer.getStrategyPose().getTranslation().getDistance(targetPose.getTranslation()),
+                Math.hypot(swerve.getState().Speeds.vxMetersPerSecond, swerve.getState().Speeds.vyMetersPerSecond),
+                swerve.getState().Timestamp
+        );
+        velocityController.setTolerance(Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_ACCEPT);
+
         smoothTemporaryTargetPose = null;
         xPosDone = false;
         yPosDone = false;
@@ -108,38 +115,20 @@ public class PathfindToPoseAvoidingReefCommand extends Command { // TODO: ORGANI
     @Override
     public void execute() {
         Pose2d currentPose = swerve.localizer.getStrategyPose();
-        smoothTemporaryTargetPose = getSmoothTargetPose(getTemporaryTargetPose(currentPose));
+        updateSmoothTargetPose(getTemporaryTargetPose(currentPose));
         swerve.localizer.setCurrentTemporaryTargetPose(smoothTemporaryTargetPose);
         double safeMaxVelocity = MathUtil.clamp(maxVelocity, 0, Constants.MAX_CONTROLLED_VEL.apply(elevatorHeight.getAsDouble()));
 
-        double velocity = smooth
-                ? MathUtil.clamp(
-                        Math.max(
-                                EquationUtil.expOutput(
-                                        smoothTemporaryTargetPose.getTranslation().getDistance(currentPose.getTranslation()),
-                                        Math.min(safeMaxVelocity, 2),
-                                        Math.min(safeMaxVelocity, 2) / 7.0,
-                                        15 / Math.min(safeMaxVelocity, 2)
-                                ),
-                                Math.min(EquationUtil.linearOutput(smoothTemporaryTargetPose.getTranslation().getDistance(currentPose.getTranslation()), 4, -3), safeMaxVelocity)
-                        ),
-                        0,
-                        Constants.MAX_CONTROLLED_VEL.apply(elevatorHeight.getAsDouble())
-                ) : MathUtil.clamp(
-                        Math.max(
-                                EquationUtil.expOutput(
-                                        smoothTemporaryTargetPose.getTranslation().getDistance(currentPose.getTranslation()),
-                                        Math.min(safeMaxVelocity, 1),
-                                        Math.min(safeMaxVelocity, 1) / 20.0,
-                                        50 / Math.min(safeMaxVelocity, 1)
-                                ),
-                                Math.min(EquationUtil.linearOutput(smoothTemporaryTargetPose.getTranslation().getDistance(currentPose.getTranslation()), 4, -0.5), safeMaxVelocity)
-                        ),
-                        0,
-                        Constants.MAX_CONTROLLED_VEL.apply(elevatorHeight.getAsDouble())
-                );
+        double velocity = Math.abs(velocityController.calculate(
+                currentPose.getTranslation().getDistance(targetPose.getTranslation()),
+                new TrapezoidProfile.Constraints(
+                        safeMaxVelocity,
+                        Constants.MAX_ACCEL
+                ),
+                swerve.getState().Timestamp
+        ));
 
-        double velocityHeadingRadians = Math.atan2(smoothTemporaryTargetPose.getY() - currentPose.getY(), smoothTemporaryTargetPose.getX() - currentPose.getX());
+        double velocityHeadingRadians = smoothTemporaryTargetPose.getTranslation().minus(currentPose.getTranslation()).getAngle().getRadians();
 
         swerve.setControl(
                 fieldCentric.withDriveRequestType(SwerveModule.DriveRequestType.Velocity)
@@ -161,51 +150,57 @@ public class PathfindToPoseAvoidingReefCommand extends Command { // TODO: ORGANI
                 < Constants.AutoConstants.DEGREE_TOLERANCE_TO_ACCEPT;
 
         if (xPosDone && yPosDone && yawDone) {
-            swerve.forceStop();
-            swerve.consistentHeading = currentPose.getRotation().getDegrees();
             end = true;
         }
     }
 
-    private Pose2d getSmoothTargetPose(Pose2d temporaryPose) {
+    private void updateSmoothTargetPose(Pose2d temporaryPose) {
         if (smoothTemporaryTargetPose == null) {
-            return temporaryPose;
+            smoothTemporaryTargetPose = temporaryPose;
         }
 
         if (smoothTemporaryTargetPose.getTranslation().getDistance(temporaryPose.getTranslation()) > 0.11) {
             Rotation2d headingToTemporaryPose = temporaryPose.getTranslation().minus(smoothTemporaryTargetPose.getTranslation()).getAngle();
-            return new Pose2d(
+            smoothTemporaryTargetPose = new Pose2d(
                     new Pose2d(smoothTemporaryTargetPose.getTranslation(), headingToTemporaryPose)
                             .plus(new Transform2d(0.11, 0, Rotation2d.kZero))
                             .getTranslation(),
                     smoothTemporaryTargetPose.getRotation().interpolate(temporaryPose.getRotation(), 0.25)
             );
+        } else {
+            smoothTemporaryTargetPose = temporaryPose;
         }
-
-        return temporaryPose;
     }
 
     private Pose2d getTemporaryTargetPose(Pose2d currentPose) {
         Rotation2d reefCenterAngleToRobot = FieldUtil.Reef.getAngleFromReefCenter(currentPose);
 
+        // TODO SHOP: TEST THIS
         if (sameSideAsTargetPose(currentPose)) {
             return targetPose;
         } else if (currentPose.getTranslation().getDistance(FieldUtil.Reef.getReefCenter()) < FieldUtil.Reef.REEF_APOTHEM + Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 1.3) {
             Translation2d targetTranslation = new Pose2d(FieldUtil.Reef.getReefCenter(), FieldUtil.Reef.getNearestReefTagPose(currentPose).getRotation())
-                    .plus(new Transform2d(3.0, 0, Rotation2d.kZero))
+                    .plus(new Transform2d(2.0, 0, Rotation2d.kZero))
                     .getTranslation();
             return new Pose2d(targetTranslation, currentPose.getRotation());
         } else {
             Rotation2d reefCenterAngleToTargetPose = targetPose.getTranslation().minus(FieldUtil.Reef.getReefCenter()).getAngle();
-            Rotation2d temporaryTargetAngle =
+            Rotation2d temporaryTangentAngle =
                     reefCenterAngleToRobot.rotateBy(Rotation2d.fromDegrees(Math.copySign(
-                            45.0,
+                            90.0,
                             reefCenterAngleToTargetPose.minus(reefCenterAngleToRobot).getDegrees()
                     )));
             return new Pose2d(
-                    new Pose2d(FieldUtil.Reef.getReefCenter(), temporaryTargetAngle)
-                            .plus(new Transform2d(3.0, 0, Rotation2d.kZero))
-                            .getTranslation(),
+                    new Pose2d(
+                            new Pose2d(FieldUtil.Reef.getReefCenter(), reefCenterAngleToRobot)
+                                    .plus(new Transform2d(2.0, 0, Rotation2d.kZero))
+                                    .getTranslation(),
+                            temporaryTangentAngle
+                    ).plus(new Transform2d(
+                            Math.min(1.5, Math.abs(reefCenterAngleToTargetPose.minus(reefCenterAngleToRobot).getRadians())),
+                            0,
+                            Rotation2d.kZero
+                    )).getTranslation(),
                     currentPose.getRotation().interpolate(targetPose.getRotation(), 0.25)
             );
         }
@@ -248,7 +243,7 @@ public class PathfindToPoseAvoidingReefCommand extends Command { // TODO: ORGANI
         }
 
         Pair<Rotation2d, Rotation2d> anglesToVerticesBounds = getBound(anglesToEachVertex);
-        double lowestDistance = distancesToEachVertex.stream().mapToDouble(Double::doubleValue).min().orElse(0.0);
+        double lowestDistanceToReefCorner = distancesToEachVertex.stream().mapToDouble(Double::doubleValue).min().orElse(0.0);
 
         return !Pathfinder.inBetween(
                 targetPose.getTranslation().minus(currentPose.getTranslation()).getAngle(),
@@ -258,7 +253,7 @@ public class PathfindToPoseAvoidingReefCommand extends Command { // TODO: ORGANI
                 targetPose.getTranslation().minus(currentPose.getTranslation()).getAngle(),
                 anglesToVerticesBounds.getFirst().minus(Rotation2d.fromDegrees(15.0)),
                 anglesToVerticesBounds.getSecond().plus(Rotation2d.fromDegrees(15.0))
-        ) || targetPose.getTranslation().getDistance(currentPose.getTranslation()) < lowestDistance;
+        ) || targetPose.getTranslation().getDistance(currentPose.getTranslation()) < lowestDistanceToReefCorner;
     }
 
     private Pair<Rotation2d, Rotation2d> getBound(List<Rotation2d> angles) {
@@ -275,6 +270,12 @@ public class PathfindToPoseAvoidingReefCommand extends Command { // TODO: ORGANI
             }
         }
         return new Pair<>(min, max);
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        swerve.forceStop();
+        swerve.consistentHeading = swerve.localizer.getStrategyPose().getRotation().getDegrees();
     }
 
     @Override

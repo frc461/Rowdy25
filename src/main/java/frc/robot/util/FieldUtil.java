@@ -61,6 +61,10 @@ public final class FieldUtil {
             pose2d = pose3d.toPose2d();
         }
 
+        public static final List<AprilTag> FILTER = List.of( // TODO SHOP: TEST FILTER
+                ID_6, ID_7, ID_8, ID_9, ID_10, ID_11, ID_17, ID_18, ID_19, ID_20, ID_21, ID_22
+        );
+
         public static AprilTag getTag(double tagID) {
             return switch ((int) tagID) {
                 case 1 -> AprilTag.ID_1;
@@ -151,16 +155,16 @@ public final class FieldUtil {
             return getAngleFromReefCenter(pose.getTranslation());
         }
 
-        public static final Transform2d ROBOT_AT_LEFT_BRANCH_OFFSET_FROM_TAG = new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0, Units.inchesToMeters(-6.469731), Rotation2d.kPi);
-        public static final Transform2d ROBOT_AT_RIGHT_BRANCH_OFFSET_FROM_TAG = new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0, Units.inchesToMeters(6.469731), Rotation2d.kPi);
+        public static final Transform2d ROBOT_AT_LEFT_BRANCH_OFFSET_FROM_TAG = new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0, Units.inchesToMeters(-5.4469731), Rotation2d.kPi);
+        public static final Transform2d ROBOT_AT_RIGHT_BRANCH_OFFSET_FROM_TAG = new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0, Units.inchesToMeters(8.4469731), Rotation2d.kPi);
 
         public static final Transform2d LEFT_BRANCH_OFFSET_FROM_TAG = new Transform2d(Units.inchesToMeters(-1.207349), Units.inchesToMeters(-6.469731), Rotation2d.kZero);
         public static final Transform2d RIGHT_BRANCH_OFFSET_FROM_TAG = new Transform2d(Units.inchesToMeters(-1.207349), Units.inchesToMeters(6.469731), Rotation2d.kZero);
 
         public static final Transform2d BRANCH_TO_ROBOT_OFFSET = new Transform2d(Units.inchesToMeters(1.207349) + Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0, 0.0, Rotation2d.kPi);
 
-        public static final Transform2d LEFT_BRANCH_OFFSET_FROM_REEF_CENTER = new Transform2d(Units.inchesToMeters(30.738196), Units.inchesToMeters(-6.968853), Rotation2d.kZero);
-        public static final Transform2d RIGHT_BRANCH_OFFSET_FROM_REEF_CENTER = new Transform2d(Units.inchesToMeters(30.738196), Units.inchesToMeters(6.968853), Rotation2d.kZero);
+        public static final Transform2d LEFT_BRANCH_OFFSET_FROM_REEF_CENTER = new Transform2d(Units.inchesToMeters(30.738196), Units.inchesToMeters(-6.468853), Rotation2d.kZero);
+        public static final Transform2d RIGHT_BRANCH_OFFSET_FROM_REEF_CENTER = new Transform2d(Units.inchesToMeters(30.738196), Units.inchesToMeters(6.468853), Rotation2d.kZero);
 
         public enum ScoringLocation {
             A, B, C, D, E, F, G, H, I, J, K, L;
@@ -273,6 +277,18 @@ public final class FieldUtil {
 
         public static Pair<Pose2d, Pose2d> getNearestRobotPosesAtBranchPair(Pose2d currentPose) {
             Pose2d nearestReefTagPose = getNearestReefTagPose(currentPose);
+            String nearestReefTagName = getNearestReefTag(currentPose).name();
+            if (nearestReefTagName.equals("ID_20")
+                    || nearestReefTagName.equals("ID_21")
+                    || nearestReefTagName.equals("ID_22")
+                    || nearestReefTagName.equals("ID_9")
+                    || nearestReefTagName.equals("ID_10")
+                    || nearestReefTagName.equals("ID_11")) {
+                return new Pair<>(
+                        nearestReefTagPose.plus(ROBOT_AT_RIGHT_BRANCH_OFFSET_FROM_TAG),
+                        nearestReefTagPose.plus(ROBOT_AT_LEFT_BRANCH_OFFSET_FROM_TAG)
+                );
+            }
             return new Pair<>(
                     nearestReefTagPose.plus(ROBOT_AT_LEFT_BRANCH_OFFSET_FROM_TAG),
                     nearestReefTagPose.plus(ROBOT_AT_RIGHT_BRANCH_OFFSET_FROM_TAG)

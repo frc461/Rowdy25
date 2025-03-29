@@ -120,6 +120,10 @@ public class Pivot extends SubsystemBase {
         lastManualPosition = State.STOW.position;
     }
 
+    public double getCurrent() {
+        return pivot.getStatorCurrent().getValueAsDouble();
+    }
+
     public State getState() {
         return currentState;
     }

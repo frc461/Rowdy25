@@ -28,5 +28,6 @@ public class IntakeTelemetry {
         DogLog.log("IntakeHasCoral", intake.hasCoral());
         DogLog.log("IntakeHasAlgae", intake.hasAlgae());
         DogLog.log("IntakeState", intake.getState());
+        DogLog.log("IntakeCoralStuck", intake.coralStuck.getAsBoolean());
     }
 }

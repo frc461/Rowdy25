@@ -24,6 +24,7 @@ public class PivotTelemetry {
     private final StringPublisher pivotIsRatcheted = pivotTelemetryTable.getStringTopic("Pivot Ratchet State").publish();
     private final BooleanPublisher pivotAtTargetPub = pivotTelemetryTable.getBooleanTopic("Pivot At Target").publish();
     private final BooleanPublisher pivotNearTargetPub = pivotTelemetryTable.getBooleanTopic("Pivot Near Target").publish();
+    private final DoublePublisher pivotCurrent = pivotTelemetryTable.getDoubleTopic("Pivot Current").publish();
 
     public void publishValues() {
         pivotPositionPub.set(pivot.getPosition());
@@ -35,6 +36,7 @@ public class PivotTelemetry {
         pivotIsRatcheted.set(pivot.getRatchetState().name());
         pivotAtTargetPub.set(pivot.isAtTarget());
         pivotNearTargetPub.set(pivot.nearTarget());
+        pivotCurrent.set(pivot.getCurrent());
 
         logValues();
     }

@@ -14,7 +14,6 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import static edu.wpi.first.units.Units.*;
-import static edu.wpi.first.units.Units.Inches;
 
 public final class CompConstants {
     public final static class PhotonConstants {
@@ -68,7 +67,7 @@ public final class CompConstants {
         public static final double D = 0.0;
         public static final double EXPO_V = V / 0.98; // 98% of the actual max velocity, as it will allocate 1 / 0.9 = 1.1111 times the voltage to 1 rps
         public static final double EXPO_A = A / 0.03; // 3% of the actual max accel
-        public static final double SAFE_TOLERANCE = 12.0;
+        public static final double SAFE_TOLERANCE = 15.0;
         public static final double AT_TARGET_TOLERANCE = 2.0;
 
         // presets
@@ -80,7 +79,7 @@ public final class CompConstants {
         public static final double GROUND_ALGAE = 0;
         public static final double L1_CORAL = 0;
         public static final double L2_CORAL = 0;
-        public static final double L3_CORAL = 15.5;
+        public static final double L3_CORAL = 18.5;
         public static final double L4_CORAL = 45.5;
         public static final double LOW_REEF_ALGAE = 13.0;
         public static final double HIGH_REEF_ALGAE = 18.5;
@@ -114,8 +113,8 @@ public final class CompConstants {
         public static final double G = 0.2269;
         public static final double V = 6.35 / 2 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps) -> V / (rotor rps)
         public static final double A = 0.09 / 2 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps^2) -> V / (rotor rps^2)
-        public static final double P = 0.15; // TODO: TUNE
-        public static final double I = 0;
+        public static final double P = 0.15;
+        public static final double I = 0; // TODO SHOP: BECAUSE OF BUILT-IN INTEGRAL WINDUP PREVENTION, TRY (VERY) HIGH I
         public static final double D = 0.01;
         public static final double EXPO_V = V / 0.3; // 30% of the actual max velocity, as it will allocate 1 / 0.4 = 2.5 times the voltage to 1 rps
         public static final double EXPO_A = A / 0.01; // 1.0% of the actual max acceleration
@@ -125,14 +124,14 @@ public final class CompConstants {
         // presets
         public static final double LOWER_LIMIT = 0;
         public static final double UPPER_LIMIT = 105;
-        public static final double STOW = 55;
-        public static final double CORAL_STATION = 55;
+        public static final double STOW = 56;
+        public static final double CORAL_STATION = 56;
         public static final double GROUND_CORAL = 3.5;
         public static final double GROUND_ALGAE = 4.5;
         public static final double L1_CORAL = 38.0;
-        public static final double L2_CORAL = 100.0;
-        public static final double L3_CORAL = 100.6;
-        public static final double L4_CORAL = 93.5;
+        public static final double L2_CORAL = 95.0;
+        public static final double L3_CORAL = 95.0;
+        public static final double L4_CORAL = 96.0;
         public static final double LOW_REEF_ALGAE = 52;
         public static final double HIGH_REEF_ALGAE = 91;
         public static final double PROCESSOR = 22;
@@ -158,7 +157,7 @@ public final class CompConstants {
         public static final BiFunction<Double, Double, Double> G = (wristDeg, pivotDeg) -> 0.17 * Math.sin(Math.toRadians(wristDeg - (90 - pivotDeg)));
         public static final double V = 0.69 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps) -> V / (rotor rps)
         public static final double A = 0.02 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps^2) -> V / (rotor rps^2)
-        public static final double P = 0.1; // TODO: TUNE
+        public static final double P = 0.1;
         public static final double I = 0.0;
         public static final double D = 0.0;
         public static final double EXPO_V = V / 0.9; // 90% of the actual max velocity, as it will allocate 1 / 0.8 = 1.25 times the voltage to 1 rps
@@ -174,9 +173,9 @@ public final class CompConstants {
         public static final double GROUND_CORAL = 150;
         public static final double GROUND_ALGAE = 150;
         public static final double L1_CORAL = 96.5;
-        public static final double L2_CORAL = 55;
-        public static final double L3_CORAL = 55;
-        public static final double L4_CORAL = 78;
+        public static final double L2_CORAL = 45;
+        public static final double L3_CORAL = 60;
+        public static final double L4_CORAL = 75;
         public static final double LOW_REEF_ALGAE = 65.5;
         public static final double HIGH_REEF_ALGAE = 260;
         public static final double PROCESSOR = 160;
@@ -291,7 +290,7 @@ public final class CompConstants {
             private static final int DRIVE_MOTOR_ID = 1;
             private static final int STEER_MOTOR_ID = 11;
             private static final int ENCODER_ID = 21;
-            public static final Angle ENCODER_OFFSET = Rotations.of(0.4365234375);
+            public static final Angle ENCODER_OFFSET = Rotations.of(-1.81684412 + 0.0555555555555556 - 0.56982421875 + 0.51904296875); //0.4365234375);
             private static final boolean STEER_MOTOR_INVERTED = true;
             private static final boolean CANCODER_INVERTED = false;
 

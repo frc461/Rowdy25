@@ -8,6 +8,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
+import frc.robot.constants.RobotIdentity;
 import frc.robot.util.EquationUtil;
 
 public class Elevator extends SubsystemBase {
@@ -82,6 +83,10 @@ public class Elevator extends SubsystemBase {
         lastManualPosition = State.STOW.position;
     }
 
+    public double getCurrent() {
+        return elevator.getStatorCurrent().getValueAsDouble();
+    }
+
 	public State getState() {
 		return currentState;
 	}
@@ -95,7 +100,7 @@ public class Elevator extends SubsystemBase {
     }
  
     public boolean lowerSwitchTriggered() {
-        return false;
+        return Constants.IDENTITY != RobotIdentity.ROWDY && !lowerSwitch.get();
     }
 
     public boolean isAtState(State state) {

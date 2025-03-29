@@ -89,6 +89,10 @@ public class Climb extends SubsystemBase {
         error = 0.0;
     }
 
+    public double getCurrent() {
+        return climb.getStatorCurrent().getValueAsDouble();
+    }
+
     public State getState() {
 		return currentState;
 	}

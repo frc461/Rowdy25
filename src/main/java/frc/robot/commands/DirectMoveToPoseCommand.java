@@ -5,10 +5,11 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.drivetrain.Swerve;
-import frc.robot.util.EquationUtil;
+import frc.robot.util.PhoenixProfiledPIDController;
 
 import java.util.function.DoubleSupplier;
 
@@ -16,10 +17,10 @@ public class DirectMoveToPoseCommand extends Command {
     private final Swerve swerve;
     private final SwerveRequest.FieldCentric fieldCentric;
     private final PIDController yawController;
+    private final PhoenixProfiledPIDController velocityController;
     private final DoubleSupplier elevatorHeight;
     private final Pose2d targetPose;
     private final double maxVelocity;
-    private final boolean smooth;
     private boolean xPosDone, yPosDone, yawDone, end;
 
     public DirectMoveToPoseCommand(
@@ -28,7 +29,7 @@ public class DirectMoveToPoseCommand extends Command {
             DoubleSupplier elevatorHeight,
             Pose2d targetPose
     ) {
-        this(swerve, fieldCentric, elevatorHeight, targetPose, 1.0, false);
+        this(swerve, fieldCentric, elevatorHeight, targetPose, 1.0);
     }
 
     public DirectMoveToPoseCommand(
@@ -36,8 +37,7 @@ public class DirectMoveToPoseCommand extends Command {
             SwerveRequest.FieldCentric fieldCentric,
             DoubleSupplier elevatorHeight,
             Pose2d targetPose,
-            double maxVelocity,
-            boolean smooth
+            double maxVelocity
     ) {
         this.swerve = swerve;
         this.fieldCentric = fieldCentric;
@@ -49,11 +49,20 @@ public class DirectMoveToPoseCommand extends Command {
         );
         yawController.enableContinuousInput(Constants.SwerveConstants.ANGULAR_MINIMUM_ANGLE, Constants.SwerveConstants.ANGULAR_MAXIMUM_ANGLE);
 
+        velocityController = new PhoenixProfiledPIDController(
+                Constants.SwerveConstants.PATH_TRANSLATION_CONTROLLER_P,
+                0,
+                Constants.SwerveConstants.PATH_TRANSLATION_CONTROLLER_D,
+                new TrapezoidProfile.Constraints(
+                        Constants.MAX_VEL,
+                        Constants.MAX_ACCEL
+                )
+        );
+
         this.elevatorHeight = elevatorHeight;
 
         this.targetPose = targetPose;
         this.maxVelocity = MathUtil.clamp(maxVelocity, 0, Constants.MAX_VEL);
-        this.smooth = smooth;
         xPosDone = false;
         yPosDone = false;
         yawDone = false;
@@ -63,6 +72,14 @@ public class DirectMoveToPoseCommand extends Command {
 
     @Override
     public void initialize() {
+        velocityController.setGoal(new TrapezoidProfile.State(0.0, 0.0));
+        velocityController.reset(
+                swerve.localizer.getStrategyPose().getTranslation().getDistance(targetPose.getTranslation()),
+                Math.hypot(swerve.getState().Speeds.vxMetersPerSecond, swerve.getState().Speeds.vyMetersPerSecond),
+                swerve.getState().Timestamp
+        );
+        velocityController.setTolerance(Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_ACCEPT);
+
         xPosDone = false;
         yPosDone = false;
         yawDone = false;
@@ -75,34 +92,16 @@ public class DirectMoveToPoseCommand extends Command {
         swerve.localizer.setCurrentTemporaryTargetPose(targetPose);
         double safeMaxVelocity = MathUtil.clamp(maxVelocity, 0, Constants.MAX_CONTROLLED_VEL.apply(elevatorHeight.getAsDouble()));
 
-        double velocity = smooth
-                ? MathUtil.clamp(
-                        Math.max(
-                                EquationUtil.expOutput(
-                                        targetPose.getTranslation().getDistance(currentPose.getTranslation()),
-                                        Math.min(safeMaxVelocity, 2),
-                                        Math.min(safeMaxVelocity, 2) / 7.0,
-                                        15 / Math.min(safeMaxVelocity, 2)
-                                ),
-                                Math.min(EquationUtil.linearOutput(targetPose.getTranslation().getDistance(currentPose.getTranslation()), 4, -3), safeMaxVelocity)
-                        ),
-                        0,
-                        Constants.MAX_CONTROLLED_VEL.apply(elevatorHeight.getAsDouble())
-                ) : MathUtil.clamp(
-                        Math.max(
-                                EquationUtil.expOutput(
-                                        targetPose.getTranslation().getDistance(currentPose.getTranslation()),
-                                        Math.min(safeMaxVelocity, 1),
-                                        Math.min(safeMaxVelocity, 1) / 20.0,
-                                        50 / Math.min(safeMaxVelocity, 1)
-                                ),
-                                Math.min(EquationUtil.linearOutput(targetPose.getTranslation().getDistance(currentPose.getTranslation()), 4, -0.5), safeMaxVelocity)
-                        ),
-                        0,
-                        Constants.MAX_CONTROLLED_VEL.apply(elevatorHeight.getAsDouble())
-                );
+        double velocity = Math.abs(velocityController.calculate(
+                currentPose.getTranslation().getDistance(targetPose.getTranslation()),
+                new TrapezoidProfile.Constraints(
+                        safeMaxVelocity,
+                        Constants.MAX_ACCEL
+                ),
+                swerve.getState().Timestamp
+        ));
 
-        double velocityHeadingRadians = Math.atan2(targetPose.getY() - currentPose.getY(), targetPose.getX() - currentPose.getX());
+        double velocityHeadingRadians = targetPose.getTranslation().minus(currentPose.getTranslation()).getAngle().getRadians();
 
         swerve.setControl(
                 fieldCentric.withDriveRequestType(SwerveModule.DriveRequestType.Velocity)
@@ -124,10 +123,14 @@ public class DirectMoveToPoseCommand extends Command {
                 < Constants.AutoConstants.DEGREE_TOLERANCE_TO_ACCEPT;
 
         if (xPosDone && yPosDone && yawDone) {
-            swerve.forceStop();
-            swerve.consistentHeading = currentPose.getRotation().getDegrees();
             end = true;
         }
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        swerve.forceStop();
+        swerve.consistentHeading = swerve.localizer.getStrategyPose().getRotation().getDegrees();
     }
 
     @Override
