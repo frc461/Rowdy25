@@ -52,7 +52,7 @@ public class Intake extends SubsystemBase {
         currentState = State.IDLE;
         pulseTimer.start();
 
-        hasAlgae = new Trigger(() -> intake.getStatorCurrent().getValueAsDouble() > 40.0).debounce(0.5); // TODO SHOP: TEST THIS
+        hasAlgae = new Trigger(() -> intake.getStatorCurrent().getValueAsDouble() > 20.0).debounce(0.5); // TODO SHOP: TEST THIS
     }
 
     public double getCurrent() {
@@ -68,7 +68,7 @@ public class Intake extends SubsystemBase {
     }
 
     public boolean hasAlgae() {
-        return hasAlgae.getAsBoolean() || currentState == State.HAS_ALGAE; // TODO SHOP: TEST THIS
+        return hasAlgae.getAsBoolean(); // TODO SHOP: TEST THIS
     }
 
     public boolean atIdleState() {
@@ -117,14 +117,6 @@ public class Intake extends SubsystemBase {
 
     public void setIntakeSpeed(double speed) {
         intake.set(speed);
-    }
-
-    public void pulseIntake() { // TODO SHOP: TEST THIS WITH GROUND ALGAE INTAKE
-        if ((int) pulseTimer.get() % 2 == 0) {
-            setIntakeSpeed(0.1);
-        } else {
-            setIntakeSpeed(0.0);
-        }
     }
 
     @Override

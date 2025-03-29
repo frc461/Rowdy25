@@ -15,11 +15,13 @@ public class IntakeTelemetry {
     private final BooleanPublisher hasCoralPub = intakeTelemetryTable.getBooleanTopic("Intake Has Coral").publish();
     private final BooleanPublisher hasAlgaePub = intakeTelemetryTable.getBooleanTopic("Intake Has Algae").publish();
     private final StringPublisher currentStatePub = intakeTelemetryTable.getStringTopic("Intake State").publish();
+    private final DoublePublisher intakeCurrentPub = intakeTelemetryTable.getDoubleTopic("Intake Current").publish();
 
     public void publishValues() {
         hasCoralPub.set(intake.hasCoral());
         hasAlgaePub.set(intake.hasAlgae());
         currentStatePub.set(intake.getState().toString());
+        intakeCurrentPub.set(intake.getCurrent());
 
         logValues();
     }
