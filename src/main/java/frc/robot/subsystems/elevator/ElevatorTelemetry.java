@@ -24,6 +24,7 @@ public class ElevatorTelemetry {
     private final BooleanPublisher elevatorNearTargetPub = elevatorTelemetryTable.getBooleanTopic("Elevator Near Target").publish();
     private final BooleanPublisher elevatorSwitchTriggered = elevatorTelemetryTable.getBooleanTopic("Elevator Limit Switch Triggered").publish();
     private final DoublePublisher elevatorCurrentPub = elevatorTelemetryTable.getDoubleTopic("Elevator Current").publish();
+    private final DoublePublisher elevatorRotorVelocityPub = elevatorTelemetryTable.getDoubleTopic("Elevator Rotor Velocity").publish();
 
     public void publishValues() {
         elevatorPositionInchesPub.set(elevator.getPosition());
@@ -34,6 +35,7 @@ public class ElevatorTelemetry {
         elevatorNearTargetPub.set(elevator.nearTarget());
         elevatorSwitchTriggered.set(elevator.lowerSwitchTriggered());
         elevatorCurrentPub.set(elevator.getCurrent());
+        elevatorRotorVelocityPub.set(elevator.getRotorVelocity());
 
         logValues();
     }

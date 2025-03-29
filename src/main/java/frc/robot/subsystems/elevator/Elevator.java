@@ -87,6 +87,10 @@ public class Elevator extends SubsystemBase {
         return elevator.getStatorCurrent().getValueAsDouble();
     }
 
+    public double getRotorVelocity() {
+        return elevator.getRotorVelocity().getValueAsDouble();
+    }
+
 	public State getState() {
 		return currentState;
 	}
