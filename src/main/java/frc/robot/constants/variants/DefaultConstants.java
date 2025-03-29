@@ -280,12 +280,10 @@ public final class DefaultConstants {
 
     public final static class IntakeConstants {
         public static final int LEAD_ID = 41;
-        public static final int FOLLOWER_ID = 42;
         public static final int BEAMBREAK_ID = 4;
         public static final double CURRENT_LIMIT = 60;
         public static final InvertedValue MOTOR_INVERT = InvertedValue.CounterClockwise_Positive;
         public static final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Coast;
-        public static final double DEFAULT_PROXIMITY_OBJECT_DETECTION_THRESHOLD = 0.13;
     }
 
     public final static class PivotConstants {

@@ -349,7 +349,7 @@ public class RobotStates {
                         .andThen(intake::setIntakeState)
                         .andThen(new WaitUntilCommand(PhotonUtil.Color::hasCoralTargets))
                         .andThen(swerve.directMoveToObject(
-                                () -> intake.hasAlgae() || intake.beamBreakBroken(),
+                                () -> intake.hasAlgae() || intake.hasCoral(),
                                 PhotonUtil.Color.TargetClass.CORAL
                         ).asProxy())
                         .andThen(this::setStowState)
@@ -363,7 +363,7 @@ public class RobotStates {
                         .andThen(intake::setIntakeState)
                         .andThen(new WaitUntilCommand(PhotonUtil.Color::hasAlgaeTargets))
                         .andThen(swerve.directMoveToObject(
-                                () -> intake.hasAlgae() || intake.beamBreakBroken(),
+                                () -> intake.hasAlgae() || intake.hasCoral(),
                                 PhotonUtil.Color.TargetClass.ALGAE
                         ).asProxy())
                         .andThen(this::setStowState)

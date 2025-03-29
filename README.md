@@ -83,7 +83,35 @@ Monday, 3/04/2025 software only:
 Comp bot/later:
 - [x] Re-add automatic intake logic
 - [ ] Tune Canandcolor for algae intake
-- [ ] Implement climbing
-- [ ] SysID for elevator, pivot, wrist comp bot
+- [x] Implement climbing
+- [x] SysID for elevator, pivot, wrist comp bot
 - [x] Fine tune state transitions for efficiency
-- [ ] Test ground intake/object detection (after mishiwaka)
+- [x] Test ground intake/object detection (after mishiwaka)
+
+
+Saturday, 3/29/2025 software:
+comp bot:
+- [x] distance sensor + software implementation
+- [x] more efficient dependent pathfinding
+
+ground intake:
+- [x] ground intake motor setup + logic revamp
+- [ ] pathing to coral
+- [ ] revamp pathfinding location
+- [ ] double-sided outtake
+- [ ] revamp auto
+- [ ] (if possible) algae intake
+
+Saturday, 3/29/2025 to test:
+comp bot:
+- [ ] test proximity threshold network table entry, intake stuck
+- [ ] test scoring
+- [ ] test dynamic autos
+- [ ] test bugfix for mid-stow bug going into teleop
+- [ ] test/configure distance sensor
+
+ground intake:
+- [ ] (once assembled) ground intake motor setup + logic revamp
+- [ ] test pathfinding locations and auto scoring
+- [ ] test auto (with dynamic if possible)
+- [ ] (if possible) test algae net and processor scoring

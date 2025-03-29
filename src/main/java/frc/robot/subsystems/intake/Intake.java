@@ -34,9 +34,6 @@ public class Intake extends SubsystemBase {
 
     private final IntakeTelemetry intakeTelemetry = new IntakeTelemetry(this);
 
-    private double proximityObjectDetectionThreshold = Constants.IntakeConstants.DEFAULT_PROXIMITY_OBJECT_DETECTION_THRESHOLD;
-    public DoubleConsumer setProximityObjectDetectionThreshold = threshold -> proximityObjectDetectionThreshold = threshold;
-
     public Intake() { // TODO: IMPLEMENT STALL DETECTION (HIGH AMPAGE FOR AN EXTENDED PERIOD OF TIME)
         intake = new TalonFX(Constants.IntakeConstants.LEAD_ID);
 
@@ -50,10 +47,6 @@ public class Intake extends SubsystemBase {
                         .withBeepOnBoot(false)
                         .withAllowMusicDurDisable(true)));
 
-        try (TalonFX intake2 = new TalonFX(Constants.IntakeConstants.FOLLOWER_ID)) {
-            intake2.setControl(new Follower(Constants.IntakeConstants.LEAD_ID, false));
-        }
-
         beamBreak = new DigitalInput(Constants.IntakeConstants.BEAMBREAK_ID);
         currentState = State.IDLE;
         pulseTimer.start();
@@ -63,12 +56,8 @@ public class Intake extends SubsystemBase {
         return currentState;
     }
 
-    public boolean beamBreakBroken() {
-        return !beamBreak.get();
-    }
-
     public boolean hasCoral() {
-        return false;
+        return !beamBreak.get();
     }
 
     public boolean hasAlgae() {

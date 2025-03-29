@@ -225,12 +225,10 @@ public final class Constants {
     public final static class IntakeConstants {
         // basic configs
         public static int LEAD_ID;
-        public static int FOLLOWER_ID;
         public static int BEAMBREAK_ID;
         public static double CURRENT_LIMIT;
         public static InvertedValue MOTOR_INVERT;
         public static NeutralModeValue NEUTRAL_MODE;
-        public static double DEFAULT_PROXIMITY_OBJECT_DETECTION_THRESHOLD;
     }
 
     public final static class PivotConstants {
