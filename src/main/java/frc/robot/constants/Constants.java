@@ -33,6 +33,8 @@ import java.util.function.Supplier;
 
 public final class Constants {
 
+    public static RobotIdentity IDENTITY;
+
     // CAN bus that the devices are located on;
     // If there is more than one CAN bus, create a CANBus constant for each one
     public static CANBus CAN_BUS;

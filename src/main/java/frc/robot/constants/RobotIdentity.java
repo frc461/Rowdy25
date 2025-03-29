@@ -53,6 +53,7 @@ public enum RobotIdentity {
     }
 
     private static void setDefaultConstants() {
+        Constants.IDENTITY = getIdentity();
         Constants.CAN_BUS = DefaultConstants.CAN_BUS;
         Constants.BLUE_DEFAULT_ROTATION = DefaultConstants.BLUE_DEFAULT_ROTATION;
         Constants.RED_DEFAULT_ROTATION = DefaultConstants.RED_DEFAULT_ROTATION;
