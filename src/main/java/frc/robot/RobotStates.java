@@ -302,6 +302,8 @@ public class RobotStates {
 
         intakeOutState.onTrue(
                 new InstantCommand(swerve::setIdleMode)
+                        .andThen(() -> wrist.setL4CoralObstructedState(!swerve.localizer.isNearWall()))
+                        .andThen(new WaitUntilCommand(wrist::isAtTarget))
                         .andThen(intake::setIntakeOutState)
                         .andThen(new WaitUntilCommand(() -> !intake.hasAlgae() && !intake.barelyHasCoral()))
                         .andThen(this::setStowState)

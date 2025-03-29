@@ -21,6 +21,7 @@ public class Wrist extends SubsystemBase {
         L2_CORAL(Constants.WristConstants.L2_CORAL),
         L3_CORAL(Constants.WristConstants.L3_CORAL),
         L4_CORAL(Constants.WristConstants.L4_CORAL),
+        L4_CORAL_OBSTRUCTED(Constants.WristConstants.L4_CORAL_OBSTRUCTED),
         LOW_REEF_ALGAE(Constants.WristConstants.LOW_REEF_ALGAE),
         HIGH_REEF_ALGAE(Constants.WristConstants.HIGH_REEF_ALGAE),
         PROCESSOR(Constants.WristConstants.PROCESSOR),
@@ -161,6 +162,12 @@ public class Wrist extends SubsystemBase {
 
     public void setL4CoralState() {
         setState(State.L4_CORAL);
+    }
+
+    public void setL4CoralObstructedState(boolean isObstructed) {
+        if (isObstructed && currentState == State.L4_CORAL) {
+            setState(State.L4_CORAL_OBSTRUCTED);
+        }
     }
 
     public void setLowReefAlgaeState() {

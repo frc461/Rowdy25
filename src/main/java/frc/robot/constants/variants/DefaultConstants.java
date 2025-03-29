@@ -142,6 +142,7 @@ public final class DefaultConstants {
                         : VecBuilder.fill(0.1 * dist, 0.1 * dist, Units.degreesToRadians(180.0) * dist);
 
         public static final int PROXIMITY_SENSOR_DIO_PORT = 1;
+        public static final double ZERO_CORAL_PROXIMITY_THRESHOLD = 0.3; // TODO SHOP: TUNE
 
         public static final class LimelightConstants {
             public static final String LIMELIGHT_NT_NAME = "limelight";
@@ -385,6 +386,7 @@ public final class DefaultConstants {
         public static final double L2_CORAL = 55;
         public static final double L3_CORAL = 55;
         public static final double L4_CORAL = 285;
+        public static final double L4_CORAL_OBSTRUCTED = 265;
         public static final double LOW_REEF_ALGAE = 131.0;
         public static final double HIGH_REEF_ALGAE = 160;
         public static final double PROCESSOR = 150;

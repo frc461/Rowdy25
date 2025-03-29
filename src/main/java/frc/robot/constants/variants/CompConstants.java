@@ -176,6 +176,7 @@ public final class CompConstants {
         public static final double L2_CORAL = 45;
         public static final double L3_CORAL = 60;
         public static final double L4_CORAL = 75;
+        public static final double L4_CORAL_OBSTRUCTED = 60;
         public static final double LOW_REEF_ALGAE = 65.5;
         public static final double HIGH_REEF_ALGAE = 260;
         public static final double PROCESSOR = 160;

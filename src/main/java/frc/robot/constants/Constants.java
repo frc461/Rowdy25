@@ -94,6 +94,7 @@ public final class Constants {
         public static Function<Double, Matrix<N3, N1>> VISION_STD_DEV_FUNCTION;
 
         public static int PROXIMITY_SENSOR_DIO_PORT;
+        public static double ZERO_CORAL_PROXIMITY_THRESHOLD;
 
         public static final class LimelightConstants {
             public static String LIMELIGHT_NT_NAME;
@@ -330,6 +331,7 @@ public final class Constants {
         public static double L2_CORAL;
         public static double L3_CORAL;
         public static double L4_CORAL;
+        public static double L4_CORAL_OBSTRUCTED;
         public static double LOW_REEF_ALGAE;
         public static double HIGH_REEF_ALGAE;
         public static double PROCESSOR;
