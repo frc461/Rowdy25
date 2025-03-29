@@ -91,7 +91,7 @@ Comp bot/later:
 
 Saturday, 3/29/2025 software:
 comp bot:
-- [ ] distance sensor + software implementation
+- [x] distance sensor + software implementation
 - [x] more efficient dependent pathfinding
 
 ground intake:
@@ -101,3 +101,16 @@ ground intake:
 - [ ] double-sided outtake
 - [ ] revamp auto
 - [ ] (if possible) algae intake
+
+Saturday, 3/29/2025 to test:
+
+comp bot:
+- [ ] scoring
+- [ ] dynamic autos
+- [ ] distance sensor
+
+ground intake:
+- [ ] (once assembled) ground intake motor setup + logic revamp
+- [ ] test pathfinding locations and auto scoring
+- [ ] test auto (with dynamic if possible)
+- [ ] (if possible) test algae net and processor scoring

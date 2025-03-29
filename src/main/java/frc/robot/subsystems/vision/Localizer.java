@@ -26,7 +26,7 @@ public class Localizer {
 
     // localizer is a dependent of swerve
     private final Swerve swerve;
-    private final DigitalInput proximitySensor = new DigitalInput(Constants.VisionConstants.PROXIMITY_SENSOR_DIO_PORT);
+    private final DigitalInput proximitySensor = new DigitalInput(Constants.VisionConstants.PROXIMITY_SENSOR_DIO_PORT); // TODO SHOP: TEST AND CONFIGURE CANANDCOLOR
     private final LocalizationTelemetry localizationTelemetry = new LocalizationTelemetry(this);
     private final SendableChooser<LocalizationStrategy> localizationChooser = new SendableChooser<>();
 
