@@ -19,7 +19,7 @@ import java.util.function.DoubleSupplier;
 
 import static edu.wpi.first.units.Units.Meters;
 
-public class PathfindToPoseAvoidingReefCommand extends Command {
+public class PathfindToPoseAvoidingReefCommand extends Command { // TODO: ORGANIZE INTO DRIVE COMMANDS SUBDIRECTORY
     private enum Side {
         AB, CD, EF, GH, IJ, KL;
 

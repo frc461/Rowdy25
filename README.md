@@ -115,3 +115,6 @@ ground intake:
 - [ ] test pathfinding locations and auto scoring
 - [ ] test auto (with dynamic if possible)
 - [ ] (if possible) test algae net and processor scoring
+
+Sunday, 3/30/2025 software:
+- [ ] ground intake: implement independent system in the case of camera failure that utilizes the canandcolor proximity sensor to adapt to coral obstruction (boolean trustCameras in Localizer.java)
