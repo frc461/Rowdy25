@@ -39,7 +39,7 @@ public class Localizer {
     private boolean hasCalibratedOnceWhenNear = false;
 
     public final Pose2d robotPoseAtProcessor;
-    public final Pose2d robotPoseAtNet;
+    public Pose2d randomizedRobotPoseAtNet = new Pose2d();
     public Pose2d nearestRobotPoseAtCoralStation = new Pose2d();
     public Pose2d nearestRobotPoseAtAlgaeReef = new Pose2d();
     public Pose2d nearestRobotPoseAtBranch = new Pose2d();
@@ -69,7 +69,7 @@ public class Localizer {
         LimelightUtil.configureRobotToCameraOffset();
 
         robotPoseAtProcessor = FieldUtil.AlgaeScoring.getRobotPoseAtProcessor();
-        robotPoseAtNet = FieldUtil.AlgaeScoring.getRobotPoseAtNet();
+        randomizedRobotPoseAtNet = FieldUtil.AlgaeScoring.getRobotPoseAtNetCenter();
     }
 
     public boolean isNearWall() {
@@ -113,7 +113,7 @@ public class Localizer {
         return switch (robotState) {
             case L1_CORAL, L2_CORAL, L3_CORAL, L4_CORAL -> currentPose.getTranslation().getDistance(nearestRobotPoseAtBranch.getTranslation());
             case PROCESSOR -> currentPose.getTranslation().getDistance(robotPoseAtProcessor.getTranslation());
-            case NET -> currentPose.getTranslation().getDistance(robotPoseAtNet.getTranslation());
+            case NET -> currentPose.getTranslation().getDistance(randomizedRobotPoseAtNet.getTranslation());
             case CORAL_STATION -> currentPose.getTranslation().getDistance(nearestRobotPoseAtCoralStation.getTranslation());
             default -> 0.0;
         };
@@ -131,8 +131,16 @@ public class Localizer {
         return robotPoseAtProcessor.getRotation().getDegrees();
     }
 
+    public Pose2d randomizeNetScoringPose() {
+        randomizedRobotPoseAtNet = FieldUtil.AlgaeScoring.getInnermostRobotPoseAtNet().interpolate(
+                FieldUtil.AlgaeScoring.getOutermostRobotPoseAtNet(),
+                Math.random()
+        );
+        return randomizedRobotPoseAtNet;
+    }
+
     public double getNetScoringHeading() {
-        return robotPoseAtNet.getRotation().getDegrees();
+        return randomizedRobotPoseAtNet.getRotation().getDegrees();
     }
 
     public void setCurrentTemporaryTargetPose(Pose2d temporaryTargetPose) {
