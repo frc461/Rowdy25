@@ -21,7 +21,7 @@ import frc.robot.constants.Constants;
 import frc.robot.util.FieldUtil;
 import frc.robot.util.MultipleChooser;
 
-public final class AutoManager {
+public final class AutoManager { // TODO: REVAMP WTIH GROUND INTAKE
     private Command currentCommand;
 
     public enum StartPosition {
@@ -150,13 +150,13 @@ public final class AutoManager {
             AtomicBoolean scoringNext = new AtomicBoolean(false);
             Command routineSegmentCommand = Commands.waitSeconds(0.5)
                     .andThen(getPathFindingCommandToCoralStation(robotStates, currentScoringLocation.getFirst(), nextScoringLocation.getFirst()))
-                    .andThen(new WaitUntilCommand(() -> robotStates.stowState.getAsBoolean() || robotStates.intake.coralEntered()))
+                    .andThen(new WaitUntilCommand(() -> robotStates.stowState.getAsBoolean() || robotStates.intake.hasCoral()))
                     .andThen(() -> scoringNext.set(true))
                     .andThen(robotStates.swerve.pathFindToScoringLocation(robotStates, nextScoringLocation.getFirst(), nextScoringLocation.getSecond()))
                     .andThen(() -> scoringNext.set(false));
 
-            Trigger incorrectCoralTrigger = new Trigger(() -> scoringNext.get() && !robotStates.intake.barelyHasCoral() && !robotStates.atScoringLocation())
-                    .or(robotStates.intake.coralStuck);
+            Trigger incorrectCoralTrigger = new Trigger(() -> scoringNext.get() && !robotStates.intake.hasCoral() && !robotStates.atScoringLocation())
+                    .or(robotStates.intake.hasAlgae);
             incorrectCoralTrigger.onTrue(new InstantCommand(routineSegmentCommand::cancel));
             autoEventLooper.observe(incorrectCoralTrigger);
 

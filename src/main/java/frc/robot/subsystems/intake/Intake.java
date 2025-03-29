@@ -3,7 +3,6 @@ package frc.robot.subsystems.intake;
 import com.ctre.phoenix6.configs.*;
 import com.ctre.phoenix6.hardware.TalonFX;
 
-import com.reduxrobotics.sensors.canandcolor.Canandcolor;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -34,7 +33,7 @@ public class Intake extends SubsystemBase {
 
     private final IntakeTelemetry intakeTelemetry = new IntakeTelemetry(this);
 
-    public Trigger coralStuck;
+    public Trigger hasAlgae;
 
     public Intake() {
         intake = new TalonFX(Constants.IntakeConstants.LEAD_ID);
@@ -53,8 +52,7 @@ public class Intake extends SubsystemBase {
         currentState = State.IDLE;
         pulseTimer.start();
 
-        coralStuck = new Trigger(this::atIntakeSlowState).debounce(1.5) // TODO SHOP: TEST THIS
-                .or(new Trigger(() -> intake.getStatorCurrent().getValueAsDouble() > 40.0).debounce(0.5));
+        hasAlgae = new Trigger(() -> intake.getStatorCurrent().getValueAsDouble() > 40.0).debounce(0.5); // TODO SHOP: TEST THIS
     }
 
     public double getCurrent() {
@@ -70,15 +68,11 @@ public class Intake extends SubsystemBase {
     }
 
     public boolean hasAlgae() {
-        return false; // TODO SHOP: TUNE THIS
+        return hasAlgae.getAsBoolean() || currentState == State.HAS_ALGAE; // TODO SHOP: TEST THIS
     }
 
     public boolean atIdleState() {
         return currentState == State.IDLE;
-    }
-
-    public boolean atIntakeSlowState() {
-        return currentState == State.INTAKE_SLOW;
     }
 
     public boolean atHasAlgaeState() {
@@ -109,20 +103,12 @@ public class Intake extends SubsystemBase {
         }
     }
 
-    public void setIntakeSlowState() {
-        setState(State.INTAKE_SLOW);
-    }
-
     public void setIntakeOutState() {
         setState(State.INTAKE_OUT);
     }
 
     public void setOuttakeState() {
         setState(State.OUTTAKE);
-    }
-
-    public void setOuttakeSlowState() {
-        setState(State.OUTTAKE_SLOW);
     }
 
     public void setOuttakeL1State() {
@@ -133,7 +119,7 @@ public class Intake extends SubsystemBase {
         intake.set(speed);
     }
 
-    public void pulseIntake() {
+    public void pulseIntake() { // TODO SHOP: TEST THIS WITH GROUND ALGAE INTAKE
         if ((int) pulseTimer.get() % 2 == 0) {
             setIntakeSpeed(0.1);
         } else {

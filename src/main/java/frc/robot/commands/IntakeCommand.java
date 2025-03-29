@@ -15,9 +15,7 @@ public class IntakeCommand extends Command {
     public void execute() {
         switch (intake.getState()) {
             case INTAKE:
-                if (intake.hasCoral()) {
-                    intake.setIdleState();
-                } else if (intake.hasAlgae()) {
+                if (intake.hasCoral() || intake.hasAlgae()) {
                     intake.setIdleState();
                 } else {
                     intake.setIntakeSpeed(0.85);
