@@ -93,7 +93,7 @@ Saturday, 3/29/2025 software:
 comp bot:
 - [x] distance sensor + software implementation
 - [x] more efficient dependent pathfinding
-- [ ] camera sensing vs. distance sensor via boolean trustCameras for coral obstruction
+- [x] camera sensing vs. distance sensor via boolean trustCameras for coral obstruction
 
 ground intake:
 - [x] ground intake motor setup + logic revamp
