@@ -269,9 +269,9 @@ public class RobotStates {
                                         .andThen(new WaitUntilCommand(elevator::nearTarget))
                                         .onlyIf(() -> pivot.goingThroughStow(pivotState))
                         )
-                        .andThen(setPivotState)
                         .andThen(setElevatorState)
                         .andThen(new WaitUntilCommand(elevator::nearTarget))
+                        .andThen(setPivotState)
                         .andThen(setWristState),
                 movePivotToPerpendicular()
                         .andThen(wrist::setStowState)

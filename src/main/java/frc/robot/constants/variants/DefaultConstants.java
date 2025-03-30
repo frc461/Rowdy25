@@ -268,7 +268,7 @@ public final class DefaultConstants {
         public static final double D = 0.025;
         public static final double EXPO_V = V / 0.90; // 90% of the actual max velocity, as it will allocate 1 / 0.9 = 1.1111 times the voltage to 1 rps
         public static final double EXPO_A = A / 0.015; // 1.5% of the actual max accel
-        public static final double SAFE_TOLERANCE = 5.0;
+        public static final double SAFE_TOLERANCE = 15.0;
         public static final double AT_TARGET_TOLERANCE = 2.5;
 
         // presets
@@ -327,15 +327,15 @@ public final class DefaultConstants {
         public static final double P = 0.15;
         public static final double I = 0;
         public static final double D = 0.01;
-        public static final double EXPO_V = V / 0.2; // 30% of the actual max velocity, as it will allocate 1 / 0.75 = 1.33333 times the voltage to 1 rps
-        public static final double EXPO_A = A / 0.0075; // 1.0% of the actual max acceleration
-        public static final double SAFE_TOLERANCE = 15.0;
+        public static final double EXPO_V = V / 0.35; // 30% of the actual max velocity, as it will allocate 1 / 0.75 = 1.33333 times the voltage to 1 rps // TODO SHOP: TEST THIS SPEED
+        public static final double EXPO_A = A / 0.1; // 1.0% of the actual max acceleration
+        public static final double SAFE_TOLERANCE = 35.0;
         public static final double AT_TARGET_TOLERANCE = 2.5;
 
-        // presets
+        // presets // TODO SHOP: TUNE THESE
         public static final double LOWER_LIMIT = 0;
         public static final double UPPER_LIMIT = 105;
-        public static final double STOW = 80;
+        public static final double STOW = 75;
         public static final double CORAL_STATION = 50;
         public static final double GROUND_CORAL = 0.1;
         public static final double GROUND_ALGAE = 4.5;
