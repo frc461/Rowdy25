@@ -70,7 +70,7 @@ public final class CompConstants {
         public static final double SAFE_TOLERANCE = 15.0;
         public static final double AT_TARGET_TOLERANCE = 2.0;
 
-        // presets
+        // presets // TODO SHOP: TUNE THESE
         public static final double LOWER_LIMIT = 0;
         public static final double UPPER_LIMIT = 46;
         public static final double STOW = 0;
@@ -117,12 +117,12 @@ public final class CompConstants {
         public static final double P = 0.15;
         public static final double I = 0; // TODO SHOP: BECAUSE OF BUILT-IN INTEGRAL WINDUP PREVENTION, TRY (VERY) HIGH I
         public static final double D = 0.01;
-        public static final double EXPO_V = V / 0.2; // 30% of the actual max velocity, as it will allocate 1 / 0.4 = 2.5 times the voltage to 1 rps
+        public static final double EXPO_V = V / 0.2; // 30% of the actual max velocity, as it will allocate 1 / 0.4 = 2.5 times the voltage to 1 rps // TODO SHOP: TEST HIGHER SPEED
         public static final double EXPO_A = A / 0.1; // 1.0% of the actual max acceleration
         public static final double SAFE_TOLERANCE = 35.0;
         public static final double AT_TARGET_TOLERANCE = 2.5;
 
-        // presets
+        // presets // TODO SHOP: TUNE THESE
         public static final double LOWER_LIMIT = 0;
         public static final double UPPER_LIMIT = 105;
         public static final double STOW = 56;
@@ -167,7 +167,7 @@ public final class CompConstants {
         public static final double SAFE_TOLERANCE = 25.0;
         public static final double AT_TARGET_TOLERANCE = 2.5;
 
-        // presets
+        // presets // TODO SHOP: TUNE THESE
         public static final BiFunction<Double, Double, Double> LOWER_LIMIT = (elevatorPosition, pivotPosition) -> (double) (pivotPosition < 30 ? 160 : elevatorPosition > 1.5 && elevatorPosition < 12 ? 115 : 45);
         public static final Function<Double, Double> UPPER_LIMIT = (elevatorPosition) -> (double) (elevatorPosition > 8 ? 295 : 160);
         public static final double STOW = 120;

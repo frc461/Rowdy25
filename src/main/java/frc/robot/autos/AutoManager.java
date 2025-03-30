@@ -139,6 +139,7 @@ public final class AutoManager { // TODO: REVAMP WTIH GROUND INTAKE
         triggersToBind.add(autoEventLooper.addTrigger(
                 this.startPosition.index + "," + firstScoringLocation.getFirst().name(),
                 () -> robotStates.swerve.pathFindToScoringLocation(robotStates, firstScoringLocation.getFirst(), firstScoringLocation.getSecond())
+                        .andThen(Commands.waitSeconds(0.5))
         ));
 
         while (!currentScoringLocations.isEmpty()) {
@@ -154,13 +155,13 @@ public final class AutoManager { // TODO: REVAMP WTIH GROUND INTAKE
 
             triggersToBind.add(autoEventLooper.addTrigger(
                     currentScoringLocation.getFirst().name() + "," + nextScoringLocation.getFirst().name(),
-                    () -> Commands.waitSeconds(1.0)
+                    () -> Commands.waitSeconds(0.5)
                             .andThen(getPathFindingCommandToCoralStation(robotStates, currentScoringLocation.getFirst(), nextScoringLocation.getFirst()))
                             .andThen(new WaitUntilCommand(() -> robotStates.stowState.getAsBoolean() || robotStates.intake.hasCoral()))
                             .andThen(() -> scoringNext.set(true))
                             .andThen(robotStates.swerve.pathFindToScoringLocation(robotStates, nextScoringLocation.getFirst(), nextScoringLocation.getSecond()))
                             .andThen(() -> scoringNext.set(false))
-                            .until(() -> scoringNext.get() && !robotStates.intake.hasCoral() && !robotStates.atScoringLocation()) // TODO: SOLVE THIS PROBLEM
+                            .until(() -> scoringNext.get() && !robotStates.intake.hasCoral() && !robotStates.atScoringLocation() || robotStates.intake.coralStuck()) // TODO: SOLVE THIS PROBLEM
             ));
         }
 
