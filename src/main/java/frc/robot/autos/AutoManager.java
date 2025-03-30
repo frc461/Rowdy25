@@ -122,11 +122,8 @@ public final class AutoManager {
 
         triggersToBind.add(autoEventLooper.addTrigger(
                 "start",
-                () -> new InstantCommand(() -> {
-                    if (startPosition.index != 0) {
-                        robotStates.swerve.localizer.setPoses(getStartingPose(startPosition));
-                    }
-                })
+                () -> new InstantCommand(() -> robotStates.swerve.localizer.setPoses(getStartingPose(startPosition)))
+                        .onlyIf(() -> startPosition.index != 0)
                         .andThen(robotStates::setStowState)
         ));
 
