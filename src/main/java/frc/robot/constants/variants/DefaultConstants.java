@@ -134,12 +134,15 @@ public final class DefaultConstants {
         public static final Matrix<N3, N1> ODOM_STD_DEV = VecBuilder.fill(0.03, 0.03, Units.degreesToRadians(0.01));
         public static final Function<Double, Matrix<N3, N1>> VISION_STD_DEV_MULTITAG_FUNCTION =
                 dist -> dist < 3.0
-                        ? VecBuilder.fill(Math.min(0.03, 0.03 * dist), Math.min(0.03, 0.03 * dist), Units.degreesToRadians(5.0))
+                        ? VecBuilder.fill(Math.min(0.03, 0.03 * dist), Math.min(0.03, 0.03 * dist), DriverStation.isEnabled() ? Units.degreesToRadians(5.0) : Units.degreesToRadians(0.05))
                         : VecBuilder.fill(0.05 * dist, 0.05 * dist, Units.degreesToRadians(180.0) * dist);
         public static final Function<Double, Matrix<N3, N1>> VISION_STD_DEV_FUNCTION =
                 dist -> dist < 3.0
                         ? VecBuilder.fill(0.075 * dist, 0.075 * dist, Units.degreesToRadians(180.0) * dist)
                         : VecBuilder.fill(0.1 * dist, 0.1 * dist, Units.degreesToRadians(180.0) * dist);
+
+        public static final int PROXIMITY_SENSOR_DIO_PORT = 1;
+        public static final double ZERO_CORAL_PROXIMITY_THRESHOLD = 0.3; // TODO SHOP: TUNE
 
         public static final class LimelightConstants {
             public static final String LIMELIGHT_NT_NAME = "limelight";
@@ -240,7 +243,7 @@ public final class DefaultConstants {
         // motor config
         public static final int LEAD_ID = 31;
         public static final int FOLLOWER_ID = 32;
-        public static final int LOWER_LIMIT_SWITCH_ID = 0;
+        public static final int LOWER_LIMIT_SWITCH_DIO_PORT = 0;
         public static final double CURRENT_LIMIT = 40;
         public static final InvertedValue MOTOR_INVERT = InvertedValue.Clockwise_Positive;
         public static final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Coast;
@@ -288,7 +291,7 @@ public final class DefaultConstants {
 
     public final static class IntakeConstants {
         public static final int LEAD_ID = 41;
-        public static final int BEAMBREAK_ID = 4;
+        public static final int BEAMBREAK_DIO_PORT = 4;
         public static final double CURRENT_LIMIT = 60;
         public static final InvertedValue MOTOR_INVERT = InvertedValue.CounterClockwise_Positive;
         public static final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Coast;
@@ -398,7 +401,7 @@ public final class DefaultConstants {
 
     public static final class SwerveConstants {
         public static final double PATH_TRANSLATION_CONTROLLER_P = 10.0;
-        public static final double PATH_TRANSLATION_CONTROLLER_D = 0.3;
+        public static final double PATH_TRANSLATION_CONTROLLER_D = 0.01;
         public static final double PATH_ROTATION_CONTROLLER_P = 7.5;
 
         public static final double ANGULAR_POSITION_P = 0.035;

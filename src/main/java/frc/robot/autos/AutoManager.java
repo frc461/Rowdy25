@@ -25,6 +25,7 @@ public final class AutoManager { // TODO: REVAMP WTIH GROUND INTAKE
     private Command currentCommand;
 
     public enum StartPosition {
+        CUSTOM(0),
         DRIVER_FAR_RIGHT(1),
         DRIVER_CENTER_RIGHT(2),
         DRIVER_CENTER(3),
@@ -38,6 +39,7 @@ public final class AutoManager { // TODO: REVAMP WTIH GROUND INTAKE
 
         private static Pose2d getStartingPosition(StartPosition startPosition) {
             return switch (startPosition) {
+                case CUSTOM -> new Pose2d();
                 case DRIVER_FAR_RIGHT -> new Pose2d(7.152226027397259, 0.8170162671232879, Rotation2d.kPi);
                 case DRIVER_CENTER_RIGHT -> new Pose2d(7.152226027397259, 2.439790239726027, Rotation2d.kPi);
                 case DRIVER_CENTER -> new Pose2d(7.152226027397259, 4.04753852739726, Rotation2d.kPi);
@@ -121,6 +123,7 @@ public final class AutoManager { // TODO: REVAMP WTIH GROUND INTAKE
         triggersToBind.add(autoEventLooper.addTrigger(
                 "start",
                 () -> new InstantCommand(() -> robotStates.swerve.localizer.setPoses(getStartingPose(startPosition)))
+                        .onlyIf(() -> startPosition.index != 0)
                         .andThen(robotStates::setStowState)
         ));
 
@@ -148,21 +151,16 @@ public final class AutoManager { // TODO: REVAMP WTIH GROUND INTAKE
             Pair<FieldUtil.Reef.ScoringLocation, FieldUtil.Reef.Level> nextScoringLocation = currentScoringLocations.get(0);
 
             AtomicBoolean scoringNext = new AtomicBoolean(false);
-            Command routineSegmentCommand = Commands.waitSeconds(0.5)
-                    .andThen(getPathFindingCommandToCoralStation(robotStates, currentScoringLocation.getFirst(), nextScoringLocation.getFirst()))
-                    .andThen(new WaitUntilCommand(() -> robotStates.stowState.getAsBoolean() || robotStates.intake.hasCoral()))
-                    .andThen(() -> scoringNext.set(true))
-                    .andThen(robotStates.swerve.pathFindToScoringLocation(robotStates, nextScoringLocation.getFirst(), nextScoringLocation.getSecond()))
-                    .andThen(() -> scoringNext.set(false));
-
-            Trigger incorrectCoralTrigger = new Trigger(() -> scoringNext.get() && !robotStates.intake.hasCoral() && !robotStates.atScoringLocation())
-                    .or(robotStates.intake.hasAlgae);
-            incorrectCoralTrigger.onTrue(new InstantCommand(routineSegmentCommand::cancel));
-            autoEventLooper.observe(incorrectCoralTrigger);
 
             triggersToBind.add(autoEventLooper.addTrigger(
                     currentScoringLocation.getFirst().name() + "," + nextScoringLocation.getFirst().name(),
-                    () -> routineSegmentCommand
+                    () -> Commands.waitSeconds(1.0)
+                            .andThen(getPathFindingCommandToCoralStation(robotStates, currentScoringLocation.getFirst(), nextScoringLocation.getFirst()))
+                            .andThen(new WaitUntilCommand(() -> robotStates.stowState.getAsBoolean() || robotStates.intake.hasCoral()))
+                            .andThen(() -> scoringNext.set(true))
+                            .andThen(robotStates.swerve.pathFindToScoringLocation(robotStates, nextScoringLocation.getFirst(), nextScoringLocation.getSecond()))
+                            .andThen(() -> scoringNext.set(false))
+                            .until(() -> scoringNext.get() && !robotStates.intake.hasCoral() && !robotStates.atScoringLocation() || robotStates.intake.coralStuck.getAsBoolean())
             ));
         }
 
@@ -173,7 +171,7 @@ public final class AutoManager { // TODO: REVAMP WTIH GROUND INTAKE
             currentTrigger.interrupt().onTrue(
                     new InstantCommand(robotStates.intake::setOuttakeL1State)
                             .andThen(Commands.waitSeconds(0.25))
-                            .andThen(currentTrigger.cmd())
+                            .andThen(currentTrigger.duplicate().cmd())
             );
             currentTrigger.done().onTrue(triggersToBind.isEmpty() ? Commands.none() : triggersToBind.get(0).cmd());
         }

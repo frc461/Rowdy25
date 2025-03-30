@@ -61,7 +61,7 @@ public final class FieldUtil {
             pose2d = pose3d.toPose2d();
         }
 
-        public static final List<AprilTag> FILTER = List.of( // TODO SHOP: TEST FILTER
+        public static final List<AprilTag> FILTER = List.of(
                 ID_6, ID_7, ID_8, ID_9, ID_10, ID_11, ID_17, ID_18, ID_19, ID_20, ID_21, ID_22
         );
 
@@ -339,6 +339,9 @@ public final class FieldUtil {
             PROCESSOR
         }
 
+        public static final double NET_LENGTH = Units.inchesToMeters(146.50);
+        public static final double NET_SAFE_HALF_LENGTH = NET_LENGTH / 2.0 - Units.inchesToMeters(9.0); // Around half of a radius of a ball
+
         public static List<AprilTag> getAlgaeScoringTags() {
             return Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red ?
                     List.of(AprilTag.ID_3, AprilTag.ID_5, AprilTag.ID_15) : List.of(AprilTag.ID_4, AprilTag.ID_14, AprilTag.ID_16);
@@ -362,8 +365,27 @@ public final class FieldUtil {
             return getProcessorTagPose().plus(new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0, 0, Rotation2d.kZero));
         }
 
-        public static Pose2d getRobotPoseAtNet() {
+        public static Pose2d getRobotPoseAtNetCenter() {
             return getNetTagPose().plus(new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0, 0, Rotation2d.kPi));
+        }
+
+        public static Pose2d getInnermostRobotPoseAtNet() {
+            return getNetTagPose().plus(new Transform2d(
+                    Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0,
+                    NET_SAFE_HALF_LENGTH,
+                    Rotation2d.kPi
+            ));
+        }
+
+        public static Pose2d getOutermostRobotPoseAtNet() {
+            Pose2d robotPoseAtNetCenter = getRobotPoseAtNetCenter();
+            return new Pose2d(
+                    robotPoseAtNetCenter.getX(),
+                    Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red
+                            ? Constants.ROBOT_WIDTH_WITH_BUMPERS.in(Meters) / 1.5
+                            : FieldUtil.FIELD_WIDTH - Constants.ROBOT_WIDTH_WITH_BUMPERS.in(Meters) / 1.5,
+                    robotPoseAtNetCenter.getRotation()
+            );
         }
 
         public static Pose2d getNearestAlgaeScoringTagPose(Pose2d currentPose) {

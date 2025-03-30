@@ -91,6 +91,8 @@ public enum RobotIdentity {
         Constants.VisionConstants.ODOM_STD_DEV = DefaultConstants.VisionConstants.ODOM_STD_DEV;
         Constants.VisionConstants.VISION_STD_DEV_MULTITAG_FUNCTION = DefaultConstants.VisionConstants.VISION_STD_DEV_MULTITAG_FUNCTION;
         Constants.VisionConstants.VISION_STD_DEV_FUNCTION = DefaultConstants.VisionConstants.VISION_STD_DEV_FUNCTION;
+        Constants.VisionConstants.PROXIMITY_SENSOR_DIO_PORT = DefaultConstants.VisionConstants.PROXIMITY_SENSOR_DIO_PORT;
+        Constants.VisionConstants.ZERO_CORAL_PROXIMITY_THRESHOLD = DefaultConstants.VisionConstants.ZERO_CORAL_PROXIMITY_THRESHOLD;
         Constants.VisionConstants.LimelightConstants.LIMELIGHT_NT_NAME = DefaultConstants.VisionConstants.LimelightConstants.LIMELIGHT_NT_NAME;
         Constants.VisionConstants.LimelightConstants.LL_FORWARD = DefaultConstants.VisionConstants.LimelightConstants.LL_FORWARD;
         Constants.VisionConstants.LimelightConstants.LL_RIGHT = DefaultConstants.VisionConstants.LimelightConstants.LL_RIGHT;
@@ -156,7 +158,7 @@ public enum RobotIdentity {
               
         Constants.ElevatorConstants.LEAD_ID = DefaultConstants.ElevatorConstants.LEAD_ID;
         Constants.ElevatorConstants.FOLLOWER_ID = DefaultConstants.ElevatorConstants.FOLLOWER_ID;
-        Constants.ElevatorConstants.LOWER_LIMIT_SWITCH_ID = DefaultConstants.ElevatorConstants.LOWER_LIMIT_SWITCH_ID;
+        Constants.ElevatorConstants.LOWER_LIMIT_SWITCH_DIO_PORT = DefaultConstants.ElevatorConstants.LOWER_LIMIT_SWITCH_DIO_PORT;
         Constants.ElevatorConstants.CURRENT_LIMIT = DefaultConstants.ElevatorConstants.CURRENT_LIMIT;
         Constants.ElevatorConstants.MOTOR_INVERT = DefaultConstants.ElevatorConstants.MOTOR_INVERT;
         Constants.ElevatorConstants.NEUTRAL_MODE = DefaultConstants.ElevatorConstants.NEUTRAL_MODE;
@@ -193,7 +195,7 @@ public enum RobotIdentity {
         Constants.ElevatorConstants.CLIMB = DefaultConstants.ElevatorConstants.CLIMB;
 
         Constants.IntakeConstants.LEAD_ID = DefaultConstants.IntakeConstants.LEAD_ID;
-        Constants.IntakeConstants.BEAMBREAK_ID = DefaultConstants.IntakeConstants.BEAMBREAK_ID;
+        Constants.IntakeConstants.BEAMBREAK_DIO_PORT = DefaultConstants.IntakeConstants.BEAMBREAK_DIO_PORT;
         Constants.IntakeConstants.CURRENT_LIMIT = DefaultConstants.IntakeConstants.CURRENT_LIMIT;
         Constants.IntakeConstants.MOTOR_INVERT = DefaultConstants.IntakeConstants.MOTOR_INVERT;
         Constants.IntakeConstants.NEUTRAL_MODE = DefaultConstants.IntakeConstants.NEUTRAL_MODE;
@@ -315,7 +317,7 @@ public enum RobotIdentity {
         Constants.VisionConstants.PhotonConstants.BW_BACK_PITCH = CompConstants.PhotonConstants.BW_BACK_PITCH;
         Constants.VisionConstants.PhotonConstants.BW_BACK_YAW = CompConstants.PhotonConstants.BW_BACK_YAW;
 
-        Constants.ElevatorConstants.LOWER_LIMIT_SWITCH_ID = CompConstants.ElevatorConstants.LOWER_LIMIT_SWITCH_ID;
+        Constants.ElevatorConstants.LOWER_LIMIT_SWITCH_DIO_PORT = CompConstants.ElevatorConstants.LOWER_LIMIT_SWITCH_DIO_PORT;
         Constants.ElevatorConstants.MOTOR_INVERT = CompConstants.ElevatorConstants.MOTOR_INVERT;
         Constants.ElevatorConstants.ROTOR_TO_INCH_RATIO = CompConstants.ElevatorConstants.ROTOR_TO_INCH_RATIO;
         Constants.ElevatorConstants.MASS_LBS = CompConstants.ElevatorConstants.MASS_LBS;
@@ -349,7 +351,7 @@ public enum RobotIdentity {
         Constants.ElevatorConstants.NET = CompConstants.ElevatorConstants.NET;
 
         Constants.IntakeConstants.MOTOR_INVERT = CompConstants.IntakeConstants.MOTOR_INVERT;
-        Constants.IntakeConstants.BEAMBREAK_ID = CompConstants.IntakeConstants.BEAMBREAK_ID;
+        Constants.IntakeConstants.BEAMBREAK_DIO_PORT = CompConstants.IntakeConstants.BEAMBREAK_DIO_PORT;
 
         Constants.PivotConstants.MOTOR_INVERT = CompConstants.PivotConstants.MOTOR_INVERT;
         Constants.PivotConstants.SENSOR_TO_DEGREE_RATIO = CompConstants.PivotConstants.SENSOR_TO_DEGREE_RATIO;

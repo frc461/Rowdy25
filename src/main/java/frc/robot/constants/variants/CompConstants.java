@@ -44,7 +44,7 @@ public final class CompConstants {
 
     public final static class ElevatorConstants {
         // motor config
-        public static final int LOWER_LIMIT_SWITCH_ID = 7;
+        public static final int LOWER_LIMIT_SWITCH_DIO_PORT = 7;
         public static final InvertedValue MOTOR_INVERT = InvertedValue.Clockwise_Positive;
 
         // mechanism characterization
@@ -75,6 +75,7 @@ public final class CompConstants {
         public static final double UPPER_LIMIT = 46;
         public static final double STOW = 0;
         public static final double CORAL_STATION = 0;
+        public static final double CORAL_STATION_OBSTRUCTED = 0;
         public static final double GROUND_CORAL = 0;
         public static final double GROUND_ALGAE = 0;
         public static final double L1_CORAL = 0;
@@ -89,7 +90,7 @@ public final class CompConstants {
 
     public final static class IntakeConstants {
         public static final InvertedValue MOTOR_INVERT = InvertedValue.Clockwise_Positive;
-        public static final int BEAMBREAK_ID = 1;
+        public static final int BEAMBREAK_DIO_PORT = 1;
     }
 
     public final static class PivotConstants {
@@ -116,8 +117,8 @@ public final class CompConstants {
         public static final double P = 0.15;
         public static final double I = 0; // TODO SHOP: BECAUSE OF BUILT-IN INTEGRAL WINDUP PREVENTION, TRY (VERY) HIGH I
         public static final double D = 0.01;
-        public static final double EXPO_V = V / 0.3; // 30% of the actual max velocity, as it will allocate 1 / 0.4 = 2.5 times the voltage to 1 rps
-        public static final double EXPO_A = A / 0.01; // 1.0% of the actual max acceleration
+        public static final double EXPO_V = V / 0.2; // 30% of the actual max velocity, as it will allocate 1 / 0.4 = 2.5 times the voltage to 1 rps
+        public static final double EXPO_A = A / 0.1; // 1.0% of the actual max acceleration
         public static final double SAFE_TOLERANCE = 20.0;
         public static final double AT_TARGET_TOLERANCE = 2.5;
 
@@ -126,6 +127,7 @@ public final class CompConstants {
         public static final double UPPER_LIMIT = 105;
         public static final double STOW = 56;
         public static final double CORAL_STATION = 56;
+        public static final double CORAL_STATION_OBSTRUCTED = 53;
         public static final double GROUND_CORAL = 3.5;
         public static final double GROUND_ALGAE = 4.5;
         public static final double L1_CORAL = 38.0;
@@ -162,7 +164,7 @@ public final class CompConstants {
         public static final double D = 0.0;
         public static final double EXPO_V = V / 0.9; // 90% of the actual max velocity, as it will allocate 1 / 0.8 = 1.25 times the voltage to 1 rps
         public static final double EXPO_A = A / 0.12; // 8% of the actual max accel
-        public static final double SAFE_TOLERANCE = 25.0;
+        public static final double SAFE_TOLERANCE = 25.0; // TODO SHOP: TEST HIGHER SAFE TOLERANCE
         public static final double AT_TARGET_TOLERANCE = 2.5;
 
         // presets
@@ -170,12 +172,14 @@ public final class CompConstants {
         public static final Function<Double, Double> UPPER_LIMIT = (elevatorPosition) -> (double) (elevatorPosition > 8 ? 295 : 160);
         public static final double STOW = 120;
         public static final double CORAL_STATION = 120;
+        public static final double CORAL_STATION_OBSTRUCTED = 125;
         public static final double GROUND_CORAL = 150;
         public static final double GROUND_ALGAE = 150;
         public static final double L1_CORAL = 96.5;
         public static final double L2_CORAL = 45;
         public static final double L3_CORAL = 60;
         public static final double L4_CORAL = 75;
+        public static final double L4_CORAL_OBSTRUCTED = 60;
         public static final double LOW_REEF_ALGAE = 65.5;
         public static final double HIGH_REEF_ALGAE = 260;
         public static final double PROCESSOR = 160;

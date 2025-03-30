@@ -30,7 +30,7 @@ public class SearchForAlgaeCommand extends Command {
     private boolean translationComplete;
     private boolean end;
 
-    // TODO: REVAMP TO FOLLOW A PATH TO THE NEAREST CORAL STATION THEN TO THE OTHER, THEN STOP IF EITHER A CORAL IS FOUND OR PATH IS COMPLETED
+    // TODO: REVAMP TO FOLLOW A PATH TO THE NEAREST CORAL STATION THEN GO TO A MARK (SEARCH FOR CORAL)
     public SearchForAlgaeCommand(Swerve swerve, SwerveRequest.FieldCentric fieldCentric) {
         this.swerve = swerve;
         this.fieldCentric = fieldCentric;
@@ -86,7 +86,7 @@ public class SearchForAlgaeCommand extends Command {
         double currentX = currentTranslation.getX();
         double currentY = currentTranslation.getY();
 
-        // TODO: TEST SMOOTHNESS
+        // TODO: IMPLEMENT PHOENIX PROFILED PID CONTROLLER INSTEAD
         xVel *= 0.9;
         yVel *= 0.9;
         rotVel *= 0.9;

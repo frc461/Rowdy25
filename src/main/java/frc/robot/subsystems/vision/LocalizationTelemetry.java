@@ -77,7 +77,7 @@ public class LocalizationTelemetry {
 
         nearestTagDistPub.set(LimelightUtil.getNearestTagDist());
         canAddLLMeasurementsPub.set(LimelightUtil.isTagClear());
-        distanceToCoralScoringLocation.set(localizer.getDistanceToScoringLocation(RobotStates.State.L4_CORAL));
+        distanceToCoralScoringLocation.set(localizer.getDistanceToActionLocation(RobotStates.State.L4_CORAL));
         atCoralScoringLocation.set(localizer.atScoringLocation(RobotStates.State.L4_CORAL));
 
         photonColorHasAlgaeTargetPub.set(PhotonUtil.Color.hasAlgaeTargets());

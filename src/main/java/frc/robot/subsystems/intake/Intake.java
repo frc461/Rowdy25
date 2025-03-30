@@ -48,7 +48,7 @@ public class Intake extends SubsystemBase {
                         .withBeepOnBoot(false)
                         .withAllowMusicDurDisable(true)));
 
-        beamBreak = new DigitalInput(Constants.IntakeConstants.BEAMBREAK_ID);
+        beamBreak = new DigitalInput(Constants.IntakeConstants.BEAMBREAK_DIO_PORT);
         currentState = State.IDLE;
         pulseTimer.start();
 

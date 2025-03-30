@@ -16,6 +16,7 @@ public class Elevator extends SubsystemBase {
         MANUAL(Constants.ElevatorConstants.LOWER_LIMIT),
         STOW(Constants.ElevatorConstants.STOW),
         CORAL_STATION(Constants.ElevatorConstants.CORAL_STATION),
+        CORAL_STATION_OBSTRUCTED(Constants.ElevatorConstants.CORAL_STATION_OBSTRUCTED),
         GROUND_ALGAE(Constants.ElevatorConstants.GROUND_ALGAE),
         GROUND_CORAL(Constants.ElevatorConstants.GROUND_CORAL),
         L1_CORAL(Constants.ElevatorConstants.L1_CORAL),
@@ -74,7 +75,7 @@ public class Elevator extends SubsystemBase {
             elevator2.setControl(new Follower(Constants.ElevatorConstants.LEAD_ID, true));
         }
 
-        lowerSwitch = new DigitalInput(Constants.ElevatorConstants.LOWER_LIMIT_SWITCH_ID);
+        lowerSwitch = new DigitalInput(Constants.ElevatorConstants.LOWER_LIMIT_SWITCH_DIO_PORT);
 
         request = new MotionMagicExpoVoltage(0);
 
@@ -85,6 +86,10 @@ public class Elevator extends SubsystemBase {
 
     public double getCurrent() {
         return elevator.getStatorCurrent().getValueAsDouble();
+    }
+
+    public double getRotorVelocity() {
+        return elevator.getRotorVelocity().getValueAsDouble();
     }
 
 	public State getState() {
@@ -134,6 +139,10 @@ public class Elevator extends SubsystemBase {
 
     public void setCoralStationState() {
         setState(State.CORAL_STATION);
+    }
+
+    public void setCoralStationObstructedState() {
+        setState(State.CORAL_STATION_OBSTRUCTED);
     }
 
     public void setGroundCoralState() {

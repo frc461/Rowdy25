@@ -22,6 +22,10 @@ public class AutoTrigger {
         this.triggeredCommand = command;
     }
 
+    public AutoTrigger duplicate() {
+        return new AutoTrigger(this.name, this.triggeredCommand, this.auto);
+    }
+
     public Command cmd() {
         if (decoratedCommand == null) {
             decoratedCommand = triggeredCommand.get().finallyDo(
