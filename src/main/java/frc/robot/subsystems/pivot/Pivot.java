@@ -20,6 +20,7 @@ public class Pivot extends SubsystemBase {
         STOW(Constants.PivotConstants.STOW),
         PERPENDICULAR(90.0),
         CORAL_STATION(Constants.PivotConstants.CORAL_STATION),
+        CORAL_STATION_OBSTRUCTED(Constants.PivotConstants.CORAL_STATION_OBSTRUCTED),
         GROUND_CORAL(Constants.PivotConstants.GROUND_CORAL),
         GROUND_ALGAE(Constants.PivotConstants.GROUND_ALGAE),
         L1_CORAL(Constants.PivotConstants.L1_CORAL),
@@ -191,6 +192,10 @@ public class Pivot extends SubsystemBase {
 
     public void setCoralStationState() {
         setState(State.CORAL_STATION);
+    }
+
+    public void setCoralStationObstructedState() {
+        setState(State.CORAL_STATION_OBSTRUCTED);
     }
 
     public void setGroundCoralState() {

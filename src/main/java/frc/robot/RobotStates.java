@@ -36,6 +36,7 @@ public class RobotStates {
         OUTTAKE_L1,
         INTAKE_OUT,
         CORAL_STATION,
+        CORAL_STATION_OBSTRUCTED,
         GROUND_CORAL,
         GROUND_ALGAE,
         L1_CORAL,
@@ -66,6 +67,7 @@ public class RobotStates {
     public final Trigger outtakeL1State = new Trigger(() -> currentState == State.OUTTAKE_L1);
     public final Trigger intakeOutState = new Trigger(() -> currentState == State.INTAKE_OUT);
     public final Trigger coralStationState = new Trigger(() -> currentState == State.CORAL_STATION);
+    public final Trigger coralStationObstructedState = new Trigger(() -> currentState == State.CORAL_STATION_OBSTRUCTED);
     public final Trigger groundCoralState = new Trigger(() -> currentState == State.GROUND_CORAL);
     public final Trigger groundAlgaeState = new Trigger(() -> currentState == State.GROUND_ALGAE);
     public final Trigger l1CoralState = new Trigger(() -> currentState == State.L1_CORAL);
@@ -86,6 +88,7 @@ public class RobotStates {
 
     public final Trigger atStowState = new Trigger(() -> wrist.isAtState(Wrist.State.STOW)).and(() -> elevator.isAtState(Elevator.State.STOW)).and(() -> pivot.isAtState(Pivot.State.STOW));
     public final Trigger atCoralStationState = new Trigger(() -> wrist.isAtState(Wrist.State.CORAL_STATION)).and(() -> elevator.isAtState(Elevator.State.CORAL_STATION)).and(() -> pivot.isAtState(Pivot.State.CORAL_STATION));
+    public final Trigger atCoralStationObstructedState = new Trigger(() -> wrist.isAtState(Wrist.State.CORAL_STATION_OBSTRUCTED)).and(() -> elevator.isAtState(Elevator.State.CORAL_STATION_OBSTRUCTED)).and(() -> pivot.isAtState(Pivot.State.CORAL_STATION_OBSTRUCTED));
     public final Trigger atGroundCoralState = new Trigger(() -> wrist.isAtState(Wrist.State.GROUND_CORAL)).and(() -> elevator.isAtState(Elevator.State.GROUND_CORAL)).and(() -> pivot.isAtState(Pivot.State.GROUND_CORAL));
     public final Trigger atGroundAlgaeState = new Trigger(() -> wrist.isAtState(Wrist.State.GROUND_ALGAE)).and(() -> elevator.isAtState(Elevator.State.GROUND_ALGAE)).and(() -> pivot.isAtState(Pivot.State.GROUND_ALGAE));
     public final Trigger atL1CoralState = new Trigger(() -> wrist.isAtState(Wrist.State.L1_CORAL)).and(() -> elevator.isAtState(Elevator.State.L1_CORAL)).and(() -> pivot.isAtState(Pivot.State.L1_CORAL));
@@ -159,7 +162,11 @@ public class RobotStates {
     }
 
     public void toggleCoralStationState(boolean override) {
-        currentState = currentState == State.CORAL_STATION && !override ? State.STOW : State.CORAL_STATION;
+        currentState = currentState == State.CORAL_STATION || currentState == State.CORAL_STATION_OBSTRUCTED && !override ? State.STOW : State.CORAL_STATION;
+    }
+
+    public void toggleCoralStationObstructedState() {
+        currentState = currentState == State.CORAL_STATION_OBSTRUCTED ? State.STOW : State.CORAL_STATION_OBSTRUCTED;
     }
 
     public void toggleGroundCoralState() {
@@ -306,7 +313,7 @@ public class RobotStates {
 
         intakeOutState.onTrue(
                 new InstantCommand(swerve::setIdleMode)
-                        .andThen(() -> wrist.setL4CoralObstructedState(!swerve.localizer.isNearWall()))
+                        .andThen(() -> wrist.setL4CoralObstructedState(!swerve.localizer.isAgainstReefWall()))
                         .andThen(new WaitUntilCommand(wrist::isAtTarget))
                         .andThen(intake::setIntakeOutState)
                         .andThen(new WaitUntilCommand(() -> !intake.hasAlgae() && !intake.barelyHasCoral()))
@@ -320,8 +327,23 @@ public class RobotStates {
                         .andThen(intake::setIntakeState)
                         .andThen(new WaitUntilCommand(intake::atIdleState))
                         .andThen(this::setStowState)
+                        .alongWith(new WaitUntilCommand(() -> !swerve.localizer.isAgainstCoralStation()))
+                        .andThen(this::toggleCoralStationObstructedState)
                         .onlyIf(() -> !intake.hasAlgae() && !intake.barelyHasCoral())
                         .until(() -> !coralStationState.getAsBoolean())
+        );
+
+        coralStationObstructedState.onTrue(
+                new InstantCommand(swerve::setCoralStationHeadingMode)
+                        .unless(DriverStation::isAutonomousEnabled)
+                        .andThen(orderedTransition(pivot::setCoralStationObstructedState, elevator::setCoralStationObstructedState, Elevator.State.CORAL_STATION, wrist::setCoralStationObstructedState))
+                        .andThen(intake::setIntakeState)
+                        .andThen(new WaitUntilCommand(intake::atIdleState))
+                        .andThen(this::setStowState)
+                        .alongWith(new WaitUntilCommand(swerve.localizer::isAgainstCoralStation))
+                        .andThen(() -> toggleCoralStationState(true))
+                        .onlyIf(() -> !intake.hasAlgae() && !intake.barelyHasCoral())
+                        .until(() -> !coralStationObstructedState.getAsBoolean())
         );
 
         groundCoralState.onTrue(

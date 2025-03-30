@@ -16,6 +16,7 @@ public class Elevator extends SubsystemBase {
         MANUAL(Constants.ElevatorConstants.LOWER_LIMIT),
         STOW(Constants.ElevatorConstants.STOW),
         CORAL_STATION(Constants.ElevatorConstants.CORAL_STATION),
+        CORAL_STATION_OBSTRUCTED(Constants.ElevatorConstants.CORAL_STATION_OBSTRUCTED),
         GROUND_ALGAE(Constants.ElevatorConstants.GROUND_ALGAE),
         GROUND_CORAL(Constants.ElevatorConstants.GROUND_CORAL),
         L1_CORAL(Constants.ElevatorConstants.L1_CORAL),
@@ -138,6 +139,10 @@ public class Elevator extends SubsystemBase {
 
     public void setCoralStationState() {
         setState(State.CORAL_STATION);
+    }
+
+    public void setCoralStationObstructedState() {
+        setState(State.CORAL_STATION_OBSTRUCTED);
     }
 
     public void setGroundCoralState() {

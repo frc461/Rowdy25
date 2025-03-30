@@ -268,6 +268,7 @@ public final class DefaultConstants {
         public static final double UPPER_LIMIT = 46;
         public static final double STOW = 0;
         public static final double CORAL_STATION = 0;
+        public static final double CORAL_STATION_OBSTRUCTED = 0;
         public static final double GROUND_CORAL = 0;
         public static final double GROUND_ALGAE = 0;
         public static final double L1_CORAL = 0;
@@ -331,6 +332,7 @@ public final class DefaultConstants {
         public static final double UPPER_LIMIT = 105;
         public static final double STOW = 50;
         public static final double CORAL_STATION = 50;
+        public static final double CORAL_STATION_OBSTRUCTED = 50;
         public static final double GROUND_CORAL = 3.5;
         public static final double GROUND_ALGAE = 4.5;
         public static final double L1_CORAL = 31.5;
@@ -380,6 +382,7 @@ public final class DefaultConstants {
         public static final Function<Double, Double> UPPER_LIMIT = (elevatorPosition) -> (double) (elevatorPosition > 8 ? 295 : 160);
         public static final double STOW = 125;
         public static final double CORAL_STATION = 125;
+        public static final double CORAL_STATION_OBSTRUCTED = 125;
         public static final double GROUND_CORAL = 150;
         public static final double GROUND_ALGAE = 150;
         public static final double L1_CORAL = 125;

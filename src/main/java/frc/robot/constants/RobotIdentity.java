@@ -175,6 +175,7 @@ public enum RobotIdentity {
         Constants.ElevatorConstants.UPPER_LIMIT = DefaultConstants.ElevatorConstants.UPPER_LIMIT;
         Constants.ElevatorConstants.STOW = DefaultConstants.ElevatorConstants.STOW;
         Constants.ElevatorConstants.CORAL_STATION = DefaultConstants.ElevatorConstants.CORAL_STATION;
+        Constants.ElevatorConstants.CORAL_STATION_OBSTRUCTED = DefaultConstants.ElevatorConstants.CORAL_STATION_OBSTRUCTED;
         Constants.ElevatorConstants.GROUND_CORAL = DefaultConstants.ElevatorConstants.GROUND_CORAL;
         Constants.ElevatorConstants.GROUND_ALGAE = DefaultConstants.ElevatorConstants.GROUND_ALGAE;
         Constants.ElevatorConstants.L1_CORAL = DefaultConstants.ElevatorConstants.L1_CORAL;
@@ -222,6 +223,7 @@ public enum RobotIdentity {
         Constants.PivotConstants.UPPER_LIMIT = DefaultConstants.PivotConstants.UPPER_LIMIT;
         Constants.PivotConstants.STOW = DefaultConstants.PivotConstants.STOW;
         Constants.PivotConstants.CORAL_STATION = DefaultConstants.PivotConstants.CORAL_STATION;
+        Constants.PivotConstants.CORAL_STATION_OBSTRUCTED = DefaultConstants.PivotConstants.CORAL_STATION_OBSTRUCTED;
         Constants.PivotConstants.GROUND_CORAL = DefaultConstants.PivotConstants.GROUND_CORAL;
         Constants.PivotConstants.GROUND_ALGAE = DefaultConstants.PivotConstants.GROUND_ALGAE;
         Constants.PivotConstants.L1_CORAL = DefaultConstants.PivotConstants.L1_CORAL;
@@ -259,6 +261,7 @@ public enum RobotIdentity {
         Constants.WristConstants.UPPER_LIMIT = DefaultConstants.WristConstants.UPPER_LIMIT;
         Constants.WristConstants.STOW = DefaultConstants.WristConstants.STOW;
         Constants.WristConstants.CORAL_STATION = DefaultConstants.WristConstants.CORAL_STATION;
+        Constants.WristConstants.CORAL_STATION_OBSTRUCTED = DefaultConstants.WristConstants.CORAL_STATION_OBSTRUCTED;
         Constants.WristConstants.GROUND_CORAL = DefaultConstants.WristConstants.GROUND_CORAL;
         Constants.WristConstants.GROUND_ALGAE = DefaultConstants.WristConstants.GROUND_ALGAE;
         Constants.WristConstants.L1_CORAL = DefaultConstants.WristConstants.L1_CORAL;
@@ -335,6 +338,7 @@ public enum RobotIdentity {
         Constants.ElevatorConstants.UPPER_LIMIT = CompConstants.ElevatorConstants.UPPER_LIMIT;
         Constants.ElevatorConstants.STOW = CompConstants.ElevatorConstants.STOW;
         Constants.ElevatorConstants.CORAL_STATION = CompConstants.ElevatorConstants.CORAL_STATION;
+        Constants.ElevatorConstants.CORAL_STATION_OBSTRUCTED = CompConstants.ElevatorConstants.CORAL_STATION_OBSTRUCTED;
         Constants.ElevatorConstants.GROUND_CORAL = CompConstants.ElevatorConstants.GROUND_CORAL;
         Constants.ElevatorConstants.GROUND_ALGAE = CompConstants.ElevatorConstants.GROUND_ALGAE;
         Constants.ElevatorConstants.L1_CORAL = CompConstants.ElevatorConstants.L1_CORAL;
@@ -370,6 +374,7 @@ public enum RobotIdentity {
         Constants.PivotConstants.UPPER_LIMIT = CompConstants.PivotConstants.UPPER_LIMIT;
         Constants.PivotConstants.STOW = CompConstants.PivotConstants.STOW;
         Constants.PivotConstants.CORAL_STATION = CompConstants.PivotConstants.CORAL_STATION;
+        Constants.PivotConstants.CORAL_STATION_OBSTRUCTED = CompConstants.PivotConstants.CORAL_STATION_OBSTRUCTED;
         Constants.PivotConstants.GROUND_CORAL = CompConstants.PivotConstants.GROUND_CORAL;
         Constants.PivotConstants.GROUND_ALGAE = CompConstants.PivotConstants.GROUND_ALGAE;
         Constants.PivotConstants.L1_CORAL = CompConstants.PivotConstants.L1_CORAL;
@@ -402,6 +407,7 @@ public enum RobotIdentity {
         Constants.WristConstants.UPPER_LIMIT = CompConstants.WristConstants.UPPER_LIMIT;
         Constants.WristConstants.STOW = CompConstants.WristConstants.STOW;
         Constants.WristConstants.CORAL_STATION = CompConstants.WristConstants.CORAL_STATION;
+        Constants.WristConstants.CORAL_STATION_OBSTRUCTED = CompConstants.WristConstants.CORAL_STATION_OBSTRUCTED;
         Constants.WristConstants.GROUND_CORAL = CompConstants.WristConstants.GROUND_CORAL;
         Constants.WristConstants.GROUND_ALGAE = CompConstants.WristConstants.GROUND_ALGAE;
         Constants.WristConstants.L1_CORAL = CompConstants.WristConstants.L1_CORAL;

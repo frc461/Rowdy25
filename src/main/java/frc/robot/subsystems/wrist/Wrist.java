@@ -15,6 +15,7 @@ public class Wrist extends SubsystemBase {
         MANUAL(Constants.WristConstants.LOWER_LIMIT.apply(0.0, 50.0)),
         STOW(Constants.WristConstants.STOW),
         CORAL_STATION(Constants.WristConstants.CORAL_STATION),
+        CORAL_STATION_OBSTRUCTED(Constants.WristConstants.CORAL_STATION_OBSTRUCTED),
         GROUND_CORAL(Constants.WristConstants.GROUND_CORAL),
         GROUND_ALGAE(Constants.WristConstants.GROUND_ALGAE),
         L1_CORAL(Constants.WristConstants.L1_CORAL),
@@ -138,6 +139,10 @@ public class Wrist extends SubsystemBase {
 
     public void setCoralStationState() {
         setState(State.CORAL_STATION);
+    }
+
+    public void setCoralStationObstructedState() {
+        setState(State.CORAL_STATION_OBSTRUCTED);
     }
 
     public void setGroundCoralState() {

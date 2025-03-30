@@ -75,6 +75,7 @@ public final class CompConstants {
         public static final double UPPER_LIMIT = 46;
         public static final double STOW = 0;
         public static final double CORAL_STATION = 0;
+        public static final double CORAL_STATION_OBSTRUCTED = 0;
         public static final double GROUND_CORAL = 0;
         public static final double GROUND_ALGAE = 0;
         public static final double L1_CORAL = 0;
@@ -126,6 +127,7 @@ public final class CompConstants {
         public static final double UPPER_LIMIT = 105;
         public static final double STOW = 56;
         public static final double CORAL_STATION = 56;
+        public static final double CORAL_STATION_OBSTRUCTED = 53;
         public static final double GROUND_CORAL = 3.5;
         public static final double GROUND_ALGAE = 4.5;
         public static final double L1_CORAL = 38.0;
@@ -162,7 +164,7 @@ public final class CompConstants {
         public static final double D = 0.0;
         public static final double EXPO_V = V / 0.9; // 90% of the actual max velocity, as it will allocate 1 / 0.8 = 1.25 times the voltage to 1 rps
         public static final double EXPO_A = A / 0.12; // 8% of the actual max accel
-        public static final double SAFE_TOLERANCE = 25.0;
+        public static final double SAFE_TOLERANCE = 25.0; // TODO SHOP: TEST HIGHER SAFE TOLERANCE
         public static final double AT_TARGET_TOLERANCE = 2.5;
 
         // presets
@@ -170,6 +172,7 @@ public final class CompConstants {
         public static final Function<Double, Double> UPPER_LIMIT = (elevatorPosition) -> (double) (elevatorPosition > 8 ? 295 : 160);
         public static final double STOW = 120;
         public static final double CORAL_STATION = 120;
+        public static final double CORAL_STATION_OBSTRUCTED = 125;
         public static final double GROUND_CORAL = 150;
         public static final double GROUND_ALGAE = 150;
         public static final double L1_CORAL = 96.5;
