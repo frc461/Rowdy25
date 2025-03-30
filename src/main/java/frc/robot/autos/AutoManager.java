@@ -160,7 +160,7 @@ public final class AutoManager { // TODO: REVAMP WTIH GROUND INTAKE
                             .andThen(() -> scoringNext.set(true))
                             .andThen(robotStates.swerve.pathFindToScoringLocation(robotStates, nextScoringLocation.getFirst(), nextScoringLocation.getSecond()))
                             .andThen(() -> scoringNext.set(false))
-                            .until(() -> scoringNext.get() && !robotStates.intake.hasCoral() && !robotStates.atScoringLocation() || robotStates.intake.coralStuck.getAsBoolean())
+                            .until(() -> scoringNext.get() && !robotStates.intake.hasCoral() && !robotStates.atScoringLocation()) // TODO: SOLVE THIS PROBLEM
             ));
         }
 
