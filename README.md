@@ -113,7 +113,7 @@ Monday, 3/31/2025 to test:
 comp bot:
 - [ ] test proximity threshold network table entry, intake stuck
 - [ ] try high I without the tension
-- [ ] test dynamic autos
+- [ ] test dynamic autos (intake stuck/incorrect intake)
 - [ ] test/configure distance sensor
 
 ground intake:
