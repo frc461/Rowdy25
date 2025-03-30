@@ -4,7 +4,6 @@ import com.ctre.phoenix6.configs.*;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -25,15 +24,20 @@ public class Intake extends SubsystemBase {
         OUTTAKE_L1
     }
 
+    public enum StallIntent {
+        CORAL_STUCK,
+        HAS_ALGAE
+    }
+
     private State currentState;
 
     private final TalonFX intake;
     private final DigitalInput beamBreak;
-    private final Timer pulseTimer = new Timer();
 
     private final IntakeTelemetry intakeTelemetry = new IntakeTelemetry(this);
 
-    public Trigger hasAlgae;
+    private StallIntent stallIntent = StallIntent.CORAL_STUCK;
+    public Trigger hasAlgaeOrCoralStuck;
 
     public Intake() {
         intake = new TalonFX(Constants.IntakeConstants.LEAD_ID);
@@ -50,9 +54,8 @@ public class Intake extends SubsystemBase {
 
         beamBreak = new DigitalInput(Constants.IntakeConstants.BEAMBREAK_DIO_PORT);
         currentState = State.IDLE;
-        pulseTimer.start();
 
-        hasAlgae = new Trigger(() -> intake.getStatorCurrent().getValueAsDouble() > 20.0).debounce(0.5); // TODO SHOP: TEST THIS
+        hasAlgaeOrCoralStuck = new Trigger(() -> intake.getStatorCurrent().getValueAsDouble() > 20.0).debounce(0.5); // TODO SHOP: TEST THIS
     }
 
     public double getCurrent() {
@@ -67,8 +70,12 @@ public class Intake extends SubsystemBase {
         return !beamBreak.get();
     }
 
+    public boolean coralStuck() {
+        return hasAlgaeOrCoralStuck.getAsBoolean() && stallIntent == StallIntent.CORAL_STUCK; // TODO SHOP: TEST THIS
+    }
+
     public boolean hasAlgae() {
-        return hasAlgae.getAsBoolean(); // TODO SHOP: TEST THIS
+        return hasAlgaeOrCoralStuck.getAsBoolean() && stallIntent == StallIntent.HAS_ALGAE; // TODO SHOP: TEST THIS
     }
 
     public boolean atIdleState() {
@@ -91,12 +98,19 @@ public class Intake extends SubsystemBase {
         }
     }
 
-    public void setIntakeState() {
+    public void setAlgaeIntakeState() {
+        stallIntent = StallIntent.HAS_ALGAE;
+        setIntakeState(false);
+    }
+
+    public void setCoralIntakeState() {
+        stallIntent = StallIntent.CORAL_STUCK;
         setIntakeState(false);
     }
 
     public void setIntakeState(boolean override) {
         if (override) {
+            stallIntent = StallIntent.CORAL_STUCK;
             setState(State.INTAKE_OVERRIDE);
         } else {
             setState(State.INTAKE);

@@ -13,7 +13,6 @@ import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.PivotCommand;
 import frc.robot.commands.WristCommand;
 import frc.robot.constants.Constants;
-import frc.robot.subsystems.climb.Climb;
 import frc.robot.subsystems.Lights;
 import frc.robot.subsystems.drivetrain.Swerve;
 import frc.robot.subsystems.elevator.Elevator;
@@ -322,7 +321,7 @@ public class RobotStates {
                 new InstantCommand(swerve::setCoralStationHeadingMode)
                         .unless(DriverStation::isAutonomousEnabled)
                         .andThen(orderedTransition(pivot::setCoralStationState, Pivot.State.CORAL_STATION, elevator::setCoralStationState, Elevator.State.CORAL_STATION, wrist::setCoralStationState))
-                        .andThen(intake::setIntakeState)
+                        .andThen(intake::setCoralIntakeState)
                         .andThen(new WaitUntilCommand(intake::atIdleState))
                         .andThen(this::setStowState)
                         .onlyIf(() -> !intake.hasAlgae() && !intake.hasCoral())
@@ -332,7 +331,7 @@ public class RobotStates {
         groundCoralState.onTrue(
                 new InstantCommand(swerve::setObjectHeadingMode)
                         .andThen(orderedTransition(pivot::setGroundCoralState, Pivot.State.GROUND_CORAL, elevator::setGroundCoralState, Elevator.State.GROUND_CORAL, wrist::setGroundCoralState))
-                        .andThen(intake::setIntakeState)
+                        .andThen(intake::setCoralIntakeState)
                         .andThen(new WaitUntilCommand(PhotonUtil.Color::hasCoralTargets))
                         .andThen(swerve.directMoveToObject(
                                 () -> intake.hasAlgae() || intake.hasCoral(),
@@ -346,7 +345,7 @@ public class RobotStates {
         groundAlgaeState.onTrue(
                 new InstantCommand(swerve::setObjectHeadingMode)
                         .andThen(orderedTransition(pivot::setGroundAlgaeState, Pivot.State.GROUND_ALGAE, elevator::setGroundAlgaeState, Elevator.State.GROUND_ALGAE, wrist::setGroundAlgaeState))
-                        .andThen(intake::setIntakeState)
+                        .andThen(intake::setAlgaeIntakeState)
                         .andThen(new WaitUntilCommand(PhotonUtil.Color::hasAlgaeTargets))
                         .andThen(swerve.directMoveToObject(
                                 () -> intake.hasAlgae() || intake.hasCoral(),
@@ -391,7 +390,7 @@ public class RobotStates {
 
         lowReefAlgaeState.onTrue(
                 new InstantCommand(swerve::setReefTagOppositeHeadingMode)
-                        .andThen(intake::setIntakeState)
+                        .andThen(intake::setAlgaeIntakeState)
                         .andThen(orderedTransition(pivot::setLowReefAlgaeState, Pivot.State.LOW_REEF_ALGAE, elevator::setLowReefAlgaeState, Elevator.State.LOW_REEF_ALGAE, wrist::setLowReefAlgaeState))
                         .andThen(new WaitUntilCommand(intake::atIdleState))
                         .andThen(this::setStowState)
@@ -401,7 +400,7 @@ public class RobotStates {
 
         highReefAlgaeState.onTrue(
                 new InstantCommand(swerve::setReefTagHeadingMode)
-                        .andThen(intake::setIntakeState)
+                        .andThen(intake::setAlgaeIntakeState)
                         .andThen(orderedTransition(pivot::setHighReefAlgaeState, Pivot.State.HIGH_REEF_ALGAE, elevator::setHighReefAlgaeState, Elevator.State.HIGH_REEF_ALGAE, wrist::setHighReefAlgaeState))
                         .andThen(new WaitUntilCommand(intake::atIdleState))
                         .andThen(this::setStowState)

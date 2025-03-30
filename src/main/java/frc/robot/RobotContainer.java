@@ -150,6 +150,7 @@ public class RobotContainer {
                 ),
                 robotStates.intake::hasCoral
         ));
+        driverXbox.leftBumper().onTrue(new InstantCommand(robotStates::toggleGroundCoralState));
         driverXbox.rightBumper().whileTrue(new ConditionalCommand(
                 robotStates.swerve.pathFindToNearestRightBranch(robotStates)
                         .unless(robotStates.l1CoralState),
@@ -173,7 +174,8 @@ public class RobotContainer {
 
         opXbox.povUp().onTrue(new InstantCommand(() -> robotStates.setCurrentAutoLevel(FieldUtil.Reef.Level.L2)));
 
-        opXbox.leftTrigger().onTrue(new InstantCommand(robotStates::toggleGroundCoralState));
+        opXbox.leftTrigger().onTrue(new InstantCommand(() -> robotStates.intake.setIntakeState(true)));
+        opXbox.leftTrigger().onFalse(new InstantCommand(robotStates.intake::setIdleState));
         opXbox.rightTrigger().onTrue(new InstantCommand(robotStates.intake::setOuttakeState));
         opXbox.rightTrigger().onFalse(new InstantCommand(robotStates.intake::setIdleState));
 
