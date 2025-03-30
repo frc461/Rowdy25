@@ -134,7 +134,7 @@ public class RobotStates {
     }
 
     public void setStowState() {
-        currentState = State.MANUAL; // TODO SHOP: TEST THIS
+        currentState = State.MANUAL;
         currentState = State.STOW;
     }
 

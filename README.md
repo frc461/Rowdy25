@@ -93,21 +93,27 @@ Saturday, 3/29/2025 software:
 comp bot:
 - [x] distance sensor + software implementation
 - [x] more efficient dependent pathfinding
+- [ ] camera sensing vs. distance sensor via boolean trustCameras for coral obstruction
 
 ground intake:
-- [ ] ground intake motor setup + logic revamp
-- [ ] pathing to coral
+- [x] ground intake motor setup + logic revamp
+- [x] pathing to coral
 - [ ] revamp pathfinding location
 - [ ] double-sided outtake
 - [ ] revamp auto
 - [ ] (if possible) algae intake
+- [ ] ground intake: implement independent system in the case of camera failure that utilizes the canandcolor proximity sensor to adapt to coral obstruction (boolean trustCameras in Localizer.java)
 
 Saturday, 3/29/2025 to test:
 comp bot:
+- [x] test scoring
+- [x] test bugfix for mid-stow bug going into teleop
+
+Monday, 3/31/2025 to test:
+comp bot:
 - [ ] test proximity threshold network table entry, intake stuck
-- [ ] test scoring
+- [ ] try high I without the tension
 - [ ] test dynamic autos
-- [ ] test bugfix for mid-stow bug going into teleop
 - [ ] test/configure distance sensor
 
 ground intake:
@@ -115,6 +121,3 @@ ground intake:
 - [ ] test pathfinding locations and auto scoring
 - [ ] test auto (with dynamic if possible)
 - [ ] (if possible) test algae net and processor scoring
-
-Sunday, 3/30/2025 software:
-- [ ] ground intake: implement independent system in the case of camera failure that utilizes the canandcolor proximity sensor to adapt to coral obstruction (boolean trustCameras in Localizer.java)

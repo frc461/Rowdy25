@@ -110,7 +110,7 @@ public class PathfindToPoseAvoidingReefCommand extends Command { // TODO: ORGANI
                         2 / 7.0,
                         15 / 2.0
                 ),
-                Math.min(EquationUtil.linearOutput(smoothTemporaryTargetPose.getTranslation().getDistance(currentPose.getTranslation()), 10, -8), safeMaxVelocity)
+                Math.min(EquationUtil.linearOutput(smoothTemporaryTargetPose.getTranslation().getDistance(currentPose.getTranslation()), 10, -8), safeMaxVelocity) // TODO SHOP: TEST THIS OFFSET
         );
 
         double velocityHeadingRadians = smoothTemporaryTargetPose.getTranslation().minus(currentPose.getTranslation()).getAngle().getRadians();
