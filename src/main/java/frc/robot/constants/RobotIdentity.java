@@ -92,7 +92,6 @@ public enum RobotIdentity {
         Constants.VisionConstants.VISION_STD_DEV_MULTITAG_FUNCTION = DefaultConstants.VisionConstants.VISION_STD_DEV_MULTITAG_FUNCTION;
         Constants.VisionConstants.VISION_STD_DEV_FUNCTION = DefaultConstants.VisionConstants.VISION_STD_DEV_FUNCTION;
         Constants.VisionConstants.PROXIMITY_SENSOR_DIO_PORT = DefaultConstants.VisionConstants.PROXIMITY_SENSOR_DIO_PORT;
-        Constants.VisionConstants.ZERO_CORAL_PROXIMITY_THRESHOLD = DefaultConstants.VisionConstants.ZERO_CORAL_PROXIMITY_THRESHOLD;
         Constants.VisionConstants.LimelightConstants.LIMELIGHT_NT_NAME = DefaultConstants.VisionConstants.LimelightConstants.LIMELIGHT_NT_NAME;
         Constants.VisionConstants.LimelightConstants.LL_FORWARD = DefaultConstants.VisionConstants.LimelightConstants.LL_FORWARD;
         Constants.VisionConstants.LimelightConstants.LL_RIGHT = DefaultConstants.VisionConstants.LimelightConstants.LL_RIGHT;
@@ -412,9 +411,9 @@ public enum RobotIdentity {
         Constants.WristConstants.GROUND_ALGAE = CompConstants.WristConstants.GROUND_ALGAE;
         Constants.WristConstants.L1_CORAL = CompConstants.WristConstants.L1_CORAL;
         Constants.WristConstants.L2_CORAL = CompConstants.WristConstants.L2_CORAL;
-        Constants.WristConstants.L3_CORAL = CompConstants.WristConstants.L3_CORAL;
-        Constants.WristConstants.L4_CORAL = CompConstants.WristConstants.L4_CORAL;
-        Constants.WristConstants.L4_CORAL_OBSTRUCTED = CompConstants.WristConstants.L4_CORAL_OBSTRUCTED;
+        Constants.WristConstants.L3_CORAL = CompConstants.WristConstants.L3_CORAL_AT_BRANCH;
+        Constants.WristConstants.L4_CORAL = CompConstants.WristConstants.L4_CORAL_AT_BRANCH;
+        Constants.WristConstants.L4_CORAL_OBSTRUCTED = CompConstants.WristConstants.L4_CORAL_ONE_CORAL_FROM_BRANCH;
         Constants.WristConstants.LOW_REEF_ALGAE = CompConstants.WristConstants.LOW_REEF_ALGAE;
         Constants.WristConstants.HIGH_REEF_ALGAE = CompConstants.WristConstants.HIGH_REEF_ALGAE;
         Constants.WristConstants.PROCESSOR = CompConstants.WristConstants.PROCESSOR;

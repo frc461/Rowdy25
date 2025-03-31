@@ -94,7 +94,6 @@ public final class Constants {
         public static Function<Double, Matrix<N3, N1>> VISION_STD_DEV_FUNCTION;
 
         public static int PROXIMITY_SENSOR_DIO_PORT;
-        public static double ZERO_CORAL_PROXIMITY_THRESHOLD;
 
         public static final class LimelightConstants {
             public static String LIMELIGHT_NT_NAME;

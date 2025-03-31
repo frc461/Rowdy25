@@ -4,10 +4,9 @@ import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.PWM;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -29,7 +28,7 @@ public class Localizer {
 
     // localizer is a dependent of swerve
     private final Swerve swerve;
-    private final PWM proximitySensor = new PWM(Constants.VisionConstants.PROXIMITY_SENSOR_DIO_PORT); // TODO SHOP: TEST AND CONFIGURE CANANDCOLOR
+    private final DigitalInput proximitySensor = new DigitalInput(Constants.VisionConstants.PROXIMITY_SENSOR_DIO_PORT); // TODO SHOP: TEST AND CONFIGURE CANANDCOLOR
     private final LocalizationTelemetry localizationTelemetry = new LocalizationTelemetry(this);
     private final SendableChooser<LocalizationStrategy> localizationChooser = new SendableChooser<>();
 
@@ -77,13 +76,11 @@ public class Localizer {
     }
 
     public boolean isAgainstReefWall() {
-        return trustCameras
-                ? getRobotRelativeVectorToActionLocation(RobotStates.State.L4_CORAL).getX() < Units.inchesToMeters(2.0)
-                : proximitySensor.getPosition() < Constants.VisionConstants.ZERO_CORAL_PROXIMITY_THRESHOLD;
+        return !trustCameras || getRobotRelativeVectorToActionLocation(RobotStates.State.L4_CORAL).getX() < Units.inchesToMeters(1.0);
     }
 
     public boolean isAgainstCoralStation() {
-        return !trustCameras || getRobotRelativeVectorToActionLocation(RobotStates.State.CORAL_STATION).getX() < Units.inchesToMeters(2.0);
+        return !trustCameras || getRobotRelativeVectorToActionLocation(RobotStates.State.CORAL_STATION).getX() < Units.inchesToMeters(1.0);
     }
 
     public Pose2d getStrategyPose() {
