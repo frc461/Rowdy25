@@ -107,7 +107,7 @@ comp bot:
 Sunday, 3/30/2025 software:
 ground intake:
 - [x] clarify algae intake sensor
-- [ ] fix command to direct drive to note and consider making an automation class for compiling path finding to certain locations and searching for coral
+- [x] fix command to direct drive to note and consider making an automation class for compiling path finding to certain locations and searching for coral
 - [ ] revamp pathfinding location
 - [ ] double-sided reef outtake
 - [ ] revamp/fix auto

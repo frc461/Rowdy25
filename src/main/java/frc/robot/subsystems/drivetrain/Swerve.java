@@ -18,6 +18,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -27,10 +28,9 @@ import frc.robot.RobotStates;
 import frc.robot.autos.Pathfinder;
 import frc.robot.commands.DirectMoveToPoseCommand;
 import frc.robot.commands.PathfindToPoseAvoidingReefCommand;
-import frc.robot.commands.auto.SearchForAlgaeCommand;
 import frc.robot.constants.Constants;
 import frc.robot.commands.DriveCommand;
-import frc.robot.commands.DirectMoveToObjectCommand;
+import frc.robot.commands.auto.SearchForObjectCommand;
 import frc.robot.subsystems.vision.Localizer;
 import frc.robot.util.FieldUtil;
 import frc.robot.util.vision.PhotonUtil;
@@ -185,17 +185,62 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
         );
     }
 
-    public Command pathFindFindScoreAlgae(BooleanSupplier algaeObtained) { // TODO: REVAMP THIS INTO CORAL SEARCHING
-        return new SearchForAlgaeCommand(this, fieldCentric)
-                .andThen(directMoveToObject(algaeObtained, PhotonUtil.Color.TargetClass.ALGAE))
-                .andThen(Commands.defer(
-                        () -> Pathfinder.pathFindToNearestAlgaeScoringLocation(localizer.getStrategyPose()),
-                        Set.of(this)
-                ));
+    public Command pathFindToLeftCoralStationGroundIntakeCoral(RobotStates robotStates) { // TODO SHOP: TEST THIS
+        return Commands.defer(
+                () -> new PathfindToPoseAvoidingReefCommand(
+                        this,
+                        fieldCentric,
+                        robotStates.elevator::getPosition,
+                        FieldUtil.CoralStation.getRobotPosesAtEachCoralStation().get(0).interpolate(Constants.FAR_LEFT_CORAL_STATION.apply(Constants.ALLIANCE_SUPPLIER), 0.25)
+                ).andThen(Commands.repeatingSequence(
+                        new DirectMoveToPoseCommand(
+                                this,
+                                fieldCentric,
+                                robotStates.elevator::getPosition,
+                                FieldUtil.CoralStation.getRobotPosesAtEachCoralStation().get(0).plus(new Transform2d(1.0, 0, Rotation2d.kZero))
+                        ),
+                        new DirectMoveToPoseCommand(
+                                this,
+                                fieldCentric,
+                                robotStates.elevator::getPosition,
+                                FieldUtil.CoralStation.getRobotPosesAtEachCoralStation().get(0).interpolate(Constants.FAR_LEFT_CORAL_STATION.apply(Constants.ALLIANCE_SUPPLIER), 0.25)
+                        )
+                )).until(PhotonUtil.Color::hasCoralTargets)
+                        .andThen(robotStates::toggleGroundCoralState)
+                        .andThen(directMoveToObject(robotStates.intake::hasCoral, PhotonUtil.Color.TargetClass.CORAL)),
+                Set.of(this)
+        );
+    }
+
+    public Command pathFindToRightCoralStationGroundIntakeCoral(RobotStates robotStates) {
+        return Commands.defer(
+                () -> new PathfindToPoseAvoidingReefCommand(
+                        this,
+                        fieldCentric,
+                        robotStates.elevator::getPosition,
+                        FieldUtil.CoralStation.getRobotPosesAtEachCoralStation().get(1).interpolate(Constants.FAR_RIGHT_CORAL_STATION.apply(Constants.ALLIANCE_SUPPLIER), 0.25)
+                ).andThen(Commands.repeatingSequence(
+                        new DirectMoveToPoseCommand(
+                                this,
+                                fieldCentric,
+                                robotStates.elevator::getPosition,
+                                FieldUtil.CoralStation.getRobotPosesAtEachCoralStation().get(1).plus(new Transform2d(1.0, 0, Rotation2d.kZero))
+                        ),
+                        new DirectMoveToPoseCommand(
+                                this,
+                                fieldCentric,
+                                robotStates.elevator::getPosition,
+                                FieldUtil.CoralStation.getRobotPosesAtEachCoralStation().get(1).interpolate(Constants.FAR_RIGHT_CORAL_STATION.apply(Constants.ALLIANCE_SUPPLIER), 0.25)
+                        )
+                )).until(PhotonUtil.Color::hasCoralTargets)
+                        .andThen(robotStates::toggleGroundCoralState)
+                        .andThen(directMoveToObject(robotStates.intake::hasCoral, PhotonUtil.Color.TargetClass.CORAL)),
+                Set.of(this)
+        );
     }
 
     public Command directMoveToObject(BooleanSupplier objectObtained, PhotonUtil.Color.TargetClass objectLabelClass) {
-        return new DirectMoveToObjectCommand(this, fieldCentric, objectObtained, objectLabelClass, 2.5);
+        return new SearchForObjectCommand(this, fieldCentric, objectObtained, objectLabelClass, 2.5);
     }
 
     public Command pushAlliancePartnerOut() {

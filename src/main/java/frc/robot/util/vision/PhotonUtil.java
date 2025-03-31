@@ -118,14 +118,14 @@ public final class PhotonUtil {
             return getBestObject(targetClass).map(PhotonTrackedTarget::getPitch).orElse(0.0);
         }
 
-        public static Optional<Transform2d> getRobotToBestObject(TargetClass targetClass) {
+        public static Optional<Translation2d> getRobotToBestObject(TargetClass targetClass) {
             if (!hasTargets(targetClass) || getBestObject(targetClass).isEmpty()) {
                 return Optional.empty();
             }
 
             PhotonTrackedTarget bestTarget = getBestObject(targetClass).get();
 
-            Translation2d camToTagTranslation = new Pose3d(
+            Translation2d camToObjectTranslation = new Pose3d(
                     Translation3d.kZero,
                     new Rotation3d(
                             0,
@@ -145,7 +145,8 @@ public final class PhotonUtil {
                     )
             ).toTranslation2d();
 
-            return Optional.of(new Transform2d(camToTagTranslation.getX(), camToTagTranslation.getY(), Rotation2d.kZero));
+            return Optional.of(new Translation2d(robotToCameraOffset.getX(), robotToCameraOffset.getY())
+                    .plus(camToObjectTranslation.rotateBy(robotToCameraOffset.getRotation().toRotation2d().unaryMinus())));
         }
 
         public static void updateResults() {
