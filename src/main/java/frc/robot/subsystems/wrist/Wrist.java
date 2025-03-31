@@ -19,10 +19,12 @@ public class Wrist extends SubsystemBase {
         GROUND_CORAL(Constants.WristConstants.GROUND_CORAL),
         GROUND_ALGAE(Constants.WristConstants.GROUND_ALGAE),
         L1_CORAL(Constants.WristConstants.L1_CORAL),
-        L2_CORAL(Constants.WristConstants.L2_CORAL),
-        L3_CORAL(Constants.WristConstants.L3_CORAL),
-        L4_CORAL(Constants.WristConstants.L4_CORAL),
-        L4_CORAL_OBSTRUCTED(Constants.WristConstants.L4_CORAL_OBSTRUCTED),
+        L2_CORAL_AT_BRANCH(Constants.WristConstants.L2_CORAL_AT_BRANCH),
+        L2_CORAL_ONE_CORAL_FROM_BRANCH(Constants.WristConstants.L2_CORAL_ONE_CORAL_FROM_BRANCH),
+        L3_CORAL_AT_BRANCH(Constants.WristConstants.L3_CORAL_AT_BRANCH),
+        L3_CORAL_ONE_CORAL_FROM_BRANCH(Constants.WristConstants.L3_CORAL_ONE_CORAL_FROM_BRANCH),
+        L4_CORAL_AT_BRANCH(Constants.WristConstants.L4_CORAL_AT_BRANCH),
+        L4_CORAL_ONE_CORAL_FROM_BRANCH(Constants.WristConstants.L4_CORAL_ONE_CORAL_FROM_BRANCH),
         LOW_REEF_ALGAE(Constants.WristConstants.LOW_REEF_ALGAE),
         HIGH_REEF_ALGAE(Constants.WristConstants.HIGH_REEF_ALGAE),
         PROCESSOR(Constants.WristConstants.PROCESSOR),
@@ -157,21 +159,21 @@ public class Wrist extends SubsystemBase {
         setState(State.L1_CORAL);
     }
 
-    public void setL2CoralState() {
-        setState(State.L2_CORAL);
+    public void setL2CoralState(boolean oneCoralAway) {
+        setState(oneCoralAway ? State.L2_CORAL_ONE_CORAL_FROM_BRANCH : State.L2_CORAL_AT_BRANCH);
     }
 
-    public void setL3CoralState() {
-        setState(State.L3_CORAL);
+    public void setL3CoralState(boolean oneCoralAway) {
+        setState(oneCoralAway ? State.L3_CORAL_ONE_CORAL_FROM_BRANCH : State.L3_CORAL_AT_BRANCH);
     }
 
-    public void setL4CoralState() {
-        setState(State.L4_CORAL);
+    public void setL4CoralState(boolean oneCoralAway) {
+        setState(oneCoralAway ? State.L4_CORAL_ONE_CORAL_FROM_BRANCH : State.L4_CORAL_AT_BRANCH);
     }
 
     public void setL4CoralObstructedState(boolean isObstructed) {
-        if (isObstructed && currentState == State.L4_CORAL) {
-            setState(State.L4_CORAL_OBSTRUCTED);
+        if (isObstructed && currentState == State.L4_CORAL_AT_BRANCH) {
+            setState(State.L4_CORAL_ONE_CORAL_FROM_BRANCH);
         }
     }
 

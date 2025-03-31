@@ -125,7 +125,7 @@ public final class CompConstants {
         // presets
         public static final double LOWER_LIMIT = 0;
         public static final double UPPER_LIMIT = 105;
-        public static final double STOW = 56;
+        public static final double STOW = 75;
         public static final double CORAL_STATION = 56;
         public static final double CORAL_STATION_OBSTRUCTED = 53;
         public static final double GROUND_CORAL = 3.5;
@@ -133,7 +133,7 @@ public final class CompConstants {
         public static final double L1_CORAL = 38.0;
         public static final double L2_CORAL = 95.0;
         public static final double L3_CORAL = 95.0;
-        public static final double L4_CORAL = 96.0;
+        public static final double L4_CORAL = 100.0;
         public static final double LOW_REEF_ALGAE = 52;
         public static final double HIGH_REEF_ALGAE = 91;
         public static final double PROCESSOR = 22;
@@ -176,10 +176,12 @@ public final class CompConstants {
         public static final double GROUND_CORAL = 150;
         public static final double GROUND_ALGAE = 150;
         public static final double L1_CORAL = 96.5;
-        public static final double L2_CORAL = 45;
-        public static final double L3_CORAL = 60;
-        public static final double L4_CORAL = 75;
-        public static final double L4_CORAL_OBSTRUCTED = 60;
+        public static final double L2_CORAL_AT_BRANCH = 45;
+        public static final double L2_CORAL_ONE_CORAL_FROM_BRANCH = 45;
+        public static final double L3_CORAL_AT_BRANCH = 60;
+        public static final double L3_CORAL_ONE_CORAL_FROM_BRANCH = 50;
+        public static final double L4_CORAL_AT_BRANCH = 85;
+        public static final double L4_CORAL_ONE_CORAL_FROM_BRANCH = 65;
         public static final double LOW_REEF_ALGAE = 65.5;
         public static final double HIGH_REEF_ALGAE = 260;
         public static final double PROCESSOR = 160;

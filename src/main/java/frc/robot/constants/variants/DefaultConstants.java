@@ -385,10 +385,12 @@ public final class DefaultConstants {
         public static final double GROUND_CORAL = 150;
         public static final double GROUND_ALGAE = 150;
         public static final double L1_CORAL = 125;
-        public static final double L2_CORAL = 55;
-        public static final double L3_CORAL = 55;
-        public static final double L4_CORAL = 285;
-        public static final double L4_CORAL_OBSTRUCTED = 265;
+        public static final double L2_CORAL_AT_BRANCH = 55;
+        public static final double L2_CORAL_ONE_CORAL_FROM_BRANCH = 45;
+        public static final double L3_CORAL_AT_BRANCH = 55;
+        public static final double L3_CORAL_ONE_CORAL_FROM_BRANCH = 50;
+        public static final double L4_CORAL_AT_BRANCH = 285;
+        public static final double L4_CORAL_ONE_CORAL_FROM_BRANCH = 265;
         public static final double LOW_REEF_ALGAE = 131.0;
         public static final double HIGH_REEF_ALGAE = 160;
         public static final double PROCESSOR = 150;

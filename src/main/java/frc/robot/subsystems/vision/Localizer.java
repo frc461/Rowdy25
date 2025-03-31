@@ -4,6 +4,7 @@ import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -18,6 +19,7 @@ import frc.robot.util.vision.LimelightUtil;
 import frc.robot.util.vision.PhotonUtil;
 import frc.robot.util.vision.QuestNavUtil;
 
+import javax.xml.crypto.dsig.TransformService;
 import java.util.Optional;
 
 public class Localizer {
@@ -263,7 +265,7 @@ public class Localizer {
     private void updateFieldUtilityPoses() {
         nearestRobotPoseAtCoralStation = FieldUtil.CoralStation.getNearestRobotPoseAtCoralStation(getStrategyPose());
         nearestRobotPoseAtAlgaeReef = FieldUtil.Reef.getNearestRobotPoseAtAlgaeReef(getStrategyPose());
-        nearestRobotPoseAtBranch = FieldUtil.Reef.getNearestRobotPoseAtBranch(getStrategyPose());
+        nearestRobotPoseAtBranch = FieldUtil.Reef.getNearestRobotPoseAtBranch(getStrategyPose()).plus(new Transform2d(trustCameras ? Units.inchesToMeters(-4.0) : 0, 0, Rotation2d.kZero));
         nearestRobotPoseAtBranchUsingReefCenter = FieldUtil.Reef.getNearestRobotPoseAtBranchUsingReefCenter(getStrategyPose());
         nearestRobotPosesAtBranchPair = FieldUtil.Reef.getNearestRobotPosesAtBranchPair(getStrategyPose());
         nearestRobotPosesAtBranchPairUsingReefCenter = FieldUtil.Reef.getNearestRobotPosesAtBranchPairUsingReefCenter(getStrategyPose());

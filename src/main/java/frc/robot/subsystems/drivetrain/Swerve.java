@@ -18,7 +18,9 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.*;
@@ -248,7 +250,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                         this,
                         fieldCentric,
                         robotStates.elevator::getPosition,
-                        localizer.nearestRobotPosesAtBranchPair.getFirst(),
+                        localizer.nearestRobotPosesAtBranchPair.getFirst().plus(new Transform2d(localizer.trustCameras ? Units.inchesToMeters(-4.0) : 0, 0, Rotation2d.kZero)),
                         robotStates.getCurrentAutoLevel() == FieldUtil.Reef.Level.L4 ? 2.5 : Constants.MAX_VEL
                 )).andThen(
                         new WaitUntilCommand(robotStates.atAutoScoreState.and(robotStates::atScoringLocation))
@@ -276,7 +278,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                         this,
                         fieldCentric,
                         robotStates.elevator::getPosition,
-                        localizer.nearestRobotPosesAtBranchPair.getSecond(),
+                        localizer.nearestRobotPosesAtBranchPair.getSecond().plus(new Transform2d(localizer.trustCameras ? Units.inchesToMeters(-4.0) : 0, 0, Rotation2d.kZero)),
                         robotStates.getCurrentAutoLevel() == FieldUtil.Reef.Level.L4 ? 2.5 : Constants.MAX_VEL
                 )).andThen(
                         new WaitUntilCommand(robotStates.atAutoScoreState.and(robotStates::atScoringLocation))
