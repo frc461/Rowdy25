@@ -8,6 +8,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
+import frc.robot.constants.RobotPoses;
 import frc.robot.util.EquationUtil;
 
 public class Wrist extends SubsystemBase {
@@ -15,13 +16,18 @@ public class Wrist extends SubsystemBase {
         MANUAL(Constants.WristConstants.LOWER_LIMIT.apply(0.0, 50.0)),
         STOW(Constants.WristConstants.STOW),
         CORAL_STATION(Constants.WristConstants.CORAL_STATION),
-        CORAL_STATION_OBSTRUCTED(Constants.WristConstants.CORAL_STATION_OBSTRUCTED),
         GROUND_CORAL(Constants.WristConstants.GROUND_CORAL),
         GROUND_ALGAE(Constants.WristConstants.GROUND_ALGAE),
         L1_CORAL(Constants.WristConstants.L1_CORAL),
-        L2_CORAL(Constants.WristConstants.L2_CORAL),
-        L3_CORAL(Constants.WristConstants.L3_CORAL),
-        L4_CORAL(Constants.WristConstants.L4_CORAL),
+        L2_CORAL_AT_BRANCH(Constants.WristConstants.L2_CORAL_AT_BRANCH),
+        L2_CORAL_ONE_CORAL_FROM_BRANCH(Constants.WristConstants.L2_CORAL_ONE_CORAL_FROM_BRANCH),
+        L2_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH(Constants.WristConstants.L2_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH),
+        L3_CORAL_AT_BRANCH(Constants.WristConstants.L3_CORAL_AT_BRANCH),
+        L3_CORAL_ONE_CORAL_FROM_BRANCH(Constants.WristConstants.L3_CORAL_ONE_CORAL_FROM_BRANCH),
+        L3_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH(Constants.WristConstants.L3_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH),
+        L4_CORAL_AT_BRANCH(Constants.WristConstants.L4_CORAL_AT_BRANCH),
+        L4_CORAL_ONE_CORAL_FROM_BRANCH(Constants.WristConstants.L4_CORAL_ONE_CORAL_FROM_BRANCH),
+        L4_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH(Constants.WristConstants.L4_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH),
         L4_CORAL_OBSTRUCTED(Constants.WristConstants.L4_CORAL_OBSTRUCTED),
         LOW_REEF_ALGAE(Constants.WristConstants.LOW_REEF_ALGAE),
         HIGH_REEF_ALGAE(Constants.WristConstants.HIGH_REEF_ALGAE),
@@ -141,10 +147,6 @@ public class Wrist extends SubsystemBase {
         setState(State.CORAL_STATION);
     }
 
-    public void setCoralStationObstructedState() {
-        setState(State.CORAL_STATION_OBSTRUCTED);
-    }
-
     public void setGroundCoralState() {
         setState(State.GROUND_CORAL);
     }
@@ -157,20 +159,32 @@ public class Wrist extends SubsystemBase {
         setState(State.L1_CORAL);
     }
 
-    public void setL2CoralState() {
-        setState(State.L2_CORAL);
+    public void setL2CoralState(RobotPoses.Reef.RobotScoringSetting mode) {
+        switch (mode) {
+            case AT_BRANCH -> setState(State.L2_CORAL_AT_BRANCH);
+            case ONE_CORAL_FROM_BRANCH -> setState(State.L2_CORAL_ONE_CORAL_FROM_BRANCH);
+            case FACING_AWAY_ONE_CORAL_FROM_BRANCH -> setState(State.L2_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH);
+        }
     }
 
-    public void setL3CoralState() {
-        setState(State.L3_CORAL);
+    public void setL3CoralState(RobotPoses.Reef.RobotScoringSetting mode) {
+        switch (mode) {
+            case AT_BRANCH -> setState(State.L3_CORAL_AT_BRANCH);
+            case ONE_CORAL_FROM_BRANCH -> setState(State.L3_CORAL_ONE_CORAL_FROM_BRANCH);
+            case FACING_AWAY_ONE_CORAL_FROM_BRANCH -> setState(State.L3_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH);
+        }
     }
 
-    public void setL4CoralState() {
-        setState(State.L4_CORAL);
+    public void setL4CoralState(RobotPoses.Reef.RobotScoringSetting mode) {
+        switch (mode) {
+            case AT_BRANCH -> setState(State.L4_CORAL_AT_BRANCH);
+            case ONE_CORAL_FROM_BRANCH -> setState(State.L4_CORAL_ONE_CORAL_FROM_BRANCH);
+            case FACING_AWAY_ONE_CORAL_FROM_BRANCH -> setState(State.L4_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH);
+        }
     }
 
     public void setL4CoralObstructedState(boolean isObstructed) {
-        if (isObstructed && currentState == State.L4_CORAL) {
+        if (isObstructed && currentState == State.L4_CORAL_AT_BRANCH) {
             setState(State.L4_CORAL_OBSTRUCTED);
         }
     }

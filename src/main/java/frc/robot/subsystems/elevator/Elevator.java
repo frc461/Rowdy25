@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
 import frc.robot.constants.RobotIdentity;
+import frc.robot.constants.RobotPoses;
 import frc.robot.util.EquationUtil;
 
 public class Elevator extends SubsystemBase {
@@ -19,9 +20,15 @@ public class Elevator extends SubsystemBase {
         GROUND_ALGAE(Constants.ElevatorConstants.GROUND_ALGAE),
         GROUND_CORAL(Constants.ElevatorConstants.GROUND_CORAL),
         L1_CORAL(Constants.ElevatorConstants.L1_CORAL),
-        L2_CORAL(Constants.ElevatorConstants.L2_CORAL),
-        L3_CORAL(Constants.ElevatorConstants.L3_CORAL),
-        L4_CORAL(Constants.ElevatorConstants.L4_CORAL),
+        L2_CORAL_AT_BRANCH(Constants.ElevatorConstants.L2_CORAL_AT_BRANCH),
+        L2_CORAL_ONE_CORAL_FROM_BRANCH(Constants.ElevatorConstants.L2_CORAL_ONE_CORAL_FROM_BRANCH),
+        L2_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH(Constants.ElevatorConstants.L2_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH),
+        L3_CORAL_AT_BRANCH(Constants.ElevatorConstants.L3_CORAL_AT_BRANCH),
+        L3_CORAL_ONE_CORAL_FROM_BRANCH(Constants.ElevatorConstants.L3_CORAL_ONE_CORAL_FROM_BRANCH),
+        L3_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH(Constants.ElevatorConstants.L3_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH),
+        L4_CORAL_AT_BRANCH(Constants.ElevatorConstants.L4_CORAL_AT_BRANCH),
+        L4_CORAL_ONE_CORAL_FROM_BRANCH(Constants.ElevatorConstants.L4_CORAL_ONE_CORAL_FROM_BRANCH),
+        L4_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH(Constants.ElevatorConstants.L4_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH),
         LOW_REEF_ALGAE(Constants.ElevatorConstants.LOW_REEF_ALGAE),
         HIGH_REEF_ALGAE(Constants.ElevatorConstants.HIGH_REEF_ALGAE),
         NET(Constants.ElevatorConstants.NET),
@@ -95,6 +102,30 @@ public class Elevator extends SubsystemBase {
 		return currentState;
 	}
 
+    public State getL2State(RobotPoses.Reef.RobotScoringSetting mode) {
+        return switch (mode) {
+            case L1, AT_BRANCH -> State.L2_CORAL_AT_BRANCH;
+            case ONE_CORAL_FROM_BRANCH -> State.L2_CORAL_ONE_CORAL_FROM_BRANCH;
+            case FACING_AWAY_ONE_CORAL_FROM_BRANCH -> State.L2_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH;
+        };
+    }
+
+    public State getL3State(RobotPoses.Reef.RobotScoringSetting mode) {
+        return switch (mode) {
+            case L1, AT_BRANCH -> State.L3_CORAL_AT_BRANCH;
+            case ONE_CORAL_FROM_BRANCH -> State.L3_CORAL_ONE_CORAL_FROM_BRANCH;
+            case FACING_AWAY_ONE_CORAL_FROM_BRANCH -> State.L3_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH;
+        };
+    }
+
+    public State getL4State(RobotPoses.Reef.RobotScoringSetting mode) {
+        return switch (mode) {
+            case L1, AT_BRANCH -> State.L4_CORAL_AT_BRANCH;
+            case ONE_CORAL_FROM_BRANCH -> State.L4_CORAL_ONE_CORAL_FROM_BRANCH;
+            case FACING_AWAY_ONE_CORAL_FROM_BRANCH -> State.L4_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH;
+        };
+    }
+
     public double getPosition() {
         return elevator.getPosition().getValueAsDouble();
     }
@@ -152,16 +183,28 @@ public class Elevator extends SubsystemBase {
         setState(State.L1_CORAL);
     }
 
-    public void setL2CoralState() {
-        setState(State.L2_CORAL);
+    public void setL2CoralState(RobotPoses.Reef.RobotScoringSetting mode) {
+        switch (mode) {
+            case AT_BRANCH -> setState(State.L2_CORAL_AT_BRANCH);
+            case ONE_CORAL_FROM_BRANCH -> setState(State.L2_CORAL_ONE_CORAL_FROM_BRANCH);
+            case FACING_AWAY_ONE_CORAL_FROM_BRANCH -> setState(State.L2_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH);
+        }
     }
 
-    public void setL3CoralState() {
-        setState(State.L3_CORAL);
+    public void setL3CoralState(RobotPoses.Reef.RobotScoringSetting mode) {
+        switch (mode) {
+            case AT_BRANCH -> setState(State.L3_CORAL_AT_BRANCH);
+            case ONE_CORAL_FROM_BRANCH -> setState(State.L3_CORAL_ONE_CORAL_FROM_BRANCH);
+            case FACING_AWAY_ONE_CORAL_FROM_BRANCH -> setState(State.L3_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH);
+        }
     }
 
-    public void setL4CoralState() {
-        setState(State.L4_CORAL);
+    public void setL4CoralState(RobotPoses.Reef.RobotScoringSetting mode) {
+        switch (mode) {
+            case AT_BRANCH -> setState(State.L4_CORAL_AT_BRANCH);
+            case ONE_CORAL_FROM_BRANCH -> setState(State.L4_CORAL_ONE_CORAL_FROM_BRANCH);
+            case FACING_AWAY_ONE_CORAL_FROM_BRANCH -> setState(State.L4_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH);
+        }
     }
 
     public void setLowReefAlgaeState() {
