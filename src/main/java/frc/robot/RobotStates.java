@@ -117,6 +117,7 @@ public class RobotStates {
 
     public void setCurrentAutoLevel(FieldUtil.Reef.Level level) {
         currentAutoLevel = level;
+        swerve.localizer.setL1RobotScoringSettingOverride(currentAutoLevel == FieldUtil.Reef.Level.L1);
         needsUpdate = isListening.getAsBoolean();
     }
 

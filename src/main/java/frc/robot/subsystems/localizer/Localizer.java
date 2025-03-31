@@ -47,6 +47,7 @@ public class Localizer {
     public Pose2d nearestRobotPoseAtAlgaeReef = new Pose2d();
 
     public RobotPoses.Reef.RobotScoringSetting currentRobotScoringSetting = RobotPoses.Reef.RobotScoringSetting.ONE_CORAL_FROM_BRANCH;
+    private boolean l1RobotScoringSettingOverride = false;
     public Pose2d nearestRobotPoseAtBranch = new Pose2d();
     public Pair<Pose2d, Pose2d> nearestRobotPosesAtBranchPair = new Pair<>(new Pose2d(), new Pose2d());
     public Pose2d nearestReefTagPose = new Pose2d();
@@ -181,6 +182,10 @@ public class Localizer {
         trustCameras = !trustCameras;
     }
 
+    public void setL1RobotScoringSettingOverride(boolean override) {
+        l1RobotScoringSettingOverride = override;
+    }
+
     public void setCurrentTemporaryTargetPose(Pose2d temporaryTargetPose) {
         this.currentTemporaryTargetPose = temporaryTargetPose;
     }
@@ -243,11 +248,6 @@ public class Localizer {
         }
     }
 
-    public void forceUpdateQuestNavPose() {
-        hasCalibratedOnceWhenNear = false;
-        updateQuestNavPose();
-    }
-
     // changes offset based on error between pose estimate and corrected QuestNav pose
     public void updateQuestNavPose() {
         QuestNavUtil.completeQuestPose();
@@ -265,8 +265,15 @@ public class Localizer {
         }
     }
 
+    public void forceUpdateQuestNavPose() {
+        hasCalibratedOnceWhenNear = false;
+        updateQuestNavPose();
+    }
+
     private void updateCoralScoringMode() {
-        if (!trustCameras) {
+        if (l1RobotScoringSettingOverride) {
+            currentRobotScoringSetting = RobotPoses.Reef.RobotScoringSetting.L1;
+        } else if (!trustCameras) {
             currentRobotScoringSetting = RobotPoses.Reef.RobotScoringSetting.AT_BRANCH;
         } else {
             currentRobotScoringSetting = facingAwayFromReef()
