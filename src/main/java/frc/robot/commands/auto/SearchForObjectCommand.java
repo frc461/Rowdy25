@@ -72,7 +72,7 @@ public class SearchForObjectCommand extends Command {
 
         PhotonUtil.Color.getRobotToBestObject(objectClass).ifPresentOrElse(robotToObject -> {
                     targetPose = new Pose2d(
-                            currentPose.getTranslation().plus(robotToObject),
+                            currentPose.plus(new Transform2d(robotToObject, Rotation2d.kZero)).getTranslation(),
                             currentPose.getRotation().rotateBy(robotToObject.getAngle()).rotateBy(Rotation2d.kPi)
                     ).plus(new Transform2d(
                             Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2 + Units.inchesToMeters(12.0), // TODO SHOP: TUNE THIS
