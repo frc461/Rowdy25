@@ -87,7 +87,6 @@ public class LocalizationTelemetry {
         canAddTopLeftMeasurementsPub.set(PhotonUtil.BW.isTagClear(PhotonUtil.BW.BWCamera.TOP_LEFT));
         canAddBackMeasurementsPub.set(PhotonUtil.BW.isTagClear(PhotonUtil.BW.BWCamera.BACK));
 
-
         fieldTypePub.set("Field2d");
         publishPose(pose2dEstimatePub, poseEstimatePub, poseEstimatePrettyPub, localizer.getEstimatedPose());
         publishPose(temporaryTargetPose2dPub, temporaryTargetPosePub, temporaryTargetPosePrettyPub, localizer.getCurrentTemporaryTargetPose());

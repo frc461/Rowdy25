@@ -79,7 +79,7 @@ public class DirectMoveToPoseCommand extends Command {
                         2 / 7.0,
                         15 / 2.0
                 ),
-                Math.min(EquationUtil.linearOutput(targetPose.getTranslation().getDistance(currentPose.getTranslation()), 10, -5), safeMaxVelocity)
+                Math.min(EquationUtil.linearOutput(targetPose.getTranslation().getDistance(currentPose.getTranslation()), 10, -8), safeMaxVelocity)
         );
 
         double velocityHeadingRadians = targetPose.getTranslation().minus(currentPose.getTranslation()).getAngle().getRadians();

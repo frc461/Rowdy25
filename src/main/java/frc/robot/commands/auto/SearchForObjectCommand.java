@@ -68,18 +68,9 @@ public class SearchForObjectCommand extends Command {
 
     @Override
     public void initialize() {
-        Pose2d currentPose = swerve.localizer.getStrategyPose();
-
-        PhotonUtil.Color.getRobotToBestObject(objectClass).ifPresentOrElse(robotToObject -> {
-                    targetPose = new Pose2d(
-                            currentPose.plus(new Transform2d(robotToObject, Rotation2d.kZero)).getTranslation(),
-                            currentPose.getRotation().rotateBy(robotToObject.getAngle()).rotateBy(Rotation2d.kPi)
-                    ).plus(new Transform2d(
-                            Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2 + Units.inchesToMeters(12.0), // TODO SHOP: TUNE THIS
-                            0,
-                            Rotation2d.kZero
-                    ));
-
+        PhotonUtil.Color.getRobotToBestObject(objectClass).ifPresentOrElse(
+                robotToObject -> {
+                    targetPose = swerve.localizer.bestCoralPose;
                     xPosDone = false;
                     yPosDone = false;
                     yawDone = false;
@@ -97,14 +88,7 @@ public class SearchForObjectCommand extends Command {
         switch (currentStage) {
             case TO_OBJECT:
                 PhotonUtil.Color.getRobotToBestObject(objectClass).ifPresent(robotToObject ->
-                        targetPose = new Pose2d(
-                                currentPose.getTranslation().plus(robotToObject),
-                                currentPose.getRotation().rotateBy(robotToObject.getAngle()).rotateBy(Rotation2d.kPi)
-                        ).plus(new Transform2d(
-                                Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2 + Units.inchesToMeters(12.0),
-                                0,
-                                Rotation2d.kZero
-                        ))
+                        targetPose = swerve.localizer.bestCoralPose
                 );
                 break;
             case WAIT:
@@ -125,7 +109,7 @@ public class SearchForObjectCommand extends Command {
                             2 / 7.0,
                             15 / 2.0
                     ),
-                    Math.min(EquationUtil.linearOutput(targetPose.getTranslation().getDistance(currentPose.getTranslation()), 10, -5), maxVelocity)
+                    Math.min(EquationUtil.linearOutput(targetPose.getTranslation().getDistance(currentPose.getTranslation()), 10, -8), maxVelocity)
             );
 
             double velocityHeadingRadians = targetPose.getTranslation().minus(currentPose.getTranslation()).getAngle().getRadians();
