@@ -1,4 +1,4 @@
-package frc.robot.subsystems.vision;
+package frc.robot.subsystems.localizer;
 
 import dev.doglog.DogLog;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -28,7 +28,6 @@ public class LocalizationTelemetry {
     private final StringPublisher poseEstimatePrettyPub = localizationTelemetryTable.getStringTopic("Estimated Pose").publish();
     private final StringPublisher temporaryTargetPosePrettyPub = localizationTelemetryTable.getStringTopic("Temporary Target Pose").publish();
     private final StringPublisher nearestRobotPoseAtBranchPrettyPub = localizationTelemetryTable.getStringTopic("Nearest Branch Pose April Tag Offset").publish();
-    private final StringPublisher nearestRobotPoseAtBranchUsingReefCenterPrettyPub = localizationTelemetryTable.getStringTopic("Nearest Branch Pose Reef Center Offset").publish();
     private final StringPublisher questPosePrettyPub = localizationTelemetryTable.getStringTopic("Quest-Based Pose").publish();
     private final StringPublisher localizationStrategyPub = localizationTelemetryTable.getStringTopic("Localization Strategy").publish();
     private final DoublePublisher distanceToCoralScoringLocation = localizationTelemetryTable.getDoubleTopic("DistanceToCoralScoringLocation").publish();
@@ -57,8 +56,6 @@ public class LocalizationTelemetry {
     private final DoubleArrayPublisher temporaryTargetPosePub = robotPoseTable.getDoubleArrayTopic("Temporary Target Pose").publish();
     private final StructPublisher<Pose2d> nearestRobotPoseAtBranchPose2dPub = robotPoseTable.getStructTopic("Nearest Branch April Tag Offset Pose2d", Pose2d.struct).publish();
     private final DoubleArrayPublisher nearestRobotPoseAtBranchPosePub = robotPoseTable.getDoubleArrayTopic("Nearest Branch April Tag Offset Pose").publish();
-    private final StructPublisher<Pose2d> nearestRobotPoseAtBranchUsingReefCenterPose2dPub = robotPoseTable.getStructTopic("Nearest Branch Reef Center Offset Pose2d", Pose2d.struct).publish();
-    private final DoubleArrayPublisher nearestRobotPoseAtBranchUsingReefCenterPosePub = robotPoseTable.getDoubleArrayTopic("Nearest Branch Reef Center Offset Pose").publish();
     private final StructPublisher<Pose2d> questPose2dPub = robotPoseTable.getStructTopic("Quest-Based Pose2d", Pose2d.struct).publish();
     private final DoubleArrayPublisher questPosePub = robotPoseTable.getDoubleArrayTopic("Quest-Based Pose").publish();
     private final StructPublisher<Pose2d> megaTagOnePose2dPub = robotPoseTable.getStructTopic("MegaTagOne Pose2d", Pose2d.struct).publish();
@@ -92,17 +89,16 @@ public class LocalizationTelemetry {
         publishPose(pose2dEstimatePub, poseEstimatePub, poseEstimatePrettyPub, localizer.getEstimatedPose());
         publishPose(temporaryTargetPose2dPub, temporaryTargetPosePub, temporaryTargetPosePrettyPub, localizer.getCurrentTemporaryTargetPose());
         publishPose(nearestRobotPoseAtBranchPose2dPub, nearestRobotPoseAtBranchPosePub, nearestRobotPoseAtBranchPrettyPub, localizer.nearestRobotPoseAtBranch);
-        publishPose(nearestRobotPoseAtBranchUsingReefCenterPose2dPub, nearestRobotPoseAtBranchUsingReefCenterPosePub, nearestRobotPoseAtBranchUsingReefCenterPrettyPub, localizer.nearestRobotPoseAtBranchUsingReefCenter);
         publishPose(questPose2dPub, questPosePub, questPosePrettyPub, localizer.getQuestPose());
         publishPose(megaTagOnePose2dPub, megaTagOnePosePub, megaTagOnePosePrettyPub, LimelightUtil.getMegaTagOnePose());
         publishPose(megaTagTwoPose2dPub, megaTagTwoPosePub, megaTagTwoPosePrettyPub, LimelightUtil.getMegaTagTwoPose());
-        localizer.getUpdatedPhotonPoseEstimate(PhotonUtil.BW.BWCamera.TOP_RIGHT).ifPresent(
+        PhotonUtil.BW.getBestTagPose(PhotonUtil.BW.BWCamera.TOP_RIGHT).ifPresent(
                 poseEstimate -> publishPose(photonTopRightPose2dPub, photonTopRightPosePub, photonTopRightPosePrettyPub, poseEstimate.estimatedPose().toPose2d())
         );
-        localizer.getUpdatedPhotonPoseEstimate(PhotonUtil.BW.BWCamera.TOP_LEFT).ifPresent(
+        PhotonUtil.BW.getBestTagPose(PhotonUtil.BW.BWCamera.TOP_LEFT).ifPresent(
                 poseEstimate -> publishPose(photonTopLeftPose2dPub, photonTopLeftPosePub, photonTopLeftPosePrettyPub, poseEstimate.estimatedPose().toPose2d())
         );
-        localizer.getUpdatedPhotonPoseEstimate(PhotonUtil.BW.BWCamera.BACK).ifPresent(
+        PhotonUtil.BW.getBestTagPose(PhotonUtil.BW.BWCamera.BACK).ifPresent(
                 poseEstimate -> publishPose(photonBackPose2dPub, photonBackPosePub, photonBackPosePrettyPub, poseEstimate.estimatedPose().toPose2d())
         );
 
@@ -112,13 +108,13 @@ public class LocalizationTelemetry {
     private void logValues() {
         DogLog.log("PoseEstimate", localizer.getEstimatedPose());
         DogLog.log("LocalizationStrategy", localizer.getLocalizationStrategy());
-        localizer.getUpdatedPhotonPoseEstimate(PhotonUtil.BW.BWCamera.TOP_RIGHT).ifPresent(
+        PhotonUtil.BW.getBestTagPose(PhotonUtil.BW.BWCamera.TOP_RIGHT).ifPresent(
                 poseEstimate -> DogLog.log("PhotonTopRightPose", poseEstimate.estimatedPose().toPose2d())
         );
-        localizer.getUpdatedPhotonPoseEstimate(PhotonUtil.BW.BWCamera.TOP_LEFT).ifPresent(
+        PhotonUtil.BW.getBestTagPose(PhotonUtil.BW.BWCamera.TOP_LEFT).ifPresent(
                 poseEstimate -> DogLog.log("PhotonTopLeftPose", poseEstimate.estimatedPose().toPose2d())
         );
-        localizer.getUpdatedPhotonPoseEstimate(PhotonUtil.BW.BWCamera.BACK).ifPresent(
+        PhotonUtil.BW.getBestTagPose(PhotonUtil.BW.BWCamera.BACK).ifPresent(
                 poseEstimate -> DogLog.log("PhotonBackPose", poseEstimate.estimatedPose().toPose2d())
         );
         DogLog.log("PhotonColorHasTarget", PhotonUtil.Color.hasTargets());

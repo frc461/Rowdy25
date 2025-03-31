@@ -13,11 +13,11 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.RobotStates;
 import frc.robot.autos.routines.AutoEventLooper;
 import frc.robot.autos.routines.AutoTrigger;
 import frc.robot.constants.Constants;
+import frc.robot.constants.RobotPoses;
 import frc.robot.util.FieldUtil;
 import frc.robot.util.MultipleChooser;
 
@@ -204,8 +204,8 @@ public final class AutoManager { // TODO: REVAMP WTIH GROUND INTAKE
     private Command getPathFindingCommandToCoralStation(RobotStates robotStates, FieldUtil.Reef.ScoringLocation current, FieldUtil.Reef.ScoringLocation next) {
         String coralStation = this.coralStationOverride == null
                 ? getMostEfficientCoralStation(
-                        FieldUtil.Reef.ScoringLocation.getPose(current),
-                        FieldUtil.Reef.ScoringLocation.getPose(next)
+                        RobotPoses.Reef.getRobotPoseAtBranch(robotStates.swerve.localizer.currentRobotScoringSetting, current),
+                        RobotPoses.Reef.getRobotPoseAtBranch(robotStates.swerve.localizer.currentRobotScoringSetting, next)
                 ) : this.coralStationOverride;
 
         if (coralStation.equals("station-1")) {

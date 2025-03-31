@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.constants.Constants;
+import frc.robot.constants.RobotPoses;
 import frc.robot.util.FieldUtil;
 
 import java.util.List;
@@ -42,9 +43,9 @@ public final class Pathfinder {
         );
     }
 
-    public static Command pathFindToNearestCoralScoringLocation(Pose2d currentPose) {
+    public static Command pathFindToNearestCoralScoringLocation(RobotPoses.Reef.RobotScoringSetting mode, Pose2d currentPose) {
         return Pathfinder.pathFindToClosePose(
-                FieldUtil.Reef.getNearestRobotPoseAtBranch(currentPose),
+                RobotPoses.Reef.getNearestRobotPoseAtBranch(mode, currentPose),
                 Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_DIRECT_DRIVE,
                 1.0
         );
@@ -163,7 +164,7 @@ public final class Pathfinder {
         Constants.ROBOT_WIDTH_WITH_BUMPERS = Inches.of(32.5);
 
         System.out.println("--------ROBOT POSES AT BRANCHES (A-L)--------");
-        for (Pose2d pose : FieldUtil.Reef.getRobotPosesAtEachBranch()) {
+        for (Pose2d pose : RobotPoses.Reef.getRobotPosesAtBranches(RobotPoses.Reef.RobotScoringSetting.AT_BRANCH)) {
             System.out.println("X: " + pose.getX() + ", Y: " + pose.getY() + ", Angle: " + pose.getRotation().getDegrees());
         }
         Pose2d centerStation1Pose = FieldUtil.AprilTag.ID_13.pose2d

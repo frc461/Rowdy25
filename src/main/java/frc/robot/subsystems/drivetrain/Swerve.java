@@ -31,7 +31,8 @@ import frc.robot.commands.PathfindToPoseAvoidingReefCommand;
 import frc.robot.constants.Constants;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.auto.SearchForObjectCommand;
-import frc.robot.subsystems.vision.Localizer;
+import frc.robot.subsystems.localizer.Localizer;
+import frc.robot.constants.RobotPoses;
 import frc.robot.util.FieldUtil;
 import frc.robot.util.vision.PhotonUtil;
 
@@ -185,27 +186,37 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
         );
     }
 
+    public Command directMoveToObject(BooleanSupplier objectObtained, PhotonUtil.Color.TargetClass objectLabelClass) {
+        return new SearchForObjectCommand(this, fieldCentric, objectObtained, objectLabelClass, 2.5);
+    }
+
+    public Command pushAlliancePartnerOut() {
+        return applyRequest(() -> robotCentric.withVelocityX(-1.0))
+                .withDeadline(Commands.waitSeconds(0.5))
+                .andThen(this::forceStop);
+    }
+
     public Command pathFindToLeftCoralStationGroundIntakeCoral(RobotStates robotStates) { // TODO SHOP: TEST THIS
         return Commands.defer(
                 () -> new PathfindToPoseAvoidingReefCommand(
                         this,
                         fieldCentric,
                         robotStates.elevator::getPosition,
-                        FieldUtil.CoralStation.getRobotPosesAtEachCoralStation().get(0).interpolate(Constants.FAR_LEFT_CORAL_STATION.apply(Constants.ALLIANCE_SUPPLIER), 0.25)
+                        RobotPoses.CoralStation.getRobotPosesAtEachCoralStation().get(0).interpolate(Constants.FAR_LEFT_CORAL_STATION.apply(Constants.ALLIANCE_SUPPLIER), 0.25)
                 ).andThen(Commands.repeatingSequence(
-                        new DirectMoveToPoseCommand(
-                                this,
-                                fieldCentric,
-                                robotStates.elevator::getPosition,
-                                FieldUtil.CoralStation.getRobotPosesAtEachCoralStation().get(0).plus(new Transform2d(1.0, 0, Rotation2d.kZero))
-                        ),
-                        new DirectMoveToPoseCommand(
-                                this,
-                                fieldCentric,
-                                robotStates.elevator::getPosition,
-                                FieldUtil.CoralStation.getRobotPosesAtEachCoralStation().get(0).interpolate(Constants.FAR_LEFT_CORAL_STATION.apply(Constants.ALLIANCE_SUPPLIER), 0.25)
-                        )
-                )).until(PhotonUtil.Color::hasCoralTargets)
+                                new DirectMoveToPoseCommand(
+                                        this,
+                                        fieldCentric,
+                                        robotStates.elevator::getPosition,
+                                        RobotPoses.CoralStation.getRobotPosesAtEachCoralStation().get(0).plus(new Transform2d(1.0, 0, Rotation2d.kZero))
+                                ),
+                                new DirectMoveToPoseCommand(
+                                        this,
+                                        fieldCentric,
+                                        robotStates.elevator::getPosition,
+                                        RobotPoses.CoralStation.getRobotPosesAtEachCoralStation().get(0).interpolate(Constants.FAR_LEFT_CORAL_STATION.apply(Constants.ALLIANCE_SUPPLIER), 0.25)
+                                )
+                        )).until(PhotonUtil.Color::hasCoralTargets)
                         .andThen(robotStates::toggleGroundCoralState)
                         .andThen(directMoveToObject(robotStates.intake::hasCoral, PhotonUtil.Color.TargetClass.CORAL)),
                 Set.of(this)
@@ -218,35 +229,25 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                         this,
                         fieldCentric,
                         robotStates.elevator::getPosition,
-                        FieldUtil.CoralStation.getRobotPosesAtEachCoralStation().get(1).interpolate(Constants.FAR_RIGHT_CORAL_STATION.apply(Constants.ALLIANCE_SUPPLIER), 0.25)
+                        RobotPoses.CoralStation.getRobotPosesAtEachCoralStation().get(1).interpolate(Constants.FAR_RIGHT_CORAL_STATION.apply(Constants.ALLIANCE_SUPPLIER), 0.25)
                 ).andThen(Commands.repeatingSequence(
-                        new DirectMoveToPoseCommand(
-                                this,
-                                fieldCentric,
-                                robotStates.elevator::getPosition,
-                                FieldUtil.CoralStation.getRobotPosesAtEachCoralStation().get(1).plus(new Transform2d(1.0, 0, Rotation2d.kZero))
-                        ),
-                        new DirectMoveToPoseCommand(
-                                this,
-                                fieldCentric,
-                                robotStates.elevator::getPosition,
-                                FieldUtil.CoralStation.getRobotPosesAtEachCoralStation().get(1).interpolate(Constants.FAR_RIGHT_CORAL_STATION.apply(Constants.ALLIANCE_SUPPLIER), 0.25)
-                        )
-                )).until(PhotonUtil.Color::hasCoralTargets)
+                                new DirectMoveToPoseCommand(
+                                        this,
+                                        fieldCentric,
+                                        robotStates.elevator::getPosition,
+                                        RobotPoses.CoralStation.getRobotPosesAtEachCoralStation().get(1).plus(new Transform2d(1.0, 0, Rotation2d.kZero))
+                                ),
+                                new DirectMoveToPoseCommand(
+                                        this,
+                                        fieldCentric,
+                                        robotStates.elevator::getPosition,
+                                        RobotPoses.CoralStation.getRobotPosesAtEachCoralStation().get(1).interpolate(Constants.FAR_RIGHT_CORAL_STATION.apply(Constants.ALLIANCE_SUPPLIER), 0.25)
+                                )
+                        )).until(PhotonUtil.Color::hasCoralTargets)
                         .andThen(robotStates::toggleGroundCoralState)
                         .andThen(directMoveToObject(robotStates.intake::hasCoral, PhotonUtil.Color.TargetClass.CORAL)),
                 Set.of(this)
         );
-    }
-
-    public Command directMoveToObject(BooleanSupplier objectObtained, PhotonUtil.Color.TargetClass objectLabelClass) {
-        return new SearchForObjectCommand(this, fieldCentric, objectObtained, objectLabelClass, 2.5);
-    }
-
-    public Command pushAlliancePartnerOut() {
-        return applyRequest(() -> robotCentric.withVelocityX(-1.0))
-                .withDeadline(Commands.waitSeconds(0.5))
-                .andThen(this::forceStop);
     }
 
     public Command pathFindToLeftCoralStation(RobotStates robotStates) {
@@ -255,7 +256,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                         this,
                         fieldCentric,
                         robotStates.elevator::getPosition,
-                        FieldUtil.CoralStation.getRobotPosesAtEachCoralStation().get(0).interpolate(Constants.FAR_LEFT_CORAL_STATION.apply(Constants.ALLIANCE_SUPPLIER), 0.25)
+                        RobotPoses.CoralStation.getRobotPosesAtEachCoralStation().get(0).interpolate(Constants.FAR_LEFT_CORAL_STATION.apply(Constants.ALLIANCE_SUPPLIER), 0.25)
                 ).until(() -> isStuck()
                                 && localizer.getStrategyPose().getTranslation().getDistance(localizer.nearestRobotPoseAtCoralStation.getTranslation()) < Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_ACCEPT * 5
                                 || robotStates.intake.hasCoral())
@@ -270,7 +271,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                         this,
                         fieldCentric,
                         robotStates.elevator::getPosition,
-                        FieldUtil.CoralStation.getRobotPosesAtEachCoralStation().get(1).interpolate(Constants.FAR_RIGHT_CORAL_STATION.apply(Constants.ALLIANCE_SUPPLIER), 0.25)
+                        RobotPoses.CoralStation.getRobotPosesAtEachCoralStation().get(1).interpolate(Constants.FAR_RIGHT_CORAL_STATION.apply(Constants.ALLIANCE_SUPPLIER), 0.25)
                 ).until(() -> isStuck()
                                 && localizer.getStrategyPose().getTranslation().getDistance(localizer.nearestRobotPoseAtCoralStation.getTranslation()) < Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_ACCEPT * 5
                                 || robotStates.intake.hasCoral())
@@ -343,14 +344,14 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                                 fieldCentric,
                                 robotStates.elevator::getPosition,
                                 Pathfinder.calculateClosePose(
-                                        FieldUtil.Reef.ScoringLocation.getPose(location),
+                                        RobotPoses.Reef.getRobotPoseAtBranch(localizer.currentRobotScoringSetting, location),
                                         Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_DIRECT_DRIVE
                                 )
                         )).andThen(new DirectMoveToPoseCommand(
                                 this,
                                 fieldCentric,
                                 robotStates.elevator::getPosition,
-                                FieldUtil.Reef.ScoringLocation.getPose(location),
+                                RobotPoses.Reef.getRobotPoseAtBranch(localizer.currentRobotScoringSetting, location),
                                 robotStates.getCurrentAutoLevel() == FieldUtil.Reef.Level.L4 ? 2.5 : Constants.MAX_VEL
                         )).raceWith(new WaitUntilCommand(new Trigger(() -> robotStates.nearStateLocation(RobotStates.State.L4_CORAL)).debounce(1))).andThen(
                                 new WaitUntilCommand(robotStates.atAutoScoreState)
