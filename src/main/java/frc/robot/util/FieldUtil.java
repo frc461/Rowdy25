@@ -171,18 +171,18 @@ public final class FieldUtil {
 
             public static Pose2d getPose(ScoringLocation location) {
                 return switch (location) {
-                    case A -> getRobotPosesAtEachBranchUsingReefCenter().get(0);
-                    case B -> getRobotPosesAtEachBranchUsingReefCenter().get(1);
-                    case C -> getRobotPosesAtEachBranchUsingReefCenter().get(2);
-                    case D -> getRobotPosesAtEachBranchUsingReefCenter().get(3);
-                    case E -> getRobotPosesAtEachBranchUsingReefCenter().get(4);
-                    case F -> getRobotPosesAtEachBranchUsingReefCenter().get(5);
-                    case G -> getRobotPosesAtEachBranchUsingReefCenter().get(6);
-                    case H -> getRobotPosesAtEachBranchUsingReefCenter().get(7);
-                    case I -> getRobotPosesAtEachBranchUsingReefCenter().get(8);
-                    case J -> getRobotPosesAtEachBranchUsingReefCenter().get(9);
-                    case K -> getRobotPosesAtEachBranchUsingReefCenter().get(10);
-                    case L -> getRobotPosesAtEachBranchUsingReefCenter().get(11);
+                    case A -> getRobotPosesAtEachBranch().get(0);
+                    case B -> getRobotPosesAtEachBranch().get(1);
+                    case C -> getRobotPosesAtEachBranch().get(2);
+                    case D -> getRobotPosesAtEachBranch().get(3);
+                    case E -> getRobotPosesAtEachBranch().get(4);
+                    case F -> getRobotPosesAtEachBranch().get(5);
+                    case G -> getRobotPosesAtEachBranch().get(6);
+                    case H -> getRobotPosesAtEachBranch().get(7);
+                    case I -> getRobotPosesAtEachBranch().get(8);
+                    case J -> getRobotPosesAtEachBranch().get(9);
+                    case K -> getRobotPosesAtEachBranch().get(10);
+                    case L -> getRobotPosesAtEachBranch().get(11);
                 };
             }
         }
