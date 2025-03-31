@@ -25,7 +25,6 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.RobotStates;
-import frc.robot.autos.Pathfinder;
 import frc.robot.commands.DirectMoveToPoseCommand;
 import frc.robot.commands.PathfindToPoseAvoidingReefCommand;
 import frc.robot.constants.Constants;
@@ -195,6 +194,8 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                 .withDeadline(Commands.waitSeconds(0.5))
                 .andThen(this::forceStop);
     }
+
+    // TODO SHOP: TEST ALL PATHFINDING
 
     public Command pathFindToLeftCoralStationGroundIntakeCoral(RobotStates robotStates) { // TODO SHOP: TEST THIS
         return Commands.defer(

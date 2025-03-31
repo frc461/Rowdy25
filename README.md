@@ -110,8 +110,8 @@ ground intake:
 - [x] fix command to direct drive to note and consider making an automation class for compiling path finding to certain locations and searching for coral
 - [x] revamp pathfinding location
 - [x] double-sided reef outtake
-- [ ] revamp/fix auto
-- [ ] (if possible) algae intake
+- [x] revamp/fix auto
+- [x] (if possible) algae intake
 - [ ] implement independent system in the case of camera failure that utilizes the canandcolor proximity sensor to adapt to coral obstruction (boolean trustCameras in Localizer.java)
 
 Monday, 3/31/2025 to test:
