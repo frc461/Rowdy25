@@ -205,7 +205,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                                 fieldCentric,
                                 robotStates.elevator::getPosition,
                                 Constants.FAR_LEFT_CORAL_STATION.apply(Constants.ALLIANCE_SUPPLIER)
-                                        .plus(new Transform2d(2.0, 0, Rotation2d.fromDegrees(-10)))
+                                        .plus(new Transform2d(2.0, 0, Rotation2d.fromDegrees(10)))
                         )).andThen(new WaitUntilCommand(PhotonUtil.Color::hasCoralTargets))
                                 .until(PhotonUtil.Color::hasCoralTargets)
                                 .andThen(directMoveToObject(robotStates.intake::hasCoral, PhotonUtil.Color.TargetClass.CORAL)),

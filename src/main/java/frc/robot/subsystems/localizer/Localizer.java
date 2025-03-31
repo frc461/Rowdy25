@@ -4,6 +4,7 @@ import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.PWM;
@@ -20,6 +21,8 @@ import frc.robot.util.vision.PhotonUtil;
 import frc.robot.util.vision.QuestNavUtil;
 
 import java.util.Optional;
+
+import static edu.wpi.first.units.Units.Meters;
 
 public class Localizer {
     private enum LocalizationStrategy {
@@ -46,6 +49,8 @@ public class Localizer {
     public RobotPoses.Reef.RobotScoringSetting currentRobotScoringSetting = RobotPoses.Reef.RobotScoringSetting.ONE_CORAL_FROM_BRANCH;
     private boolean l1RobotScoringSettingOverride = false;
     public boolean nearestAlgaeIsHigh = false;
+
+    public Pose2d bestCoralPose = new Pose2d();
 
     public Pose2d nearestRobotPoseAtBranch = new Pose2d();
     public Pair<Pose2d, Pose2d> nearestRobotPosesAtBranchPair = new Pair<>(new Pose2d(), new Pose2d());
@@ -286,17 +291,30 @@ public class Localizer {
     }
 
     private void updateRobotUtilityPoses() {
+        Pose2d currentPose = getStrategyPose();
+
         updateCoralScoringMode();
-        nearestAlgaeIsHigh = FieldUtil.Reef.getAlgaeReefLevelFromTag(FieldUtil.Reef.getNearestReefTag(getStrategyPose())) == FieldUtil.Reef.AlgaeLocation.HIGH;
+        nearestAlgaeIsHigh = FieldUtil.Reef.getAlgaeReefLevelFromTag(FieldUtil.Reef.getNearestReefTag(currentPose)) == FieldUtil.Reef.AlgaeLocation.HIGH;
 
-        nearestRobotPoseAtBranch = RobotPoses.Reef.getNearestRobotPoseAtBranch(currentRobotScoringSetting, getStrategyPose());
-        nearestRobotPosesAtBranchPair = RobotPoses.Reef.getNearestRobotPosesAtBranchPair(currentRobotScoringSetting, getStrategyPose());
-        nearestRobotPoseNearBranchPair = RobotPoses.Reef.getNearestRobotPoseNearReef(currentRobotScoringSetting, getStrategyPose());
-        nearestReefTagPose = FieldUtil.Reef.getNearestReefTagPose(getStrategyPose());
+        PhotonUtil.Color.getRobotToBestObject(PhotonUtil.Color.TargetClass.CORAL).ifPresent(robotToObject ->
+                bestCoralPose = new Pose2d(
+                        currentPose.plus(new Transform2d(robotToObject, Rotation2d.kZero)).getTranslation(),
+                        currentPose.getRotation().rotateBy(robotToObject.getAngle()).rotateBy(Rotation2d.kPi)
+                ).plus(new Transform2d(
+                        Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2 + Units.inchesToMeters(12.0), // TODO SHOP: TUNE THIS
+                        0,
+                        Rotation2d.kZero
+                ))
+        );
 
-        nearestRobotPoseAtCoralStation = RobotPoses.CoralStation.getNearestRobotPoseAtCoralStation(getStrategyPose());
-        nearestRobotPoseAtAlgaeReef = RobotPoses.Reef.getNearestRobotPoseAtAlgaeReef(getStrategyPose());
-        nearestRobotPoseNearAlgaeReef = RobotPoses.Reef.getNearestRobotPoseNearReef(nearestAlgaeIsHigh, getStrategyPose());
+        nearestRobotPoseAtBranch = RobotPoses.Reef.getNearestRobotPoseAtBranch(currentRobotScoringSetting, currentPose);
+        nearestRobotPosesAtBranchPair = RobotPoses.Reef.getNearestRobotPosesAtBranchPair(currentRobotScoringSetting, currentPose);
+        nearestRobotPoseNearBranchPair = RobotPoses.Reef.getNearestRobotPoseNearReef(currentRobotScoringSetting, currentPose);
+        nearestReefTagPose = FieldUtil.Reef.getNearestReefTagPose(currentPose);
+
+        nearestRobotPoseAtCoralStation = RobotPoses.CoralStation.getNearestRobotPoseAtCoralStation(currentPose);
+        nearestRobotPoseAtAlgaeReef = RobotPoses.Reef.getNearestRobotPoseAtAlgaeReef(currentPose);
+        nearestRobotPoseNearAlgaeReef = RobotPoses.Reef.getNearestRobotPoseNearReef(nearestAlgaeIsHigh, currentPose);
     }
 
     public void periodic() {

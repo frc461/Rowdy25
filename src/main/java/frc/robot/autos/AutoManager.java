@@ -21,7 +21,7 @@ import frc.robot.constants.RobotPoses;
 import frc.robot.util.FieldUtil;
 import frc.robot.util.MultipleChooser;
 
-public final class AutoManager { // TODO: REVAMP WTIH GROUND INTAKE
+public final class AutoManager { // TODO SHOP: TEST THIS
     private Command currentCommand;
 
     public enum StartPosition {

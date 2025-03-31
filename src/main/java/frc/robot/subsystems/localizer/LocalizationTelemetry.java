@@ -41,6 +41,7 @@ public class LocalizationTelemetry {
     private final BooleanPublisher photonColorHasAlgaeTargetPub = photonTelemetryTable.getBooleanTopic("Photon Color Has Algae Target").publish();
     private final BooleanPublisher photonColorHasCoralTargetPub = photonTelemetryTable.getBooleanTopic("Photon Color Has Coral Target").publish();
     private final StringPublisher photonColorBestObjectClass = photonTelemetryTable.getStringTopic("Photon Color Best Object Class").publish();
+    private final StringPublisher photonColorBestObjectPosePrettyPub = photonTelemetryTable.getStringTopic("Photon Color Best Object Pose").publish();
     private final StringPublisher photonTopRightPosePrettyPub = photonTelemetryTable.getStringTopic("Photon Top Right Pose").publish();
     private final StringPublisher photonTopLeftPosePrettyPub = photonTelemetryTable.getStringTopic("Photon Top Left Pose").publish();
     private final StringPublisher photonBackPosePrettyPub = photonTelemetryTable.getStringTopic("Photon Back Pose").publish();
@@ -62,6 +63,8 @@ public class LocalizationTelemetry {
     private final DoubleArrayPublisher megaTagOnePosePub = robotPoseTable.getDoubleArrayTopic("MegaTagOne Pose").publish();
     private final StructPublisher<Pose2d> megaTagTwoPose2dPub = robotPoseTable.getStructTopic("MegaTagTwo Pose2d", Pose2d.struct).publish();
     private final DoubleArrayPublisher megaTagTwoPosePub = robotPoseTable.getDoubleArrayTopic("MegaTagTwo Pose").publish();
+    private final StructPublisher<Pose2d> photonColorBestObjectPose2dPub = robotPoseTable.getStructTopic("Photon Color Best Object Pose2d", Pose2d.struct).publish();
+    private final DoubleArrayPublisher photonColorBestObjectPosePub = robotPoseTable.getDoubleArrayTopic("Photon Color Best Object Pose").publish();
     private final StructPublisher<Pose2d> photonTopRightPose2dPub = robotPoseTable.getStructTopic("Photon Top Right Pose2d", Pose2d.struct).publish();
     private final DoubleArrayPublisher photonTopRightPosePub = robotPoseTable.getDoubleArrayTopic("Photon Top Right Pose").publish();
     private final StructPublisher<Pose2d> photonTopLeftPose2dPub = robotPoseTable.getStructTopic("Photon Top Left Pose2d", Pose2d.struct).publish();
@@ -92,6 +95,7 @@ public class LocalizationTelemetry {
         publishPose(questPose2dPub, questPosePub, questPosePrettyPub, localizer.getQuestPose());
         publishPose(megaTagOnePose2dPub, megaTagOnePosePub, megaTagOnePosePrettyPub, LimelightUtil.getMegaTagOnePose());
         publishPose(megaTagTwoPose2dPub, megaTagTwoPosePub, megaTagTwoPosePrettyPub, LimelightUtil.getMegaTagTwoPose());
+        publishPose(photonColorBestObjectPose2dPub, photonColorBestObjectPosePub, photonColorBestObjectPosePrettyPub, localizer.bestCoralPose);
         PhotonUtil.BW.getBestTagPose(PhotonUtil.BW.BWCamera.TOP_RIGHT).ifPresent(
                 poseEstimate -> publishPose(photonTopRightPose2dPub, photonTopRightPosePub, photonTopRightPosePrettyPub, poseEstimate.estimatedPose().toPose2d())
         );
