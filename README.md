@@ -112,7 +112,7 @@ ground intake:
 - [x] double-sided reef outtake
 - [x] revamp/fix auto
 - [x] (if possible) algae intake
-- [ ] implement independent system in the case of camera failure that utilizes the canandcolor proximity sensor to adapt to coral obstruction (boolean trustCameras in Localizer.java)
+- [x] implement independent system in the case of camera failure that utilizes the canandcolor proximity sensor to adapt to coral obstruction (boolean trustCameras in Localizer.java)
 
 Monday, 3/31/2025 to test:
 comp bot:

@@ -140,27 +140,24 @@ public class RobotContainer {
         driverXbox.leftStick().onTrue(new InstantCommand(() -> robotStates.swerve.localizer.setPoses(Constants.CENTER_OF_RIGHT_CORAL_STATION.apply(Constants.ALLIANCE_SUPPLIER))));
         driverXbox.rightStick().onTrue(new InstantCommand(() -> robotStates.swerve.localizer.setPoses(Constants.CENTER_OF_LEFT_CORAL_STATION.apply(Constants.ALLIANCE_SUPPLIER))));
 
+        driverXbox.leftBumper().onTrue(new InstantCommand(robotStates::toggleGroundCoralState)
+                .unless(() -> robotStates.intake.hasCoral() || robotStates.intake.hasAlgae()));
         driverXbox.leftBumper().whileTrue(new ConditionalCommand(
-                robotStates.swerve.pathFindToNearestLeftBranch(robotStates)
-                        .unless(robotStates.l1CoralState),
-                new ConditionalCommand(
-                        robotStates.swerve.pathFindToNet(robotStates),
-                        robotStates.swerve.pathFindToLeftCoralStation(robotStates),
-                        robotStates.intake::hasAlgae
-                ),
+                robotStates.swerve.pathFindToNearestLeftBranch(robotStates),
+                robotStates.swerve.pathFindToNet(robotStates),
                 robotStates.intake::hasCoral
-        ));
-        driverXbox.leftBumper().onTrue(new InstantCommand(robotStates::toggleGroundCoralState));
+        ).onlyIf(() -> robotStates.intake.hasCoral() || robotStates.intake.hasAlgae())
+                .until(driverXbox.rightBumper()));
+
+        driverXbox.rightBumper().onTrue(new InstantCommand(robotStates::toggleGroundAlgaeState)
+                .unless(() -> robotStates.intake.hasCoral() || robotStates.intake.hasAlgae()));
         driverXbox.rightBumper().whileTrue(new ConditionalCommand(
-                robotStates.swerve.pathFindToNearestRightBranch(robotStates)
-                        .unless(robotStates.l1CoralState),
-                new ConditionalCommand(
-                        robotStates.swerve.pathFindToProcessor(robotStates),
-                        robotStates.swerve.pathFindToRightCoralStation(robotStates),
-                        robotStates.intake::hasAlgae
-                ),
+                robotStates.swerve.pathFindToNearestRightBranch(robotStates),
+                robotStates.swerve.pathFindToProcessor(robotStates),
                 robotStates.intake::hasCoral
-        ));
+        ).onlyIf(() -> robotStates.intake.hasCoral() || robotStates.intake.hasAlgae())
+                .until(driverXbox.leftBumper()));
+
         driverXbox.leftBumper().and(driverXbox.rightBumper()).whileTrue(
                 robotStates.swerve.pathFindToNearestAlgaeOnReef(robotStates)
                         .unless(() -> robotStates.intake.hasAlgae() || robotStates.intake.hasCoral())
