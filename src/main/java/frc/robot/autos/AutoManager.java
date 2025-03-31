@@ -156,12 +156,12 @@ public final class AutoManager { // TODO: REVAMP WTIH GROUND INTAKE
             triggersToBind.add(autoEventLooper.addTrigger(
                     currentScoringLocation.getFirst().name() + "," + nextScoringLocation.getFirst().name(),
                     () -> Commands.waitSeconds(0.5)
-                            .andThen(getPathFindingCommandToCoralStation(robotStates, currentScoringLocation.getFirst(), nextScoringLocation.getFirst()))
+                            .andThen(getPathFindingCommandToGroundIntakeCoral(robotStates, currentScoringLocation.getFirst(), nextScoringLocation.getFirst()))
                             .andThen(new WaitUntilCommand(() -> robotStates.stowState.getAsBoolean() || robotStates.intake.hasCoral()))
                             .andThen(() -> scoringNext.set(true))
                             .andThen(robotStates.swerve.pathFindToScoringLocation(robotStates, nextScoringLocation.getFirst(), nextScoringLocation.getSecond()))
                             .andThen(() -> scoringNext.set(false))
-                            .until(() -> scoringNext.get() && !robotStates.intake.hasCoral() && !robotStates.atScoringLocation() || robotStates.intake.coralStuck()) // TODO: SOLVE THIS PROBLEM
+                            .until(() -> scoringNext.get() && !robotStates.intake.hasCoral() && !robotStates.atScoringLocation() || robotStates.intake.coralStuck())
             ));
         }
 
@@ -201,7 +201,7 @@ public final class AutoManager { // TODO: REVAMP WTIH GROUND INTAKE
         return Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red ? FlippingUtil.flipFieldPose(startingPoseBlue) : startingPoseBlue;
     }
 
-    private Command getPathFindingCommandToCoralStation(RobotStates robotStates, FieldUtil.Reef.ScoringLocation current, FieldUtil.Reef.ScoringLocation next) {
+    private Command getPathFindingCommandToGroundIntakeCoral(RobotStates robotStates, FieldUtil.Reef.ScoringLocation current, FieldUtil.Reef.ScoringLocation next) {
         String coralStation = this.coralStationOverride == null
                 ? getMostEfficientCoralStation(
                         RobotPoses.Reef.getRobotPoseAtBranch(robotStates.swerve.localizer.currentRobotScoringSetting, current),
@@ -209,8 +209,8 @@ public final class AutoManager { // TODO: REVAMP WTIH GROUND INTAKE
                 ) : this.coralStationOverride;
 
         if (coralStation.equals("station-1")) {
-            return robotStates.swerve.pathFindToLeftCoralStation(robotStates);
+            return robotStates.swerve.pathFindToLeftCoralStationGroundIntakeCoral(robotStates);
         }
-        return robotStates.swerve.pathFindToRightCoralStation(robotStates);
+        return robotStates.swerve.pathFindToRightCoralStationGroundIntakeCoral(robotStates);
     }
 }

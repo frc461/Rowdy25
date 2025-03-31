@@ -36,7 +36,7 @@ public class SearchForObjectCommand extends Command {
     private boolean xPosDone, yPosDone, yawDone, end;
     private CommandStage currentStage;
 
-    public SearchForObjectCommand( // TODO SHOP: TEST AND TUNE THIS CLASS, THEN IF IT WORKS THEN INTEGRATE INTO AUTOMATION
+    public SearchForObjectCommand( // TODO SHOP: TEST THIS
                                    Swerve swerve,
                                    SwerveRequest.FieldCentric fieldCentric,
                                    BooleanSupplier objectObtained,
@@ -75,7 +75,7 @@ public class SearchForObjectCommand extends Command {
                             currentPose.getTranslation().plus(robotToObject),
                             currentPose.getRotation().rotateBy(robotToObject.getAngle()).rotateBy(Rotation2d.kPi)
                     ).plus(new Transform2d(
-                            Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2 + Units.inchesToMeters(12.0),
+                            Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2 + Units.inchesToMeters(12.0), // TODO SHOP: TUNE THIS
                             0,
                             Rotation2d.kZero
                     ));
