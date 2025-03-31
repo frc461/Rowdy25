@@ -286,10 +286,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                         this,
                         fieldCentric,
                         robotStates.elevator::getPosition,
-                        Pathfinder.calculateClosePose(
-                                localizer.nearestRobotPosesAtBranchPair.getFirst(),
-                                Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_DIRECT_DRIVE
-                        )
+                        localizer.nearestRobotPoseNearBranchPair
                 ).onlyIf(() -> !robotStates.atTransitionStateLocation(RobotStates.State.L4_CORAL)).andThen(new DirectMoveToPoseCommand(
                         this,
                         fieldCentric,
@@ -314,10 +311,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                         this,
                         fieldCentric,
                         robotStates.elevator::getPosition,
-                        Pathfinder.calculateClosePose(
-                                localizer.nearestRobotPosesAtBranchPair.getSecond(),
-                                Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_DIRECT_DRIVE
-                        )
+                        localizer.nearestRobotPoseNearBranchPair
                 ).onlyIf(() -> !robotStates.atTransitionStateLocation(RobotStates.State.L4_CORAL)).andThen(new DirectMoveToPoseCommand(
                         this,
                         fieldCentric,
@@ -343,10 +337,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                                 this,
                                 fieldCentric,
                                 robotStates.elevator::getPosition,
-                                Pathfinder.calculateClosePose(
-                                        RobotPoses.Reef.getRobotPoseAtBranch(localizer.currentRobotScoringSetting, location),
-                                        Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_DIRECT_DRIVE
-                                )
+                                RobotPoses.Reef.getRobotPoseNearReef(localizer.currentRobotScoringSetting, location)
                         )).andThen(new DirectMoveToPoseCommand(
                                 this,
                                 fieldCentric,
@@ -370,11 +361,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                         this,
                         fieldCentric,
                         robotStates.elevator::getPosition,
-                        Pathfinder.calculateClosePose(
-                                localizer.nearestRobotPoseAtAlgaeReef,
-                                Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_DIRECT_DRIVE,
-                                localizer.nearestAlgaeIsHigh ? Rotation2d.kZero : Rotation2d.kPi
-                        )
+                        localizer.nearestRobotPoseNearAlgaeReef
                 ).andThen(() -> robotStates.toggleNearestReefAlgaeState(localizer.nearestAlgaeIsHigh, true)).andThen(new DirectMoveToPoseCommand(
                         this,
                         fieldCentric,
@@ -392,10 +379,11 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                         this,
                         fieldCentric,
                         robotStates.elevator::getPosition,
-                        Pathfinder.calculateClosePose(
-                                localizer.randomizeNetScoringPose(),
-                                Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_DIRECT_DRIVE
-                        )
+                        localizer.randomizeNetScoringPose().plus(new Transform2d(
+                                Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_DIRECT_DRIVE,
+                                0,
+                                Rotation2d.kZero
+                        ).inverse())
                 ).andThen(() -> robotStates.toggleNetState(true)).andThen(new DirectMoveToPoseCommand(
                         this,
                         fieldCentric,
@@ -417,11 +405,11 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                         this,
                         fieldCentric,
                         robotStates.elevator::getPosition,
-                        Pathfinder.calculateClosePose(
-                                localizer.robotPoseAtProcessor,
+                        localizer.robotPoseAtProcessor.plus(new Transform2d(
                                 Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_DIRECT_DRIVE,
-                                Rotation2d.kPi
-                        )
+                                0,
+                                Rotation2d.kZero
+                        ))
                 ).andThen(() -> robotStates.toggleProcessorState(true)).andThen(new DirectMoveToPoseCommand(
                         this,
                         fieldCentric,
