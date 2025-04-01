@@ -79,9 +79,12 @@ public final class CompConstants {
         public static final double GROUND_CORAL = 0;
         public static final double GROUND_ALGAE = 0;
         public static final double L1_CORAL = 0;
-        public static final double L2_CORAL = 0;
-        public static final double L3_CORAL = 18.5;
-        public static final double L4_CORAL = 45.5;
+        public static final double L2_CORAL_AT_BRANCH = 0;
+        public static final double L2_CORAL_ONE_CORAL_FROM_BRANCH = 5.5;
+        public static final double L3_CORAL_AT_BRANCH = 18.5;
+        public static final double L3_CORAL_ONE_CORAL_FROM_BRANCH = 21.5;
+        public static final double L4_CORAL_AT_BRANCH = 45.5;
+        public static final double L4_CORAL_ONE_CORAL_FROM_BRANCH = 45.5;
         public static final double LOW_REEF_ALGAE = 13.0;
         public static final double HIGH_REEF_ALGAE = 18.5;
         public static final double PROCESSOR = 0;
@@ -131,9 +134,12 @@ public final class CompConstants {
         public static final double GROUND_CORAL = 3.5;
         public static final double GROUND_ALGAE = 4.5;
         public static final double L1_CORAL = 38.0;
-        public static final double L2_CORAL = 95.0;
-        public static final double L3_CORAL = 95.0;
-        public static final double L4_CORAL = 100.0;
+        public static final double L2_CORAL_AT_BRANCH = 95.0;
+        public static final double L2_CORAL_ONE_CORAL_FROM_BRANCH = 84.0;
+        public static final double L3_CORAL_AT_BRANCH = 95.0;
+        public static final double L3_CORAL_ONE_CORAL_FROM_BRANCH = 100.0;
+        public static final double L4_CORAL_AT_BRANCH = 96.0;
+        public static final double L4_CORAL_ONE_CORAL_FROM_BRANCH = 100.0;
         public static final double LOW_REEF_ALGAE = 52;
         public static final double HIGH_REEF_ALGAE = 91;
         public static final double PROCESSOR = 22;
@@ -169,7 +175,7 @@ public final class CompConstants {
 
         // presets
         public static final BiFunction<Double, Double, Double> LOWER_LIMIT = (elevatorPosition, pivotPosition) -> (double) (pivotPosition < 30 ? 160 : elevatorPosition > 1.5 && elevatorPosition < 12 ? 115 : 45);
-        public static final Function<Double, Double> UPPER_LIMIT = (elevatorPosition) -> (double) (elevatorPosition > 8 ? 295 : 160);
+        public static final Function<Double, Double> UPPER_LIMIT = (elevatorPosition) -> (double) (elevatorPosition > 5 ? 295 : 160);
         public static final double STOW = 120;
         public static final double CORAL_STATION = 120;
         public static final double CORAL_STATION_OBSTRUCTED = 125;
@@ -177,10 +183,10 @@ public final class CompConstants {
         public static final double GROUND_ALGAE = 150;
         public static final double L1_CORAL = 96.5;
         public static final double L2_CORAL_AT_BRANCH = 45;
-        public static final double L2_CORAL_ONE_CORAL_FROM_BRANCH = 45;
+        public static final double L2_CORAL_ONE_CORAL_FROM_BRANCH = 270;
         public static final double L3_CORAL_AT_BRANCH = 60;
         public static final double L3_CORAL_ONE_CORAL_FROM_BRANCH = 50;
-        public static final double L4_CORAL_AT_BRANCH = 85;
+        public static final double L4_CORAL_AT_BRANCH = 75;
         public static final double L4_CORAL_ONE_CORAL_FROM_BRANCH = 65;
         public static final double LOW_REEF_ALGAE = 65.5;
         public static final double HIGH_REEF_ALGAE = 260;

@@ -271,9 +271,12 @@ public final class DefaultConstants {
         public static final double GROUND_CORAL = 0;
         public static final double GROUND_ALGAE = 0;
         public static final double L1_CORAL = 0;
-        public static final double L2_CORAL = 0;
-        public static final double L3_CORAL = 17.2;
-        public static final double L4_CORAL = 41.5;
+        public static final double L2_CORAL_AT_BRANCH = 0;
+        public static final double L2_CORAL_ONE_CORAL_FROM_BRANCH = 0;
+        public static final double L3_CORAL_AT_BRANCH = 17.2;
+        public static final double L3_CORAL_ONE_CORAL_FROM_BRANCH = 17.2;
+        public static final double L4_CORAL_AT_BRANCH = 41.5;
+        public static final double L4_CORAL_ONE_CORAL_FROM_BRANCH = 41.5;
         public static final double LOW_REEF_ALGAE = 2.0;
         public static final double HIGH_REEF_ALGAE = 3.0;
         public static final double PROCESSOR = 0;
@@ -335,9 +338,12 @@ public final class DefaultConstants {
         public static final double GROUND_CORAL = 3.5;
         public static final double GROUND_ALGAE = 4.5;
         public static final double L1_CORAL = 31.5;
-        public static final double L2_CORAL = 100.0;
-        public static final double L3_CORAL = 100.6;
-        public static final double L4_CORAL = 90.5;
+        public static final double L2_CORAL_AT_BRANCH = 100.0;
+        public static final double L2_CORAL_ONE_CORAL_FROM_BRANCH = 90.0;
+        public static final double L3_CORAL_AT_BRANCH = 100.6;
+        public static final double L3_CORAL_ONE_CORAL_FROM_BRANCH = 95.6;
+        public static final double L4_CORAL_AT_BRANCH = 90.5;
+        public static final double L4_CORAL_ONE_CORAL_FROM_BRANCH = 80.5;
         public static final double LOW_REEF_ALGAE = 32.5;
         public static final double HIGH_REEF_ALGAE = 105;
         public static final double PROCESSOR = 22.1;
@@ -378,7 +384,7 @@ public final class DefaultConstants {
 
         // presets
         public static final BiFunction<Double, Double, Double> LOWER_LIMIT = (elevatorPosition, pivotPosition) -> (double) (pivotPosition < 45 ? 125 : elevatorPosition > 1.5 && elevatorPosition < 12 ? 125 : 45);
-        public static final Function<Double, Double> UPPER_LIMIT = (elevatorPosition) -> (double) (elevatorPosition > 8 ? 295 : 160);
+        public static final Function<Double, Double> UPPER_LIMIT = (elevatorPosition) -> (double) (elevatorPosition > 5 ? 295 : 160);
         public static final double STOW = 125;
         public static final double CORAL_STATION = 125;
         public static final double CORAL_STATION_OBSTRUCTED = 125;

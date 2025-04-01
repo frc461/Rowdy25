@@ -250,7 +250,8 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                         this,
                         fieldCentric,
                         robotStates.elevator::getPosition,
-                        localizer.nearestRobotPosesAtBranchPair.getFirst().plus(new Transform2d(localizer.trustCameras ? Units.inchesToMeters(-4.0) : 0, 0, Rotation2d.kZero)),
+                        localizer.nearestRobotPosesAtBranchPair.getFirst()
+                                .plus(new Transform2d(localizer.trustCameras ? Units.inchesToMeters(-4.0) : 0, 0, Rotation2d.kZero)),
                         robotStates.getCurrentAutoLevel() == FieldUtil.Reef.Level.L4 ? 2.5 : Constants.MAX_VEL
                 )).andThen(
                         new WaitUntilCommand(robotStates.atAutoScoreState.and(robotStates::atScoringLocation))
@@ -278,9 +279,10 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                         this,
                         fieldCentric,
                         robotStates.elevator::getPosition,
-                        localizer.nearestRobotPosesAtBranchPair.getSecond().plus(new Transform2d(localizer.trustCameras ? Units.inchesToMeters(-4.0) : 0, 0, Rotation2d.kZero)),
+                        localizer.nearestRobotPosesAtBranchPair.getSecond()
+                                .plus(new Transform2d(localizer.trustCameras ? Units.inchesToMeters(-4.0) : 0, 0, Rotation2d.kZero)),
                         robotStates.getCurrentAutoLevel() == FieldUtil.Reef.Level.L4 ? 2.5 : Constants.MAX_VEL
-                )).andThen(
+                )).until(robotStates.atAutoScoreState.and(robotStates::atScoringLocation)).andThen(
                         new WaitUntilCommand(robotStates.atAutoScoreState.and(robotStates::atScoringLocation))
                                 .andThen(robotStates::toggleAutoLevelCoralState)
                                 .onlyIf(() -> autoHeading)

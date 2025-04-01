@@ -92,17 +92,20 @@ public class RobotStates {
     public final Trigger atGroundCoralState = new Trigger(() -> wrist.isAtState(Wrist.State.GROUND_CORAL)).and(() -> elevator.isAtState(Elevator.State.GROUND_CORAL)).and(() -> pivot.isAtState(Pivot.State.GROUND_CORAL));
     public final Trigger atGroundAlgaeState = new Trigger(() -> wrist.isAtState(Wrist.State.GROUND_ALGAE)).and(() -> elevator.isAtState(Elevator.State.GROUND_ALGAE)).and(() -> pivot.isAtState(Pivot.State.GROUND_ALGAE));
     public final Trigger atL1CoralState = new Trigger(() -> wrist.isAtState(Wrist.State.L1_CORAL)).and(() -> elevator.isAtState(Elevator.State.L1_CORAL)).and(() -> pivot.isAtState(Pivot.State.L1_CORAL));
-    public final Trigger atL2CoralState = new Trigger(() -> wrist.isAtState(Wrist.State.L2_CORAL_AT_BRANCH)).and(() -> elevator.isAtState(Elevator.State.L2_CORAL)).and(() -> pivot.isAtState(Pivot.State.L2_CORAL));
-    public final Trigger atL3CoralState = new Trigger(() -> wrist.isAtState(Wrist.State.L3_CORAL_AT_BRANCH)).and(() -> elevator.isAtState(Elevator.State.L3_CORAL)).and(() -> pivot.isAtState(Pivot.State.L3_CORAL));
-    public final Trigger atL4CoralState = new Trigger(() -> wrist.isAtState(Wrist.State.L4_CORAL_AT_BRANCH)).and(() -> elevator.isAtState(Elevator.State.L4_CORAL)).and(() -> pivot.isAtState(Pivot.State.L4_CORAL));
-    public final Trigger atL4PrepareCoralState = new Trigger(() -> wrist.isAtState(Wrist.State.STOW)).and(() -> elevator.isAtState(Elevator.State.STOW)).and(() -> pivot.isAtState(Pivot.State.L4_CORAL));
+    public final Trigger atL2CoralState = new Trigger(() -> wrist.isAtState(Wrist.State.L2_CORAL_AT_BRANCH)).and(() -> elevator.isAtState(Elevator.State.L2_CORAL_AT_BRANCH)).and(() -> pivot.isAtState(Pivot.State.L2_CORAL_AT_BRANCH));
+    public final Trigger atL2CoralOneCoralFromBranchState = new Trigger(() -> wrist.isAtState(Wrist.State.L2_CORAL_ONE_CORAL_FROM_BRANCH)).and(() -> elevator.isAtState(Elevator.State.L2_CORAL_ONE_CORAL_FROM_BRANCH)).and(() -> pivot.isAtState(Pivot.State.L2_CORAL_ONE_CORAL_FROM_BRANCH));
+    public final Trigger atL3CoralState = new Trigger(() -> wrist.isAtState(Wrist.State.L3_CORAL_AT_BRANCH)).and(() -> elevator.isAtState(Elevator.State.L3_CORAL_AT_BRANCH)).and(() -> pivot.isAtState(Pivot.State.L3_CORAL_AT_BRANCH));
+    public final Trigger atL3CoralOneCoralFromBranchState = new Trigger(() -> wrist.isAtState(Wrist.State.L3_CORAL_ONE_CORAL_FROM_BRANCH)).and(() -> elevator.isAtState(Elevator.State.L3_CORAL_ONE_CORAL_FROM_BRANCH)).and(() -> pivot.isAtState(Pivot.State.L3_CORAL_ONE_CORAL_FROM_BRANCH));
+    public final Trigger atL4CoralState = new Trigger(() -> wrist.isAtState(Wrist.State.L4_CORAL_AT_BRANCH)).and(() -> elevator.isAtState(Elevator.State.L4_CORAL_AT_BRANCH)).and(() -> pivot.isAtState(Pivot.State.L4_CORAL_AT_BRANCH));
+    public final Trigger atL4CoralOneCoralFromBranchState = new Trigger(() -> wrist.isAtState(Wrist.State.L4_CORAL_ONE_CORAL_FROM_BRANCH)).and(() -> elevator.isAtState(Elevator.State.L4_CORAL_ONE_CORAL_FROM_BRANCH)).and(() -> pivot.isAtState(Pivot.State.L4_CORAL_ONE_CORAL_FROM_BRANCH));
     public final Trigger atLowReefAlgaeState = new Trigger(() -> wrist.isAtState(Wrist.State.LOW_REEF_ALGAE)).and(() -> elevator.isAtState(Elevator.State.LOW_REEF_ALGAE)).and(() -> pivot.isAtState(Pivot.State.LOW_REEF_ALGAE));
     public final Trigger atHighReefAlgaeState= new Trigger(() -> wrist.isAtState(Wrist.State.HIGH_REEF_ALGAE)).and(() -> elevator.isAtState(Elevator.State.HIGH_REEF_ALGAE)).and(() -> pivot.isAtState(Pivot.State.HIGH_REEF_ALGAE));
     public final Trigger atProcessorState = new Trigger(() -> wrist.isAtState(Wrist.State.PROCESSOR)).and(() -> elevator.isAtState(Elevator.State.PROCESSOR)).and(() -> pivot.isAtState(Pivot.State.PROCESSOR));
     public final Trigger atNetState = new Trigger(() -> wrist.isAtState(Wrist.State.NET)).and(() -> elevator.isAtState(Elevator.State.NET)).and(() -> pivot.isAtState(Pivot.State.NET));
     public final Trigger atClimbState = new Trigger(() -> wrist.isAtState(Wrist.State.CLIMB)).and(() -> elevator.isAtState(Elevator.State.CLIMB)).and(() -> pivot.isAtState(Pivot.State.CLIMB));
 
-    public final Trigger atAutoScoreState = atL1CoralState.or(atL2CoralState).or(atL3CoralState).or(atL4CoralState);
+    public final Trigger atAutoScoreState = atL1CoralState.or(atL2CoralState).or(atL3CoralState).or(atL4CoralState)
+            .or(atL2CoralOneCoralFromBranchState).or(atL3CoralOneCoralFromBranchState).or(atL4CoralOneCoralFromBranchState);
 
     private final NetworkTable robotStatesTelemetryTable = Constants.NT_INSTANCE.getTable("RobotStates");
     private final StringPublisher robotStatesPub = robotStatesTelemetryTable.getStringTopic("Current Robot State").publish();
@@ -186,7 +189,8 @@ public class RobotStates {
     }
 
     public void toggleL2CoralState(boolean override) {
-        currentState = currentState == State.L2_CORAL && !override ? State.INTAKE_OUT : State.L2_CORAL;
+        currentState = currentState == State.L2_CORAL && !override ? wrist.getState() == Wrist.State.L2_CORAL_ONE_CORAL_FROM_BRANCH ? State.OUTTAKE :
+                State.INTAKE_OUT : State.L2_CORAL;
     }
 
     public void toggleL2CoralState() {
@@ -313,7 +317,7 @@ public class RobotStates {
 
         intakeOutState.onTrue(
                 new InstantCommand(swerve::setIdleMode)
-                        .andThen(() -> wrist.setL4CoralObstructedState(!swerve.localizer.isAgainstReefWall() && !swerve.localizer.trustCameras))
+                        .andThen(() -> wrist.setCoralObstructedState(!swerve.localizer.isAgainstReefWall() && !swerve.localizer.trustCameras))
                         .andThen(new WaitUntilCommand(wrist::isAtTarget))
                         .andThen(intake::setIntakeOutState)
                         .andThen(new WaitUntilCommand(() -> !intake.hasAlgae() && !intake.barelyHasCoral()))
@@ -386,7 +390,12 @@ public class RobotStates {
                 new InstantCommand(swerve::setBranchHeadingMode)
                         .unless(DriverStation::isAutonomousEnabled)
                         .andThen(intake::setIdleState)
-                        .andThen(orderedTransition(pivot::setL2CoralState, elevator::setL2CoralState, Elevator.State.L2_CORAL, () -> wrist.setL2CoralState(swerve.localizer.trustCameras)))
+                        .andThen(orderedTransition(
+                                () -> pivot.setL2CoralState(swerve.localizer.trustCameras),
+                                () -> elevator.setL2CoralState(swerve.localizer.trustCameras),
+                                swerve.localizer.trustCameras ? Elevator.State.L2_CORAL_ONE_CORAL_FROM_BRANCH : Elevator.State.L2_CORAL_AT_BRANCH,
+                                () -> wrist.setL2CoralState(swerve.localizer.trustCameras)
+                        ))
                         .until(() -> !l2CoralState.getAsBoolean())
         );
 
@@ -394,7 +403,12 @@ public class RobotStates {
                 new InstantCommand(swerve::setBranchHeadingMode)
                         .unless(DriverStation::isAutonomousEnabled)
                         .andThen(intake::setIdleState)
-                        .andThen(orderedTransition(pivot::setL3CoralState, elevator::setL3CoralState, Elevator.State.L3_CORAL, () -> wrist.setL3CoralState(swerve.localizer.trustCameras)))
+                        .andThen(orderedTransition(
+                                () -> pivot.setL3CoralState(swerve.localizer.trustCameras),
+                                () -> elevator.setL3CoralState(swerve.localizer.trustCameras),
+                                swerve.localizer.trustCameras ? Elevator.State.L3_CORAL_ONE_CORAL_FROM_BRANCH : Elevator.State.L3_CORAL_AT_BRANCH,
+                                () -> wrist.setL3CoralState(swerve.localizer.trustCameras)
+                        ))
                         .until(() -> !l3CoralState.getAsBoolean())
         );
 
@@ -402,7 +416,12 @@ public class RobotStates {
                 new InstantCommand(swerve::setBranchHeadingMode)
                         .unless(DriverStation::isAutonomousEnabled)
                         .andThen(intake::setIdleState)
-                        .andThen(orderedTransition(pivot::setL4CoralState, elevator::setL4CoralState, Elevator.State.L4_CORAL, () -> wrist.setL4CoralState(swerve.localizer.trustCameras)))
+                        .andThen(orderedTransition(
+                                () -> pivot.setL4CoralState(swerve.localizer.trustCameras),
+                                () -> elevator.setL4CoralState(swerve.localizer.trustCameras),
+                                swerve.localizer.trustCameras ? Elevator.State.L4_CORAL_ONE_CORAL_FROM_BRANCH : Elevator.State.L4_CORAL_AT_BRANCH,
+                                () -> wrist.setL4CoralState(swerve.localizer.trustCameras)
+                        ))
                         .until(() -> !l4CoralState.getAsBoolean())
         );
 

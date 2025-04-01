@@ -34,6 +34,7 @@ public class LocalizationTelemetry {
     private final DoublePublisher distanceToCoralScoringLocation = localizationTelemetryTable.getDoubleTopic("DistanceToCoralScoringLocation").publish();
     private final BooleanPublisher atCoralScoringLocation = localizationTelemetryTable.getBooleanTopic("AtScoringLocation").publish();
     private final BooleanPublisher againstReef = localizationTelemetryTable.getBooleanTopic("AgainstReef").publish();
+    private final BooleanPublisher againstCoralStation = localizationTelemetryTable.getBooleanTopic("AgainstDriverStation").publish();
 
     private final StringPublisher megaTagOnePosePrettyPub = limelightTelemetryTable.getStringTopic("MegaTagOne Pose").publish();
     private final StringPublisher megaTagTwoPosePrettyPub = limelightTelemetryTable.getStringTopic("MegaTagTwo Pose").publish();
@@ -81,6 +82,7 @@ public class LocalizationTelemetry {
         distanceToCoralScoringLocation.set(localizer.getDistanceToActionLocation(RobotStates.State.L4_CORAL));
         atCoralScoringLocation.set(localizer.atScoringLocation(RobotStates.State.L4_CORAL));
         againstReef.set(localizer.isAgainstReefWall());
+        againstCoralStation.set(localizer.isAgainstCoralStation());
 
         photonColorHasAlgaeTargetPub.set(PhotonUtil.Color.hasAlgaeTargets());
         photonColorHasCoralTargetPub.set(PhotonUtil.Color.hasCoralTargets());

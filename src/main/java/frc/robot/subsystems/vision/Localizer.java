@@ -20,6 +20,7 @@ import frc.robot.util.vision.PhotonUtil;
 import frc.robot.util.vision.QuestNavUtil;
 
 import javax.xml.crypto.dsig.TransformService;
+import java.util.List;
 import java.util.Optional;
 
 public class Localizer {
@@ -263,7 +264,10 @@ public class Localizer {
     }
 
     private void updateFieldUtilityPoses() {
-        nearestRobotPoseAtCoralStation = FieldUtil.CoralStation.getNearestRobotPoseAtCoralStation(getStrategyPose());
+        nearestRobotPoseAtCoralStation = getStrategyPose().nearest(List.of(
+                FieldUtil.CoralStation.getRobotPosesAtEachCoralStation().get(0).interpolate(Constants.FAR_LEFT_CORAL_STATION.apply(Constants.ALLIANCE_SUPPLIER), 0.25),
+                FieldUtil.CoralStation.getRobotPosesAtEachCoralStation().get(1).interpolate(Constants.FAR_RIGHT_CORAL_STATION.apply(Constants.ALLIANCE_SUPPLIER), 0.25)
+        ));
         nearestRobotPoseAtAlgaeReef = FieldUtil.Reef.getNearestRobotPoseAtAlgaeReef(getStrategyPose());
         nearestRobotPoseAtBranch = FieldUtil.Reef.getNearestRobotPoseAtBranch(getStrategyPose()).plus(new Transform2d(trustCameras ? Units.inchesToMeters(-4.0) : 0, 0, Rotation2d.kZero));
         nearestRobotPoseAtBranchUsingReefCenter = FieldUtil.Reef.getNearestRobotPoseAtBranchUsingReefCenter(getStrategyPose());

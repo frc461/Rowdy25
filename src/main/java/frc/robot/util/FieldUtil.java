@@ -6,6 +6,7 @@ import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
+import frc.robot.RobotStates;
 import frc.robot.constants.Constants;
 
 import java.util.*;
@@ -171,18 +172,30 @@ public final class FieldUtil {
 
             public static Pose2d getPose(ScoringLocation location) {
                 return switch (location) {
-                    case A -> getRobotPosesAtEachBranch().get(0);
-                    case B -> getRobotPosesAtEachBranch().get(1);
-                    case C -> getRobotPosesAtEachBranch().get(2);
-                    case D -> getRobotPosesAtEachBranch().get(3);
-                    case E -> getRobotPosesAtEachBranch().get(4);
-                    case F -> getRobotPosesAtEachBranch().get(5);
-                    case G -> getRobotPosesAtEachBranch().get(6);
-                    case H -> getRobotPosesAtEachBranch().get(7);
-                    case I -> getRobotPosesAtEachBranch().get(8);
-                    case J -> getRobotPosesAtEachBranch().get(9);
-                    case K -> getRobotPosesAtEachBranch().get(10);
-                    case L -> getRobotPosesAtEachBranch().get(11);
+                    case A -> getRobotPosesAtEachBranch().get(0)
+                            .plus(new Transform2d(Units.inchesToMeters(-4.0), 0, Rotation2d.kZero));
+                    case B -> getRobotPosesAtEachBranch().get(1)
+                            .plus(new Transform2d(Units.inchesToMeters(-4.0), 0, Rotation2d.kZero));
+                    case C -> getRobotPosesAtEachBranch().get(2)
+                            .plus(new Transform2d(Units.inchesToMeters(-4.0), 0, Rotation2d.kZero));
+                    case D -> getRobotPosesAtEachBranch().get(3)
+                            .plus(new Transform2d(Units.inchesToMeters(-4.0), 0, Rotation2d.kZero));
+                    case E -> getRobotPosesAtEachBranch().get(4)
+                            .plus(new Transform2d(Units.inchesToMeters(-4.0), 0, Rotation2d.kZero));
+                    case F -> getRobotPosesAtEachBranch().get(5)
+                            .plus(new Transform2d(Units.inchesToMeters(-4.0), 0, Rotation2d.kZero));
+                    case G -> getRobotPosesAtEachBranch().get(6)
+                            .plus(new Transform2d(Units.inchesToMeters(-4.0), 0, Rotation2d.kZero));
+                    case H -> getRobotPosesAtEachBranch().get(7)
+                            .plus(new Transform2d(Units.inchesToMeters(-4.0), 0, Rotation2d.kZero));
+                    case I -> getRobotPosesAtEachBranch().get(8)
+                            .plus(new Transform2d(Units.inchesToMeters(-4.0), 0, Rotation2d.kZero));
+                    case J -> getRobotPosesAtEachBranch().get(9)
+                            .plus(new Transform2d(Units.inchesToMeters(-4.0), 0, Rotation2d.kZero));
+                    case K -> getRobotPosesAtEachBranch().get(10)
+                            .plus(new Transform2d(Units.inchesToMeters(-4.0), 0, Rotation2d.kZero));
+                    case L -> getRobotPosesAtEachBranch().get(11)
+                            .plus(new Transform2d(Units.inchesToMeters(-4.0), 0, Rotation2d.kZero));
                 };
             }
         }
