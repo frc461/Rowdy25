@@ -99,8 +99,7 @@ public class RobotContainer {
         configurePathPlannerNamedCommands();
         configureButtonBindings();
 
-        // DogLogOptions(BooleanSupplier ntPublish, boolean captureNt, boolean captureDs, boolean logExtras, boolean captureConsole, int logEntryQueueCapacity)
-        DogLog.setOptions(new DogLogOptions(() -> false, false, true, true, false, 5000));
+        DogLog.setOptions(new DogLogOptions(() -> false, false, true, true, false, 5000, () -> false));
         DogLog.setPdh(new PowerDistribution());
         
         Pathfinding.setPathfinder(new LocalADStar());
