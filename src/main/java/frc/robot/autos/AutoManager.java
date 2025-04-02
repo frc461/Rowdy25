@@ -111,7 +111,7 @@ public final class AutoManager {
         SmartDashboard.putData("Intake Type", groundIntakeChooser);
         groundIntakeChooser.onChange(groundIntake -> {
             this.groundIntake = groundIntake;
-            if (startPosition != null && this.scoringLocations != null & !this.scoringLocations.isEmpty()) {
+            if (startPosition != null && this.scoringLocations != null && !this.scoringLocations.isEmpty()) {
                 currentCommand = generateAutoEventLooper(robotStates).cmd();
             }
         });
@@ -164,7 +164,7 @@ public final class AutoManager {
                             .andThen(() -> scoringNext.set(true))
                             .andThen(robotStates.swerve.pathFindToScoringLocation(robotStates, nextScoringLocation.getFirst(), nextScoringLocation.getSecond()))
                             .andThen(() -> scoringNext.set(false))
-                            .until(() -> scoringNext.get() && !robotStates.intake.barelyHasCoral() && !robotStates.atScoringLocation() || robotStates.intake.coralStuck.getAsBoolean())
+                            .until(() -> scoringNext.get() && !robotStates.intake.barelyHasCoral() && !robotStates.atScoringLocation() || robotStates.intake.coralStuck())
             ));
         }
 

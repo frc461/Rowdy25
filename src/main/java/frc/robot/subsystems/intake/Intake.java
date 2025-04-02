@@ -3,6 +3,10 @@ package frc.robot.subsystems.intake;
 import com.ctre.phoenix6.configs.*;
 import com.ctre.phoenix6.hardware.TalonFX;
 
+import com.reduxrobotics.canand.CanandEventLoop;
+import com.reduxrobotics.sensors.canandcolor.Canandcolor;
+import com.reduxrobotics.sensors.canandcolor.ColorPeriod;
+import com.reduxrobotics.sensors.canandcolor.ProximityPeriod;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -10,6 +14,8 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.Lights;
 
 import frc.robot.constants.Constants;
+
+import java.util.function.DoubleConsumer;
 
 public class Intake extends SubsystemBase {
     public enum State {
@@ -32,15 +38,18 @@ public class Intake extends SubsystemBase {
     private State currentState;
 
     private final TalonFX intake;
+    private final Canandcolor canandcolor;
     private final DigitalInput beamBreak;
 
     private final IntakeTelemetry intakeTelemetry = new IntakeTelemetry(this);
 
     private StallIntent stallIntent = StallIntent.CORAL_STUCK;
     public Trigger hasAlgaeOrCoralStuck;
+    private double proximityObjectDetectionThreshold = Constants.IntakeConstants.DEFAULT_PROXIMITY_OBJECT_DETECTION_THRESHOLD;
+    public DoubleConsumer setProximityObjectDetectionThreshold = threshold -> proximityObjectDetectionThreshold = threshold;
 
     public Intake() {
-        intake = new TalonFX(Constants.IntakeConstants.LEAD_ID);
+        intake = new TalonFX(Constants.IntakeConstants.MOTOR_ID);
 
         intake.getConfigurator().apply(new TalonFXConfiguration()
                 .withMotorOutput(new MotorOutputConfigs()
@@ -52,6 +61,17 @@ public class Intake extends SubsystemBase {
                         .withBeepOnBoot(false)
                         .withAllowMusicDurDisable(true)));
 
+        CanandEventLoop.getInstance();
+        canandcolor = new Canandcolor(Constants.IntakeConstants.SENSOR_ID);
+        canandcolor.setSettings(
+                canandcolor.getSettings()
+                        .setAlignProximityFramesToIntegrationPeriod(true)
+                        .setProximityIntegrationPeriod(ProximityPeriod.k5ms)
+                        .setAlignColorFramesToIntegrationPeriod(true)
+                        .setColorIntegrationPeriod(ColorPeriod.k25ms)
+                        .setDigoutFramePeriod(0.02)
+        );
+        canandcolor.setLampLEDBrightness(0.0);
         beamBreak = new DigitalInput(Constants.IntakeConstants.BEAMBREAK_DIO_PORT);
         currentState = State.IDLE;
 
@@ -66,8 +86,28 @@ public class Intake extends SubsystemBase {
         return currentState;
     }
 
-    public boolean hasCoral() {
+    public double[] getColorReading() {
+        return new double[] { canandcolor.getBlue(), canandcolor.getGreen(), canandcolor.getRed() };
+    }
+
+    public double getProximity() {
+        return canandcolor.getProximity();
+    }
+
+    public boolean beamBreakBroken() {
         return !beamBreak.get();
+    }
+
+    public boolean coralEntered() {
+        return getProximity() < proximityObjectDetectionThreshold;
+    }
+
+    public boolean barelyHasCoral() {
+        return beamBreakBroken() || coralEntered();
+    }
+
+    public boolean hasCoral() {
+        return beamBreakBroken() && coralEntered();
     }
 
     public boolean coralStuck() {
@@ -80,6 +120,10 @@ public class Intake extends SubsystemBase {
 
     public boolean atIdleState() {
         return currentState == State.IDLE;
+    }
+
+    public boolean atIntakeSlowState() {
+        return currentState == State.INTAKE_SLOW;
     }
 
     public boolean atHasAlgaeState() {
@@ -117,12 +161,20 @@ public class Intake extends SubsystemBase {
         }
     }
 
+    public void setIntakeSlowState() {
+        setState(State.INTAKE_SLOW);
+    }
+
     public void setIntakeOutState() {
         setState(State.INTAKE_OUT);
     }
 
     public void setOuttakeState() {
         setState(State.OUTTAKE);
+    }
+
+    public void setOuttakeSlowState() {
+        setState(State.OUTTAKE_SLOW);
     }
 
     public void setOuttakeL1State() {

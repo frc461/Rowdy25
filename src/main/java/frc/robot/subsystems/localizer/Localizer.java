@@ -287,9 +287,7 @@ public class Localizer {
         } else if (!trustCameras) {
             currentRobotScoringSetting = RobotPoses.Reef.RobotScoringSetting.AT_BRANCH;
         } else {
-            currentRobotScoringSetting = facingAwayFromReef()
-                    ? RobotPoses.Reef.RobotScoringSetting.FACING_AWAY_ONE_CORAL_FROM_BRANCH
-                    : RobotPoses.Reef.RobotScoringSetting.ONE_CORAL_FROM_BRANCH;
+            currentRobotScoringSetting = RobotPoses.Reef.RobotScoringSetting.ONE_CORAL_FROM_BRANCH;
         }
     }
 

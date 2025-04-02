@@ -75,6 +75,7 @@ public final class CompConstants {
         public static final double UPPER_LIMIT = 46;
         public static final double STOW = 0;
         public static final double CORAL_STATION = 0;
+        public static final double CORAL_STATION_OBSTRUCTED = 0;
         public static final double GROUND_CORAL = 0;
         public static final double GROUND_ALGAE = 0;
         public static final double L1_CORAL = 0;
@@ -301,7 +302,7 @@ public final class CompConstants {
             private static final int DRIVE_MOTOR_ID = 1;
             private static final int STEER_MOTOR_ID = 11;
             private static final int ENCODER_ID = 21;
-            public static final Angle ENCODER_OFFSET = Rotations.of(-1.81684412 + 0.0555555555555556 - 0.56982421875 + 0.51904296875); //0.4365234375);
+            public static final Angle ENCODER_OFFSET = Rotations.of(-1.81684412 + 0.0555555555555556 - 0.56982421875 + 0.51904296875);
             private static final boolean STEER_MOTOR_INVERTED = true;
             private static final boolean CANCODER_INVERTED = false;
 

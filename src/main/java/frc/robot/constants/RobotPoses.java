@@ -39,10 +39,6 @@ public class RobotPoses {
             ONE_CORAL_FROM_BRANCH(
                     new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0 + Units.inchesToMeters(4.1), Units.inchesToMeters(-5.4469731), Rotation2d.kPi),
                     new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0 + Units.inchesToMeters(4.1), Units.inchesToMeters(8.4469731), Rotation2d.kPi)
-            ),
-            FACING_AWAY_ONE_CORAL_FROM_BRANCH(
-                    new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0 + Units.inchesToMeters(4.1), Units.inchesToMeters(-5.4469731), Rotation2d.kZero),
-                    new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0 + Units.inchesToMeters(4.1), Units.inchesToMeters(8.4469731), Rotation2d.kZero)
             );
 
             final Transform2d leftOffset;
@@ -55,7 +51,7 @@ public class RobotPoses {
 
         public static Transform2d getTagToRobotPoseNearReef(RobotScoringSetting mode) {
             return switch (mode) {
-                case L1, FACING_AWAY_ONE_CORAL_FROM_BRANCH ->
+                case L1 ->
                     new Transform2d(
                             Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0 + Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_DIRECT_DRIVE,
                             0,
