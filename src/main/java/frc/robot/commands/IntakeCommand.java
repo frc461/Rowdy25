@@ -60,7 +60,7 @@ public class IntakeCommand extends Command {
                 intake.setIntakeSpeed(-0.4);
                 break;
             case HAS_ALGAE:
-                intake.pulseIntake();
+                intake.setIntakeSpeed(0.25); // TODO SHOP: TEST THIS
                 break;
             case IDLE:
                 intake.setIntakeSpeed(0.0);

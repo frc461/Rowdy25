@@ -2,7 +2,6 @@ package frc.robot.util;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
-import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -10,8 +9,6 @@ import frc.robot.RobotStates;
 import frc.robot.constants.Constants;
 
 import java.util.*;
-
-import static edu.wpi.first.units.Units.Meters;
 
 public final class FieldUtil {
     public static final AprilTagFieldLayout layout2025 = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeAndyMark);
@@ -120,18 +117,8 @@ public final class FieldUtil {
             return TagManager.getTagLocations2d(getCoralStationTags());
         }
 
-        public static List<Pose2d> getRobotPosesAtEachCoralStation() {
-            return getCoralStationTagPoses().stream().map(coralStationTagPose -> coralStationTagPose.plus(
-                    new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0, 0, Rotation2d.kZero)
-            )).toList();
-        }
-
         public static Pose2d getNearestCoralStationTagPose(Pose2d currentPose) {
             return currentPose.nearest(getCoralStationTagPoses());
-        }
-
-        public static Pose2d getNearestRobotPoseAtCoralStation(Pose2d currentPose) {
-            return currentPose.nearest(getRobotPosesAtEachCoralStation());
         }
 
         public static AprilTag getNearestCoralStationTag(Pose2d currentPose) {
@@ -156,48 +143,11 @@ public final class FieldUtil {
             return getAngleFromReefCenter(pose.getTranslation());
         }
 
-        public static final Transform2d ROBOT_AT_LEFT_BRANCH_OFFSET_FROM_TAG = new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0, Units.inchesToMeters(-5.4469731), Rotation2d.kPi);
-        public static final Transform2d ROBOT_AT_RIGHT_BRANCH_OFFSET_FROM_TAG = new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0, Units.inchesToMeters(8.4469731), Rotation2d.kPi);
-
         public static final Transform2d LEFT_BRANCH_OFFSET_FROM_TAG = new Transform2d(Units.inchesToMeters(-1.207349), Units.inchesToMeters(-6.469731), Rotation2d.kZero);
         public static final Transform2d RIGHT_BRANCH_OFFSET_FROM_TAG = new Transform2d(Units.inchesToMeters(-1.207349), Units.inchesToMeters(6.469731), Rotation2d.kZero);
 
-        public static final Transform2d BRANCH_TO_ROBOT_OFFSET = new Transform2d(Units.inchesToMeters(1.207349) + Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0, 0.0, Rotation2d.kPi);
-
-        public static final Transform2d LEFT_BRANCH_OFFSET_FROM_REEF_CENTER = new Transform2d(Units.inchesToMeters(30.738196), Units.inchesToMeters(-6.468853), Rotation2d.kZero);
-        public static final Transform2d RIGHT_BRANCH_OFFSET_FROM_REEF_CENTER = new Transform2d(Units.inchesToMeters(30.738196), Units.inchesToMeters(6.468853), Rotation2d.kZero);
-
         public enum ScoringLocation {
-            A, B, C, D, E, F, G, H, I, J, K, L;
-
-            public static Pose2d getPose(ScoringLocation location) {
-                return switch (location) {
-                    case A -> getRobotPosesAtEachBranch().get(0)
-                            .plus(new Transform2d(Units.inchesToMeters(-4.0), 0, Rotation2d.kZero));
-                    case B -> getRobotPosesAtEachBranch().get(1)
-                            .plus(new Transform2d(Units.inchesToMeters(-4.0), 0, Rotation2d.kZero));
-                    case C -> getRobotPosesAtEachBranch().get(2)
-                            .plus(new Transform2d(Units.inchesToMeters(-4.0), 0, Rotation2d.kZero));
-                    case D -> getRobotPosesAtEachBranch().get(3)
-                            .plus(new Transform2d(Units.inchesToMeters(-4.0), 0, Rotation2d.kZero));
-                    case E -> getRobotPosesAtEachBranch().get(4)
-                            .plus(new Transform2d(Units.inchesToMeters(-4.0), 0, Rotation2d.kZero));
-                    case F -> getRobotPosesAtEachBranch().get(5)
-                            .plus(new Transform2d(Units.inchesToMeters(-4.0), 0, Rotation2d.kZero));
-                    case G -> getRobotPosesAtEachBranch().get(6)
-                            .plus(new Transform2d(Units.inchesToMeters(-4.0), 0, Rotation2d.kZero));
-                    case H -> getRobotPosesAtEachBranch().get(7)
-                            .plus(new Transform2d(Units.inchesToMeters(-4.0), 0, Rotation2d.kZero));
-                    case I -> getRobotPosesAtEachBranch().get(8)
-                            .plus(new Transform2d(Units.inchesToMeters(-4.0), 0, Rotation2d.kZero));
-                    case J -> getRobotPosesAtEachBranch().get(9)
-                            .plus(new Transform2d(Units.inchesToMeters(-4.0), 0, Rotation2d.kZero));
-                    case K -> getRobotPosesAtEachBranch().get(10)
-                            .plus(new Transform2d(Units.inchesToMeters(-4.0), 0, Rotation2d.kZero));
-                    case L -> getRobotPosesAtEachBranch().get(11)
-                            .plus(new Transform2d(Units.inchesToMeters(-4.0), 0, Rotation2d.kZero));
-                };
-            }
+            A, B, C, D, E, F, G, H, I, J, K, L
         }
 
         public enum Level {
@@ -213,6 +163,12 @@ public final class FieldUtil {
             return Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red
                     ? List.of(AprilTag.ID_7, AprilTag.ID_8, AprilTag.ID_9, AprilTag.ID_10, AprilTag.ID_11, AprilTag.ID_6)
                     : List.of(AprilTag.ID_18, AprilTag.ID_17, AprilTag.ID_22, AprilTag.ID_21, AprilTag.ID_20, AprilTag.ID_19);
+        }
+
+        public static List<AprilTag> getOutsideReefTags() {
+            return Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red
+                    ? List.of(AprilTag.ID_9, AprilTag.ID_10, AprilTag.ID_11)
+                    : List.of(AprilTag.ID_22, AprilTag.ID_21, AprilTag.ID_20);
         }
 
         public static List<Pose2d> getReefCorners() {
@@ -238,15 +194,6 @@ public final class FieldUtil {
             return TagManager.getTagLocations2d(getReefTags());
         }
 
-        public static List<Pose2d> getRobotPosesAtEachBranch() { // Where robot should be to be centered at branches (to score)
-            List<Pose2d> robotPosesAtEachBranch = new ArrayList<>();
-            getReefTagPoses().forEach(reefTagPose -> {
-                robotPosesAtEachBranch.add(reefTagPose.plus(ROBOT_AT_LEFT_BRANCH_OFFSET_FROM_TAG));
-                robotPosesAtEachBranch.add(reefTagPose.plus(ROBOT_AT_RIGHT_BRANCH_OFFSET_FROM_TAG));
-            });
-            return robotPosesAtEachBranch;
-        }
-
         public static List<Pose2d> getBranchPoses() { // Where branches are
             List<Pose2d> branchPoses = new ArrayList<>();
             getReefTagPoses().forEach(reefTagPose -> {
@@ -256,69 +203,12 @@ public final class FieldUtil {
             return branchPoses;
         }
 
-        public static List<Pose2d> getRobotPosesAtEachBranchUsingReefCenter() { // Where robot should be to be centered at branches (to score)
-            List<Pose2d> robotPosesAtEachBranch = new ArrayList<>();
-            getReefTagPoses().forEach(reefTagPose -> {
-                Pose2d reefCenterRotatedToSide = new Pose2d(getReefCenter(), reefTagPose.getRotation());
-                robotPosesAtEachBranch.add(reefCenterRotatedToSide.plus(LEFT_BRANCH_OFFSET_FROM_REEF_CENTER).plus(BRANCH_TO_ROBOT_OFFSET));
-                robotPosesAtEachBranch.add(reefCenterRotatedToSide.plus(RIGHT_BRANCH_OFFSET_FROM_REEF_CENTER).plus(BRANCH_TO_ROBOT_OFFSET));
-            });
-            return robotPosesAtEachBranch;
-        }
-
-        public static List<Pose2d> getBranchPosesUsingReefCenter() { // Where branches are relative to reef center
-            List<Pose2d> branchPoses = new ArrayList<>();
-            getReefTagPoses().forEach(reefTagPose -> {
-                Pose2d reefCenterRotatedToSide = new Pose2d(getReefCenter(), reefTagPose.getRotation());
-                branchPoses.add(reefCenterRotatedToSide.plus(LEFT_BRANCH_OFFSET_FROM_REEF_CENTER));
-                branchPoses.add(reefCenterRotatedToSide.plus(RIGHT_BRANCH_OFFSET_FROM_REEF_CENTER));
-            });
-            return branchPoses;
-        }
-
         public static Pose2d getNearestReefTagPose(Pose2d currentPose) {
             return currentPose.nearest(getReefTagPoses());
         }
 
-        public static Pose2d getNearestRobotPoseAtBranch(Pose2d currentPose) {
-            return currentPose.nearest(getRobotPosesAtEachBranch());
-        }
-
         public static Pose2d getNearestBranchPose(Pose2d currentPose) {
             return currentPose.nearest(getBranchPoses());
-        }
-
-        public static Pair<Pose2d, Pose2d> getNearestRobotPosesAtBranchPair(Pose2d currentPose) {
-            Pose2d nearestReefTagPose = getNearestReefTagPose(currentPose);
-            String nearestReefTagName = getNearestReefTag(currentPose).name();
-            if (nearestReefTagName.equals("ID_20")
-                    || nearestReefTagName.equals("ID_21")
-                    || nearestReefTagName.equals("ID_22")
-                    || nearestReefTagName.equals("ID_9")
-                    || nearestReefTagName.equals("ID_10")
-                    || nearestReefTagName.equals("ID_11")) {
-                return new Pair<>(
-                        nearestReefTagPose.plus(ROBOT_AT_RIGHT_BRANCH_OFFSET_FROM_TAG),
-                        nearestReefTagPose.plus(ROBOT_AT_LEFT_BRANCH_OFFSET_FROM_TAG)
-                );
-            }
-            return new Pair<>(
-                    nearestReefTagPose.plus(ROBOT_AT_LEFT_BRANCH_OFFSET_FROM_TAG),
-                    nearestReefTagPose.plus(ROBOT_AT_RIGHT_BRANCH_OFFSET_FROM_TAG)
-            );
-        }
-
-        public static Pose2d getNearestRobotPoseAtBranchUsingReefCenter(Pose2d currentPose) {
-            return currentPose.nearest(getRobotPosesAtEachBranchUsingReefCenter());
-        }
-
-        public static Pair<Pose2d, Pose2d> getNearestRobotPosesAtBranchPairUsingReefCenter(Pose2d currentPose) {
-            Pose2d nearestReefTagPose = getNearestReefTagPose(currentPose);
-            Pose2d reefCenterRotatedToNearestSide = new Pose2d(getReefCenter(), nearestReefTagPose.getRotation());
-            return new Pair<>(
-                    reefCenterRotatedToNearestSide.plus(LEFT_BRANCH_OFFSET_FROM_REEF_CENTER).plus(BRANCH_TO_ROBOT_OFFSET),
-                    reefCenterRotatedToNearestSide.plus(RIGHT_BRANCH_OFFSET_FROM_REEF_CENTER).plus(BRANCH_TO_ROBOT_OFFSET)
-            );
         }
 
         public enum AlgaeLocation {
@@ -336,13 +226,6 @@ public final class FieldUtil {
                 case ID_6, ID_8, ID_10, ID_17, ID_19, ID_21  -> Reef.AlgaeLocation.LOW;
                 default -> null;
             };
-        }
-
-        public static Pose2d getNearestRobotPoseAtAlgaeReef(Pose2d currentPose) {
-            if (getAlgaeReefLevelFromTag(getNearestReefTag(currentPose)) == AlgaeLocation.HIGH) {
-                return getNearestReefTagPose(currentPose).plus(new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0, 0, Rotation2d.kPi));
-            }
-            return getNearestReefTagPose(currentPose).plus(new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0 + Units.inchesToMeters(4), 0, Rotation2d.kZero));
         }
     }
 
@@ -372,33 +255,6 @@ public final class FieldUtil {
         public static Pose2d getNetTagPose() {
             return Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red ?
                     AprilTag.ID_5.pose2d : AprilTag.ID_14.pose2d;
-        }
-
-        public static Pose2d getRobotPoseAtProcessor() {
-            return getProcessorTagPose().plus(new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0, 0, Rotation2d.kZero));
-        }
-
-        public static Pose2d getRobotPoseAtNetCenter() {
-            return getNetTagPose().plus(new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0, 0, Rotation2d.kPi));
-        }
-
-        public static Pose2d getInnermostRobotPoseAtNet() {
-            return getNetTagPose().plus(new Transform2d(
-                    Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0,
-                    NET_SAFE_HALF_LENGTH,
-                    Rotation2d.kPi
-            ));
-        }
-
-        public static Pose2d getOutermostRobotPoseAtNet() {
-            Pose2d robotPoseAtNetCenter = getRobotPoseAtNetCenter();
-            return new Pose2d(
-                    robotPoseAtNetCenter.getX(),
-                    Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red
-                            ? Constants.ROBOT_WIDTH_WITH_BUMPERS.in(Meters) / 1.5
-                            : FieldUtil.FIELD_WIDTH - Constants.ROBOT_WIDTH_WITH_BUMPERS.in(Meters) / 1.5,
-                    robotPoseAtNetCenter.getRotation()
-            );
         }
 
         public static Pose2d getNearestAlgaeScoringTagPose(Pose2d currentPose) {

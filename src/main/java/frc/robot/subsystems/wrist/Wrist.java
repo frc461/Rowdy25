@@ -8,6 +8,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
+import frc.robot.constants.RobotPoses;
 import frc.robot.util.EquationUtil;
 
 public class Wrist extends SubsystemBase {
@@ -159,16 +160,25 @@ public class Wrist extends SubsystemBase {
         setState(State.L1_CORAL);
     }
 
-    public void setL2CoralState(boolean oneCoralAway) {
-        setState(oneCoralAway ? State.L2_CORAL_ONE_CORAL_FROM_BRANCH : State.L2_CORAL_AT_BRANCH);
+    public void setL2CoralState(RobotPoses.Reef.RobotScoringSetting mode) {
+        switch (mode) {
+            case AT_BRANCH -> setState(State.L2_CORAL_AT_BRANCH);
+            case ONE_CORAL_FROM_BRANCH -> setState(State.L2_CORAL_ONE_CORAL_FROM_BRANCH);
+        }
     }
 
-    public void setL3CoralState(boolean oneCoralAway) {
-        setState(oneCoralAway ? State.L3_CORAL_ONE_CORAL_FROM_BRANCH : State.L3_CORAL_AT_BRANCH);
+    public void setL3CoralState(RobotPoses.Reef.RobotScoringSetting mode) {
+        switch (mode) {
+            case AT_BRANCH -> setState(State.L3_CORAL_AT_BRANCH);
+            case ONE_CORAL_FROM_BRANCH -> setState(State.L3_CORAL_ONE_CORAL_FROM_BRANCH);
+        }
     }
 
-    public void setL4CoralState(boolean oneCoralAway) {
-        setState(oneCoralAway ? State.L4_CORAL_ONE_CORAL_FROM_BRANCH : State.L4_CORAL_AT_BRANCH);
+    public void setL4CoralState(RobotPoses.Reef.RobotScoringSetting mode) {
+        switch (mode) {
+            case AT_BRANCH -> setState(State.L4_CORAL_AT_BRANCH);
+            case ONE_CORAL_FROM_BRANCH -> setState(State.L4_CORAL_ONE_CORAL_FROM_BRANCH);
+        }
     }
 
     public void setCoralObstructedState(boolean isObstructed) {

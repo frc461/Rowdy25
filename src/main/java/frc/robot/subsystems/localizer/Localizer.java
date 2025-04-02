@@ -1,4 +1,4 @@
-package frc.robot.subsystems.vision;
+package frc.robot.subsystems.localizer;
 
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
@@ -13,15 +13,17 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.RobotStates;
 import frc.robot.constants.Constants;
+import frc.robot.constants.RobotPoses;
 import frc.robot.subsystems.drivetrain.Swerve;
 import frc.robot.util.*;
 import frc.robot.util.vision.LimelightUtil;
 import frc.robot.util.vision.PhotonUtil;
 import frc.robot.util.vision.QuestNavUtil;
 
-import javax.xml.crypto.dsig.TransformService;
 import java.util.List;
 import java.util.Optional;
+
+import static edu.wpi.first.units.Units.Meters;
 
 public class Localizer {
     private enum LocalizationStrategy {
@@ -43,17 +45,24 @@ public class Localizer {
     private Pose2d currentTemporaryTargetPose = new Pose2d();
     private boolean hasCalibratedOnceWhenNear = false;
 
+    public boolean trustCameras = true;
+
+    public RobotPoses.Reef.RobotScoringSetting currentRobotScoringSetting = RobotPoses.Reef.RobotScoringSetting.ONE_CORAL_FROM_BRANCH;
+    private boolean l1RobotScoringSettingOverride = false;
+    public boolean nearestAlgaeIsHigh = false;
+
+    public Pose2d bestCoralPose = new Pose2d();
+
+    public Pose2d nearestRobotPoseAtBranch = new Pose2d();
+    public Pair<Pose2d, Pose2d> nearestRobotPosesAtBranchPair = new Pair<>(new Pose2d(), new Pose2d());
+    public Pose2d nearestRobotPoseNearBranchPair = new Pose2d();
+    public Pose2d nearestReefTagPose = new Pose2d();
+
     public final Pose2d robotPoseAtProcessor;
     public Pose2d randomizedRobotPoseAtNet = new Pose2d();
     public Pose2d nearestRobotPoseAtCoralStation = new Pose2d();
     public Pose2d nearestRobotPoseAtAlgaeReef = new Pose2d();
-    public Pose2d nearestRobotPoseAtBranch = new Pose2d();
-    public Pose2d nearestRobotPoseAtBranchUsingReefCenter = new Pose2d();
-    public Pair<Pose2d, Pose2d> nearestRobotPosesAtBranchPair = new Pair<>(new Pose2d(), new Pose2d());
-    public Pair<Pose2d, Pose2d> nearestRobotPosesAtBranchPairUsingReefCenter = new Pair<>(new Pose2d(), new Pose2d());
-    public Pose2d nearestReefTagPose = new Pose2d();
-    public boolean nearestAlgaeIsHigh = false;
-    public boolean trustCameras = true;
+    public Pose2d nearestRobotPoseNearAlgaeReef = new Pose2d();
 
     public Localizer(Swerve swerve) {
         this.swerve = swerve;
@@ -74,16 +83,8 @@ public class Localizer {
         configureQuestOffset();
         LimelightUtil.configureRobotToCameraOffset();
 
-        robotPoseAtProcessor = FieldUtil.AlgaeScoring.getRobotPoseAtProcessor();
-        randomizedRobotPoseAtNet = FieldUtil.AlgaeScoring.getRobotPoseAtNetCenter();
-    }
-
-    public boolean isAgainstReefWall() {
-        return !trustCameras || getRobotRelativeVectorToActionLocation(RobotStates.State.L4_CORAL).getX() < Units.inchesToMeters(1.0);
-    }
-
-    public boolean isAgainstCoralStation() {
-        return !trustCameras || getRobotRelativeVectorToActionLocation(RobotStates.State.CORAL_STATION).getX() < Units.inchesToMeters(1.0);
+        robotPoseAtProcessor = RobotPoses.AlgaeScoring.getRobotPoseAtProcessor();
+        randomizedRobotPoseAtNet = RobotPoses.AlgaeScoring.getRobotPoseAtNetCenter();
     }
 
     public Pose2d getStrategyPose() {
@@ -91,7 +92,7 @@ public class Localizer {
     }
 
     public String getLocalizationStrategy() {
-        return strategy == LocalizationStrategy.QUEST_NAV ? "Quest Nav" : "Pose Estimator";
+        return strategy.name();
     }
 
     public Pose2d getCurrentTemporaryTargetPose() {
@@ -115,7 +116,23 @@ public class Localizer {
     }
 
     public double getNearestReefSideHeading() {
-        return nearestReefTagPose.getRotation().rotateBy(Rotation2d.kPi).getDegrees();
+        return nearestRobotPoseAtBranch.getRotation().getDegrees();
+    }
+
+    public double getProcessorScoringHeading() {
+        return robotPoseAtProcessor.getRotation().getDegrees();
+    }
+
+    public double getNetScoringHeading() {
+        return randomizedRobotPoseAtNet.getRotation().getDegrees();
+    }
+
+    public Pose2d randomizeNetScoringPose() {
+        randomizedRobotPoseAtNet = RobotPoses.AlgaeScoring.getInnermostRobotPoseAtNet().interpolate(
+                RobotPoses.AlgaeScoring.getOutermostRobotPoseAtNet(),
+                Math.random()
+        );
+        return randomizedRobotPoseAtNet;
     }
 
     public double getDistanceToActionLocation(RobotStates.State robotState) {
@@ -145,6 +162,18 @@ public class Localizer {
         };
     }
 
+    public boolean facingAwayFromReef() {
+        return Math.abs(nearestReefTagPose.getRotation().minus(getStrategyPose().getRotation()).getDegrees()) < 90.0;
+    }
+
+    public boolean isAgainstReefWall() {
+        return !trustCameras || getRobotRelativeVectorToActionLocation(RobotStates.State.L4_CORAL).getX() < Units.inchesToMeters(1.0);
+    }
+
+    public boolean isAgainstCoralStation() {
+        return !trustCameras || getRobotRelativeVectorToActionLocation(RobotStates.State.CORAL_STATION).getX() < Units.inchesToMeters(1.0);
+    }
+
     public boolean atTransitionStateLocation(RobotStates.State robotState, boolean auto) {
         if (auto) {
             return getDistanceToActionLocation(robotState) < Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_TRANSITION_AUTO;
@@ -160,24 +189,12 @@ public class Localizer {
         return getDistanceToActionLocation(robotState) < Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_ACCEPT;
     }
 
-    public double getProcessorScoringHeading() {
-        return robotPoseAtProcessor.getRotation().getDegrees();
-    }
-
-    public Pose2d randomizeNetScoringPose() {
-        randomizedRobotPoseAtNet = FieldUtil.AlgaeScoring.getInnermostRobotPoseAtNet().interpolate(
-                FieldUtil.AlgaeScoring.getOutermostRobotPoseAtNet(),
-                Math.random()
-        );
-        return randomizedRobotPoseAtNet;
-    }
-
-    public double getNetScoringHeading() {
-        return randomizedRobotPoseAtNet.getRotation().getDegrees();
-    }
-
     public void toggleTrustCameras() {
         trustCameras = !trustCameras;
+    }
+
+    public void setL1RobotScoringSettingOverride(boolean override) {
+        l1RobotScoringSettingOverride = override;
     }
 
     public void setCurrentTemporaryTargetPose(Pose2d temporaryTargetPose) {
@@ -208,6 +225,7 @@ public class Localizer {
     public void setRotations(Rotation2d heading) {
         swerve.resetRotation(heading);
         poseEstimator.resetRotation(heading);
+        QuestNavUtil.setQuestPose(new Pose2d(getQuestPose().getTranslation(), heading));
     }
 
     public void syncRotations() {
@@ -229,7 +247,7 @@ public class Localizer {
         PhotonUtil.updateResults(poseEstimator.getEstimatedPosition().getRotation());
         for (PhotonUtil.BW.BWCamera camera : PhotonUtil.BW.BWCamera.values()) {
             if (PhotonUtil.BW.isTagClear(camera)) {
-                Optional<EstimatedRobotPose> optionalPoseEstimate = getUpdatedPhotonPoseEstimate(camera);
+                Optional<EstimatedRobotPose> optionalPoseEstimate = PhotonUtil.BW.getBestTagPose(camera);
                 optionalPoseEstimate.ifPresent(
                         poseEstimate -> poseEstimator.addVisionMeasurement(
                                 poseEstimate.estimatedPose().toPose2d(),
@@ -239,15 +257,6 @@ public class Localizer {
                 );
             }
         }
-    }
-
-    public Optional<EstimatedRobotPose> getUpdatedPhotonPoseEstimate(PhotonUtil.BW.BWCamera camera) {
-        return PhotonUtil.BW.getBestTagPose(camera);
-    }
-
-    public void forceUpdateQuestNavPose() {
-        hasCalibratedOnceWhenNear = false;
-        updateQuestNavPose();
     }
 
     // changes offset based on error between pose estimate and corrected QuestNav pose
@@ -267,18 +276,51 @@ public class Localizer {
         }
     }
 
-    private void updateFieldUtilityPoses() {
+    public void forceUpdateQuestNavPose() {
+        hasCalibratedOnceWhenNear = false;
+        updateQuestNavPose();
+    }
+
+    private void updateCoralScoringMode() {
+        if (l1RobotScoringSettingOverride) {
+            currentRobotScoringSetting = RobotPoses.Reef.RobotScoringSetting.L1;
+        } else if (!trustCameras) {
+            currentRobotScoringSetting = RobotPoses.Reef.RobotScoringSetting.AT_BRANCH;
+        } else {
+            currentRobotScoringSetting = facingAwayFromReef()
+                    ? RobotPoses.Reef.RobotScoringSetting.FACING_AWAY_ONE_CORAL_FROM_BRANCH
+                    : RobotPoses.Reef.RobotScoringSetting.ONE_CORAL_FROM_BRANCH;
+        }
+    }
+
+    private void updateRobotUtilityPoses() {
+        Pose2d currentPose = getStrategyPose();
+
+        updateCoralScoringMode();
+        nearestAlgaeIsHigh = FieldUtil.Reef.getAlgaeReefLevelFromTag(FieldUtil.Reef.getNearestReefTag(currentPose)) == FieldUtil.Reef.AlgaeLocation.HIGH;
+
+        PhotonUtil.Color.getRobotToBestObject(PhotonUtil.Color.TargetClass.CORAL).ifPresent(robotToObject ->
+                bestCoralPose = new Pose2d(
+                        currentPose.plus(new Transform2d(robotToObject, Rotation2d.kZero)).getTranslation(),
+                        currentPose.getRotation().rotateBy(robotToObject.getAngle()).rotateBy(Rotation2d.kPi)
+                ).plus(new Transform2d(
+                        Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2 + Units.inchesToMeters(12.0), // TODO SHOP: TUNE THIS
+                        0,
+                        Rotation2d.kZero
+                ))
+        );
+
+        nearestRobotPoseAtBranch = RobotPoses.Reef.getNearestRobotPoseAtBranch(currentRobotScoringSetting, currentPose);
+        nearestRobotPosesAtBranchPair = RobotPoses.Reef.getNearestRobotPosesAtBranchPair(currentRobotScoringSetting, currentPose);
+        nearestRobotPoseNearBranchPair = RobotPoses.Reef.getNearestRobotPoseNearReef(currentRobotScoringSetting, currentPose);
+        nearestReefTagPose = FieldUtil.Reef.getNearestReefTagPose(currentPose);
+
         nearestRobotPoseAtCoralStation = getStrategyPose().nearest(List.of(
-                FieldUtil.CoralStation.getRobotPosesAtEachCoralStation().get(0).interpolate(Constants.FAR_LEFT_CORAL_STATION.apply(Constants.ALLIANCE_SUPPLIER), 0.25),
-                FieldUtil.CoralStation.getRobotPosesAtEachCoralStation().get(1).interpolate(Constants.FAR_RIGHT_CORAL_STATION.apply(Constants.ALLIANCE_SUPPLIER), 0.25)
+                RobotPoses.CoralStation.getRobotPosesAtEachCoralStation().get(0).interpolate(Constants.FAR_LEFT_CORAL_STATION.apply(Constants.ALLIANCE_SUPPLIER), 0.25),
+                RobotPoses.CoralStation.getRobotPosesAtEachCoralStation().get(1).interpolate(Constants.FAR_RIGHT_CORAL_STATION.apply(Constants.ALLIANCE_SUPPLIER), 0.25)
         ));
-        nearestRobotPoseAtAlgaeReef = FieldUtil.Reef.getNearestRobotPoseAtAlgaeReef(getStrategyPose());
-        nearestRobotPoseAtBranch = FieldUtil.Reef.getNearestRobotPoseAtBranch(getStrategyPose()).plus(new Transform2d(trustCameras ? Units.inchesToMeters(-4.0) : 0, 0, Rotation2d.kZero));
-        nearestRobotPoseAtBranchUsingReefCenter = FieldUtil.Reef.getNearestRobotPoseAtBranchUsingReefCenter(getStrategyPose());
-        nearestRobotPosesAtBranchPair = FieldUtil.Reef.getNearestRobotPosesAtBranchPair(getStrategyPose());
-        nearestRobotPosesAtBranchPairUsingReefCenter = FieldUtil.Reef.getNearestRobotPosesAtBranchPairUsingReefCenter(getStrategyPose());
-        nearestReefTagPose = FieldUtil.Reef.getNearestReefTagPose(getStrategyPose());
-        nearestAlgaeIsHigh = FieldUtil.Reef.getAlgaeReefLevelFromTag(FieldUtil.Reef.getNearestReefTag(getStrategyPose())) == FieldUtil.Reef.AlgaeLocation.HIGH;
+        nearestRobotPoseAtAlgaeReef = RobotPoses.Reef.getNearestRobotPoseAtAlgaeReef(currentPose);
+        nearestRobotPoseNearAlgaeReef = RobotPoses.Reef.getNearestRobotPoseNearReef(nearestAlgaeIsHigh, currentPose);
     }
 
     public void periodic() {
@@ -286,10 +328,9 @@ public class Localizer {
 
         poseEstimator.update(this.swerve.getState().RawHeading, this.swerve.getState().ModulePositions);
         updatePhotonPoseEstimation();
-        updateQuestNavPose();
 
         setLocalizationStrategyFromChooser();
 
-        updateFieldUtilityPoses();
+        updateRobotUtilityPoses();
     }
 }

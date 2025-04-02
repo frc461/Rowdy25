@@ -78,8 +78,7 @@ public class RobotStates {
     public final Trigger highReefAlgaeState = new Trigger(() -> currentState == State.HIGH_REEF_ALGAE);
     public final Trigger processorState = new Trigger(() -> currentState == State.PROCESSOR);
     public final Trigger netState = new Trigger(() -> currentState == State.NET);
-    public final Trigger prepareClimbState = new Trigger(() -> currentState == State.PREPARE_CLIMB);
-    public final Trigger climbState = new Trigger(() -> currentState == State.CLIMB);
+    public final Trigger climbState = new Trigger(() -> currentState == State.PREPARE_CLIMB);
 
     private final Trigger isListening = l1CoralState.or(l2CoralState).or(l3CoralState).or(l4CoralState);
     private boolean needsUpdate = false;
@@ -124,6 +123,7 @@ public class RobotStates {
 
     public void setCurrentAutoLevel(FieldUtil.Reef.Level level) {
         currentAutoLevel = level;
+        swerve.localizer.setL1RobotScoringSettingOverride(currentAutoLevel == FieldUtil.Reef.Level.L1);
         needsUpdate = isListening.getAsBoolean();
     }
 
@@ -168,7 +168,7 @@ public class RobotStates {
         toggleCoralStationState(false);
     }
 
-    public void toggleCoralStationState(boolean override) {
+    public void toggleCoralStationState(boolean override) { // TODO SHOP: FIX
         currentState = (currentState == State.CORAL_STATION || currentState == State.CORAL_STATION_OBSTRUCTED) && !override ? State.STOW : State.CORAL_STATION;
     }
 
@@ -275,23 +275,30 @@ public class RobotStates {
                 .onlyIf(() -> pivot.getPosition() > 90 && passthrough);
     }
 
-    private Command orderedTransition(Runnable setPivotState, Runnable setElevatorState, Elevator.State elevatorState, Runnable setWristState) {
-        if (elevator.goingDown(elevatorState)) {
-            return new InstantCommand(wrist::setStowState)
-                    .andThen(new WaitUntilCommand(wrist::nearTarget))
-                    .andThen(movePivotToPerpendicular(!swerve.localizer.trustCameras)) // TODO SHOP: TEST MORE EFFICIENT MOVING WHEN TRUSTING CAMERAS
-                    .andThen(setPivotState)
-                    .andThen(setElevatorState)
-                    .andThen(new WaitUntilCommand(elevator::nearTarget))
-                    .andThen(setWristState);
-        }
-        return movePivotToPerpendicular(!swerve.localizer.trustCameras)
-                .andThen(wrist::setStowState)
-                .andThen(setPivotState)
-                .andThen(new WaitUntilCommand(pivot::nearTarget))
-                .andThen(setElevatorState)
-                .andThen(new WaitUntilCommand(elevator::nearTarget))
-                .andThen(setWristState);
+    private Command orderedTransition(Runnable setPivotState, Pivot.State pivotState, Runnable setElevatorState, Elevator.State elevatorState, Runnable setWristState) {
+        return new ConditionalCommand(
+                new InstantCommand(wrist::setStowState) // TODO SHOP: TEST CHECK IF MOVE THROUGH STOW E.G., L4 TO GROUND
+                        .andThen(new WaitUntilCommand(wrist::nearTarget))
+                        .andThen(movePivotToPerpendicular(!swerve.localizer.trustCameras))
+                        .andThen(
+                                new InstantCommand(pivot::setStowState)
+                                        .andThen(elevator::setStowState)
+                                        .andThen(new WaitUntilCommand(elevator::nearTarget))
+                                        .onlyIf(() -> pivot.goingThroughStow(pivotState))
+                        )
+                        .andThen(setPivotState)
+                        .andThen(setElevatorState)
+                        .andThen(new WaitUntilCommand(elevator::nearTarget))
+                        .andThen(setWristState),
+                movePivotToPerpendicular(!swerve.localizer.trustCameras)
+                        .andThen(wrist::setStowState)
+                        .andThen(setPivotState)
+                        .andThen(new WaitUntilCommand(pivot::nearTarget))
+                        .andThen(setElevatorState)
+                        .andThen(new WaitUntilCommand(elevator::nearTarget))
+                        .andThen(setWristState),
+                () -> elevator.goingDown(elevatorState)
+        );
     }
 
     public void configureToggleStateTriggers() {
@@ -303,7 +310,7 @@ public class RobotStates {
         stowState.onTrue(
                 new InstantCommand(swerve::setIdleMode)
                         .andThen(intake::setIdleState)
-                        .andThen(orderedTransition(pivot::setStowState, elevator::setStowState, Elevator.State.STOW, wrist::setStowState))
+                        .andThen(orderedTransition(pivot::setStowState, Pivot.State.STOW, elevator::setStowState, Elevator.State.STOW, wrist::setStowState))
         );
 
         outtakeState.onTrue(
@@ -332,8 +339,8 @@ public class RobotStates {
         coralStationState.onTrue(
                 new InstantCommand(swerve::setCoralStationHeadingMode)
                         .unless(DriverStation::isAutonomousEnabled)
-                        .andThen(orderedTransition(pivot::setCoralStationState, elevator::setCoralStationState, Elevator.State.CORAL_STATION, wrist::setCoralStationState))
-                        .andThen(intake::setIntakeState)
+                        .andThen(orderedTransition(pivot::setCoralStationState, Pivot.State.CORAL_STATION, elevator::setCoralStationState, Elevator.State.CORAL_STATION, wrist::setCoralStationState))
+                        .andThen(intake::setCoralIntakeState)
                         .andThen(new WaitUntilCommand(intake::atIdleState))
                         .andThen(this::setStowState)
                         .alongWith(new WaitUntilCommand(() -> !swerve.localizer.isAgainstCoralStation()))
@@ -357,8 +364,8 @@ public class RobotStates {
 
         groundCoralState.onTrue(
                 new InstantCommand(swerve::setObjectHeadingMode)
-                        .andThen(orderedTransition(pivot::setGroundCoralState, elevator::setGroundCoralState, Elevator.State.GROUND_CORAL, wrist::setGroundCoralState))
-                        .andThen(intake::setIntakeState)
+                        .andThen(orderedTransition(pivot::setGroundCoralState, Pivot.State.GROUND_CORAL, elevator::setGroundCoralState, Elevator.State.GROUND_CORAL, wrist::setGroundCoralState))
+                        .andThen(intake::setCoralIntakeState)
                         .andThen(new WaitUntilCommand(PhotonUtil.Color::hasCoralTargets))
                         .andThen(swerve.directMoveToObject(
                                 () -> intake.hasAlgae() || intake.hasCoral(),
@@ -371,8 +378,8 @@ public class RobotStates {
 
         groundAlgaeState.onTrue(
                 new InstantCommand(swerve::setObjectHeadingMode)
-                        .andThen(orderedTransition(pivot::setGroundAlgaeState, elevator::setGroundAlgaeState, Elevator.State.GROUND_ALGAE, wrist::setGroundAlgaeState))
-                        .andThen(intake::setIntakeState)
+                        .andThen(orderedTransition(pivot::setGroundAlgaeState, Pivot.State.GROUND_ALGAE, elevator::setGroundAlgaeState, Elevator.State.GROUND_ALGAE, wrist::setGroundAlgaeState))
+                        .andThen(intake::setAlgaeIntakeState)
                         .andThen(new WaitUntilCommand(PhotonUtil.Color::hasAlgaeTargets))
                         .andThen(swerve.directMoveToObject(
                                 () -> intake.hasAlgae() || intake.hasCoral(),
@@ -387,7 +394,7 @@ public class RobotStates {
                 new InstantCommand(swerve::setBranchHeadingL1Mode)
                         .unless(DriverStation::isAutonomousEnabled)
                         .andThen(intake::setIdleState)
-                        .andThen(orderedTransition(pivot::setL1CoralState, elevator::setL1CoralState, Elevator.State.L1_CORAL, wrist::setL1CoralState))
+                        .andThen(orderedTransition(pivot::setL1CoralState, Pivot.State.L1_CORAL, elevator::setL1CoralState, Elevator.State.L1_CORAL, wrist::setL1CoralState))
                         .until(() -> !l1CoralState.getAsBoolean())
         );
 
@@ -396,12 +403,12 @@ public class RobotStates {
                         .unless(DriverStation::isAutonomousEnabled)
                         .andThen(intake::setIdleState)
                         .andThen(orderedTransition(
-                                () -> pivot.setL2CoralState(swerve.localizer.trustCameras),
-                                () -> elevator.setL2CoralState(swerve.localizer.trustCameras),
-                                swerve.localizer.trustCameras ? Elevator.State.L2_CORAL_ONE_CORAL_FROM_BRANCH : Elevator.State.L2_CORAL_AT_BRANCH,
-                                () -> wrist.setL2CoralState(swerve.localizer.trustCameras)
-                        ))
-                        .until(() -> !l2CoralState.getAsBoolean())
+                                () -> pivot.setL2CoralState(swerve.localizer.currentRobotScoringSetting),
+                                pivot.getL2State(swerve.localizer.currentRobotScoringSetting),
+                                () -> elevator.setL2CoralState(swerve.localizer.currentRobotScoringSetting),
+                                elevator.getL2State(swerve.localizer.currentRobotScoringSetting),
+                                () -> wrist.setL2CoralState(swerve.localizer.currentRobotScoringSetting)
+                        )).until(() -> !l2CoralState.getAsBoolean())
         );
 
         l3CoralState.onTrue(
@@ -409,12 +416,12 @@ public class RobotStates {
                         .unless(DriverStation::isAutonomousEnabled)
                         .andThen(intake::setIdleState)
                         .andThen(orderedTransition(
-                                () -> pivot.setL3CoralState(swerve.localizer.trustCameras),
-                                () -> elevator.setL3CoralState(swerve.localizer.trustCameras),
-                                swerve.localizer.trustCameras ? Elevator.State.L3_CORAL_ONE_CORAL_FROM_BRANCH : Elevator.State.L3_CORAL_AT_BRANCH,
-                                () -> wrist.setL3CoralState(swerve.localizer.trustCameras)
-                        ))
-                        .until(() -> !l3CoralState.getAsBoolean())
+                                () -> pivot.setL3CoralState(swerve.localizer.currentRobotScoringSetting),
+                                pivot.getL3State(swerve.localizer.currentRobotScoringSetting),
+                                () -> elevator.setL3CoralState(swerve.localizer.currentRobotScoringSetting),
+                                elevator.getL3State(swerve.localizer.currentRobotScoringSetting),
+                                () -> wrist.setL3CoralState(swerve.localizer.currentRobotScoringSetting)
+                        )).until(() -> !l3CoralState.getAsBoolean())
         );
 
         l4CoralState.onTrue(
@@ -422,18 +429,19 @@ public class RobotStates {
                         .unless(DriverStation::isAutonomousEnabled)
                         .andThen(intake::setIdleState)
                         .andThen(orderedTransition(
-                                () -> pivot.setL4CoralState(swerve.localizer.trustCameras),
-                                () -> elevator.setL4CoralState(swerve.localizer.trustCameras),
-                                swerve.localizer.trustCameras ? Elevator.State.L4_CORAL_ONE_CORAL_FROM_BRANCH : Elevator.State.L4_CORAL_AT_BRANCH,
-                                () -> wrist.setL4CoralState(swerve.localizer.trustCameras)
+                                () -> pivot.setL4CoralState(swerve.localizer.currentRobotScoringSetting),
+                                pivot.getL4State(swerve.localizer.currentRobotScoringSetting),
+                                () -> elevator.setL4CoralState(swerve.localizer.currentRobotScoringSetting),
+                                elevator.getL4State(swerve.localizer.currentRobotScoringSetting),
+                                () -> wrist.setL4CoralState(swerve.localizer.currentRobotScoringSetting)
                         ))
                         .until(() -> !l4CoralState.getAsBoolean())
         );
 
         lowReefAlgaeState.onTrue(
                 new InstantCommand(swerve::setReefTagOppositeHeadingMode)
-                        .andThen(intake::setIntakeState)
-                        .andThen(orderedTransition(pivot::setLowReefAlgaeState, elevator::setLowReefAlgaeState, Elevator.State.LOW_REEF_ALGAE, wrist::setLowReefAlgaeState))
+                        .andThen(intake::setAlgaeIntakeState)
+                        .andThen(orderedTransition(pivot::setLowReefAlgaeState, Pivot.State.LOW_REEF_ALGAE, elevator::setLowReefAlgaeState, Elevator.State.LOW_REEF_ALGAE, wrist::setLowReefAlgaeState))
                         .andThen(new WaitUntilCommand(intake::atIdleState))
                         .andThen(this::setStowState)
                         .onlyIf(() -> !intake.hasAlgae() && !intake.barelyHasCoral())
@@ -442,8 +450,8 @@ public class RobotStates {
 
         highReefAlgaeState.onTrue(
                 new InstantCommand(swerve::setReefTagHeadingMode)
-                        .andThen(intake::setIntakeState)
-                        .andThen(orderedTransition(pivot::setHighReefAlgaeState, elevator::setHighReefAlgaeState, Elevator.State.HIGH_REEF_ALGAE, wrist::setHighReefAlgaeState))
+                        .andThen(intake::setAlgaeIntakeState)
+                        .andThen(orderedTransition(pivot::setHighReefAlgaeState, Pivot.State.HIGH_REEF_ALGAE, elevator::setHighReefAlgaeState, Elevator.State.HIGH_REEF_ALGAE, wrist::setHighReefAlgaeState))
                         .andThen(new WaitUntilCommand(intake::atIdleState))
                         .andThen(this::setStowState)
                         .onlyIf(() -> !intake.hasAlgae() && !intake.barelyHasCoral())
@@ -453,28 +461,22 @@ public class RobotStates {
         processorState.onTrue(
                 new InstantCommand(swerve::setProcessorHeadingMode)
                         .andThen(intake::setIdleState)
-                        .andThen(orderedTransition(pivot::setProcessorState, elevator::setProcessorState, Elevator.State.PROCESSOR, wrist::setProcessorState))
+                        .andThen(orderedTransition(pivot::setProcessorState, Pivot.State.PROCESSOR, elevator::setProcessorState, Elevator.State.PROCESSOR, wrist::setProcessorState))
                         .until(() -> !processorState.getAsBoolean())
         );
 
         netState.onTrue(
                 new InstantCommand(swerve::setNetHeadingMode)
                         .andThen(intake::setIdleState)
-                        .andThen(orderedTransition(pivot::setNetState, elevator::setNetState, Elevator.State.NET, wrist::setNetState))
+                        .andThen(orderedTransition(pivot::setNetState, Pivot.State.NET, elevator::setNetState, Elevator.State.NET, wrist::setNetState))
                         .until(() -> !netState.getAsBoolean())
         );
 
-        prepareClimbState.onTrue(
-                new InstantCommand(swerve::setIdleMode)
-//                        .andThen(climb::escalate)
-                        .andThen(intake::setIdleState)
-                        .andThen(orderedTransition(pivot::setClimbState, elevator::setClimbState, Elevator.State.CLIMB, wrist::setClimbState))
-                        .until(() -> !prepareClimbState.getAsBoolean())
-        );
-
         climbState.onTrue(
-//                new InstantCommand(climb::escalate)
-                new InstantCommand()
+                new InstantCommand(swerve::setIdleMode)
+                        .andThen(intake::setIdleState)
+                        .andThen(orderedTransition(pivot::setClimbState, Pivot.State.CLIMB, elevator::setClimbState, Elevator.State.CLIMB, wrist::setClimbState))
+                        .until(() -> !climbState.getAsBoolean())
         );
     }
     /* Each subsystem will execute their corresponding command periodically */

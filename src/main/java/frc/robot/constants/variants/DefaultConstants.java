@@ -158,6 +158,14 @@ public final class DefaultConstants {
         }
 
         public static final class PhotonConstants {
+            public static final String COLOR_NAME = "ArducamColor";
+            public static final double COLOR_FORWARD = -0.314091;
+            public static final double COLOR_LEFT = -0.259556;
+            public static final double COLOR_UP = 0.184150;
+            public static final double COLOR_ROLL = 0.0;
+            public static final double COLOR_PITCH = 0.0;
+            public static final double COLOR_YAW = 150.0;
+
             public static final String BW_TOP_RIGHT_NAME = "ArducamBW2";
             public static final double BW_TOP_RIGHT_FORWARD = 0.404;
             public static final double BW_TOP_RIGHT_LEFT = -0.291321;
@@ -260,7 +268,7 @@ public final class DefaultConstants {
         public static final double D = 0.025;
         public static final double EXPO_V = V / 0.90; // 90% of the actual max velocity, as it will allocate 1 / 0.9 = 1.1111 times the voltage to 1 rps
         public static final double EXPO_A = A / 0.015; // 1.5% of the actual max accel
-        public static final double SAFE_TOLERANCE = 5.0;
+        public static final double SAFE_TOLERANCE = 15.0;
         public static final double AT_TARGET_TOLERANCE = 2.5;
 
         // presets
@@ -333,7 +341,7 @@ public final class DefaultConstants {
         // presets
         public static final double LOWER_LIMIT = 0;
         public static final double UPPER_LIMIT = 105;
-        public static final double STOW = 50;
+        public static final double STOW = 75;
         public static final double CORAL_STATION = 50;
         public static final double CORAL_STATION_OBSTRUCTED = 50;
         public static final double GROUND_CORAL = 3.5;
@@ -560,7 +568,7 @@ public final class DefaultConstants {
             private static final int DRIVE_MOTOR_ID = 3;
             private static final int STEER_MOTOR_ID = 13;
             private static final int ENCODER_ID = 23;
-            public static final Angle ENCODER_OFFSET = Rotations.of(-0.146728515625);
+            public static final Angle ENCODER_OFFSET = Rotations.of(-0.146728515625 + 0.55859375);
             private static final boolean STEER_MOTOR_INVERTED = true;
             private static final boolean CANCODER_INVERTED = false;
 

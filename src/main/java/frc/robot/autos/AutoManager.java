@@ -13,11 +13,11 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.RobotStates;
 import frc.robot.autos.routines.AutoEventLooper;
 import frc.robot.autos.routines.AutoTrigger;
 import frc.robot.constants.Constants;
+import frc.robot.constants.RobotPoses;
 import frc.robot.util.FieldUtil;
 import frc.robot.util.MultipleChooser;
 
@@ -53,6 +53,7 @@ public final class AutoManager {
     private List<Pair<FieldUtil.Reef.ScoringLocation, FieldUtil.Reef.Level>> scoringLocations = null;
     private String coralStationOverride = null;
     private boolean push = false; // Whether to push alliance partner off first
+    private boolean groundIntake = false; // Whether or not to use ground intake states instead of coral station states
 
     public AutoManager(RobotStates robotStates) {
 
@@ -104,6 +105,17 @@ public final class AutoManager {
             }
         });
 
+        SendableChooser<Boolean> groundIntakeChooser = new SendableChooser<>();
+        groundIntakeChooser.addOption("Ground Intake", true);
+        groundIntakeChooser.addOption("Coral Station Intake", false);
+        SmartDashboard.putData("Intake Type", groundIntakeChooser);
+        groundIntakeChooser.onChange(groundIntake -> {
+            this.groundIntake = groundIntake;
+            if (startPosition != null && this.scoringLocations != null & !this.scoringLocations.isEmpty()) {
+                currentCommand = generateAutoEventLooper(robotStates).cmd();
+            }
+        });
+
         currentCommand = Commands.none();
     }
 
@@ -145,7 +157,9 @@ public final class AutoManager {
             triggersToBind.add(autoEventLooper.addTrigger(
                     currentScoringLocation.getFirst().name() + "," + nextScoringLocation.getFirst().name(),
                     () -> Commands.waitSeconds(0.5) // TODO SHOP: MINIMIZE THIS
-                            .andThen(getPathFindingCommandToCoralStation(robotStates, currentScoringLocation.getFirst(), nextScoringLocation.getFirst()))
+                            .andThen(groundIntake
+                                    ? getPathFindingCommandToGroundIntakeCoral(robotStates, currentScoringLocation.getFirst(), nextScoringLocation.getFirst())
+                                    : getPathFindingCommandToCoralStation(robotStates, currentScoringLocation.getFirst(), nextScoringLocation.getFirst()))
                             .andThen(new WaitUntilCommand(() -> robotStates.stowState.getAsBoolean() || robotStates.intake.coralEntered()))
                             .andThen(() -> scoringNext.set(true))
                             .andThen(robotStates.swerve.pathFindToScoringLocation(robotStates, nextScoringLocation.getFirst(), nextScoringLocation.getSecond()))
@@ -194,13 +208,26 @@ public final class AutoManager {
     private Command getPathFindingCommandToCoralStation(RobotStates robotStates, FieldUtil.Reef.ScoringLocation current, FieldUtil.Reef.ScoringLocation next) {
         String coralStation = this.coralStationOverride == null
                 ? getMostEfficientCoralStation(
-                        FieldUtil.Reef.ScoringLocation.getPose(current),
-                        FieldUtil.Reef.ScoringLocation.getPose(next)
+                        RobotPoses.Reef.getRobotPoseAtBranch(robotStates.swerve.localizer.currentRobotScoringSetting, current),
+                        RobotPoses.Reef.getRobotPoseAtBranch(robotStates.swerve.localizer.currentRobotScoringSetting, next)
                 ) : this.coralStationOverride;
 
         if (coralStation.equals("station-1")) {
             return robotStates.swerve.pathFindToLeftCoralStation(robotStates);
         }
         return robotStates.swerve.pathFindToRightCoralStation(robotStates);
+    }
+
+    private Command getPathFindingCommandToGroundIntakeCoral(RobotStates robotStates, FieldUtil.Reef.ScoringLocation current, FieldUtil.Reef.ScoringLocation next) {
+        String coralStation = this.coralStationOverride == null
+                ? getMostEfficientCoralStation(
+                        RobotPoses.Reef.getRobotPoseAtBranch(robotStates.swerve.localizer.currentRobotScoringSetting, current),
+                        RobotPoses.Reef.getRobotPoseAtBranch(robotStates.swerve.localizer.currentRobotScoringSetting, next)
+                ) : this.coralStationOverride;
+
+        if (coralStation.equals("station-1")) {
+            return robotStates.swerve.pathFindToLeftCoralStationGroundIntakeCoral(robotStates);
+        }
+        return robotStates.swerve.pathFindToRightCoralStationGroundIntakeCoral(robotStates);
     }
 }

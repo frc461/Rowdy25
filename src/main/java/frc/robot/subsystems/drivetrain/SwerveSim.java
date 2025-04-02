@@ -3,7 +3,7 @@ package frc.robot.subsystems.drivetrain;
 import com.ctre.phoenix6.Utils;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
-import frc.robot.subsystems.vision.LocalizerSim;
+import frc.robot.subsystems.localizer.LocalizerSim;
 
 public class SwerveSim {
     private final Swerve swerve;

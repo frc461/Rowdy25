@@ -101,6 +101,13 @@ public enum RobotIdentity {
         Constants.VisionConstants.LimelightConstants.LL_PITCH = DefaultConstants.VisionConstants.LimelightConstants.LL_PITCH;
         Constants.VisionConstants.LimelightConstants.LL_YAW = DefaultConstants.VisionConstants.LimelightConstants.LL_YAW;
         Constants.VisionConstants.LimelightConstants.LL_MAX_TAG_CLEAR_DIST = DefaultConstants.VisionConstants.LimelightConstants.LL_MAX_TAG_CLEAR_DIST;
+        Constants.VisionConstants.PhotonConstants.COLOR_NAME = DefaultConstants.VisionConstants.PhotonConstants.COLOR_NAME;
+        Constants.VisionConstants.PhotonConstants.COLOR_FORWARD = DefaultConstants.VisionConstants.PhotonConstants.COLOR_FORWARD;
+        Constants.VisionConstants.PhotonConstants.COLOR_LEFT = DefaultConstants.VisionConstants.PhotonConstants.COLOR_LEFT;
+        Constants.VisionConstants.PhotonConstants.COLOR_UP = DefaultConstants.VisionConstants.PhotonConstants.COLOR_UP;
+        Constants.VisionConstants.PhotonConstants.COLOR_ROLL = DefaultConstants.VisionConstants.PhotonConstants.COLOR_ROLL;
+        Constants.VisionConstants.PhotonConstants.COLOR_PITCH = DefaultConstants.VisionConstants.PhotonConstants.COLOR_PITCH;
+        Constants.VisionConstants.PhotonConstants.COLOR_YAW = DefaultConstants.VisionConstants.PhotonConstants.COLOR_YAW;
         Constants.VisionConstants.PhotonConstants.BW_TOP_RIGHT_NAME = DefaultConstants.VisionConstants.PhotonConstants.BW_TOP_RIGHT_NAME;
         Constants.VisionConstants.PhotonConstants.BW_TOP_RIGHT_FORWARD = DefaultConstants.VisionConstants.PhotonConstants.BW_TOP_RIGHT_FORWARD;
         Constants.VisionConstants.PhotonConstants.BW_TOP_RIGHT_LEFT = DefaultConstants.VisionConstants.PhotonConstants.BW_TOP_RIGHT_LEFT;

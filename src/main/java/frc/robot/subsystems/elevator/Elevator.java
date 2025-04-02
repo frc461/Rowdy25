@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
 import frc.robot.constants.RobotIdentity;
+import frc.robot.constants.RobotPoses;
 import frc.robot.util.EquationUtil;
 
 public class Elevator extends SubsystemBase {
@@ -99,6 +100,27 @@ public class Elevator extends SubsystemBase {
 		return currentState;
 	}
 
+    public State getL2State(RobotPoses.Reef.RobotScoringSetting mode) {
+        return switch (mode) {
+            case L1, AT_BRANCH -> State.L2_CORAL_AT_BRANCH;
+            case ONE_CORAL_FROM_BRANCH -> State.L2_CORAL_ONE_CORAL_FROM_BRANCH;
+        };
+    }
+
+    public State getL3State(RobotPoses.Reef.RobotScoringSetting mode) {
+        return switch (mode) {
+            case L1, AT_BRANCH -> State.L3_CORAL_AT_BRANCH;
+            case ONE_CORAL_FROM_BRANCH -> State.L3_CORAL_ONE_CORAL_FROM_BRANCH;
+        };
+    }
+
+    public State getL4State(RobotPoses.Reef.RobotScoringSetting mode) {
+        return switch (mode) {
+            case L1, AT_BRANCH -> State.L4_CORAL_AT_BRANCH;
+            case ONE_CORAL_FROM_BRANCH -> State.L4_CORAL_ONE_CORAL_FROM_BRANCH;
+        };
+    }
+
     public double getPosition() {
         return elevator.getPosition().getValueAsDouble();
     }
@@ -160,16 +182,25 @@ public class Elevator extends SubsystemBase {
         setState(State.L1_CORAL);
     }
 
-    public void setL2CoralState(boolean oneCoralAway) {
-        setState(oneCoralAway ? State.L2_CORAL_ONE_CORAL_FROM_BRANCH : State.L2_CORAL_AT_BRANCH);
+    public void setL2CoralState(RobotPoses.Reef.RobotScoringSetting mode) {
+        switch (mode) {
+            case AT_BRANCH -> setState(State.L2_CORAL_AT_BRANCH);
+            case ONE_CORAL_FROM_BRANCH -> setState(State.L2_CORAL_ONE_CORAL_FROM_BRANCH);
+        }
     }
 
-    public void setL3CoralState(boolean oneCoralAway) {
-        setState(oneCoralAway ? State.L3_CORAL_ONE_CORAL_FROM_BRANCH : State.L3_CORAL_AT_BRANCH);
+    public void setL3CoralState(RobotPoses.Reef.RobotScoringSetting mode) {
+        switch (mode) {
+            case AT_BRANCH -> setState(State.L3_CORAL_AT_BRANCH);
+            case ONE_CORAL_FROM_BRANCH -> setState(State.L3_CORAL_ONE_CORAL_FROM_BRANCH);
+        }
     }
 
-    public void setL4CoralState(boolean oneCoralAway) {
-        setState(oneCoralAway ? State.L4_CORAL_ONE_CORAL_FROM_BRANCH : State.L4_CORAL_AT_BRANCH);
+    public void setL4CoralState(RobotPoses.Reef.RobotScoringSetting mode) {
+        switch (mode) {
+            case AT_BRANCH -> setState(State.L4_CORAL_AT_BRANCH);
+            case ONE_CORAL_FROM_BRANCH -> setState(State.L4_CORAL_ONE_CORAL_FROM_BRANCH);
+        }
     }
 
     public void setLowReefAlgaeState() {
