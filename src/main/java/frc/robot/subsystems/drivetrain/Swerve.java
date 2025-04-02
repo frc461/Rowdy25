@@ -305,12 +305,12 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                                         FieldUtil.Reef.ScoringLocation.getPose(location),
                                         Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_DIRECT_DRIVE
                                 )
-                        )).andThen(new DirectMoveToPoseCommand(
+                        )).until(() -> robotStates.atTransitionStateLocation(RobotStates.State.L4_CORAL)).andThen(new DirectMoveToPoseCommand(
                                 this,
                                 fieldCentric,
                                 robotStates.elevator::getPosition,
                                 FieldUtil.Reef.ScoringLocation.getPose(location),
-                                robotStates.getCurrentAutoLevel() == FieldUtil.Reef.Level.L4 ? 2.5 : Constants.MAX_VEL
+                                Constants.MAX_VEL
                         )).raceWith(new WaitUntilCommand(new Trigger(() -> robotStates.nearStateLocation(RobotStates.State.L4_CORAL)).debounce(1))).andThen(
                                 new WaitUntilCommand(robotStates.atAutoScoreState)
                                         .andThen(robotStates::toggleAutoLevelCoralState)
@@ -333,7 +333,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                                 Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_DIRECT_DRIVE,
                                 localizer.nearestAlgaeIsHigh ? Rotation2d.kZero : Rotation2d.kPi
                         )
-                ).andThen(() -> robotStates.toggleNearestReefAlgaeState(localizer.nearestAlgaeIsHigh, true)).andThen(new DirectMoveToPoseCommand(
+                ).until(() -> robotStates.atTransitionStateLocation(RobotStates.State.LOW_REEF_ALGAE)).andThen(() -> robotStates.toggleNearestReefAlgaeState(localizer.nearestAlgaeIsHigh, true)).andThen(new DirectMoveToPoseCommand(
                         this,
                         fieldCentric,
                         robotStates.elevator::getPosition,

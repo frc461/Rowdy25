@@ -125,6 +125,7 @@ public class Localizer {
             case PROCESSOR -> currentPose.getTranslation().getDistance(robotPoseAtProcessor.getTranslation());
             case NET -> currentPose.getTranslation().getDistance(randomizedRobotPoseAtNet.getTranslation());
             case CORAL_STATION -> currentPose.getTranslation().getDistance(nearestRobotPoseAtCoralStation.getTranslation());
+            case LOW_REEF_ALGAE, HIGH_REEF_ALGAE -> currentPose.getTranslation().getDistance(nearestRobotPoseAtAlgaeReef.getTranslation());
             default -> 0.0;
         };
     }
