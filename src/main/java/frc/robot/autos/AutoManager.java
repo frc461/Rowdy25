@@ -127,7 +127,7 @@ public final class AutoManager {
                 () -> new InstantCommand(() -> robotStates.swerve.localizer.setPoses(getStartingPose(startPosition)))
                         .onlyIf(() -> startPosition.index != 0)
                         .andThen(robotStates::setStowState)
-                        .andThen(robotStates.swerve::pushAlliancePartnerOut).onlyIf(() -> push)
+                        .andThen(robotStates.swerve.pushAlliancePartnerOut()).onlyIf(() -> push)
                         .andThen(robotStates.swerve.pathFindToScoringLocation(robotStates, firstScoringLocation.getFirst(), firstScoringLocation.getSecond()))
         ));
 
@@ -144,7 +144,7 @@ public final class AutoManager {
 
             triggersToBind.add(autoEventLooper.addTrigger(
                     currentScoringLocation.getFirst().name() + "," + nextScoringLocation.getFirst().name(),
-                    () -> Commands.waitSeconds(1.0)
+                    () -> Commands.waitSeconds(0.5) // TODO SHOP: MINIMIZE THIS
                             .andThen(getPathFindingCommandToCoralStation(robotStates, currentScoringLocation.getFirst(), nextScoringLocation.getFirst()))
                             .andThen(new WaitUntilCommand(() -> robotStates.stowState.getAsBoolean() || robotStates.intake.coralEntered()))
                             .andThen(() -> scoringNext.set(true))

@@ -86,6 +86,7 @@ public final class Constants {
         public static double TRANSLATION_TOLERANCE_TO_ACCEPT;
         public static double TRANSLATION_TOLERANCE_TO_DIRECT_DRIVE;
         public static double TRANSLATION_TOLERANCE_TO_TRANSITION;
+        public static double TRANSLATION_TOLERANCE_TO_TRANSITION_AUTO;
     }
 
     public static final class VisionConstants {

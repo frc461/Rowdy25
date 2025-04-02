@@ -87,6 +87,7 @@ public enum RobotIdentity {
         Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_ACCEPT = DefaultConstants.AutoConstants.TRANSLATION_TOLERANCE_TO_ACCEPT;
         Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_DIRECT_DRIVE = DefaultConstants.AutoConstants.TRANSLATION_TOLERANCE_TO_DIRECT_DRIVE;
         Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_TRANSITION = DefaultConstants.AutoConstants.TRANSLATION_TOLERANCE_TO_TRANSITION;
+        Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_TRANSITION_AUTO = DefaultConstants.AutoConstants.TRANSLATION_TOLERANCE_TO_TRANSITION_AUTO;
 
         Constants.VisionConstants.ODOM_STD_DEV = DefaultConstants.VisionConstants.ODOM_STD_DEV;
         Constants.VisionConstants.VISION_STD_DEV_MULTITAG_FUNCTION = DefaultConstants.VisionConstants.VISION_STD_DEV_MULTITAG_FUNCTION;

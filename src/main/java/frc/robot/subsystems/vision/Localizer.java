@@ -145,7 +145,10 @@ public class Localizer {
         };
     }
 
-    public boolean atTransitionStateLocation(RobotStates.State robotState) {
+    public boolean atTransitionStateLocation(RobotStates.State robotState, boolean auto) {
+        if (auto) {
+            return getDistanceToActionLocation(robotState) < Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_TRANSITION_AUTO;
+        }
         return getDistanceToActionLocation(robotState) < Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_TRANSITION;
     }
 

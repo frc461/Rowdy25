@@ -252,7 +252,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                         robotStates.elevator::getPosition,
                         localizer.nearestRobotPosesAtBranchPair.getFirst()
                                 .plus(new Transform2d(localizer.trustCameras ? Units.inchesToMeters(-4.0) : 0, 0, Rotation2d.kZero)),
-                        robotStates.getCurrentAutoLevel() == FieldUtil.Reef.Level.L4 ? 2.5 : Constants.MAX_VEL
+                        Constants.MAX_VEL
                 )).andThen(
                         new WaitUntilCommand(robotStates.atAutoScoreState.and(robotStates::atScoringLocation))
                                 .andThen(robotStates::toggleAutoLevelCoralState)
@@ -281,7 +281,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                         robotStates.elevator::getPosition,
                         localizer.nearestRobotPosesAtBranchPair.getSecond()
                                 .plus(new Transform2d(localizer.trustCameras ? Units.inchesToMeters(-4.0) : 0, 0, Rotation2d.kZero)),
-                        robotStates.getCurrentAutoLevel() == FieldUtil.Reef.Level.L4 ? 2.5 : Constants.MAX_VEL
+                        Constants.MAX_VEL
                 )).until(robotStates.atAutoScoreState.and(robotStates::atScoringLocation)).andThen(
                         new WaitUntilCommand(robotStates.atAutoScoreState.and(robotStates::atScoringLocation))
                                 .andThen(robotStates::toggleAutoLevelCoralState)
@@ -305,7 +305,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                                         FieldUtil.Reef.ScoringLocation.getPose(location),
                                         Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_DIRECT_DRIVE
                                 )
-                        )).until(() -> robotStates.atTransitionStateLocation(RobotStates.State.L4_CORAL)).andThen(new DirectMoveToPoseCommand(
+                        )).until(() -> robotStates.atTransitionStateLocation(RobotStates.State.L4_CORAL)).andThen(new DirectMoveToPoseCommand( // TODO: MAKE THIS SAFE BY ALSO CHECKING IF POSE IS ON SAME SIDE AS TARGET POSE
                                 this,
                                 fieldCentric,
                                 robotStates.elevator::getPosition,
@@ -315,7 +315,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                                 new WaitUntilCommand(robotStates.atAutoScoreState)
                                         .andThen(robotStates::toggleAutoLevelCoralState)
                         ).alongWith(
-                                new WaitUntilCommand(() -> robotStates.atTransitionStateLocation(RobotStates.State.L4_CORAL))
+                                new WaitUntilCommand(() -> robotStates.atTransitionStateLocation(RobotStates.State.L4_CORAL, true))
                                         .andThen(() -> robotStates.toggleAutoLevelCoralState(true))
                         ),
                 Set.of(this)
@@ -333,13 +333,14 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                                 Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_DIRECT_DRIVE,
                                 localizer.nearestAlgaeIsHigh ? Rotation2d.kZero : Rotation2d.kPi
                         )
-                ).until(() -> robotStates.atTransitionStateLocation(RobotStates.State.LOW_REEF_ALGAE)).andThen(() -> robotStates.toggleNearestReefAlgaeState(localizer.nearestAlgaeIsHigh, true)).andThen(new DirectMoveToPoseCommand(
-                        this,
-                        fieldCentric,
-                        robotStates.elevator::getPosition,
-                        localizer.nearestRobotPoseAtAlgaeReef,
-                        2.0
-                )),
+                ).until(() -> robotStates.atTransitionStateLocation(RobotStates.State.LOW_REEF_ALGAE))
+                        .andThen(() -> robotStates.toggleNearestReefAlgaeState(localizer.nearestAlgaeIsHigh, true)).andThen(new DirectMoveToPoseCommand(
+                                this,
+                                fieldCentric,
+                                robotStates.elevator::getPosition,
+                                localizer.nearestRobotPoseAtAlgaeReef,
+                                2.0
+                        )),
                 Set.of(this)
         );
     }

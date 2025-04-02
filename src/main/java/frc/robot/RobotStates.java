@@ -132,7 +132,11 @@ public class RobotStates {
     }
 
     public boolean atTransitionStateLocation(RobotStates.State robotState) {
-        return swerve.localizer.atTransitionStateLocation(robotState);
+        return swerve.localizer.atTransitionStateLocation(robotState, false);
+    }
+
+    public boolean atTransitionStateLocation(RobotStates.State robotState, boolean auto) {
+        return swerve.localizer.atTransitionStateLocation(robotState, auto);
     }
 
     public boolean nearStateLocation(RobotStates.State robotState) {
@@ -265,23 +269,23 @@ public class RobotStates {
         currentState = (currentState == State.CLIMB || currentState == State.PREPARE_CLIMB) ? State.CLIMB : State.PREPARE_CLIMB;
     }
 
-    private Command movePivotToPerpendicular() {
+    private Command movePivotToPerpendicular(boolean passthrough) {
         return new InstantCommand(pivot::setPerpendicularState)
                 .andThen(new WaitUntilCommand(pivot::isAtTarget))
-                .onlyIf(() -> pivot.getPosition() > 90);
+                .onlyIf(() -> pivot.getPosition() > 90 && passthrough);
     }
 
     private Command orderedTransition(Runnable setPivotState, Runnable setElevatorState, Elevator.State elevatorState, Runnable setWristState) {
         if (elevator.goingDown(elevatorState)) {
             return new InstantCommand(wrist::setStowState)
                     .andThen(new WaitUntilCommand(wrist::nearTarget))
-                    .andThen(movePivotToPerpendicular())
+                    .andThen(movePivotToPerpendicular(!swerve.localizer.trustCameras)) // TODO SHOP: TEST MORE EFFICIENT MOVING WHEN TRUSTING CAMERAS
                     .andThen(setPivotState)
                     .andThen(setElevatorState)
                     .andThen(new WaitUntilCommand(elevator::nearTarget))
                     .andThen(setWristState);
         }
-        return movePivotToPerpendicular()
+        return movePivotToPerpendicular(!swerve.localizer.trustCameras)
                 .andThen(wrist::setStowState)
                 .andThen(setPivotState)
                 .andThen(new WaitUntilCommand(pivot::nearTarget))

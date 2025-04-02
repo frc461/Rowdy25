@@ -128,6 +128,7 @@ public final class DefaultConstants {
         public static final double TRANSLATION_TOLERANCE_TO_ACCEPT = 0.03;
         public static final double TRANSLATION_TOLERANCE_TO_DIRECT_DRIVE = 0.5;
         public static final double TRANSLATION_TOLERANCE_TO_TRANSITION = 1.5;
+        public static final double TRANSLATION_TOLERANCE_TO_TRANSITION_AUTO = 2.5;
     }
 
     public static final class VisionConstants {
