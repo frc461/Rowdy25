@@ -120,25 +120,15 @@ public final class AutoManager {
         AutoEventLooper autoEventLooper = new AutoEventLooper("AutoEventLooper");
         List<AutoTrigger> triggersToBind = new ArrayList<>();
 
-        triggersToBind.add(autoEventLooper.addTrigger(
-                "start",
-                () -> new InstantCommand(() -> robotStates.swerve.localizer.setPoses(getStartingPose(startPosition)))
-                        .onlyIf(() -> startPosition.index != 0)
-                        .andThen(robotStates::setStowState)
-        ));
-
-        if (push) {
-            triggersToBind.add(autoEventLooper.addTrigger(
-                    "push",
-                    robotStates.swerve::pushAlliancePartnerOut
-            ));
-        }
-
         Pair<FieldUtil.Reef.ScoringLocation, FieldUtil.Reef.Level> firstScoringLocation = currentScoringLocations.get(0);
 
         triggersToBind.add(autoEventLooper.addTrigger(
                 this.startPosition.index + "," + firstScoringLocation.getFirst().name(),
-                () -> robotStates.swerve.pathFindToScoringLocation(robotStates, firstScoringLocation.getFirst(), firstScoringLocation.getSecond())
+                () -> new InstantCommand(() -> robotStates.swerve.localizer.setPoses(getStartingPose(startPosition)))
+                        .onlyIf(() -> startPosition.index != 0)
+                        .andThen(robotStates::setStowState)
+                        .andThen(robotStates.swerve::pushAlliancePartnerOut).onlyIf(() -> push)
+                        .andThen(robotStates.swerve.pathFindToScoringLocation(robotStates, firstScoringLocation.getFirst(), firstScoringLocation.getSecond()))
         ));
 
         while (!currentScoringLocations.isEmpty()) {
@@ -170,6 +160,7 @@ public final class AutoManager {
             AutoTrigger currentTrigger = triggersToBind.remove(0);
             currentTrigger.interrupt().onTrue(
                     new InstantCommand(robotStates.intake::setOuttakeL1State)
+                            .andThen(robotStates::setStowState)
                             .andThen(Commands.waitSeconds(0.25))
                             .andThen(currentTrigger.duplicate().cmd())
             );
