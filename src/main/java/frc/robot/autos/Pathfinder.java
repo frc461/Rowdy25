@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.constants.Constants;
 import frc.robot.constants.RobotPoses;
 import frc.robot.util.FieldUtil;
+import frc.robot.util.RotationUtil;
 
 import java.util.List;
 
@@ -133,7 +134,7 @@ public final class Pathfinder {
     ) {
         Rotation2d distAngle = currentPose.getTranslation().minus(targetPose.getTranslation()).getAngle();
 
-        if (inBetween(distAngle, lowerAngleThreshold, upperAngleThreshold)) {
+        if (RotationUtil.inBetween(distAngle, lowerAngleThreshold, upperAngleThreshold)) {
             return new Pose2d(
                     targetPose.getTranslation().plus(new Translation2d(distance, distAngle)),
                     distAngle.rotateBy(Rotation2d.kPi)
@@ -149,13 +150,6 @@ public final class Pathfinder {
                         upperAngleThreshold.rotateBy(Rotation2d.kPi)
                 )
         ));
-    }
-
-    public static boolean inBetween(Rotation2d angle, Rotation2d lowerAngleThreshold, Rotation2d upperAngleThreshold) {
-        if (lowerAngleThreshold.getDegrees() > upperAngleThreshold.getDegrees()) {
-            return angle.getDegrees() > lowerAngleThreshold.getDegrees() || angle.getDegrees() < upperAngleThreshold.getDegrees();
-        }
-        return angle.getDegrees() > lowerAngleThreshold.getDegrees() && angle.getDegrees() < upperAngleThreshold.getDegrees();
     }
 
     public static void main(String[] args) {

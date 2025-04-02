@@ -128,6 +128,7 @@ public final class DefaultConstants {
         public static final double TRANSLATION_TOLERANCE_TO_ACCEPT = 0.03;
         public static final double TRANSLATION_TOLERANCE_TO_DIRECT_DRIVE = 0.5;
         public static final double TRANSLATION_TOLERANCE_TO_TRANSITION = 1.5;
+        public static final double TRANSLATION_TOLERANCE_TO_TRANSITION_AUTO = 2.5;
     }
 
     public static final class VisionConstants {
@@ -141,8 +142,7 @@ public final class DefaultConstants {
                         ? VecBuilder.fill(0.075 * dist, 0.075 * dist, Units.degreesToRadians(180.0) * dist)
                         : VecBuilder.fill(0.1 * dist, 0.1 * dist, Units.degreesToRadians(180.0) * dist);
 
-        public static final int PROXIMITY_SENSOR_DIO_PORT = 1;
-        public static final double ZERO_CORAL_PROXIMITY_THRESHOLD = 0.3; // TODO SHOP: TUNE
+        public static final int PROXIMITY_SENSOR_DIO_PORT = 5;
 
         public static final class LimelightConstants {
             public static final String LIMELIGHT_NT_NAME = "limelight";
@@ -296,7 +296,7 @@ public final class DefaultConstants {
     }
 
     public final static class IntakeConstants {
-        public static final int LEAD_ID = 41;
+        public static final int MOTOR_ID = 41;
         public static final int BEAMBREAK_DIO_PORT = 4;
         public static final double CURRENT_LIMIT = 60;
         public static final InvertedValue MOTOR_INVERT = InvertedValue.CounterClockwise_Positive;

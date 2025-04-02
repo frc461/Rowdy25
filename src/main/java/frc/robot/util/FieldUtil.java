@@ -142,6 +142,21 @@ public final class FieldUtil {
             return getAngleFromReefCenter(pose.getTranslation());
         }
 
+        public enum Side {
+            AB, CD, EF, GH, IJ, KL;
+
+            public static Pose2d getLeftVertexPose(Side side) {
+                return switch (side) {
+                    case AB -> getReefCorners().get(0);
+                    case CD -> getReefCorners().get(1);
+                    case EF -> getReefCorners().get(2);
+                    case GH -> getReefCorners().get(3);
+                    case IJ -> getReefCorners().get(4);
+                    case KL -> getReefCorners().get(5);
+                };
+            }
+        }
+
         public static final Transform2d LEFT_BRANCH_OFFSET_FROM_TAG = new Transform2d(Units.inchesToMeters(-1.207349), Units.inchesToMeters(-6.469731), Rotation2d.kZero);
         public static final Transform2d RIGHT_BRANCH_OFFSET_FROM_TAG = new Transform2d(Units.inchesToMeters(-1.207349), Units.inchesToMeters(6.469731), Rotation2d.kZero);
 

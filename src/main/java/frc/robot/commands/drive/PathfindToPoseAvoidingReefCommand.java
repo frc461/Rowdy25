@@ -1,40 +1,22 @@
-package frc.robot.commands;
+package frc.robot.commands.drive;
 
 import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.autos.Pathfinder;
 import frc.robot.constants.Constants;
+import frc.robot.constants.RobotPoses;
 import frc.robot.subsystems.drivetrain.Swerve;
 import frc.robot.util.EquationUtil;
 import frc.robot.util.FieldUtil;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.DoubleSupplier;
 
 import static edu.wpi.first.units.Units.Meters;
 
-public class PathfindToPoseAvoidingReefCommand extends Command { // TODO: ORGANIZE INTO DRIVE COMMANDS SUBDIRECTORY
-    private enum Side {
-        AB, CD, EF, GH, IJ, KL;
-
-        private static Pose2d getLeftVertexPose(Side side) {
-            return switch (side) {
-                case AB -> FieldUtil.Reef.getReefCorners().get(0);
-                case CD -> FieldUtil.Reef.getReefCorners().get(1);
-                case EF -> FieldUtil.Reef.getReefCorners().get(2);
-                case GH -> FieldUtil.Reef.getReefCorners().get(3);
-                case IJ -> FieldUtil.Reef.getReefCorners().get(4);
-                case KL -> FieldUtil.Reef.getReefCorners().get(5);
-            };
-        }
-    }
-
+public class PathfindToPoseAvoidingReefCommand extends Command {
     private final Swerve swerve;
     private final SwerveRequest.FieldCentric fieldCentric;
     private final PIDController yawController;
@@ -110,7 +92,7 @@ public class PathfindToPoseAvoidingReefCommand extends Command { // TODO: ORGANI
                         2 / 7.0,
                         15 / 2.0
                 ),
-                Math.min(EquationUtil.linearOutput(smoothTemporaryTargetPose.getTranslation().getDistance(currentPose.getTranslation()), 10, -8), safeMaxVelocity) // TODO SHOP: TEST THIS OFFSET
+                Math.min(EquationUtil.linearOutput(smoothTemporaryTargetPose.getTranslation().getDistance(currentPose.getTranslation()), 10, -10), safeMaxVelocity)
         );
 
         double velocityHeadingRadians = smoothTemporaryTargetPose.getTranslation().minus(currentPose.getTranslation()).getAngle().getRadians();
@@ -160,8 +142,7 @@ public class PathfindToPoseAvoidingReefCommand extends Command { // TODO: ORGANI
     private Pose2d getTemporaryTargetPose(Pose2d currentPose) {
         Rotation2d reefCenterAngleToRobot = FieldUtil.Reef.getAngleFromReefCenter(currentPose);
 
-        // TODO SHOP: TEST THIS
-        if (sameSideAsTargetPose(currentPose)) {
+        if (RobotPoses.Reef.sameSide(currentPose, targetPose)) {
             return targetPose;
         } else if (currentPose.getTranslation().getDistance(FieldUtil.Reef.getReefCenter()) < FieldUtil.Reef.REEF_APOTHEM + Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 1.3) {
             Translation2d targetTranslation = new Pose2d(FieldUtil.Reef.getReefCenter(), FieldUtil.Reef.getNearestReefTagPose(currentPose).getRotation())
@@ -192,72 +173,6 @@ public class PathfindToPoseAvoidingReefCommand extends Command { // TODO: ORGANI
                     currentPose.getRotation().interpolate(targetPose.getRotation(), 0.25)
             );
         }
-    }
-
-    private boolean sameSideAsTargetPose(Pose2d currentPose) {
-        List<Pose2d> robotCorners = List.of(
-                currentPose.plus(new Transform2d(
-                        Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0,
-                        Constants.ROBOT_WIDTH_WITH_BUMPERS.in(Meters) / 2.0,
-                        Rotation2d.kZero
-                )),
-                currentPose.plus(new Transform2d(
-                        Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0,
-                        -Constants.ROBOT_WIDTH_WITH_BUMPERS.in(Meters) / 2.0,
-                        Rotation2d.kZero
-                )),
-                currentPose.plus(new Transform2d(
-                        -Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0,
-                        Constants.ROBOT_WIDTH_WITH_BUMPERS.in(Meters) / 2.0,
-                        Rotation2d.kZero
-                )),
-                currentPose.plus(new Transform2d(
-                        -Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0,
-                        -Constants.ROBOT_WIDTH_WITH_BUMPERS.in(Meters) / 2.0,
-                        Rotation2d.kZero
-                ))
-        );
-
-        List<Rotation2d> anglesToEachVertex = new ArrayList<>();
-        List<Double> distancesToEachVertex = new ArrayList<>();
-
-        for (Side side : Side.values()) {
-            anglesToEachVertex.addAll(robotCorners.stream()
-                    .map(corner -> Side.getLeftVertexPose(side).getTranslation().minus(corner.getTranslation()).getAngle())
-                    .toList());
-            distancesToEachVertex.addAll(robotCorners.stream()
-                    .map(corner -> Side.getLeftVertexPose(side).getTranslation().getDistance(corner.getTranslation()))
-                    .toList());
-        }
-
-        Pair<Rotation2d, Rotation2d> anglesToVerticesBounds = getBound(anglesToEachVertex);
-        double lowestDistanceToReefCorner = distancesToEachVertex.stream().mapToDouble(Double::doubleValue).min().orElse(0.0);
-
-        return !Pathfinder.inBetween(
-                targetPose.getTranslation().minus(currentPose.getTranslation()).getAngle(),
-                anglesToVerticesBounds.getFirst(),
-                anglesToVerticesBounds.getSecond()
-        ) && !Pathfinder.inBetween(
-                targetPose.getTranslation().minus(currentPose.getTranslation()).getAngle(),
-                anglesToVerticesBounds.getFirst().minus(Rotation2d.fromDegrees(7.5)),
-                anglesToVerticesBounds.getSecond().plus(Rotation2d.fromDegrees(7.5))
-        ) || targetPose.getTranslation().getDistance(currentPose.getTranslation()) < lowestDistanceToReefCorner;
-    }
-
-    private Pair<Rotation2d, Rotation2d> getBound(List<Rotation2d> angles) {
-        Rotation2d min = angles.get(0);
-        Rotation2d max = angles.get(0);
-        for (Rotation2d angle : angles) {
-            if (!Pathfinder.inBetween(angle, min, max)) {
-                Rotation2d divider = min.interpolate(max, 0.5).rotateBy(Rotation2d.kPi);
-                if (Pathfinder.inBetween(angle, divider, min)) {
-                    min = angle;
-                } else {
-                    max = angle;
-                }
-            }
-        }
-        return new Pair<>(min, max);
     }
 
     @Override

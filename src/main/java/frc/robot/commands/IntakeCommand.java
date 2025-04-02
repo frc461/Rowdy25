@@ -31,10 +31,10 @@ public class IntakeCommand extends Command {
                 intake.setIntakeSpeed(-0.5);
                 break;
             case OUTTAKE_L1:
-                intake.setIntakeSpeed(-0.3);
+                intake.setIntakeSpeed(-0.4);
                 break;
             case HAS_ALGAE:
-                intake.setIntakeSpeed(0.01); // TODO SHOP: TEST THIS
+                intake.setIntakeSpeed(0.25); // TODO SHOP: TEST THIS
                 break;
             case IDLE:
                 intake.setIntakeSpeed(0.0);

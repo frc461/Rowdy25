@@ -87,12 +87,12 @@ public enum RobotIdentity {
         Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_ACCEPT = DefaultConstants.AutoConstants.TRANSLATION_TOLERANCE_TO_ACCEPT;
         Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_DIRECT_DRIVE = DefaultConstants.AutoConstants.TRANSLATION_TOLERANCE_TO_DIRECT_DRIVE;
         Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_TRANSITION = DefaultConstants.AutoConstants.TRANSLATION_TOLERANCE_TO_TRANSITION;
+        Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_TRANSITION_AUTO = DefaultConstants.AutoConstants.TRANSLATION_TOLERANCE_TO_TRANSITION_AUTO;
 
         Constants.VisionConstants.ODOM_STD_DEV = DefaultConstants.VisionConstants.ODOM_STD_DEV;
         Constants.VisionConstants.VISION_STD_DEV_MULTITAG_FUNCTION = DefaultConstants.VisionConstants.VISION_STD_DEV_MULTITAG_FUNCTION;
         Constants.VisionConstants.VISION_STD_DEV_FUNCTION = DefaultConstants.VisionConstants.VISION_STD_DEV_FUNCTION;
         Constants.VisionConstants.PROXIMITY_SENSOR_DIO_PORT = DefaultConstants.VisionConstants.PROXIMITY_SENSOR_DIO_PORT;
-        Constants.VisionConstants.ZERO_CORAL_PROXIMITY_THRESHOLD = DefaultConstants.VisionConstants.ZERO_CORAL_PROXIMITY_THRESHOLD;
         Constants.VisionConstants.LimelightConstants.LIMELIGHT_NT_NAME = DefaultConstants.VisionConstants.LimelightConstants.LIMELIGHT_NT_NAME;
         Constants.VisionConstants.LimelightConstants.LL_FORWARD = DefaultConstants.VisionConstants.LimelightConstants.LL_FORWARD;
         Constants.VisionConstants.LimelightConstants.LL_RIGHT = DefaultConstants.VisionConstants.LimelightConstants.LL_RIGHT;
@@ -200,7 +200,7 @@ public enum RobotIdentity {
         Constants.ElevatorConstants.NET = DefaultConstants.ElevatorConstants.NET;
         Constants.ElevatorConstants.CLIMB = DefaultConstants.ElevatorConstants.CLIMB;
 
-        Constants.IntakeConstants.LEAD_ID = DefaultConstants.IntakeConstants.LEAD_ID;
+        Constants.IntakeConstants.MOTOR_ID = DefaultConstants.IntakeConstants.MOTOR_ID;
         Constants.IntakeConstants.BEAMBREAK_DIO_PORT = DefaultConstants.IntakeConstants.BEAMBREAK_DIO_PORT;
         Constants.IntakeConstants.CURRENT_LIMIT = DefaultConstants.IntakeConstants.CURRENT_LIMIT;
         Constants.IntakeConstants.MOTOR_INVERT = DefaultConstants.IntakeConstants.MOTOR_INVERT;

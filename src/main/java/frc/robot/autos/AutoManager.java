@@ -53,6 +53,7 @@ public final class AutoManager { // TODO SHOP: TEST THIS
     private List<Pair<FieldUtil.Reef.ScoringLocation, FieldUtil.Reef.Level>> scoringLocations = null;
     private String coralStationOverride = null;
     private boolean push = false; // Whether to push alliance partner off first
+    private boolean groundIntake = false; // Whether or not to use ground intake states instead of coral station states
 
     public AutoManager(RobotStates robotStates) {
 
@@ -104,6 +105,17 @@ public final class AutoManager { // TODO SHOP: TEST THIS
             }
         });
 
+        SendableChooser<Boolean> groundIntakeChooser = new SendableChooser<>();
+        groundIntakeChooser.addOption("Ground Intake", true);
+        groundIntakeChooser.addOption("Coral Station Intake", false);
+        SmartDashboard.putData("Intake Type", groundIntakeChooser);
+        groundIntakeChooser.onChange(groundIntake -> {
+            this.groundIntake = groundIntake;
+            if (startPosition != null && this.scoringLocations != null && !this.scoringLocations.isEmpty()) {
+                currentCommand = generateAutoEventLooper(robotStates).cmd();
+            }
+        });
+
         currentCommand = Commands.none();
     }
 
@@ -120,26 +132,15 @@ public final class AutoManager { // TODO SHOP: TEST THIS
         AutoEventLooper autoEventLooper = new AutoEventLooper("AutoEventLooper");
         List<AutoTrigger> triggersToBind = new ArrayList<>();
 
-        triggersToBind.add(autoEventLooper.addTrigger(
-                "start",
-                () -> new InstantCommand(() -> robotStates.swerve.localizer.setPoses(getStartingPose(startPosition)))
-                        .onlyIf(() -> startPosition.index != 0)
-                        .andThen(robotStates::setStowState)
-        ));
-
-        if (push) {
-            triggersToBind.add(autoEventLooper.addTrigger(
-                    "push",
-                    robotStates.swerve::pushAlliancePartnerOut
-            ));
-        }
-
         Pair<FieldUtil.Reef.ScoringLocation, FieldUtil.Reef.Level> firstScoringLocation = currentScoringLocations.get(0);
 
         triggersToBind.add(autoEventLooper.addTrigger(
                 this.startPosition.index + "," + firstScoringLocation.getFirst().name(),
-                () -> robotStates.swerve.pathFindToScoringLocation(robotStates, firstScoringLocation.getFirst(), firstScoringLocation.getSecond())
-                        .andThen(Commands.waitSeconds(0.5))
+                () -> new InstantCommand(() -> robotStates.swerve.localizer.setPoses(getStartingPose(startPosition)))
+                        .onlyIf(() -> startPosition.index != 0)
+                        .andThen(robotStates::setStowState)
+                        .andThen(robotStates.swerve.pushAlliancePartnerOut()).onlyIf(() -> push)
+                        .andThen(robotStates.swerve.pathFindToScoringLocation(robotStates, firstScoringLocation.getFirst(), firstScoringLocation.getSecond()))
         ));
 
         while (!currentScoringLocations.isEmpty()) {
@@ -155,8 +156,10 @@ public final class AutoManager { // TODO SHOP: TEST THIS
 
             triggersToBind.add(autoEventLooper.addTrigger(
                     currentScoringLocation.getFirst().name() + "," + nextScoringLocation.getFirst().name(),
-                    () -> Commands.waitSeconds(0.5)
-                            .andThen(getPathFindingCommandToGroundIntakeCoral(robotStates, currentScoringLocation.getFirst(), nextScoringLocation.getFirst()))
+                    () -> Commands.waitSeconds(0.5) // TODO SHOP: MINIMIZE THIS
+                            .andThen(groundIntake
+                                    ? getPathFindingCommandToGroundIntakeCoral(robotStates, currentScoringLocation.getFirst(), nextScoringLocation.getFirst())
+                                    : getPathFindingCommandToCoralStation(robotStates, currentScoringLocation.getFirst(), nextScoringLocation.getFirst()))
                             .andThen(new WaitUntilCommand(() -> robotStates.stowState.getAsBoolean() || robotStates.intake.hasCoral()))
                             .andThen(() -> scoringNext.set(true))
                             .andThen(robotStates.swerve.pathFindToScoringLocation(robotStates, nextScoringLocation.getFirst(), nextScoringLocation.getSecond()))
@@ -199,6 +202,19 @@ public final class AutoManager { // TODO SHOP: TEST THIS
     private Pose2d getStartingPose(StartPosition startPosition) {
         Pose2d startingPoseBlue = StartPosition.getStartingPosition(startPosition);
         return Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red ? FlippingUtil.flipFieldPose(startingPoseBlue) : startingPoseBlue;
+    }
+
+    private Command getPathFindingCommandToCoralStation(RobotStates robotStates, FieldUtil.Reef.ScoringLocation current, FieldUtil.Reef.ScoringLocation next) {
+        String coralStation = this.coralStationOverride == null
+                ? getMostEfficientCoralStation(
+                        RobotPoses.Reef.getRobotPoseAtBranch(robotStates.swerve.localizer.currentRobotScoringSetting, current),
+                        RobotPoses.Reef.getRobotPoseAtBranch(robotStates.swerve.localizer.currentRobotScoringSetting, next)
+                ) : this.coralStationOverride;
+
+        if (coralStation.equals("station-1")) {
+            return robotStates.swerve.pathFindToLeftCoralStation(robotStates);
+        }
+        return robotStates.swerve.pathFindToRightCoralStation(robotStates);
     }
 
     private Command getPathFindingCommandToGroundIntakeCoral(RobotStates robotStates, FieldUtil.Reef.ScoringLocation current, FieldUtil.Reef.ScoringLocation next) {

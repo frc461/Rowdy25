@@ -40,7 +40,7 @@ public class Intake extends SubsystemBase {
     public Trigger hasAlgaeOrCoralStuck;
 
     public Intake() {
-        intake = new TalonFX(Constants.IntakeConstants.LEAD_ID);
+        intake = new TalonFX(Constants.IntakeConstants.MOTOR_ID);
 
         intake.getConfigurator().apply(new TalonFXConfiguration()
                 .withMotorOutput(new MotorOutputConfigs()

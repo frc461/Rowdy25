@@ -183,9 +183,23 @@ public class Wrist extends SubsystemBase {
         }
     }
 
-    public void setL4CoralObstructedState(boolean isObstructed) {
-        if (isObstructed && currentState == State.L4_CORAL_AT_BRANCH) {
-            setState(State.L4_CORAL_OBSTRUCTED);
+    public void setCoralScoringObstructedState(boolean isObstructed) {
+        switch (currentState) {
+            case L2_CORAL_AT_BRANCH:
+                if (isObstructed) {
+                    setState(State.L2_CORAL_ONE_CORAL_FROM_BRANCH);
+                }
+                break;
+            case L3_CORAL_AT_BRANCH:
+                if (isObstructed) {
+                    setState(State.L3_CORAL_ONE_CORAL_FROM_BRANCH);
+                }
+                break;
+            case L4_CORAL_AT_BRANCH:
+                if (isObstructed) {
+                    setState(State.L4_CORAL_ONE_CORAL_FROM_BRANCH);
+                }
+                break;
         }
     }
 

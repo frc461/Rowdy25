@@ -86,6 +86,7 @@ public final class Constants {
         public static double TRANSLATION_TOLERANCE_TO_ACCEPT;
         public static double TRANSLATION_TOLERANCE_TO_DIRECT_DRIVE;
         public static double TRANSLATION_TOLERANCE_TO_TRANSITION;
+        public static double TRANSLATION_TOLERANCE_TO_TRANSITION_AUTO;
     }
 
     public static final class VisionConstants {
@@ -94,7 +95,6 @@ public final class Constants {
         public static Function<Double, Matrix<N3, N1>> VISION_STD_DEV_FUNCTION;
 
         public static int PROXIMITY_SENSOR_DIO_PORT;
-        public static double ZERO_CORAL_PROXIMITY_THRESHOLD;
 
         public static final class LimelightConstants {
             public static String LIMELIGHT_NT_NAME;
@@ -243,7 +243,7 @@ public final class Constants {
 
     public final static class IntakeConstants {
         // basic configs
-        public static int LEAD_ID;
+        public static int MOTOR_ID;
         public static int BEAMBREAK_DIO_PORT;
         public static double CURRENT_LIMIT;
         public static InvertedValue MOTOR_INVERT;

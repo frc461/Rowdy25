@@ -7,7 +7,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.PWM;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -20,6 +20,7 @@ import frc.robot.util.vision.LimelightUtil;
 import frc.robot.util.vision.PhotonUtil;
 import frc.robot.util.vision.QuestNavUtil;
 
+import java.util.List;
 import java.util.Optional;
 
 import static edu.wpi.first.units.Units.Meters;
@@ -32,7 +33,7 @@ public class Localizer {
 
     // localizer is a dependent of swerve
     private final Swerve swerve;
-    private final PWM proximitySensor = new PWM(Constants.VisionConstants.PROXIMITY_SENSOR_DIO_PORT); // TODO SHOP: TEST AND CONFIGURE CANANDCOLOR
+    private final DigitalInput proximitySensor = new DigitalInput(Constants.VisionConstants.PROXIMITY_SENSOR_DIO_PORT); // TODO SHOP: TEST MORE
     private final LocalizationTelemetry localizationTelemetry = new LocalizationTelemetry(this);
     private final SendableChooser<LocalizationStrategy> localizationChooser = new SendableChooser<>();
 
@@ -141,6 +142,7 @@ public class Localizer {
             case PROCESSOR -> currentPose.getTranslation().getDistance(robotPoseAtProcessor.getTranslation());
             case NET -> currentPose.getTranslation().getDistance(randomizedRobotPoseAtNet.getTranslation());
             case CORAL_STATION -> currentPose.getTranslation().getDistance(nearestRobotPoseAtCoralStation.getTranslation());
+            case LOW_REEF_ALGAE, HIGH_REEF_ALGAE -> currentPose.getTranslation().getDistance(nearestRobotPoseAtAlgaeReef.getTranslation());
             default -> 0.0;
         };
     }
@@ -165,16 +167,21 @@ public class Localizer {
     }
 
     public boolean isAgainstReefWall() {
-        return trustCameras
-                ? getRobotRelativeVectorToActionLocation(RobotStates.State.L4_CORAL).getX() < Units.inchesToMeters(2.0)
-                : proximitySensor.getPosition() < Constants.VisionConstants.ZERO_CORAL_PROXIMITY_THRESHOLD;
+        return !trustCameras || Math.abs(getRobotRelativeVectorToActionLocation(RobotStates.State.L4_CORAL).getX()) < Units.inchesToMeters(1.0);
     }
 
     public boolean isAgainstCoralStation() {
-        return !trustCameras || getRobotRelativeVectorToActionLocation(RobotStates.State.CORAL_STATION).getX() < Units.inchesToMeters(2.0);
+        return !trustCameras || Math.abs(getRobotRelativeVectorToActionLocation(RobotStates.State.CORAL_STATION).getX()) < Units.inchesToMeters(1.0);
     }
 
-    public boolean atTransitionStateLocation(RobotStates.State robotState) {
+    public boolean sameSideAsReefScoringLocation(FieldUtil.Reef.ScoringLocation scoringLocation) {
+        return RobotPoses.Reef.sameSide(getStrategyPose(), RobotPoses.Reef.getRobotPoseAtBranch(currentRobotScoringSetting, scoringLocation));
+    }
+
+    public boolean atTransitionStateLocation(RobotStates.State robotState, boolean auto) {
+        if (auto) {
+            return getDistanceToActionLocation(robotState) < Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_TRANSITION_AUTO;
+        }
         return getDistanceToActionLocation(robotState) < Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_TRANSITION;
     }
 
@@ -312,7 +319,10 @@ public class Localizer {
         nearestRobotPoseNearBranchPair = RobotPoses.Reef.getNearestRobotPoseNearReef(currentRobotScoringSetting, currentPose);
         nearestReefTagPose = FieldUtil.Reef.getNearestReefTagPose(currentPose);
 
-        nearestRobotPoseAtCoralStation = RobotPoses.CoralStation.getNearestRobotPoseAtCoralStation(currentPose);
+        nearestRobotPoseAtCoralStation = getStrategyPose().nearest(List.of(
+                RobotPoses.CoralStation.getRobotPosesAtEachCoralStation().get(0).interpolate(Constants.FAR_LEFT_CORAL_STATION.apply(Constants.ALLIANCE_SUPPLIER), 0.25),
+                RobotPoses.CoralStation.getRobotPosesAtEachCoralStation().get(1).interpolate(Constants.FAR_RIGHT_CORAL_STATION.apply(Constants.ALLIANCE_SUPPLIER), 0.25)
+        ));
         nearestRobotPoseAtAlgaeReef = RobotPoses.Reef.getNearestRobotPoseAtAlgaeReef(currentPose);
         nearestRobotPoseNearAlgaeReef = RobotPoses.Reef.getNearestRobotPoseNearReef(nearestAlgaeIsHigh, currentPose);
     }
