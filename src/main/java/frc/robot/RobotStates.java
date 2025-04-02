@@ -168,7 +168,7 @@ public class RobotStates {
         toggleCoralStationState(false);
     }
 
-    public void toggleCoralStationState(boolean override) { // TODO: FIX
+    public void toggleCoralStationState(boolean override) {
         currentState = (currentState == State.CORAL_STATION || currentState == State.CORAL_STATION_OBSTRUCTED) && !override ? State.STOW : State.CORAL_STATION;
     }
 
@@ -329,7 +329,12 @@ public class RobotStates {
 
         intakeOutState.onTrue(
                 new InstantCommand(swerve::setIdleMode)
-                        .andThen(() -> wrist.setCoralObstructedState(!swerve.localizer.isAgainstReefWall() && !swerve.localizer.trustCameras))
+                        .andThen(orderedTransition(
+                                () -> pivot.setCoralScoringObstructedState(!swerve.localizer.isAgainstReefWall() && !swerve.localizer.trustCameras),
+                                pivot.getCoralScoringObstructedState(!swerve.localizer.isAgainstReefWall() && !swerve.localizer.trustCameras),
+                                () -> elevator.setCoralScoringObstructedState(!swerve.localizer.isAgainstReefWall() && !swerve.localizer.trustCameras),
+                                elevator.getCoralScoringObstructedState(!swerve.localizer.isAgainstReefWall() && !swerve.localizer.trustCameras),
+                                () -> wrist.setCoralScoringObstructedState(!swerve.localizer.isAgainstReefWall() && !swerve.localizer.trustCameras)))
                         .andThen(new WaitUntilCommand(wrist::isAtTarget))
                         .andThen(intake::setIntakeOutState)
                         .andThen(new WaitUntilCommand(() -> !intake.hasAlgae() && !intake.barelyHasCoral()))
@@ -343,7 +348,7 @@ public class RobotStates {
                         .andThen(intake::setCoralIntakeState)
                         .andThen(new WaitUntilCommand(intake::atIdleState))
                         .andThen(this::setStowState)
-                        .alongWith(new WaitUntilCommand(() -> !swerve.localizer.isAgainstCoralStation()))
+                        .alongWith(new WaitUntilCommand(() -> !swerve.localizer.isAgainstCoralStation())) // TODO SHOP: TEST THIS
                         .andThen(this::toggleCoralStationObstructedState)
                         .onlyIf(() -> !intake.hasAlgae() && !intake.barelyHasCoral())
                         .until(() -> !coralStationState.getAsBoolean())

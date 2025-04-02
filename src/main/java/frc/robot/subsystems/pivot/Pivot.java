@@ -154,6 +154,15 @@ public class Pivot extends SubsystemBase {
         };
     }
 
+    public State getCoralScoringObstructedState(boolean isObstructed) {
+        return switch (currentState) {
+            case L2_CORAL_AT_BRANCH -> isObstructed ? State.L2_CORAL_ONE_CORAL_FROM_BRANCH : State.L2_CORAL_AT_BRANCH;
+            case L3_CORAL_AT_BRANCH -> isObstructed ? State.L3_CORAL_ONE_CORAL_FROM_BRANCH : State.L3_CORAL_AT_BRANCH;
+            case L4_CORAL_AT_BRANCH -> isObstructed ? State.L4_CORAL_ONE_CORAL_FROM_BRANCH : State.L4_CORAL_AT_BRANCH;
+            default -> currentState;
+        };
+    }
+
     public RatchetState getRatchetState() {
         return getState() == State.CLIMB ? RatchetState.OFF : RatchetState.ON;
     }
@@ -257,6 +266,26 @@ public class Pivot extends SubsystemBase {
         switch (mode) {
             case AT_BRANCH -> setState(State.L4_CORAL_AT_BRANCH);
             case ONE_CORAL_FROM_BRANCH -> setState(State.L4_CORAL_ONE_CORAL_FROM_BRANCH);
+        }
+    }
+
+    public void setCoralScoringObstructedState(boolean isObstructed) {
+        switch (currentState) {
+            case L2_CORAL_AT_BRANCH:
+                if (isObstructed) {
+                    setState(State.L2_CORAL_ONE_CORAL_FROM_BRANCH);
+                }
+                break;
+            case L3_CORAL_AT_BRANCH:
+                if (isObstructed) {
+                    setState(State.L3_CORAL_ONE_CORAL_FROM_BRANCH);
+                }
+                break;
+            case L4_CORAL_AT_BRANCH:
+                if (isObstructed) {
+                    setState(State.L4_CORAL_ONE_CORAL_FROM_BRANCH);
+                }
+                break;
         }
     }
 

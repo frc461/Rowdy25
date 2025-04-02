@@ -181,7 +181,7 @@ public class Wrist extends SubsystemBase {
         }
     }
 
-    public void setCoralObstructedState(boolean isObstructed) {
+    public void setCoralScoringObstructedState(boolean isObstructed) {
         switch (currentState) {
             case L2_CORAL_AT_BRANCH:
                 if (isObstructed) {
