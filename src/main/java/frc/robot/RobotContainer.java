@@ -28,70 +28,9 @@ public class RobotContainer {
     /* Sys ID */
     private final SysID sysID = new SysID(robotStates.swerve);
 
+    /* Controllers */ /* Link to controls here: https://docs.google.com/presentation/d/1jv_hAW3l4z0Rqvi-3pNRN2IdWurtOwojIJf5hFRO108/edit?usp=sharing */
     private final CommandXboxController driverXbox = new CommandXboxController(0);
-    /* Driver:
-     * POV buttons / D-pad:
-     * Up: Click - Zero gyro
-     * Down: Click - Sync gyro (with pose estimation)
-     * Left: Hold - manual lower climb
-     * Right: Hold - manual higher climb
-     *
-     * Triggers:
-     * Left: Rotate CCW (double click - FAST)
-     * Right: Rotate CW (double click - FAST)
-     *
-     * Joysticks:
-     * Left: Translation
-     * Right:
-     * Left Button: Reset position to coral left side
-     * Right Button: Reset position to coral right side
-     *
-     * Bumpers:
-     * Left: Hold - pathfind to left branch of nearest reef side, net, left coral station, if it has coral, algae, or neither, respectively, and automatically set the robot state when near
-     *      Release: Score if applicable
-     * Right: Hold - pathfind to right branch of nearest reef side, processor, right coral station, if it has coral, algae, or neither, respectively, and automatically set the robot state when near
-     *      Release: Score if applicable
-     * Left + Right: Hold - pathfind to nearest side of reef to intake algae if robot doesn't have algae
-     *
-     * Buttons:
-     *
-     * A: Click - toggle auto align
-     *
-     * B:
-     *
-     * X:
-     *
-     * Y:
-     */
-
     private final CommandXboxController opXbox = new CommandXboxController(1);
-    /* Currently Allocated For Operator:
-     * POV buttons / D-pad:
-     * Up: Click - L4 auto preset, Double Click - toggle L4 preset
-     * Down: Click - L1 auto preset, Double Click - toggle L1 preset
-     * Left: Click - L2 auto preset, Double Click - toggle L2 preset
-     * Right: Click - L3 auto preset, Double Click - toggle L3 preset
-     *
-     * Triggers:
-     * Left: Hold - intake
-     * Right: Hold - outtake
-     *
-     * Joysticks:
-     * Left: Move elevator (x), rotate pivot (y)
-     * Right: Rotate wrist
-     * Left Button: Click - Net algae score state, Click again - Outtake, stow
-     * Right Button: Click - Processor algae score state, Click again - Outtake, stow
-     *
-     * Bumpers:
-     * Left: Click - ???
-     * Right: Click - Stow
-     *
-     * Buttons:
-     * A: Click - Climb state, Click Again - stow slowly
-     * B: Click - Higher algae pickup state, stow automatically, Click Again - Stow
-     * X: Click - Lower algae pickup state, stow automatically, Click again - Stow
-     * Y: Click - Coral pickup state, stow automatically, Click Again - Cancel
-     */
 
     public RobotContainer() {
         robotStates.configureToggleStateTriggers();
@@ -190,6 +129,8 @@ public class RobotContainer {
         opXbox.y().onTrue(new InstantCommand(robotStates::toggleCoralStationState));
 
         opXbox.back().onTrue(new InstantCommand(robotStates::toggleNetState));
+
+        opXbox.start().onTrue(new InstantCommand(robotStates::toggleProcessorState));
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.

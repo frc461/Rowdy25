@@ -118,7 +118,7 @@ public final class CompConstants {
         public static final double V = 6.35 / 2 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps) -> V / (rotor rps)
         public static final double A = 0.09 / 2 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps^2) -> V / (rotor rps^2)
         public static final double P = 0.15;
-        public static final double I = 0; // TODO SHOP: BECAUSE OF BUILT-IN INTEGRAL WINDUP PREVENTION, TRY (VERY) HIGH I
+        public static final double I = 0;
         public static final double D = 0.01;
         public static final double EXPO_V = V / 0.2; // 30% of the actual max velocity, as it will allocate 1 / 0.4 = 2.5 times the voltage to 1 rps
         public static final double EXPO_A = A / 0.1; // 1.0% of the actual max acceleration

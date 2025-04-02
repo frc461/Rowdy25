@@ -25,10 +25,10 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.RobotStates;
-import frc.robot.commands.DirectMoveToPoseCommand;
-import frc.robot.commands.PathfindToPoseAvoidingReefCommand;
+import frc.robot.commands.drive.DirectMoveToPoseCommand;
+import frc.robot.commands.drive.PathfindToPoseAvoidingReefCommand;
 import frc.robot.constants.Constants;
-import frc.robot.commands.DriveCommand;
+import frc.robot.commands.drive.DriveCommand;
 import frc.robot.commands.auto.SearchForObjectCommand;
 import frc.robot.subsystems.localizer.Localizer;
 import frc.robot.constants.RobotPoses;
@@ -197,7 +197,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
 
     // TODO SHOP: TEST ALL PATHFINDING
 
-    public Command pathFindToLeftCoralStationGroundIntakeCoral(RobotStates robotStates) { // TODO SHOP: TEST THIS
+    public Command pathFindToLeftCoralStationGroundIntakeCoral(RobotStates robotStates) {
         return Commands.defer(
                 () -> new InstantCommand(robotStates::toggleGroundCoralState) // TODO SHOP: EXPERIMENT WITH WHEN TO TOGGLE GROUND CORAL STATE
                         .andThen(new PathfindToPoseAvoidingReefCommand(

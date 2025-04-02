@@ -168,7 +168,7 @@ public class RobotStates {
         toggleCoralStationState(false);
     }
 
-    public void toggleCoralStationState(boolean override) { // TODO SHOP: FIX
+    public void toggleCoralStationState(boolean override) { // TODO: FIX
         currentState = (currentState == State.CORAL_STATION || currentState == State.CORAL_STATION_OBSTRUCTED) && !override ? State.STOW : State.CORAL_STATION;
     }
 

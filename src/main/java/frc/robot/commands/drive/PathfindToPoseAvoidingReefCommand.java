@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.commands.drive;
 
 import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveRequest;
@@ -19,7 +19,7 @@ import java.util.function.DoubleSupplier;
 
 import static edu.wpi.first.units.Units.Meters;
 
-public class PathfindToPoseAvoidingReefCommand extends Command { // TODO: ORGANIZE INTO DRIVE COMMANDS SUBDIRECTORY
+public class PathfindToPoseAvoidingReefCommand extends Command {
     private enum Side {
         AB, CD, EF, GH, IJ, KL;
 
@@ -110,7 +110,7 @@ public class PathfindToPoseAvoidingReefCommand extends Command { // TODO: ORGANI
                         2 / 7.0,
                         15 / 2.0
                 ),
-                Math.min(EquationUtil.linearOutput(smoothTemporaryTargetPose.getTranslation().getDistance(currentPose.getTranslation()), 10, -10), safeMaxVelocity) // TODO SHOP: TEST THIS OFFSET
+                Math.min(EquationUtil.linearOutput(smoothTemporaryTargetPose.getTranslation().getDistance(currentPose.getTranslation()), 10, -10), safeMaxVelocity)
         );
 
         double velocityHeadingRadians = smoothTemporaryTargetPose.getTranslation().minus(currentPose.getTranslation()).getAngle().getRadians();
@@ -160,7 +160,6 @@ public class PathfindToPoseAvoidingReefCommand extends Command { // TODO: ORGANI
     private Pose2d getTemporaryTargetPose(Pose2d currentPose) {
         Rotation2d reefCenterAngleToRobot = FieldUtil.Reef.getAngleFromReefCenter(currentPose);
 
-        // TODO SHOP: TEST THIS
         if (sameSideAsTargetPose(currentPose)) {
             return targetPose;
         } else if (currentPose.getTranslation().getDistance(FieldUtil.Reef.getReefCenter()) < FieldUtil.Reef.REEF_APOTHEM + Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 1.3) {

@@ -7,7 +7,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -33,7 +32,6 @@ public class Localizer {
 
     // localizer is a dependent of swerve
     private final Swerve swerve;
-    private final DigitalInput proximitySensor = new DigitalInput(Constants.VisionConstants.PROXIMITY_SENSOR_DIO_PORT); // TODO SHOP: TEST AND CONFIGURE CANANDCOLOR
     private final LocalizationTelemetry localizationTelemetry = new LocalizationTelemetry(this);
     private final SendableChooser<LocalizationStrategy> localizationChooser = new SendableChooser<>();
 
