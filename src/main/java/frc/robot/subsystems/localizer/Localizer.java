@@ -172,6 +172,10 @@ public class Localizer {
         return !trustCameras || getRobotRelativeVectorToActionLocation(RobotStates.State.CORAL_STATION).getX() < Units.inchesToMeters(1.0);
     }
 
+    public boolean sameSideAsReefScoringLocation(FieldUtil.Reef.ScoringLocation scoringLocation) {
+        return RobotPoses.Reef.sameSide(getStrategyPose(), RobotPoses.Reef.getRobotPoseAtBranch(currentRobotScoringSetting, scoringLocation));
+    }
+
     public boolean atTransitionStateLocation(RobotStates.State robotState, boolean auto) {
         if (auto) {
             return getDistanceToActionLocation(robotState) < Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_TRANSITION_AUTO;

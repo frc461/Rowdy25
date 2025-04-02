@@ -7,6 +7,7 @@ import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.util.FieldUtil;
+import frc.robot.util.RotationUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +28,56 @@ public class RobotPoses {
     }
 
     public static class Reef {
+        public static boolean sameSide(Pose2d currentPose, Pose2d targetPose) {
+            List<Pose2d> robotCorners = List.of(
+                    currentPose.plus(new Transform2d(
+                            Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0,
+                            Constants.ROBOT_WIDTH_WITH_BUMPERS.in(Meters) / 2.0,
+                            Rotation2d.kZero
+                    )),
+                    currentPose.plus(new Transform2d(
+                            Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0,
+                            -Constants.ROBOT_WIDTH_WITH_BUMPERS.in(Meters) / 2.0,
+                            Rotation2d.kZero
+                    )),
+                    currentPose.plus(new Transform2d(
+                            -Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0,
+                            Constants.ROBOT_WIDTH_WITH_BUMPERS.in(Meters) / 2.0,
+                            Rotation2d.kZero
+                    )),
+                    currentPose.plus(new Transform2d(
+                            -Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0,
+                            -Constants.ROBOT_WIDTH_WITH_BUMPERS.in(Meters) / 2.0,
+                            Rotation2d.kZero
+                    ))
+            );
+
+            List<Rotation2d> anglesToEachVertex = new ArrayList<>();
+            List<Double> distancesToEachVertex = new ArrayList<>();
+
+            for (FieldUtil.Reef.Side side : FieldUtil.Reef.Side.values()) {
+                anglesToEachVertex.addAll(robotCorners.stream()
+                        .map(corner -> FieldUtil.Reef.Side.getLeftVertexPose(side).getTranslation().minus(corner.getTranslation()).getAngle())
+                        .toList());
+                distancesToEachVertex.addAll(robotCorners.stream()
+                        .map(corner -> FieldUtil.Reef.Side.getLeftVertexPose(side).getTranslation().getDistance(corner.getTranslation()))
+                        .toList());
+            }
+
+            Pair<Rotation2d, Rotation2d> anglesToVerticesBounds = RotationUtil.getBound(anglesToEachVertex);
+            double lowestDistanceToReefCorner = distancesToEachVertex.stream().mapToDouble(Double::doubleValue).min().orElse(0.0);
+
+            return !RotationUtil.inBetween(
+                    targetPose.getTranslation().minus(currentPose.getTranslation()).getAngle(),
+                    anglesToVerticesBounds.getFirst(),
+                    anglesToVerticesBounds.getSecond()
+            ) && !RotationUtil.inBetween( // Safety
+                    targetPose.getTranslation().minus(currentPose.getTranslation()).getAngle(),
+                    anglesToVerticesBounds.getFirst().minus(Rotation2d.fromDegrees(7.5)),
+                    anglesToVerticesBounds.getSecond().plus(Rotation2d.fromDegrees(7.5))
+            ) || targetPose.getTranslation().getDistance(currentPose.getTranslation()) < lowestDistanceToReefCorner;
+        }
+
         public enum RobotScoringSetting {
             L1(
                     new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0 + Units.inchesToMeters(8.1), Units.inchesToMeters(-5.4469731), Rotation2d.fromDegrees(15)), // TODO SHOP: TEST THIS

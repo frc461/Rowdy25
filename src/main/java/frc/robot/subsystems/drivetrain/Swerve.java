@@ -317,7 +317,8 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                                 fieldCentric,
                                 robotStates.elevator::getPosition,
                                 RobotPoses.Reef.getRobotPoseNearReef(localizer.currentRobotScoringSetting, location)
-                        )).until(() -> robotStates.atTransitionStateLocation(RobotStates.State.L4_CORAL)).andThen(new DirectMoveToPoseCommand( // TODO: MAKE THIS SAFE BY ALSO CHECKING IF POSE IS ON SAME SIDE AS TARGET POSE
+                        )).until(() -> robotStates.atTransitionStateLocation(RobotStates.State.L4_CORAL) && localizer.sameSideAsReefScoringLocation(location)) // TODO TEST: TEST CHECK IF POSE IS ON SAME SIDE AS TARGET POSE
+                        .andThen(new DirectMoveToPoseCommand(
                                 this,
                                 fieldCentric,
                                 robotStates.elevator::getPosition,
