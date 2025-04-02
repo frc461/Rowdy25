@@ -22,7 +22,7 @@ public class IntakeCommand extends Command {
                 } else if (intake.beamBreakBroken() && !intake.coralEntered()) {
                     intake.setOuttakeSlowState();
                 } else {
-                    intake.setIntakeSpeed(0.6);
+                    intake.setIntakeSpeed(0.45);
                 }
                 break;
             case INTAKE_SLOW:
@@ -57,7 +57,7 @@ public class IntakeCommand extends Command {
                 }
                 break;
             case OUTTAKE_L1:
-                intake.setIntakeSpeed(-0.3);
+                intake.setIntakeSpeed(-0.4);
                 break;
             case HAS_ALGAE:
                 intake.pulseIntake();

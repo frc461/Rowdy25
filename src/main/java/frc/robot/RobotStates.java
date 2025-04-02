@@ -198,7 +198,8 @@ public class RobotStates {
     }
 
     public void toggleL3CoralState(boolean override) {
-        currentState = currentState == State.L3_CORAL && !override ? State.INTAKE_OUT : State.L3_CORAL;
+        currentState = currentState == State.L3_CORAL && !override ? wrist.getState() == Wrist.State.L3_CORAL_ONE_CORAL_FROM_BRANCH ? State.OUTTAKE :
+                State.INTAKE_OUT : State.L3_CORAL;
     }
 
     public void toggleL3CoralState() {
@@ -273,6 +274,7 @@ public class RobotStates {
     private Command orderedTransition(Runnable setPivotState, Runnable setElevatorState, Elevator.State elevatorState, Runnable setWristState) {
         if (elevator.goingDown(elevatorState)) {
             return new InstantCommand(wrist::setStowState)
+                    .andThen(new WaitUntilCommand(wrist::nearTarget))
                     .andThen(movePivotToPerpendicular())
                     .andThen(setPivotState)
                     .andThen(setElevatorState)
@@ -296,7 +298,6 @@ public class RobotStates {
 
         stowState.onTrue(
                 new InstantCommand(swerve::setIdleMode)
-//                        .andThen(climb::reset)
                         .andThen(intake::setIdleState)
                         .andThen(orderedTransition(pivot::setStowState, elevator::setStowState, Elevator.State.STOW, wrist::setStowState))
         );
