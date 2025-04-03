@@ -142,18 +142,12 @@ public class RobotPoses {
 
         public static Pose2d getRobotPoseNearReef(RobotScoringSetting mode, FieldUtil.Reef.ScoringLocation location) {
             return switch (location) {
-                case A -> getRobotPosesNearReef(mode).get(0);
-                case B -> getRobotPosesNearReef(mode).get(1);
-                case C -> getRobotPosesNearReef(mode).get(2);
-                case D -> getRobotPosesNearReef(mode).get(3);
-                case E -> getRobotPosesNearReef(mode).get(4);
-                case F -> getRobotPosesNearReef(mode).get(5);
-                case G -> getRobotPosesNearReef(mode).get(6);
-                case H -> getRobotPosesNearReef(mode).get(7);
-                case I -> getRobotPosesNearReef(mode).get(8);
-                case J -> getRobotPosesNearReef(mode).get(9);
-                case K -> getRobotPosesNearReef(mode).get(10);
-                case L -> getRobotPosesNearReef(mode).get(11);
+                case A, B -> getRobotPosesNearReef(mode).get(0);
+                case C, D -> getRobotPosesNearReef(mode).get(1);
+                case E, F -> getRobotPosesNearReef(mode).get(2);
+                case G, H -> getRobotPosesNearReef(mode).get(3);
+                case I, J -> getRobotPosesNearReef(mode).get(4);
+                case K, L -> getRobotPosesNearReef(mode).get(5);
             };
         }
 
