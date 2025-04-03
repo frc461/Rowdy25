@@ -144,7 +144,6 @@ public class RobotStates {
     }
 
     public void setStowState() {
-        currentState = State.MANUAL;
         currentState = State.STOW;
     }
 
@@ -269,17 +268,17 @@ public class RobotStates {
         currentState = (currentState == State.CLIMB || currentState == State.PREPARE_CLIMB) ? State.CLIMB : State.PREPARE_CLIMB;
     }
 
-    private Command movePivotToPerpendicular(boolean passthrough) {
+    private Command movePivotToPerpendicular(boolean trustCameras) {
         return new InstantCommand(pivot::setPerpendicularState)
                 .andThen(new WaitUntilCommand(pivot::isAtTarget))
-                .onlyIf(() -> pivot.getPosition() > 90 && passthrough);
+                .onlyIf(() -> pivot.getPosition() > 90 && !trustCameras);
     }
 
     private Command orderedTransition(Runnable setPivotState, Pivot.State pivotState, Runnable setElevatorState, Elevator.State elevatorState, Runnable setWristState) {
         return new ConditionalCommand(
                 new InstantCommand(wrist::setStowState) // TODO SHOP: TEST CHECK IF MOVE THROUGH STOW E.G., L4 TO GROUND
                         .andThen(new WaitUntilCommand(wrist::nearTarget))
-                        .andThen(movePivotToPerpendicular(!swerve.localizer.trustCameras))
+                        .andThen(movePivotToPerpendicular(swerve.localizer.trustCameras))
                         .andThen(
                                 new InstantCommand(pivot::setStowState)
                                         .andThen(elevator::setStowState)
@@ -290,7 +289,7 @@ public class RobotStates {
                         .andThen(setElevatorState)
                         .andThen(new WaitUntilCommand(elevator::nearTarget))
                         .andThen(setWristState),
-                movePivotToPerpendicular(!swerve.localizer.trustCameras)
+                movePivotToPerpendicular(swerve.localizer.trustCameras)
                         .andThen(wrist::setStowState)
                         .andThen(setPivotState)
                         .andThen(new WaitUntilCommand(pivot::nearTarget))
@@ -329,13 +328,6 @@ public class RobotStates {
 
         intakeOutState.onTrue(
                 new InstantCommand(swerve::setIdleMode)
-                        .andThen(orderedTransition(
-                                () -> pivot.setCoralScoringObstructedState(!swerve.localizer.isAgainstReefWall() && !swerve.localizer.trustCameras),
-                                pivot.getCoralScoringObstructedState(!swerve.localizer.isAgainstReefWall() && !swerve.localizer.trustCameras),
-                                () -> elevator.setCoralScoringObstructedState(!swerve.localizer.isAgainstReefWall() && !swerve.localizer.trustCameras),
-                                elevator.getCoralScoringObstructedState(!swerve.localizer.isAgainstReefWall() && !swerve.localizer.trustCameras),
-                                () -> wrist.setCoralScoringObstructedState(!swerve.localizer.isAgainstReefWall() && !swerve.localizer.trustCameras)))
-                        .andThen(new WaitUntilCommand(wrist::isAtTarget))
                         .andThen(intake::setIntakeOutState)
                         .andThen(new WaitUntilCommand(() -> !intake.hasAlgae() && !intake.barelyHasCoral()))
                         .andThen(this::setStowState)
@@ -348,8 +340,7 @@ public class RobotStates {
                         .andThen(intake::setCoralIntakeState)
                         .andThen(new WaitUntilCommand(intake::atIdleState))
                         .andThen(this::setStowState)
-                        .alongWith(new WaitUntilCommand(() -> !swerve.localizer.isAgainstCoralStation())) // TODO SHOP: TEST THIS
-                        .andThen(this::toggleCoralStationObstructedState)
+                        .alongWith(new WaitUntilCommand(() -> !swerve.localizer.isAgainstCoralStation() && swerve.isStuck()).andThen(this::toggleCoralStationObstructedState)) // TODO SHOP: TEST THIS
                         .onlyIf(() -> !intake.hasAlgae() && !intake.barelyHasCoral())
                         .until(() -> !coralStationState.getAsBoolean())
         );
@@ -361,8 +352,7 @@ public class RobotStates {
                         .andThen(intake::setCoralIntakeState)
                         .andThen(new WaitUntilCommand(intake::atIdleState))
                         .andThen(this::setStowState)
-                        .alongWith(new WaitUntilCommand(swerve.localizer::isAgainstCoralStation))
-                        .andThen(() -> toggleCoralStationState(true))
+                        .alongWith(new WaitUntilCommand(swerve.localizer::isAgainstCoralStation).andThen(() -> toggleCoralStationState(true)))
                         .onlyIf(() -> !intake.hasAlgae() && !intake.barelyHasCoral())
                         .until(() -> !coralStationObstructedState.getAsBoolean())
         );
@@ -447,8 +437,6 @@ public class RobotStates {
                 new InstantCommand(swerve::setReefTagOppositeHeadingMode)
                         .andThen(intake::setAlgaeIntakeState)
                         .andThen(orderedTransition(pivot::setLowReefAlgaeState, Pivot.State.LOW_REEF_ALGAE, elevator::setLowReefAlgaeState, Elevator.State.LOW_REEF_ALGAE, wrist::setLowReefAlgaeState))
-                        .andThen(new WaitUntilCommand(intake::atIdleState))
-                        .andThen(this::setStowState)
                         .onlyIf(() -> !intake.hasAlgae() && !intake.barelyHasCoral())
                         .until(() -> !lowReefAlgaeState.getAsBoolean())
         );
@@ -457,8 +445,6 @@ public class RobotStates {
                 new InstantCommand(swerve::setReefTagHeadingMode)
                         .andThen(intake::setAlgaeIntakeState)
                         .andThen(orderedTransition(pivot::setHighReefAlgaeState, Pivot.State.HIGH_REEF_ALGAE, elevator::setHighReefAlgaeState, Elevator.State.HIGH_REEF_ALGAE, wrist::setHighReefAlgaeState))
-                        .andThen(new WaitUntilCommand(intake::atIdleState))
-                        .andThen(this::setStowState)
                         .onlyIf(() -> !intake.hasAlgae() && !intake.barelyHasCoral())
                         .until(() -> !highReefAlgaeState.getAsBoolean())
         );

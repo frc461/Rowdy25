@@ -7,6 +7,7 @@ import com.reduxrobotics.canand.CanandEventLoop;
 import com.reduxrobotics.sensors.canandcolor.Canandcolor;
 import com.reduxrobotics.sensors.canandcolor.ColorPeriod;
 import com.reduxrobotics.sensors.canandcolor.ProximityPeriod;
+import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -75,7 +76,7 @@ public class Intake extends SubsystemBase {
         beamBreak = new DigitalInput(Constants.IntakeConstants.BEAMBREAK_DIO_PORT);
         currentState = State.IDLE;
 
-        hasAlgaeOrCoralStuck = new Trigger(() -> intake.getStatorCurrent().getValueAsDouble() > 20.0).debounce(0.5);
+        hasAlgaeOrCoralStuck = new Trigger(() -> Math.abs(getCurrent()) > 20.0).debounce(0.5, Debouncer.DebounceType.kRising).debounce(1.0, Debouncer.DebounceType.kFalling);
     }
 
     public double getCurrent() {
@@ -143,7 +144,6 @@ public class Intake extends SubsystemBase {
     }
 
     public void setAlgaeIntakeState() {
-        stallIntent = StallIntent.HAS_ALGAE;
         setIntakeState(false);
     }
 
