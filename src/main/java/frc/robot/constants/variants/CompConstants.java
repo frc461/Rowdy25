@@ -78,9 +78,9 @@ public final class CompConstants {
         public static final double CORAL_STATION_OBSTRUCTED = 3.0;
         public static final double GROUND_CORAL = 0;
         public static final double GROUND_ALGAE = 0;
-        public static final double L1_CORAL = 0;
+        public static final double L1_CORAL = 1.4;
         public static final double L2_CORAL_AT_BRANCH = 0;
-        public static final double L2_CORAL_ONE_CORAL_FROM_BRANCH = 5.5;
+        public static final double L2_CORAL_ONE_CORAL_FROM_BRANCH = 5.1;
         public static final double L3_CORAL_AT_BRANCH = 18.5;
         public static final double L3_CORAL_ONE_CORAL_FROM_BRANCH = 19.6;
         public static final double L4_CORAL_AT_BRANCH = 45.5;
@@ -135,7 +135,7 @@ public final class CompConstants {
         public static final double GROUND_ALGAE = 4.5;
         public static final double L1_CORAL = 38.0;
         public static final double L2_CORAL_AT_BRANCH = 95.0;
-        public static final double L2_CORAL_ONE_CORAL_FROM_BRANCH = 84.0;
+        public static final double L2_CORAL_ONE_CORAL_FROM_BRANCH = 94.0;
         public static final double L3_CORAL_AT_BRANCH = 95.0;
         public static final double L3_CORAL_ONE_CORAL_FROM_BRANCH = 90.0;
         public static final double L4_CORAL_AT_BRANCH = 96.0;
@@ -303,7 +303,7 @@ public final class CompConstants {
             private static final int DRIVE_MOTOR_ID = 1;
             private static final int STEER_MOTOR_ID = 11;
             private static final int ENCODER_ID = 21;
-            public static final Angle ENCODER_OFFSET = Rotations.of(-1.81684412 + 0.0555555555555556 - 0.56982421875 + 0.51904296875);
+            public static final Angle ENCODER_OFFSET = Rotations.of(-1.81684412 + 0.0555555555555556 - 0.56982421875 + 0.51904296875 + .01708984375);
             private static final boolean STEER_MOTOR_INVERTED = true;
             private static final boolean CANCODER_INVERTED = false;
 

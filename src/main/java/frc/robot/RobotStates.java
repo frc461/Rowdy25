@@ -22,6 +22,7 @@ import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.wrist.Wrist;
 import frc.robot.util.DoubleTrueTrigger;
 import frc.robot.util.FieldUtil;
+import frc.robot.util.FieldUtil.Reef.Level;
 import frc.robot.util.vision.PhotonUtil;
 
 import java.util.Arrays;
@@ -124,6 +125,7 @@ public class RobotStates {
     public void setCurrentAutoLevel(FieldUtil.Reef.Level level) {
         currentAutoLevel = level;
         swerve.localizer.setL1RobotScoringSettingOverride(currentAutoLevel == FieldUtil.Reef.Level.L1);
+        swerve.localizer.setL2RobotScoringSettingOverride(currentAutoLevel == FieldUtil.Reef.Level.L2);
         needsUpdate = isListening.getAsBoolean();
     }
 
@@ -323,6 +325,7 @@ public class RobotStates {
                 new InstantCommand(swerve::setIdleMode)
                         .andThen(intake::setOuttakeL1State)
                         .andThen(new WaitUntilCommand(() -> !intake.hasAlgae() && !intake.barelyHasCoral()))
+                        .andThen(new WaitCommand(0.25))
                         .andThen(this::setStowState)
         );
 

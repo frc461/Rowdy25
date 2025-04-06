@@ -80,8 +80,12 @@ public class RobotPoses {
 
         public enum RobotScoringSetting {
             L1(
-                    new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0 + Units.inchesToMeters(4.1), Units.inchesToMeters(-6.9469731), Rotation2d.fromDegrees(15)), // TODO SHOP: TEST THIS
-                    new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0 + Units.inchesToMeters(4.1), Units.inchesToMeters(7.4469731), Rotation2d.fromDegrees(-15))
+                    new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0 + Units.inchesToMeters(4.1), Units.inchesToMeters(-8.9469731), Rotation2d.fromDegrees(15)), // TODO SHOP: TEST THIS
+                    new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0 + Units.inchesToMeters(4.1), Units.inchesToMeters(8.9469731), Rotation2d.fromDegrees(-15))
+            ),
+            L2(
+                    new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0 + Units.inchesToMeters(6.1), Units.inchesToMeters(-6.9469731), Rotation2d.kPi),
+                    new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0 + Units.inchesToMeters(6.1), Units.inchesToMeters(7.4469731), Rotation2d.kPi)
             ),
             AT_BRANCH(
                     new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0, Units.inchesToMeters(-6.9469731), Rotation2d.kPi),
@@ -108,7 +112,7 @@ public class RobotPoses {
                             0,
                             Rotation2d.kZero
                     );
-                case AT_BRANCH, ONE_CORAL_FROM_BRANCH ->
+                case L2, AT_BRANCH, ONE_CORAL_FROM_BRANCH ->
                     new Transform2d(
                             Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0 + Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_DIRECT_DRIVE,
                             0,
