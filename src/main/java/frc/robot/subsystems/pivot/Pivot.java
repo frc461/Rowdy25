@@ -21,16 +21,18 @@ public class Pivot extends SubsystemBase {
         STOW(Constants.PivotConstants.STOW),
         PERPENDICULAR(90.0),
         CORAL_STATION(Constants.PivotConstants.CORAL_STATION),
-        CORAL_STATION_OBSTRUCTED(Constants.PivotConstants.CORAL_STATION_OBSTRUCTED),
         GROUND_CORAL(Constants.PivotConstants.GROUND_CORAL),
         GROUND_ALGAE(Constants.PivotConstants.GROUND_ALGAE),
         L1_CORAL(Constants.PivotConstants.L1_CORAL),
         L2_CORAL_AT_BRANCH(Constants.PivotConstants.L2_CORAL_AT_BRANCH),
         L2_CORAL_ONE_CORAL_FROM_BRANCH(Constants.PivotConstants.L2_CORAL_ONE_CORAL_FROM_BRANCH),
+        L2_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH(Constants.PivotConstants.L2_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH),
         L3_CORAL_AT_BRANCH(Constants.PivotConstants.L3_CORAL_AT_BRANCH),
         L3_CORAL_ONE_CORAL_FROM_BRANCH(Constants.PivotConstants.L3_CORAL_ONE_CORAL_FROM_BRANCH),
+        L3_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH(Constants.PivotConstants.L3_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH),
         L4_CORAL_AT_BRANCH(Constants.PivotConstants.L4_CORAL_AT_BRANCH),
         L4_CORAL_ONE_CORAL_FROM_BRANCH(Constants.PivotConstants.L4_CORAL_ONE_CORAL_FROM_BRANCH),
+        L4_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH(Constants.PivotConstants.L4_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH),
         LOW_REEF_ALGAE(Constants.PivotConstants.LOW_REEF_ALGAE),
         HIGH_REEF_ALGAE(Constants.PivotConstants.HIGH_REEF_ALGAE),
         PROCESSOR(Constants.PivotConstants.PROCESSOR),
@@ -137,6 +139,7 @@ public class Pivot extends SubsystemBase {
         return switch (mode) {
             case L1, AT_BRANCH -> State.L2_CORAL_AT_BRANCH;
             case ONE_CORAL_FROM_BRANCH -> State.L2_CORAL_ONE_CORAL_FROM_BRANCH;
+            case FACING_AWAY_ONE_CORAL_FROM_BRANCH -> State.L2_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH;
         };
     }
 
@@ -144,6 +147,7 @@ public class Pivot extends SubsystemBase {
         return switch (mode) {
             case L1, AT_BRANCH -> State.L3_CORAL_AT_BRANCH;
             case ONE_CORAL_FROM_BRANCH -> State.L3_CORAL_ONE_CORAL_FROM_BRANCH;
+            case FACING_AWAY_ONE_CORAL_FROM_BRANCH -> State.L3_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH;
         };
     }
 
@@ -151,15 +155,7 @@ public class Pivot extends SubsystemBase {
         return switch (mode) {
             case L1, AT_BRANCH -> State.L4_CORAL_AT_BRANCH;
             case ONE_CORAL_FROM_BRANCH -> State.L4_CORAL_ONE_CORAL_FROM_BRANCH;
-        };
-    }
-
-    public State getCoralScoringObstructedState(boolean isObstructed) {
-        return switch (currentState) {
-            case L2_CORAL_AT_BRANCH -> isObstructed ? State.L2_CORAL_ONE_CORAL_FROM_BRANCH : State.L2_CORAL_AT_BRANCH;
-            case L3_CORAL_AT_BRANCH -> isObstructed ? State.L3_CORAL_ONE_CORAL_FROM_BRANCH : State.L3_CORAL_AT_BRANCH;
-            case L4_CORAL_AT_BRANCH -> isObstructed ? State.L4_CORAL_ONE_CORAL_FROM_BRANCH : State.L4_CORAL_AT_BRANCH;
-            default -> currentState;
+            case FACING_AWAY_ONE_CORAL_FROM_BRANCH -> State.L4_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH;
         };
     }
 
@@ -241,10 +237,6 @@ public class Pivot extends SubsystemBase {
         setState(State.CORAL_STATION);
     }
 
-    public void setCoralStationObstructedState() {
-        setState(State.CORAL_STATION_OBSTRUCTED);
-    }
-
     public void setGroundCoralState() {
         setState(State.GROUND_CORAL);
     }
@@ -261,6 +253,7 @@ public class Pivot extends SubsystemBase {
         switch (mode) {
             case AT_BRANCH -> setState(State.L2_CORAL_AT_BRANCH);
             case ONE_CORAL_FROM_BRANCH -> setState(State.L2_CORAL_ONE_CORAL_FROM_BRANCH);
+            case FACING_AWAY_ONE_CORAL_FROM_BRANCH -> setState(State.L2_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH);
         }
     }
 
@@ -268,6 +261,7 @@ public class Pivot extends SubsystemBase {
         switch (mode) {
             case AT_BRANCH -> setState(State.L3_CORAL_AT_BRANCH);
             case ONE_CORAL_FROM_BRANCH -> setState(State.L3_CORAL_ONE_CORAL_FROM_BRANCH);
+            case FACING_AWAY_ONE_CORAL_FROM_BRANCH -> setState(State.L3_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH);
         }
     }
 
@@ -275,26 +269,7 @@ public class Pivot extends SubsystemBase {
         switch (mode) {
             case AT_BRANCH -> setState(State.L4_CORAL_AT_BRANCH);
             case ONE_CORAL_FROM_BRANCH -> setState(State.L4_CORAL_ONE_CORAL_FROM_BRANCH);
-        }
-    }
-
-    public void setCoralScoringObstructedState(boolean isObstructed) {
-        switch (currentState) {
-            case L2_CORAL_AT_BRANCH:
-                if (isObstructed) {
-                    setState(State.L2_CORAL_ONE_CORAL_FROM_BRANCH);
-                }
-                break;
-            case L3_CORAL_AT_BRANCH:
-                if (isObstructed) {
-                    setState(State.L3_CORAL_ONE_CORAL_FROM_BRANCH);
-                }
-                break;
-            case L4_CORAL_AT_BRANCH:
-                if (isObstructed) {
-                    setState(State.L4_CORAL_ONE_CORAL_FROM_BRANCH);
-                }
-                break;
+            case FACING_AWAY_ONE_CORAL_FROM_BRANCH -> setState(State.L4_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH);
         }
     }
 

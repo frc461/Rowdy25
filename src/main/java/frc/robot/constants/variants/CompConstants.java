@@ -70,24 +70,26 @@ public final class CompConstants {
         public static final double SAFE_TOLERANCE = 15.0;
         public static final double AT_TARGET_TOLERANCE = 2.0;
 
-        // presets
+        // presets // TODO SHOP: TUNE THESE
         public static final double LOWER_LIMIT = 0;
         public static final double UPPER_LIMIT = 46;
         public static final double STOW = 0;
         public static final double CORAL_STATION = 0;
-        public static final double CORAL_STATION_OBSTRUCTED = 3.0;
         public static final double GROUND_CORAL = 0;
         public static final double GROUND_ALGAE = 0;
         public static final double L1_CORAL = 0;
         public static final double L2_CORAL_AT_BRANCH = 0;
-        public static final double L2_CORAL_ONE_CORAL_FROM_BRANCH = 5.5;
+        public static final double L2_CORAL_ONE_CORAL_FROM_BRANCH = 0;
+        public static final double L2_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH = 0;
         public static final double L3_CORAL_AT_BRANCH = 18.5;
-        public static final double L3_CORAL_ONE_CORAL_FROM_BRANCH = 19.6;
+        public static final double L3_CORAL_ONE_CORAL_FROM_BRANCH = 18.5;
+        public static final double L3_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH = 18.5;
         public static final double L4_CORAL_AT_BRANCH = 45.5;
         public static final double L4_CORAL_ONE_CORAL_FROM_BRANCH = 45.5;
+        public static final double L4_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH = 45.5;
         public static final double LOW_REEF_ALGAE = 13.0;
-        public static final double HIGH_REEF_ALGAE = 18.5; // 8.5
-        public static final double PROCESSOR = 5.5;
+        public static final double HIGH_REEF_ALGAE = 18.5;
+        public static final double PROCESSOR = 0;
         public static final double NET = 44;
     }
 
@@ -106,7 +108,7 @@ public final class CompConstants {
         public static final Translation2d AXIS_POSITION = new Translation2d(-9.417377, 9.257139);
 
         // encoder config
-        public static final double ENCODER_ABSOLUTE_OFFSET = 0.5849656304;
+        public static final double ENCODER_ABSOLUTE_OFFSET = 0.58838229706;
         public static final SensorDirectionValue ENCODER_INVERT = SensorDirectionValue.CounterClockwise_Positive;
 
         // ratchet config
@@ -120,26 +122,28 @@ public final class CompConstants {
         public static final double P = 0.15;
         public static final double I = 0;
         public static final double D = 0.01;
-        public static final double EXPO_V = V / 0.2; // 30% of the actual max velocity, as it will allocate 1 / 0.4 = 2.5 times the voltage to 1 rps
+        public static final double EXPO_V = V / 0.2; // 30% of the actual max velocity, as it will allocate 1 / 0.4 = 2.5 times the voltage to 1 rps // TODO SHOP: TEST HIGHER SPEED
         public static final double EXPO_A = A / 0.1; // 1.0% of the actual max acceleration
-        public static final double SAFE_TOLERANCE = 20.0;
+        public static final double SAFE_TOLERANCE = 35.0;
         public static final double AT_TARGET_TOLERANCE = 2.5;
 
-        // presets
+        // presets // TODO SHOP: TUNE THESE
         public static final double LOWER_LIMIT = 0;
         public static final double UPPER_LIMIT = 105;
-        public static final double STOW = 75;
-        public static final double CORAL_STATION = 57.5;
-        public static final double CORAL_STATION_OBSTRUCTED = 53;
+        public static final double STOW = 56;
+        public static final double CORAL_STATION = 56;
         public static final double GROUND_CORAL = 3.5;
         public static final double GROUND_ALGAE = 4.5;
         public static final double L1_CORAL = 38.0;
         public static final double L2_CORAL_AT_BRANCH = 95.0;
-        public static final double L2_CORAL_ONE_CORAL_FROM_BRANCH = 84.0;
+        public static final double L2_CORAL_ONE_CORAL_FROM_BRANCH = 95.0;
+        public static final double L2_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH = 95.0;
         public static final double L3_CORAL_AT_BRANCH = 95.0;
-        public static final double L3_CORAL_ONE_CORAL_FROM_BRANCH = 90.0;
+        public static final double L3_CORAL_ONE_CORAL_FROM_BRANCH = 95.0;
+        public static final double L3_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH = 95.0;
         public static final double L4_CORAL_AT_BRANCH = 96.0;
-        public static final double L4_CORAL_ONE_CORAL_FROM_BRANCH = 98.0;
+        public static final double L4_CORAL_ONE_CORAL_FROM_BRANCH = 96.0;
+        public static final double L4_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH = 96.0;
         public static final double LOW_REEF_ALGAE = 52;
         public static final double HIGH_REEF_ALGAE = 91;
         public static final double PROCESSOR = 22;
@@ -173,23 +177,26 @@ public final class CompConstants {
         public static final double SAFE_TOLERANCE = 25.0;
         public static final double AT_TARGET_TOLERANCE = 2.5;
 
-        // presets
+        // presets // TODO SHOP: TUNE THESE
         public static final BiFunction<Double, Double, Double> LOWER_LIMIT = (elevatorPosition, pivotPosition) -> (double) (pivotPosition < 30 ? 160 : elevatorPosition > 1.5 && elevatorPosition < 12 ? 115 : 45);
-        public static final Function<Double, Double> UPPER_LIMIT = (elevatorPosition) -> (double) (elevatorPosition > 5 ? 295 : 160);
+        public static final Function<Double, Double> UPPER_LIMIT = (elevatorPosition) -> (double) (elevatorPosition > 8 ? 295 : 160);
         public static final double STOW = 120;
-        public static final double CORAL_STATION = 115;
-        public static final double CORAL_STATION_OBSTRUCTED = 120;
+        public static final double CORAL_STATION = 120;
         public static final double GROUND_CORAL = 150;
         public static final double GROUND_ALGAE = 150;
         public static final double L1_CORAL = 96.5;
         public static final double L2_CORAL_AT_BRANCH = 45;
-        public static final double L2_CORAL_ONE_CORAL_FROM_BRANCH = 270;
+        public static final double L2_CORAL_ONE_CORAL_FROM_BRANCH = 45;
+        public static final double L2_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH = 45;
         public static final double L3_CORAL_AT_BRANCH = 60;
-        public static final double L3_CORAL_ONE_CORAL_FROM_BRANCH = 270;
+        public static final double L3_CORAL_ONE_CORAL_FROM_BRANCH = 60;
+        public static final double L3_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH = 60;
         public static final double L4_CORAL_AT_BRANCH = 75;
-        public static final double L4_CORAL_ONE_CORAL_FROM_BRANCH = 70;
+        public static final double L4_CORAL_ONE_CORAL_FROM_BRANCH = 75;
+        public static final double L4_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH = 75;
+        public static final double L4_CORAL_OBSTRUCTED = 60;
         public static final double LOW_REEF_ALGAE = 65.5;
-        public static final double HIGH_REEF_ALGAE = 260; // 215
+        public static final double HIGH_REEF_ALGAE = 260;
         public static final double PROCESSOR = 160;
         public static final double NET = 175;
 
@@ -302,7 +309,7 @@ public final class CompConstants {
             private static final int DRIVE_MOTOR_ID = 1;
             private static final int STEER_MOTOR_ID = 11;
             private static final int ENCODER_ID = 21;
-            public static final Angle ENCODER_OFFSET = Rotations.of(-1.81684412 + 0.0555555555555556 - 0.56982421875 + 0.51904296875);
+            public static final Angle ENCODER_OFFSET = Rotations.of(-1.81684412 + 0.0555555555555556 - 0.56982421875 + 0.51904296875); //0.4365234375);
             private static final boolean STEER_MOTOR_INVERTED = true;
             private static final boolean CANCODER_INVERTED = false;
 
