@@ -49,6 +49,7 @@ public class Localizer {
 
     public RobotPoses.Reef.RobotScoringSetting currentRobotScoringSetting = RobotPoses.Reef.RobotScoringSetting.ONE_CORAL_FROM_BRANCH;
     private boolean l1RobotScoringSettingOverride = false;
+    private boolean l2RobotScoringSettingOverride = false;
     public boolean nearestAlgaeIsHigh = false;
 
     public Pose2d bestCoralPose = new Pose2d();
@@ -171,7 +172,7 @@ public class Localizer {
     }
 
     public boolean isAgainstCoralStation() {
-        return !trustCameras || Math.abs(getRobotRelativeVectorToActionLocation(RobotStates.State.CORAL_STATION).getX()) < Units.inchesToMeters(4.0);
+        return !trustCameras || Math.abs(getRobotRelativeVectorToActionLocation(RobotStates.State.CORAL_STATION).getX()) < 0.21;
     }
 
     public boolean sameSideAsReefScoringLocation(FieldUtil.Reef.ScoringLocation scoringLocation) {
@@ -199,6 +200,10 @@ public class Localizer {
 
     public void setL1RobotScoringSettingOverride(boolean override) {
         l1RobotScoringSettingOverride = override;
+    }
+
+    public void setL2RobotScoringSettingOverride(boolean override) {
+        l2RobotScoringSettingOverride = override;
     }
 
     public void setCurrentTemporaryTargetPose(Pose2d temporaryTargetPose) {
@@ -286,10 +291,12 @@ public class Localizer {
     }
 
     private void updateCoralScoringMode() {
-        if (l1RobotScoringSettingOverride) {
-            currentRobotScoringSetting = RobotPoses.Reef.RobotScoringSetting.L1;
-        } else if (!trustCameras) {
+        if (!trustCameras) {
             currentRobotScoringSetting = RobotPoses.Reef.RobotScoringSetting.AT_BRANCH;
+        } else if (l1RobotScoringSettingOverride) {
+           currentRobotScoringSetting = RobotPoses.Reef.RobotScoringSetting.L1;
+        } else if (l2RobotScoringSettingOverride) {
+            currentRobotScoringSetting = RobotPoses.Reef.RobotScoringSetting.L2;
         } else {
             currentRobotScoringSetting = facingAwayFromReef()
                     ? RobotPoses.Reef.RobotScoringSetting.FACING_AWAY_ONE_CORAL_FROM_BRANCH

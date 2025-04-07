@@ -162,7 +162,7 @@ public class Wrist extends SubsystemBase {
     public void setL2CoralState(RobotPoses.Reef.RobotScoringSetting mode) {
         switch (mode) {
             case AT_BRANCH -> setState(State.L2_CORAL_AT_BRANCH);
-            case ONE_CORAL_FROM_BRANCH -> setState(State.L2_CORAL_ONE_CORAL_FROM_BRANCH);
+            case L2, ONE_CORAL_FROM_BRANCH -> setState(State.L2_CORAL_ONE_CORAL_FROM_BRANCH);
             case FACING_AWAY_ONE_CORAL_FROM_BRANCH -> setState(State.L2_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH);
         }
     }
@@ -170,7 +170,7 @@ public class Wrist extends SubsystemBase {
     public void setL3CoralState(RobotPoses.Reef.RobotScoringSetting mode) {
         switch (mode) {
             case AT_BRANCH -> setState(State.L3_CORAL_AT_BRANCH);
-            case ONE_CORAL_FROM_BRANCH -> setState(State.L3_CORAL_ONE_CORAL_FROM_BRANCH);
+            case L2, ONE_CORAL_FROM_BRANCH -> setState(State.L3_CORAL_ONE_CORAL_FROM_BRANCH);
             case FACING_AWAY_ONE_CORAL_FROM_BRANCH -> setState(State.L3_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH);
         }
     }
@@ -178,7 +178,7 @@ public class Wrist extends SubsystemBase {
     public void setL4CoralState(RobotPoses.Reef.RobotScoringSetting mode) {
         switch (mode) {
             case AT_BRANCH -> setState(State.L4_CORAL_AT_BRANCH);
-            case ONE_CORAL_FROM_BRANCH -> setState(State.L4_CORAL_ONE_CORAL_FROM_BRANCH);
+            case L2, ONE_CORAL_FROM_BRANCH -> setState(State.L4_CORAL_ONE_CORAL_FROM_BRANCH);
             case FACING_AWAY_ONE_CORAL_FROM_BRANCH -> setState(State.L4_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH);
         }
     }
