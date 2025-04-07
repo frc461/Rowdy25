@@ -80,8 +80,8 @@ public class RobotPoses {
 
         public enum RobotScoringSetting {
             L1(
-                    new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0 + Units.inchesToMeters(8.1), Units.inchesToMeters(-5.4469731), Rotation2d.fromDegrees(15)), // TODO SHOP: TEST THIS
-                    new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0 + Units.inchesToMeters(8.1), Units.inchesToMeters(8.4469731), Rotation2d.fromDegrees(-15))
+                    new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0 + Units.inchesToMeters(4.1), Units.inchesToMeters(-5.4469731), Rotation2d.fromDegrees(15)), // TODO SHOP: TEST THIS
+                    new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0 + Units.inchesToMeters(4.1), Units.inchesToMeters(8.4469731), Rotation2d.fromDegrees(-15))
             ),
             AT_BRANCH(
                     new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0, Units.inchesToMeters(-5.4469731), Rotation2d.kPi),
@@ -90,10 +90,6 @@ public class RobotPoses {
             ONE_CORAL_FROM_BRANCH(
                     new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0 + Units.inchesToMeters(4.1), Units.inchesToMeters(-5.4469731), Rotation2d.kPi),
                     new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0 + Units.inchesToMeters(4.1), Units.inchesToMeters(8.4469731), Rotation2d.kPi)
-            ),
-            FACING_AWAY_ONE_CORAL_FROM_BRANCH(
-                    new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0 + Units.inchesToMeters(4.1), Units.inchesToMeters(-5.4469731), Rotation2d.kZero),
-                    new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0 + Units.inchesToMeters(4.1), Units.inchesToMeters(8.4469731), Rotation2d.kZero)
             );
 
             final Transform2d leftOffset;
@@ -106,7 +102,7 @@ public class RobotPoses {
 
         public static Transform2d getTagToRobotPoseNearReef(RobotScoringSetting mode) {
             return switch (mode) {
-                case L1, FACING_AWAY_ONE_CORAL_FROM_BRANCH ->
+                case L1 ->
                     new Transform2d(
                             Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0 + Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_DIRECT_DRIVE,
                             0,
@@ -146,18 +142,12 @@ public class RobotPoses {
 
         public static Pose2d getRobotPoseNearReef(RobotScoringSetting mode, FieldUtil.Reef.ScoringLocation location) {
             return switch (location) {
-                case A -> getRobotPosesNearReef(mode).get(0);
-                case B -> getRobotPosesNearReef(mode).get(1);
-                case C -> getRobotPosesNearReef(mode).get(2);
-                case D -> getRobotPosesNearReef(mode).get(3);
-                case E -> getRobotPosesNearReef(mode).get(4);
-                case F -> getRobotPosesNearReef(mode).get(5);
-                case G -> getRobotPosesNearReef(mode).get(6);
-                case H -> getRobotPosesNearReef(mode).get(7);
-                case I -> getRobotPosesNearReef(mode).get(8);
-                case J -> getRobotPosesNearReef(mode).get(9);
-                case K -> getRobotPosesNearReef(mode).get(10);
-                case L -> getRobotPosesNearReef(mode).get(11);
+                case A, B -> getRobotPosesNearReef(mode).get(0);
+                case C, D -> getRobotPosesNearReef(mode).get(1);
+                case E, F -> getRobotPosesNearReef(mode).get(2);
+                case G, H -> getRobotPosesNearReef(mode).get(3);
+                case I, J -> getRobotPosesNearReef(mode).get(4);
+                case K, L -> getRobotPosesNearReef(mode).get(5);
             };
         }
 

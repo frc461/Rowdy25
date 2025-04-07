@@ -17,18 +17,16 @@ public class Elevator extends SubsystemBase {
         MANUAL(Constants.ElevatorConstants.LOWER_LIMIT),
         STOW(Constants.ElevatorConstants.STOW),
         CORAL_STATION(Constants.ElevatorConstants.CORAL_STATION),
+        CORAL_STATION_OBSTRUCTED(Constants.ElevatorConstants.CORAL_STATION_OBSTRUCTED),
         GROUND_ALGAE(Constants.ElevatorConstants.GROUND_ALGAE),
         GROUND_CORAL(Constants.ElevatorConstants.GROUND_CORAL),
         L1_CORAL(Constants.ElevatorConstants.L1_CORAL),
         L2_CORAL_AT_BRANCH(Constants.ElevatorConstants.L2_CORAL_AT_BRANCH),
         L2_CORAL_ONE_CORAL_FROM_BRANCH(Constants.ElevatorConstants.L2_CORAL_ONE_CORAL_FROM_BRANCH),
-        L2_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH(Constants.ElevatorConstants.L2_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH),
         L3_CORAL_AT_BRANCH(Constants.ElevatorConstants.L3_CORAL_AT_BRANCH),
         L3_CORAL_ONE_CORAL_FROM_BRANCH(Constants.ElevatorConstants.L3_CORAL_ONE_CORAL_FROM_BRANCH),
-        L3_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH(Constants.ElevatorConstants.L3_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH),
         L4_CORAL_AT_BRANCH(Constants.ElevatorConstants.L4_CORAL_AT_BRANCH),
         L4_CORAL_ONE_CORAL_FROM_BRANCH(Constants.ElevatorConstants.L4_CORAL_ONE_CORAL_FROM_BRANCH),
-        L4_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH(Constants.ElevatorConstants.L4_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH),
         LOW_REEF_ALGAE(Constants.ElevatorConstants.LOW_REEF_ALGAE),
         HIGH_REEF_ALGAE(Constants.ElevatorConstants.HIGH_REEF_ALGAE),
         NET(Constants.ElevatorConstants.NET),
@@ -106,7 +104,6 @@ public class Elevator extends SubsystemBase {
         return switch (mode) {
             case L1, AT_BRANCH -> State.L2_CORAL_AT_BRANCH;
             case ONE_CORAL_FROM_BRANCH -> State.L2_CORAL_ONE_CORAL_FROM_BRANCH;
-            case FACING_AWAY_ONE_CORAL_FROM_BRANCH -> State.L2_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH;
         };
     }
 
@@ -114,7 +111,6 @@ public class Elevator extends SubsystemBase {
         return switch (mode) {
             case L1, AT_BRANCH -> State.L3_CORAL_AT_BRANCH;
             case ONE_CORAL_FROM_BRANCH -> State.L3_CORAL_ONE_CORAL_FROM_BRANCH;
-            case FACING_AWAY_ONE_CORAL_FROM_BRANCH -> State.L3_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH;
         };
     }
 
@@ -122,7 +118,15 @@ public class Elevator extends SubsystemBase {
         return switch (mode) {
             case L1, AT_BRANCH -> State.L4_CORAL_AT_BRANCH;
             case ONE_CORAL_FROM_BRANCH -> State.L4_CORAL_ONE_CORAL_FROM_BRANCH;
-            case FACING_AWAY_ONE_CORAL_FROM_BRANCH -> State.L4_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH;
+        };
+    }
+
+    public State getCoralScoringObstructedState(boolean isObstructed) {
+        return switch (currentState) {
+            case L2_CORAL_AT_BRANCH -> isObstructed ? State.L2_CORAL_ONE_CORAL_FROM_BRANCH : State.L2_CORAL_AT_BRANCH;
+            case L3_CORAL_AT_BRANCH -> isObstructed ? State.L3_CORAL_ONE_CORAL_FROM_BRANCH : State.L3_CORAL_AT_BRANCH;
+            case L4_CORAL_AT_BRANCH -> isObstructed ? State.L4_CORAL_ONE_CORAL_FROM_BRANCH : State.L4_CORAL_AT_BRANCH;
+            default -> currentState;
         };
     }
 
@@ -180,6 +184,10 @@ public class Elevator extends SubsystemBase {
         setState(State.CORAL_STATION);
     }
 
+    public void setCoralStationObstructedState() {
+        setState(State.CORAL_STATION_OBSTRUCTED);
+    }
+
     public void setGroundCoralState() {
         setState(State.GROUND_CORAL);
     }
@@ -196,7 +204,6 @@ public class Elevator extends SubsystemBase {
         switch (mode) {
             case AT_BRANCH -> setState(State.L2_CORAL_AT_BRANCH);
             case ONE_CORAL_FROM_BRANCH -> setState(State.L2_CORAL_ONE_CORAL_FROM_BRANCH);
-            case FACING_AWAY_ONE_CORAL_FROM_BRANCH -> setState(State.L2_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH);
         }
     }
 
@@ -204,7 +211,6 @@ public class Elevator extends SubsystemBase {
         switch (mode) {
             case AT_BRANCH -> setState(State.L3_CORAL_AT_BRANCH);
             case ONE_CORAL_FROM_BRANCH -> setState(State.L3_CORAL_ONE_CORAL_FROM_BRANCH);
-            case FACING_AWAY_ONE_CORAL_FROM_BRANCH -> setState(State.L3_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH);
         }
     }
 
@@ -212,7 +218,26 @@ public class Elevator extends SubsystemBase {
         switch (mode) {
             case AT_BRANCH -> setState(State.L4_CORAL_AT_BRANCH);
             case ONE_CORAL_FROM_BRANCH -> setState(State.L4_CORAL_ONE_CORAL_FROM_BRANCH);
-            case FACING_AWAY_ONE_CORAL_FROM_BRANCH -> setState(State.L4_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH);
+        }
+    }
+
+    public void setCoralScoringObstructedState(boolean isObstructed) {
+        switch (currentState) {
+            case L2_CORAL_AT_BRANCH:
+                if (isObstructed) {
+                    setState(State.L2_CORAL_ONE_CORAL_FROM_BRANCH);
+                }
+                break;
+            case L3_CORAL_AT_BRANCH:
+                if (isObstructed) {
+                    setState(State.L3_CORAL_ONE_CORAL_FROM_BRANCH);
+                }
+                break;
+            case L4_CORAL_AT_BRANCH:
+                if (isObstructed) {
+                    setState(State.L4_CORAL_ONE_CORAL_FROM_BRANCH);
+                }
+                break;
         }
     }
 

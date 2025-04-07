@@ -171,7 +171,7 @@ public class Localizer {
     }
 
     public boolean isAgainstCoralStation() {
-        return !trustCameras || Math.abs(getRobotRelativeVectorToActionLocation(RobotStates.State.CORAL_STATION).getX()) < Units.inchesToMeters(1.0);
+        return !trustCameras || Math.abs(getRobotRelativeVectorToActionLocation(RobotStates.State.CORAL_STATION).getX()) < Units.inchesToMeters(4.0);
     }
 
     public boolean sameSideAsReefScoringLocation(FieldUtil.Reef.ScoringLocation scoringLocation) {

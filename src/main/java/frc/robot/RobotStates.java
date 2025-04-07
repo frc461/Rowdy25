@@ -145,7 +145,6 @@ public class RobotStates {
     }
 
     public void setStowState() {
-        currentState = State.MANUAL;
         currentState = State.STOW;
     }
 
@@ -323,13 +322,6 @@ public class RobotStates {
 
         intakeOutState.onTrue(
                 new InstantCommand(swerve::setIdleMode)
-                        .andThen(orderedTransition(
-                                () -> pivot.setCoralScoringObstructedState(!swerve.localizer.isAgainstReefWall() && !swerve.localizer.trustCameras),
-                                pivot.getCoralScoringObstructedState(!swerve.localizer.isAgainstReefWall() && !swerve.localizer.trustCameras),
-                                () -> elevator.setCoralScoringObstructedState(!swerve.localizer.isAgainstReefWall() && !swerve.localizer.trustCameras),
-                                elevator.getCoralScoringObstructedState(!swerve.localizer.isAgainstReefWall() && !swerve.localizer.trustCameras),
-                                () -> wrist.setCoralScoringObstructedState(!swerve.localizer.isAgainstReefWall() && !swerve.localizer.trustCameras)))
-                        .andThen(new WaitUntilCommand(wrist::isAtTarget))
                         .andThen(intake::setIntakeOutState)
                         .andThen(new WaitUntilCommand(() -> !intake.hasAlgae() && !intake.hasCoral()))
                         .andThen(this::setStowState)

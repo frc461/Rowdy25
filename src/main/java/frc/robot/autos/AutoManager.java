@@ -173,8 +173,9 @@ public final class AutoManager { // TODO SHOP: TEST THIS
         while (!triggersToBind.isEmpty()) {
             AutoTrigger currentTrigger = triggersToBind.remove(0);
             currentTrigger.interrupt().onTrue(
-                    new InstantCommand(robotStates.intake::setOuttakeL1State)
-                            .andThen(Commands.waitSeconds(0.25))
+                    new InstantCommand(robotStates.intake::setOuttakeState)
+                            .andThen(robotStates::setStowState)
+                            .andThen(Commands.waitSeconds(0.5))
                             .andThen(currentTrigger.duplicate().cmd())
             );
             currentTrigger.done().onTrue(triggersToBind.isEmpty() ? Commands.none() : triggersToBind.get(0).cmd());

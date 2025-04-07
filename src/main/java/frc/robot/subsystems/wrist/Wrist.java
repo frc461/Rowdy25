@@ -16,19 +16,16 @@ public class Wrist extends SubsystemBase {
         MANUAL(Constants.WristConstants.LOWER_LIMIT.apply(0.0, 50.0)),
         STOW(Constants.WristConstants.STOW),
         CORAL_STATION(Constants.WristConstants.CORAL_STATION),
+        CORAL_STATION_OBSTRUCTED(Constants.WristConstants.CORAL_STATION_OBSTRUCTED),
         GROUND_CORAL(Constants.WristConstants.GROUND_CORAL),
         GROUND_ALGAE(Constants.WristConstants.GROUND_ALGAE),
         L1_CORAL(Constants.WristConstants.L1_CORAL),
         L2_CORAL_AT_BRANCH(Constants.WristConstants.L2_CORAL_AT_BRANCH),
         L2_CORAL_ONE_CORAL_FROM_BRANCH(Constants.WristConstants.L2_CORAL_ONE_CORAL_FROM_BRANCH),
-        L2_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH(Constants.WristConstants.L2_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH),
         L3_CORAL_AT_BRANCH(Constants.WristConstants.L3_CORAL_AT_BRANCH),
         L3_CORAL_ONE_CORAL_FROM_BRANCH(Constants.WristConstants.L3_CORAL_ONE_CORAL_FROM_BRANCH),
-        L3_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH(Constants.WristConstants.L3_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH),
         L4_CORAL_AT_BRANCH(Constants.WristConstants.L4_CORAL_AT_BRANCH),
         L4_CORAL_ONE_CORAL_FROM_BRANCH(Constants.WristConstants.L4_CORAL_ONE_CORAL_FROM_BRANCH),
-        L4_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH(Constants.WristConstants.L4_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH),
-        L4_CORAL_OBSTRUCTED(Constants.WristConstants.L4_CORAL_OBSTRUCTED),
         LOW_REEF_ALGAE(Constants.WristConstants.LOW_REEF_ALGAE),
         HIGH_REEF_ALGAE(Constants.WristConstants.HIGH_REEF_ALGAE),
         PROCESSOR(Constants.WristConstants.PROCESSOR),
@@ -147,6 +144,10 @@ public class Wrist extends SubsystemBase {
         setState(State.CORAL_STATION);
     }
 
+    public void setCoralStationObstructedState() {
+        setState(State.CORAL_STATION_OBSTRUCTED);
+    }
+
     public void setGroundCoralState() {
         setState(State.GROUND_CORAL);
     }
@@ -163,7 +164,6 @@ public class Wrist extends SubsystemBase {
         switch (mode) {
             case AT_BRANCH -> setState(State.L2_CORAL_AT_BRANCH);
             case ONE_CORAL_FROM_BRANCH -> setState(State.L2_CORAL_ONE_CORAL_FROM_BRANCH);
-            case FACING_AWAY_ONE_CORAL_FROM_BRANCH -> setState(State.L2_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH);
         }
     }
 
@@ -171,7 +171,6 @@ public class Wrist extends SubsystemBase {
         switch (mode) {
             case AT_BRANCH -> setState(State.L3_CORAL_AT_BRANCH);
             case ONE_CORAL_FROM_BRANCH -> setState(State.L3_CORAL_ONE_CORAL_FROM_BRANCH);
-            case FACING_AWAY_ONE_CORAL_FROM_BRANCH -> setState(State.L3_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH);
         }
     }
 
@@ -179,7 +178,6 @@ public class Wrist extends SubsystemBase {
         switch (mode) {
             case AT_BRANCH -> setState(State.L4_CORAL_AT_BRANCH);
             case ONE_CORAL_FROM_BRANCH -> setState(State.L4_CORAL_ONE_CORAL_FROM_BRANCH);
-            case FACING_AWAY_ONE_CORAL_FROM_BRANCH -> setState(State.L4_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH);
         }
     }
 
