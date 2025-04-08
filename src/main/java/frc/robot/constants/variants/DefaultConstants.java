@@ -327,14 +327,14 @@ public final class DefaultConstants {
         public static final int RATCHET_OFF = 1200;
 
         // pid & tolerance
-        public static final double G = 0.2269;
+        public static final double G = 0.3;
         public static final double V = 6.35 / 2 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps) -> V / (rotor rps)
-        public static final double A = 0.09 / 2 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps^2) -> V / (rotor rps^2)
-        public static final double P = 0.15;
+        public static final double A = 0.15 / 2 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps^2) -> V / (rotor rps^2)
+        public static final double P = 0.1;
         public static final double I = 0; // TODO SHOP: BECAUSE OF BUILT-IN INTEGRAL WINDUP PREVENTION, TRY (VERY) HIGH I
-        public static final double D = 0.01;
-        public static final double EXPO_V = V / 0.35; // 30% of the actual max velocity, as it will allocate 1 / 0.75 = 1.33333 times the voltage to 1 rps // TODO SHOP: TEST THIS SPEED
-        public static final double EXPO_A = A / 0.1; // 1.0% of the actual max acceleration
+        public static final double D = 0.0;
+        public static final double EXPO_V = V / 0.3; // 30% of the actual max velocity, as it will allocate 1 / 0.75 = 1.33333 times the voltage to 1 rps // TODO SHOP: TEST THIS SPEED
+        public static final double EXPO_A = A / 0.01; // 1.0% of the actual max acceleration
         public static final double SAFE_TOLERANCE = 35.0;
         public static final double AT_TARGET_TOLERANCE = 2.5;
 
@@ -378,44 +378,44 @@ public final class DefaultConstants {
 
         // encoder config
         public static final int ENCODER_ID = 62;
-        public static final double ENCODER_ABSOLUTE_OFFSET = 1.12203776041;
+        public static final double ENCODER_ABSOLUTE_OFFSET = -0.1259758843;
         public static final SensorDirectionValue ENCODER_INVERT = SensorDirectionValue.Clockwise_Positive;
 
         // pid & tolerance
-        public static final BiFunction<Double, Double, Double> G = (wristDeg, pivotDeg) -> 0.15 * Math.sin(Math.toRadians(wristDeg - (90 - pivotDeg)));
-        public static final double V = 0.7 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps) -> V / (rotor rps)
-        public static final double A = 0.025 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps^2) -> V / (rotor rps^2)
-        public static final double P = 0.2;
+        public static final BiFunction<Double, Double, Double> G = (wristDeg, pivotDeg) -> 0.3 * Math.sin(Math.toRadians(wristDeg - (90 - pivotDeg)));
+        public static final double V = 0.75 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps) -> V / (rotor rps)
+        public static final double A = 0.02 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps^2) -> V / (rotor rps^2)
+        public static final double P = 0.1;
         public static final double I = 0.0;
         public static final double D = 0.0;
-        public static final double EXPO_V = V / 0.8; // 80% of the actual max velocity, as it will allocate 1 / 0.8 = 1.25 times the voltage to 1 rps
+        public static final double EXPO_V = V / 0.75; // 75% of the actual max velocity, as it will allocate 1 / 0.8 = 1.25 times the voltage to 1 rps
         public static final double EXPO_A = A / 0.05; // 5% of the actual max accel
         public static final double SAFE_TOLERANCE = 25.0;
         public static final double AT_TARGET_TOLERANCE = 2.5;
 
         // presets // TODO SHOP: TUNE THESE
-        public static final BiFunction<Double, Double, Double> LOWER_LIMIT = (elevatorPosition, pivotPosition) -> (double) (pivotPosition < 45 ? 85 : 65);
+        public static final BiFunction<Double, Double, Double> LOWER_LIMIT = (elevatorPosition, pivotPosition) -> (double) (pivotPosition < 45 ? 85 : 45);
         public static final Function<Double, Double> UPPER_LIMIT = (elevatorPosition) -> (double) (elevatorPosition > 4 ? 295 : 160);
-        public static final double STOW = 125;
-        public static final double CORAL_STATION = 125;
-        public static final double GROUND_CORAL = 120;
-        public static final double GROUND_ALGAE = 150;
-        public static final double L1_CORAL = 125;
-        public static final double L2_CORAL_AT_BRANCH = 182;
-        public static final double L2_CORAL_ONE_CORAL_FROM_BRANCH = 182;
-        public static final double L2_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH = 182;
-        public static final double L3_CORAL_AT_BRANCH = 52.5;
-        public static final double L3_CORAL_ONE_CORAL_FROM_BRANCH = 52.5;
-        public static final double L3_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH = 52.5;
-        public static final double L4_CORAL_AT_BRANCH = 135;
-        public static final double L4_CORAL_ONE_CORAL_FROM_BRANCH = 135;
-        public static final double L4_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH = 135;
-        public static final double L4_CORAL_OBSTRUCTED = 135;
-        public static final double LOW_REEF_ALGAE = 131.0;
-        public static final double HIGH_REEF_ALGAE = 160;
-        public static final double PROCESSOR = 150;
-        public static final double NET = 175;
-        public static final double CLIMB = 125;
+        public static final double STOW = 95;
+        public static final double CORAL_STATION = 95;
+        public static final double GROUND_CORAL = 105;
+        public static final double GROUND_ALGAE = 130;
+        public static final double L1_CORAL = 105;
+        public static final double L2_CORAL_AT_BRANCH = 162;
+        public static final double L2_CORAL_ONE_CORAL_FROM_BRANCH = 162;
+        public static final double L2_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH = 162;
+        public static final double L3_CORAL_AT_BRANCH = 32.5;
+        public static final double L3_CORAL_ONE_CORAL_FROM_BRANCH = 32.5;
+        public static final double L3_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH = 32.5;
+        public static final double L4_CORAL_AT_BRANCH = 115;
+        public static final double L4_CORAL_ONE_CORAL_FROM_BRANCH = 115;
+        public static final double L4_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH = 115;
+        public static final double L4_CORAL_OBSTRUCTED = 115;
+        public static final double LOW_REEF_ALGAE = 111.0;
+        public static final double HIGH_REEF_ALGAE = 140;
+        public static final double PROCESSOR = 130;
+        public static final double NET = 155;
+        public static final double CLIMB = 105;
     }
 
     public static final class SwerveConstants {

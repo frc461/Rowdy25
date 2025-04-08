@@ -22,7 +22,6 @@ import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.wrist.Wrist;
 import frc.robot.util.DoubleTrueTrigger;
 import frc.robot.util.FieldUtil;
-import frc.robot.util.FieldUtil.Reef.Level;
 import frc.robot.util.vision.PhotonUtil;
 
 import java.util.Arrays;
