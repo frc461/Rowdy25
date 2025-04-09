@@ -261,13 +261,13 @@ public final class DefaultConstants {
 
         // pid & tolerance
         public static final Function<Double, Double> G = (pivotDeg) -> 0.3513 * Math.sin(Math.toRadians(pivotDeg));
-        public static final double V = 0.25 / ROTOR_TO_INCH_RATIO; // 1V / (in/s) -> 1V / (rotor rps)
+        public static final double V = 0.13 / ROTOR_TO_INCH_RATIO; // 0.25) 1V / (in/s) -> 1V / (rotor rps)
         public static final double A = 0.00161498708 / ROTOR_TO_INCH_RATIO; // 1V / (in/s^2) -> 1V / (rotor rps^2)
-        public static final double P = 0.0;
+        public static final double P = 0.5;
         public static final double I = 0.0;
-        public static final double D = 0.0;
-        public static final double EXPO_V = V / 0.05; // 90% of the actual max velocity, as it will allocate 1 / 0.9 = 1.1111 times the voltage to 1 rps
-        public static final double EXPO_A = A / 0.015; // 1.5% of the actual max accel
+        public static final double D = 0.05;
+        public static final double EXPO_V = V / 0.95; // 90% of the actual max velocity, as it will allocate 1 / 0.9 = 1.1111 times the voltage to 1 rps
+        public static final double EXPO_A = A / 0.05; // 1.5% of the actual max accel
         public static final double SAFE_TOLERANCE = 15.0;
         public static final double AT_TARGET_TOLERANCE = 2.5;
 
@@ -283,8 +283,8 @@ public final class DefaultConstants {
         public static final double L2_CORAL_ONE_CORAL_FROM_BRANCH = 5.5;
         public static final double L2_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH = 5.5;
         public static final double L3_CORAL_AT_BRANCH = 26.4;
-        public static final double L3_CORAL_ONE_CORAL_FROM_BRANCH = 26.4;
-        public static final double L3_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH = 26.4;
+        public static final double L3_CORAL_ONE_CORAL_FROM_BRANCH = 25;
+        public static final double L3_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH = 25;
         public static final double L4_CORAL_AT_BRANCH = 42.5;
         public static final double L4_CORAL_ONE_CORAL_FROM_BRANCH = 42.5;
         public static final double L4_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH = 42.5;
@@ -330,7 +330,7 @@ public final class DefaultConstants {
         public static final double G = 0.3;
         public static final double V = 6.35 / 2 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps) -> V / (rotor rps)
         public static final double A = 0.15 / 2 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps^2) -> V / (rotor rps^2)
-        public static final double P = 0.1;
+        public static final double P = 0.25;
         public static final double I = 0; // TODO SHOP: BECAUSE OF BUILT-IN INTEGRAL WINDUP PREVENTION, TRY (VERY) HIGH I
         public static final double D = 0.0;
         public static final double EXPO_V = V / 0.3; // 30% of the actual max velocity, as it will allocate 1 / 0.75 = 1.33333 times the voltage to 1 rps // TODO SHOP: TEST THIS SPEED
@@ -349,9 +349,9 @@ public final class DefaultConstants {
         public static final double L2_CORAL_AT_BRANCH = 43.2;
         public static final double L2_CORAL_ONE_CORAL_FROM_BRANCH = 43.2;
         public static final double L2_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH = 43.2;
-        public static final double L3_CORAL_AT_BRANCH = 57.8;
-        public static final double L3_CORAL_ONE_CORAL_FROM_BRANCH = 57.8;
-        public static final double L3_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH = 57.8;
+        public static final double L3_CORAL_AT_BRANCH = 63;
+        public static final double L3_CORAL_ONE_CORAL_FROM_BRANCH = 63;
+        public static final double L3_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH = 63;
         public static final double L4_CORAL_AT_BRANCH = 69;
         public static final double L4_CORAL_ONE_CORAL_FROM_BRANCH = 69;
         public static final double L4_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH = 69;
@@ -405,8 +405,8 @@ public final class DefaultConstants {
         public static final double L2_CORAL_ONE_CORAL_FROM_BRANCH = 162;
         public static final double L2_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH = 162;
         public static final double L3_CORAL_AT_BRANCH = 32.5;
-        public static final double L3_CORAL_ONE_CORAL_FROM_BRANCH = 32.5;
-        public static final double L3_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH = 32.5;
+        public static final double L3_CORAL_ONE_CORAL_FROM_BRANCH = 55;
+        public static final double L3_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH = 55;
         public static final double L4_CORAL_AT_BRANCH = 115;
         public static final double L4_CORAL_ONE_CORAL_FROM_BRANCH = 115;
         public static final double L4_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH = 115;
