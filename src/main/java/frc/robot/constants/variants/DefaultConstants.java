@@ -262,7 +262,7 @@ public final class DefaultConstants {
         // pid & tolerance
         public static final Function<Double, Double> G = (pivotDeg) -> 0.3513 * Math.sin(Math.toRadians(pivotDeg));
         public static final double V = 0.25 / ROTOR_TO_INCH_RATIO; // 1V / (in/s) -> 1V / (rotor rps)
-        public static final double A = 0.002 / ROTOR_TO_INCH_RATIO; // 1V / (in/s^2) -> 1V / (rotor rps^2)
+        public static final double A = 0.00161498708 / ROTOR_TO_INCH_RATIO; // 1V / (in/s^2) -> 1V / (rotor rps^2)
         public static final double P = 0.0;
         public static final double I = 0.0;
         public static final double D = 0.0;
