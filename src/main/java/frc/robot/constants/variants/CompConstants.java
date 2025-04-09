@@ -158,7 +158,7 @@ public final class CompConstants {
         public static final Translation2d AXIS_TO_ZERO_COM = new Translation2d(-10.440589, 33.398821).minus(AXIS_POSITION);
 
         // encoder config
-        public static final double ENCODER_ABSOLUTE_OFFSET = -0.15820176865;
+        public static final double ENCODER_ABSOLUTE_OFFSET = -0.41137491865;
         public static final SensorDirectionValue ENCODER_INVERT = SensorDirectionValue.Clockwise_Positive;
 
         // pid & tolerance
