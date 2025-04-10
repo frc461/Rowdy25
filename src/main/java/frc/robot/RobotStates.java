@@ -270,10 +270,17 @@ public class RobotStates {
                 .onlyIf(() -> pivot.getPosition() > 90);
     }
 
+    private Command movePivotToStow() {
+        return new InstantCommand(pivot::setStowState)
+                .andThen(new WaitUntilCommand(pivot::isAtTarget))
+                .onlyIf(() -> pivot.getPosition() < 10);
+    }
+
     private Command orderedTransition(Runnable setPivotState, Pivot.State pivotState, Runnable setElevatorState, Elevator.State elevatorState, Runnable setWristState) {
         return new ConditionalCommand(
                 new InstantCommand(wrist::setStowState) // TODO SHOP: TEST CHECK IF MOVE THROUGH STOW E.G., L4 TO GROUND
                         .andThen(movePivotToPerpendicular()) // TODO: DOUBLE-SIDED REEF SCORING
+                        .andThen(movePivotToStow())
                         .andThen(
                                 new InstantCommand(pivot::setStowState)
                                         .andThen(elevator::setStowState)
@@ -281,8 +288,8 @@ public class RobotStates {
                                         .onlyIf(() -> pivot.goingThroughStow(pivotState))
                         )
                         .andThen(setElevatorState)
-                        .andThen(new WaitUntilCommand(elevator::nearTarget))
                         .andThen(setPivotState)
+                        .andThen(new WaitUntilCommand(elevator::nearTarget))
                         .andThen(setWristState),
                 movePivotToPerpendicular()
                         .andThen(wrist::setStowState)
@@ -311,6 +318,7 @@ public class RobotStates {
                 new InstantCommand(swerve::setIdleMode)
                         .andThen(intake::setOuttakeState)
                         .andThen(new WaitUntilCommand(() -> !intake.hasAlgae() && !intake.hasCoral()))
+                        .andThen(new WaitCommand(0.25))
                         .andThen(this::setStowState)
         );
 
@@ -326,6 +334,7 @@ public class RobotStates {
                 new InstantCommand(swerve::setIdleMode)
                         .andThen(intake::setIntakeOutState)
                         .andThen(new WaitUntilCommand(() -> !intake.hasAlgae() && !intake.hasCoral()))
+                        .andThen(new WaitCommand(0.25))
                         .andThen(this::setStowState)
         );
 
@@ -344,11 +353,14 @@ public class RobotStates {
                 new InstantCommand(swerve::setObjectHeadingMode)
                         .andThen(orderedTransition(pivot::setGroundCoralState, Pivot.State.GROUND_CORAL, elevator::setGroundCoralState, Elevator.State.GROUND_CORAL, wrist::setGroundCoralState))
                         .andThen(intake::setCoralIntakeState)
-                        .andThen(new WaitUntilCommand(PhotonUtil.Color::hasCoralTargets))
-                        .andThen(swerve.directMoveToObject(
-                                () -> intake.hasAlgae() || intake.hasCoral(),
-                                PhotonUtil.Color.TargetClass.CORAL
-                        ).asProxy())
+                        .andThen(
+                                new WaitUntilCommand(PhotonUtil.Color::hasCoralTargets)
+                                        .andThen(swerve.directMoveToObject(
+                                                () -> intake.hasAlgae() || intake.hasCoral(),
+                                                PhotonUtil.Color.TargetClass.CORAL
+                                        ).asProxy())
+                                        .raceWith(new WaitUntilCommand(intake::atIdleState))
+                        )
                         .andThen(this::setStowState)
                         .onlyIf(() -> !intake.hasAlgae() && !intake.hasCoral())
                         .until(() -> !groundCoralState.getAsBoolean())
@@ -358,11 +370,14 @@ public class RobotStates {
                 new InstantCommand(swerve::setObjectHeadingMode)
                         .andThen(orderedTransition(pivot::setGroundAlgaeState, Pivot.State.GROUND_ALGAE, elevator::setGroundAlgaeState, Elevator.State.GROUND_ALGAE, wrist::setGroundAlgaeState))
                         .andThen(intake::setAlgaeIntakeState)
-                        .andThen(new WaitUntilCommand(PhotonUtil.Color::hasAlgaeTargets))
-                        .andThen(swerve.directMoveToObject(
-                                () -> intake.hasAlgae() || intake.hasCoral(),
-                                PhotonUtil.Color.TargetClass.ALGAE
-                        ).asProxy())
+                        .andThen(
+                                new WaitUntilCommand(PhotonUtil.Color::hasCoralTargets)
+                                        .andThen(swerve.directMoveToObject(
+                                                () -> intake.hasAlgae() || intake.hasCoral(),
+                                                PhotonUtil.Color.TargetClass.ALGAE
+                                        ).asProxy())
+                                        .raceWith(new WaitUntilCommand(intake::atIdleState))
+                        )
                         .andThen(this::setStowState)
                         .onlyIf(() -> !intake.hasAlgae() && !intake.hasCoral())
                         .until(() -> !groundAlgaeState.getAsBoolean())

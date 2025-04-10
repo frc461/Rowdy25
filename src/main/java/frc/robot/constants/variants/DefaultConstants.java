@@ -261,11 +261,11 @@ public final class DefaultConstants {
 
         // pid & tolerance
         public static final Function<Double, Double> G = (pivotDeg) -> 0.3513 * Math.sin(Math.toRadians(pivotDeg));
-        public static final double V = 0.13 / ROTOR_TO_INCH_RATIO; // 0.25) 1V / (in/s) -> 1V / (rotor rps)
+        public static final double V = 0.12 / ROTOR_TO_INCH_RATIO; // 0.25) 1V / (in/s) -> 1V / (rotor rps)
         public static final double A = 0.00161498708 / ROTOR_TO_INCH_RATIO; // 1V / (in/s^2) -> 1V / (rotor rps^2)
-        public static final double P = 0.5;
+        public static final double P = 0.1;
         public static final double I = 0.0;
-        public static final double D = 0.05;
+        public static final double D = 0.0;
         public static final double EXPO_V = V / 0.95; // 90% of the actual max velocity, as it will allocate 1 / 0.9 = 1.1111 times the voltage to 1 rps
         public static final double EXPO_A = A / 0.05; // 1.5% of the actual max accel
         public static final double SAFE_TOLERANCE = 15.0;
@@ -282,12 +282,12 @@ public final class DefaultConstants {
         public static final double L2_CORAL_AT_BRANCH = 5.5;
         public static final double L2_CORAL_ONE_CORAL_FROM_BRANCH = 5.5;
         public static final double L2_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH = 5.5;
-        public static final double L3_CORAL_AT_BRANCH = 26.4;
-        public static final double L3_CORAL_ONE_CORAL_FROM_BRANCH = 25;
-        public static final double L3_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH = 25;
-        public static final double L4_CORAL_AT_BRANCH = 42.5;
-        public static final double L4_CORAL_ONE_CORAL_FROM_BRANCH = 42.5;
-        public static final double L4_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH = 42.5;
+        public static final double L3_CORAL_AT_BRANCH = 13.5;
+        public static final double L3_CORAL_ONE_CORAL_FROM_BRANCH = 13.5;
+        public static final double L3_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH = 13.5;
+        public static final double L4_CORAL_AT_BRANCH = 40.0;
+        public static final double L4_CORAL_ONE_CORAL_FROM_BRANCH = 40.0;
+        public static final double L4_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH = 40.0;
         public static final double LOW_REEF_ALGAE = 2.0;
         public static final double HIGH_REEF_ALGAE = 3.0;
         public static final double PROCESSOR = 0;
@@ -297,7 +297,7 @@ public final class DefaultConstants {
 
     public final static class IntakeConstants {
         public static final int MOTOR_ID = 41;
-        public static final int BEAMBREAK_DIO_PORT = 4;
+        public static final int BEAMBREAK_DIO_PORT = 2;
         public static final double CURRENT_LIMIT = 60;
         public static final InvertedValue MOTOR_INVERT = InvertedValue.CounterClockwise_Positive;
         public static final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Coast;
@@ -349,12 +349,12 @@ public final class DefaultConstants {
         public static final double L2_CORAL_AT_BRANCH = 43.2;
         public static final double L2_CORAL_ONE_CORAL_FROM_BRANCH = 43.2;
         public static final double L2_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH = 43.2;
-        public static final double L3_CORAL_AT_BRANCH = 63;
-        public static final double L3_CORAL_ONE_CORAL_FROM_BRANCH = 63;
-        public static final double L3_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH = 63;
-        public static final double L4_CORAL_AT_BRANCH = 69;
-        public static final double L4_CORAL_ONE_CORAL_FROM_BRANCH = 69;
-        public static final double L4_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH = 69;
+        public static final double L3_CORAL_AT_BRANCH = 54;
+        public static final double L3_CORAL_ONE_CORAL_FROM_BRANCH = 54;
+        public static final double L3_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH = 54;
+        public static final double L4_CORAL_AT_BRANCH = 66.0;
+        public static final double L4_CORAL_ONE_CORAL_FROM_BRANCH = 66.0;
+        public static final double L4_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH = 66.0;
         public static final double LOW_REEF_ALGAE = 32.5;
         public static final double HIGH_REEF_ALGAE = 105;
         public static final double PROCESSOR = 22.1;
@@ -398,19 +398,19 @@ public final class DefaultConstants {
         public static final Function<Double, Double> UPPER_LIMIT = (elevatorPosition) -> (double) (elevatorPosition > 4 ? 295 : 160);
         public static final double STOW = 95;
         public static final double CORAL_STATION = 95;
-        public static final double GROUND_CORAL = 105;
+        public static final double GROUND_CORAL = 102.5;
         public static final double GROUND_ALGAE = 130;
         public static final double L1_CORAL = 105;
         public static final double L2_CORAL_AT_BRANCH = 162;
         public static final double L2_CORAL_ONE_CORAL_FROM_BRANCH = 162;
         public static final double L2_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH = 162;
-        public static final double L3_CORAL_AT_BRANCH = 32.5;
-        public static final double L3_CORAL_ONE_CORAL_FROM_BRANCH = 55;
-        public static final double L3_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH = 55;
-        public static final double L4_CORAL_AT_BRANCH = 115;
-        public static final double L4_CORAL_ONE_CORAL_FROM_BRANCH = 115;
-        public static final double L4_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH = 115;
-        public static final double L4_CORAL_OBSTRUCTED = 115;
+        public static final double L3_CORAL_AT_BRANCH = 174;
+        public static final double L3_CORAL_ONE_CORAL_FROM_BRANCH = 174;
+        public static final double L3_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH = 174;
+        public static final double L4_CORAL_AT_BRANCH = 150;
+        public static final double L4_CORAL_ONE_CORAL_FROM_BRANCH = 150;
+        public static final double L4_CORAL_FACING_AWAY_ONE_CORAL_FROM_BRANCH = 150;
+        public static final double L4_CORAL_OBSTRUCTED = 150;
         public static final double LOW_REEF_ALGAE = 111.0;
         public static final double HIGH_REEF_ALGAE = 140;
         public static final double PROCESSOR = 130;
