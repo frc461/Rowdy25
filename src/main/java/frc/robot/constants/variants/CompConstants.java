@@ -59,13 +59,13 @@ public final class CompConstants {
         public static final Translation2d ZERO_UPRIGHT_COM = new Translation2d(-11.175605, 14.997186);
 
         // pid & tolerance
-        public static final Function<Double, Double> G = (pivotDeg) -> 0.2175 * Math.sin(Math.toRadians(pivotDeg));
-        public static final double V = 0.31 / ROTOR_TO_INCH_RATIO; // 1V / (in/s) -> 1V / (rotor rps)
-        public static final double A = 0.001 / ROTOR_TO_INCH_RATIO; // 1V / (in/s^2) -> 1V / (rotor rps^2)
+        public static final Function<Double, Double> G = (pivotDeg) -> 0.3513 * Math.sin(Math.toRadians(pivotDeg)); // TODO: REPAIR CONSTANTS
+        public static final double V = 0.12 / ROTOR_TO_INCH_RATIO; // 1V / (in/s) -> 1V / (rotor rps)
+        public static final double A = 0.00161498708 / ROTOR_TO_INCH_RATIO; // 1V / (in/s^2) -> 1V / (rotor rps^2)
         public static final double P = 0.3;
         public static final double I = 0.0;
         public static final double D = 0.0;
-        public static final double EXPO_V = V / 0.98; // 98% of the actual max velocity, as it will allocate 1 / 0.9 = 1.1111 times the voltage to 1 rps
+        public static final double EXPO_V = V / 0.5; // 98% of the actual max velocity, as it will allocate 1 / 0.9 = 1.1111 times the voltage to 1 rps
         public static final double EXPO_A = A / 0.03; // 3% of the actual max accel
         public static final double SAFE_TOLERANCE = 15.0;
         public static final double AT_TARGET_TOLERANCE = 2.0;
