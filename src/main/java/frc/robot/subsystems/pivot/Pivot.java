@@ -35,6 +35,7 @@ public class Pivot extends SubsystemBase {
         HIGH_REEF_ALGAE(Constants.PivotConstants.HIGH_REEF_ALGAE),
         PROCESSOR(Constants.PivotConstants.PROCESSOR),
         NET(Constants.PivotConstants.NET),
+        PREPARE_CLIMB(Constants.PivotConstants.PREPARE_CLIMB),
         CLIMB(Constants.PivotConstants.CLIMB);
 
         private final double position;
@@ -176,7 +177,7 @@ public class Pivot extends SubsystemBase {
     }
 
     public int getRatchetPulseWidth() {
-        return getState() == State.CLIMB ? RatchetState.OFF.pulseWidth : RatchetState.ON.pulseWidth;
+        return RatchetState.ON.pulseWidth; // getState() == State.CLIMB ? RatchetState.OFF.pulseWidth : RatchetState.ON.pulseWidth;
     }
 
     public boolean validStartPosition() {
@@ -303,6 +304,10 @@ public class Pivot extends SubsystemBase {
 
     public void setNetState() {
         setState(State.NET);
+    }
+
+    public void setPrepareClimbState() {
+        setState(State.PREPARE_CLIMB);
     }
 
     public void setClimbState() {

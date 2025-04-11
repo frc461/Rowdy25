@@ -31,6 +31,7 @@ public class Elevator extends SubsystemBase {
         HIGH_REEF_ALGAE(Constants.ElevatorConstants.HIGH_REEF_ALGAE),
         NET(Constants.ElevatorConstants.NET),
         PROCESSOR(Constants.ElevatorConstants.PROCESSOR),
+        PREPARE_CLIMB(Constants.ElevatorConstants.PREPARE_CLIMB),
         CLIMB(Constants.ElevatorConstants.CLIMB);
 
         private final double position;
@@ -246,6 +247,10 @@ public class Elevator extends SubsystemBase {
 
     public void setNetState() {
         setState(State.NET);
+    }
+
+    public void setPrepareClimbState() {
+        setState(State.PREPARE_CLIMB);
     }
 
     public void setClimbState() {

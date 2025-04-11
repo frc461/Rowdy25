@@ -79,7 +79,8 @@ public class RobotStates {
     public final Trigger highReefAlgaeState = new Trigger(() -> currentState == State.HIGH_REEF_ALGAE);
     public final Trigger processorState = new Trigger(() -> currentState == State.PROCESSOR);
     public final Trigger netState = new Trigger(() -> currentState == State.NET);
-    public final Trigger climbState = new Trigger(() -> currentState == State.PREPARE_CLIMB);
+    public final Trigger prepareClimbState = new Trigger(() -> currentState == State.PREPARE_CLIMB);
+    public final Trigger climbState = new Trigger(() -> currentState == State.CLIMB);
 
     private final Trigger isListening = l1CoralState.or(l2CoralState).or(l3CoralState).or(l4CoralState);
     private boolean needsUpdate = false;
@@ -464,6 +465,18 @@ public class RobotStates {
                         .andThen(intake::setIdleState)
                         .andThen(orderedTransition(pivot::setNetState, Pivot.State.NET, elevator::setNetState, Elevator.State.NET, wrist::setNetState))
                         .until(() -> !netState.getAsBoolean())
+        );
+
+        prepareClimbState.onTrue(
+                new InstantCommand(swerve::setIdleMode)
+                        .andThen(intake::setIdleState)
+                        .andThen(orderedTransition(
+                                pivot::setPrepareClimbState,
+                                Pivot.State.PREPARE_CLIMB,
+                                elevator::setPrepareClimbState,
+                                Elevator.State.PREPARE_CLIMB,
+                                wrist::setPrepareClimbState)
+                        ).until(() -> !prepareClimbState.getAsBoolean())
         );
 
         climbState.onTrue(
