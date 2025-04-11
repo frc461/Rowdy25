@@ -236,6 +236,7 @@ public final class Constants {
         public static double HIGH_REEF_ALGAE;
         public static double PROCESSOR;
         public static double NET;
+        public static double PREPARE_CLIMB;
         public static double CLIMB;
     }
 
@@ -303,6 +304,7 @@ public final class Constants {
         public static double HIGH_REEF_ALGAE;
         public static double PROCESSOR;
         public static double NET;
+        public static double PREPARE_CLIMB;
         public static double CLIMB;
     }
 
@@ -355,6 +357,7 @@ public final class Constants {
         public static double HIGH_REEF_ALGAE;
         public static double PROCESSOR;
         public static double NET;
+        public static double PREPARE_CLIMB;
         public static double CLIMB;
     }
 
