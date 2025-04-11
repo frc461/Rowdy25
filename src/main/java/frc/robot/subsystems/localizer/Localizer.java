@@ -56,7 +56,7 @@ public class Localizer {
 
     public Pose2d nearestRobotPoseAtBranch = new Pose2d();
     public Pair<Pose2d, Pose2d> nearestRobotPosesAtBranchPair = new Pair<>(new Pose2d(), new Pose2d());
-    public Pose2d nearestRobotPoseNearBranchPair = new Pose2d();
+    public Pair<Pose2d, Pose2d> nearestRobotPosesNearBranchPair = new Pair<>(new Pose2d(), new Pose2d());
     public Pose2d nearestReefTagPose = new Pose2d();
 
     public final Pose2d robotPoseAtProcessor;
@@ -177,6 +177,10 @@ public class Localizer {
 
     public boolean sameSideAsReefScoringLocation(FieldUtil.Reef.ScoringLocation scoringLocation) {
         return RobotPoses.Reef.sameSide(getStrategyPose(), RobotPoses.Reef.getRobotPoseAtBranch(currentRobotScoringSetting, scoringLocation));
+    }
+
+    public boolean sameSideAsTarget(Pose2d targetPose) {
+        return RobotPoses.Reef.sameSide(getStrategyPose(), targetPose);
     }
 
     public boolean atTransitionStateLocation(RobotStates.State robotState, boolean auto) {
@@ -321,7 +325,7 @@ public class Localizer {
 
         nearestRobotPoseAtBranch = RobotPoses.Reef.getNearestRobotPoseAtBranch(currentRobotScoringSetting, currentPose);
         nearestRobotPosesAtBranchPair = RobotPoses.Reef.getNearestRobotPosesAtBranchPair(currentRobotScoringSetting, currentPose);
-        nearestRobotPoseNearBranchPair = RobotPoses.Reef.getNearestRobotPoseNearReef(currentRobotScoringSetting, currentPose);
+        nearestRobotPosesNearBranchPair = RobotPoses.Reef.getNearestRobotPosesNearBranchPair(currentRobotScoringSetting, currentPose);
         nearestReefTagPose = FieldUtil.Reef.getNearestReefTagPose(currentPose);
 
         nearestRobotPoseAtCoralStation = getStrategyPose().nearest(List.of(
