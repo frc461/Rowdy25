@@ -6,6 +6,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.drivetrain.Swerve;
@@ -134,9 +135,10 @@ public class SearchForObjectCommand extends Command {
             switch (currentStage) {
                 case TO_OBJECT:
                     currentStage = CommandStage.SEARCH;
-                    Rotation2d reefToLastTargetLocation = FieldUtil.Reef.getReefCenter().minus(targetPose.getTranslation()).getAngle();
+                    Translation2d nearestReefCenter = FieldUtil.Reef.getNearestReefCenter(currentPose.getTranslation());
+                    Rotation2d reefToLastTargetLocation = nearestReefCenter.minus(targetPose.getTranslation()).getAngle();
                     targetPose = new Pose2d(
-                            currentPose.getTranslation().interpolate(FieldUtil.Reef.getReefCenter(), 0.2),
+                            currentPose.getTranslation().interpolate(nearestReefCenter, 0.2),
                             currentPose.getRotation().interpolate(reefToLastTargetLocation, 0.2)
                     );
                     break;

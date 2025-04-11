@@ -130,16 +130,16 @@ public final class FieldUtil {
         public static final Translation2d RED_REEF_CENTER = AprilTag.ID_7.pose2d.getTranslation().interpolate(AprilTag.ID_10.pose2d.getTranslation(), 0.5);
         public static final double REEF_APOTHEM = AprilTag.ID_18.pose2d.getTranslation().getDistance(AprilTag.ID_21.pose2d.getTranslation()) / 2.0;
 
-        public static Translation2d getReefCenter() {
-            return Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red ? RED_REEF_CENTER : BLUE_REEF_CENTER;
+        public static Translation2d getNearestReefCenter(Translation2d translation) {
+            return translation.nearest(List.of(RED_REEF_CENTER, BLUE_REEF_CENTER));
         }
 
-        public static Rotation2d getAngleFromReefCenter(Translation2d translation) {
-            return translation.minus(getReefCenter()).getAngle();
+        public static Rotation2d getAngleFromNearestReefCenter(Translation2d translation) {
+            return translation.minus(getNearestReefCenter(translation)).getAngle();
         }
 
-        public static Rotation2d getAngleFromReefCenter(Pose2d pose) {
-            return getAngleFromReefCenter(pose.getTranslation());
+        public static Rotation2d getAngleFromNearestReefCenter(Pose2d pose) {
+            return getAngleFromNearestReefCenter(pose.getTranslation());
         }
 
         public enum Side {
