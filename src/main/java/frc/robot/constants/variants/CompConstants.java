@@ -48,8 +48,8 @@ public final class CompConstants {
         public static final InvertedValue MOTOR_INVERT = InvertedValue.Clockwise_Positive;
 
         // mechanism characterization
-        private static final double ROTOR_TO_PULLEY_RATIO = 11.57;
-        private static final double PULLEY_CIRCUMFERENCE = 7.065;
+        private static final double ROTOR_TO_PULLEY_RATIO = 50.0 / 12.0 * 43.0 / 25.0;
+        private static final double PULLEY_CIRCUMFERENCE = 7.06858347058;
         public static final double ROTOR_TO_INCH_RATIO = ROTOR_TO_PULLEY_RATIO / PULLEY_CIRCUMFERENCE;
         private static final double STAGE_2_LOAD_LBS = 28.44;
         public static final double MASS_LBS = 23.0132625 / ((102.2329023 - 54.8422757) / (114.375 - 54.8422757));
@@ -65,8 +65,8 @@ public final class CompConstants {
         public static final double P = 0.3;
         public static final double I = 0.0;
         public static final double D = 0.0;
-        public static final double EXPO_V = V / 0.5; // 98% of the actual max velocity, as it will allocate 1 / 0.9 = 1.1111 times the voltage to 1 rps
-        public static final double EXPO_A = A / 0.03; // 3% of the actual max accel
+        public static final double EXPO_V = V / 0.95; // 95% of the actual max velocity, as it will allocate 1 / 0.9 = 1.1111 times the voltage to 1 rps
+        public static final double EXPO_A = A / 0.06; // 7.5% of the actual max accel
         public static final double SAFE_TOLERANCE = 15.0;
         public static final double AT_TARGET_TOLERANCE = 2.0;
 
