@@ -9,6 +9,7 @@ import com.pathplanner.lib.pathfinding.Pathfinding;
 import dev.doglog.DogLog;
 import dev.doglog.DogLogOptions;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj2.command.*;
@@ -68,7 +69,7 @@ public class RobotContainer {
                                         .onlyIf(robotStates.swerve::isAutoHeading)
                         ));
 
-        driverXbox.povUp().onTrue(new InstantCommand(() -> robotStates.swerve.localizer.setRotations(Rotation2d.kZero)));
+        driverXbox.povUp().onTrue(new InstantCommand(() -> robotStates.swerve.localizer.setRotations(Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red ? Rotation2d.kPi : Rotation2d.kZero)));
         driverXbox.povDown().onTrue(new InstantCommand(robotStates.swerve.localizer::syncRotations));
         driverXbox.povLeft().onTrue(new InstantCommand(() -> robotStates.climb.move(-0.9)));
         driverXbox.povLeft().onFalse(new InstantCommand(() -> robotStates.climb.stop(true)));
