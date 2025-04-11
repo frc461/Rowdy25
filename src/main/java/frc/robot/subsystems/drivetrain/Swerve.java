@@ -317,7 +317,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                                 fieldCentric,
                                 robotStates.elevator::getPosition,
                                 RobotPoses.Reef.getRobotPoseNearReef(localizer.currentRobotScoringSetting, location)
-                        )).until(() -> robotStates.atTransitionStateLocation(RobotStates.State.L4_CORAL) && localizer.sameSideAsReefScoringLocation(location)) // TODO SHOP: TEST CHECK IF POSE IS ON SAME SIDE AS TARGET POSE
+                        )).until(() -> robotStates.atTransitionStateLocation(RobotStates.State.L4_CORAL) && localizer.sameSideAsReefScoringLocation(location))
                         .andThen(new DirectMoveToPoseCommand(
                                 this,
                                 fieldCentric,
@@ -342,14 +342,17 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                         fieldCentric,
                         robotStates.elevator::getPosition,
                         localizer.nearestRobotPoseNearAlgaeReef
-                ).until(() -> robotStates.atTransitionStateLocation(RobotStates.State.LOW_REEF_ALGAE))
-                        .andThen(() -> robotStates.toggleNearestReefAlgaeState(localizer.nearestAlgaeIsHigh, true)).andThen(new DirectMoveToPoseCommand(
+                ).until(() -> robotStates.atTransitionStateLocation(RobotStates.State.LOW_REEF_ALGAE) && robotStates.atReefAlgaeState.getAsBoolean())
+                        .andThen(new DirectMoveToPoseCommand(
                                 this,
                                 fieldCentric,
                                 robotStates.elevator::getPosition,
                                 localizer.nearestRobotPoseAtAlgaeReef,
                                 2.0
-                        )),
+                        )).alongWith(
+                                new WaitUntilCommand(() -> robotStates.atTransitionStateLocation(RobotStates.State.HIGH_REEF_ALGAE))
+                                        .andThen(() -> robotStates.toggleNearestReefAlgaeState(localizer.nearestAlgaeIsHigh, true))
+                        ),
                 Set.of(this)
         );
     }
@@ -365,17 +368,21 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                                 0,
                                 Rotation2d.kZero
                         ).inverse())
-                ).andThen(() -> robotStates.toggleNetState(true)).andThen(new DirectMoveToPoseCommand(
-                        this,
-                        fieldCentric,
-                        robotStates.elevator::getPosition,
-                        localizer.randomizedRobotPoseAtNet,
-                        1.0
-                )).andThen(
-                        new WaitUntilCommand(robotStates.atNetState.and(robotStates::atScoringLocation))
-                                .andThen(robotStates::toggleNetState)
-                                .onlyIf(() -> autoHeading)
-                ),
+                ).until(() -> robotStates.atTransitionStateLocation(RobotStates.State.NET) && robotStates.atNetState.getAsBoolean())
+                        .andThen(new DirectMoveToPoseCommand(
+                                this,
+                                fieldCentric,
+                                robotStates.elevator::getPosition,
+                                localizer.randomizedRobotPoseAtNet,
+                                1.0
+                        )).andThen(
+                                new WaitUntilCommand(robotStates.atNetState.and(robotStates::atScoringLocation))
+                                        .andThen(robotStates::toggleNetState)
+                                        .onlyIf(() -> autoHeading)
+                        ).alongWith(
+                                new WaitUntilCommand(() -> robotStates.atTransitionStateLocation(RobotStates.State.NET))
+                                        .andThen(() -> robotStates.toggleNetState(true))
+                        ),
                 Set.of(this)
         );
     }
@@ -391,17 +398,21 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                                 0,
                                 Rotation2d.kZero
                         ))
-                ).andThen(() -> robotStates.toggleProcessorState(true)).andThen(new DirectMoveToPoseCommand(
-                        this,
-                        fieldCentric,
-                        robotStates.elevator::getPosition,
-                        localizer.robotPoseAtProcessor
+                ).until(() -> robotStates.atTransitionStateLocation(RobotStates.State.NET) && robotStates.atNetState.getAsBoolean())
+                        .andThen(new DirectMoveToPoseCommand(
+                                this,
+                                fieldCentric,
+                                robotStates.elevator::getPosition,
+                                localizer.robotPoseAtProcessor
 
-                )).andThen(
-                        new WaitUntilCommand(robotStates.atProcessorState.and(robotStates::atScoringLocation))
-                                .andThen(robotStates::toggleProcessorState)
-                                .onlyIf(() -> autoHeading)
-                ),
+                        )).andThen(
+                                new WaitUntilCommand(robotStates.atProcessorState.and(robotStates::atScoringLocation))
+                                        .andThen(robotStates::toggleProcessorState)
+                                        .onlyIf(() -> autoHeading)
+                        ).alongWith(
+                                new WaitUntilCommand(() -> robotStates.atTransitionStateLocation(RobotStates.State.PROCESSOR))
+                                        .andThen(() -> robotStates.toggleProcessorState(true))
+                        ),
                 Set.of(this)
         );
     }

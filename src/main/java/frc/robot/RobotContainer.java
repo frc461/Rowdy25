@@ -80,26 +80,22 @@ public class RobotContainer {
 
         driverXbox.leftBumper().whileTrue(new ConditionalCommand(
                 robotStates.swerve.pathFindToNearestLeftBranch(robotStates),
-                new ConditionalCommand(
-                        robotStates.swerve.pathFindToNet(robotStates),
-                        robotStates.swerve.pathFindToLeftCoralStation(robotStates),
-                        robotStates.intake::hasAlgae
-                ),
+                robotStates.swerve.pathFindToLeftCoralStation(robotStates),
                 robotStates.intake::barelyHasCoral
         ));
         driverXbox.rightBumper().whileTrue(new ConditionalCommand(
                 robotStates.swerve.pathFindToNearestRightBranch(robotStates),
-                new ConditionalCommand(
-                        robotStates.swerve.pathFindToProcessor(robotStates),
-                        robotStates.swerve.pathFindToRightCoralStation(robotStates),
-                        robotStates.intake::hasAlgae
-                ),
+                robotStates.swerve.pathFindToRightCoralStation(robotStates),
                 robotStates.intake::barelyHasCoral
         ));
         driverXbox.leftBumper().and(driverXbox.rightBumper()).whileTrue(
                 robotStates.swerve.pathFindToNearestAlgaeOnReef(robotStates)
                         .unless(() -> robotStates.intake.hasAlgae() || robotStates.intake.barelyHasCoral())
         );
+
+        driverXbox.back().whileTrue(robotStates.swerve.pathFindToNet(robotStates));
+
+        driverXbox.start().whileTrue(robotStates.swerve.pathFindToProcessor(robotStates));
 
         opXbox.povDown().onTrue(new InstantCommand(() -> robotStates.setCurrentAutoLevel(FieldUtil.Reef.Level.L4)));
 
