@@ -44,8 +44,9 @@ public class Intake extends SubsystemBase {
 
     private final IntakeTelemetry intakeTelemetry = new IntakeTelemetry(this);
 
-    private StallIntent stallIntent = StallIntent.CORAL_STUCK;
-    public Trigger hasAlgaeOrCoralStuck;
+    public StallIntent stallIntent = StallIntent.CORAL_STUCK;
+    public Trigger hasAlgaeOrCoralStuck, maintainAlgae;
+    private boolean maintainAlgaeCurrentOverride = false;
     private double proximityObjectDetectionThreshold = Constants.IntakeConstants.DEFAULT_PROXIMITY_OBJECT_DETECTION_THRESHOLD;
     public DoubleConsumer setProximityObjectDetectionThreshold = threshold -> proximityObjectDetectionThreshold = threshold;
 
@@ -76,7 +77,8 @@ public class Intake extends SubsystemBase {
         beamBreak = new DigitalInput(Constants.IntakeConstants.BEAMBREAK_DIO_PORT);
         currentState = State.IDLE;
 
-        hasAlgaeOrCoralStuck = new Trigger(() -> Math.abs(getCurrent()) > 20.0).debounce(0.5, Debouncer.DebounceType.kRising).debounce(1.0, Debouncer.DebounceType.kFalling);
+        hasAlgaeOrCoralStuck = new Trigger(() -> Math.abs(getCurrent()) > 25.0).debounce(0.5, Debouncer.DebounceType.kRising);
+        maintainAlgae = new Trigger(() -> maintainAlgaeCurrentOverride && Math.abs(getCurrent()) > 5.0).debounce(0.25, Debouncer.DebounceType.kFalling);
     }
 
     public double getCurrent() {
@@ -116,7 +118,7 @@ public class Intake extends SubsystemBase {
     }
 
     public boolean hasAlgae() {
-        return hasAlgaeOrCoralStuck.getAsBoolean() && stallIntent == StallIntent.HAS_ALGAE; // TODO SHOP: TEST THIS
+        return maintainAlgae.getAsBoolean() || hasAlgaeOrCoralStuck.getAsBoolean() && stallIntent == StallIntent.HAS_ALGAE; // TODO SHOP: TEST THIS
     }
 
     public boolean atIdleState() {
@@ -137,13 +139,16 @@ public class Intake extends SubsystemBase {
 
     public void setIdleState() {
         if (hasAlgae()) {
+            maintainAlgaeCurrentOverride = true;
             setState(State.HAS_ALGAE);
         } else {
+            maintainAlgaeCurrentOverride = false;
             setState(State.IDLE);
         }
     }
 
     public void setAlgaeIntakeState() {
+        stallIntent = StallIntent.HAS_ALGAE;
         setIntakeState(false);
     }
 
@@ -155,6 +160,7 @@ public class Intake extends SubsystemBase {
     public void setIntakeState(boolean override) {
         if (override) {
             stallIntent = StallIntent.CORAL_STUCK;
+            maintainAlgaeCurrentOverride = false;
             setState(State.INTAKE_OVERRIDE);
         } else {
             setState(State.INTAKE);
@@ -170,6 +176,7 @@ public class Intake extends SubsystemBase {
     }
 
     public void setOuttakeState() {
+        maintainAlgaeCurrentOverride = false;
         setState(State.OUTTAKE);
     }
 

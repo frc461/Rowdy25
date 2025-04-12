@@ -367,25 +367,29 @@ public class RobotStates {
                 new InstantCommand(swerve::setObjectHeadingMode)
                         .andThen(orderedTransition(pivot::setGroundCoralState, Pivot.State.GROUND_CORAL, elevator::setGroundCoralState, Elevator.State.GROUND_CORAL, wrist::setGroundCoralState))
                         .andThen(intake::setCoralIntakeState)
-                        .andThen(new WaitUntilCommand(PhotonUtil.Color::hasCoralTargets))
-                        .andThen(swerve.directMoveToObject(
-                                () -> intake.hasAlgae() || intake.hasCoral(),
-                                PhotonUtil.Color.TargetClass.CORAL
-                        ).asProxy())
+                        .andThen(
+                                new WaitUntilCommand(PhotonUtil.Color::hasCoralTargets)
+                                        .andThen(swerve.directMoveToObject(
+                                                () -> intake.hasAlgae() || intake.hasCoral(),
+                                                PhotonUtil.Color.TargetClass.CORAL
+                                        ).asProxy())
+                        ).raceWith(new WaitUntilCommand(intake::atIdleState))
                         .andThen(this::setStowState)
                         .onlyIf(() -> !intake.hasAlgae() && !intake.barelyHasCoral())
                         .until(() -> !groundCoralState.getAsBoolean())
         );
 
         groundAlgaeState.onTrue(
-                new InstantCommand(swerve::setIdleMode)
+                new InstantCommand(swerve::setObjectHeadingMode)
                         .andThen(orderedTransition(pivot::setGroundAlgaeState, Pivot.State.GROUND_ALGAE, elevator::setGroundAlgaeState, Elevator.State.GROUND_ALGAE, wrist::setGroundAlgaeState))
                         .andThen(intake::setAlgaeIntakeState)
-                        // .andThen(new WaitUntilCommand(PhotonUtil.Color::hasAlgaeTargets))
-                        // .andThen(swerve.directMoveToObject(
-                        //         () -> intake.hasAlgae() || intake.hasCoral(),
-                        //         PhotonUtil.Color.TargetClass.ALGAE
-                        // ).asProxy())
+                         .andThen(
+                                 new WaitUntilCommand(PhotonUtil.Color::hasAlgaeTargets)
+                                         .andThen(swerve.directMoveToObject(
+                                                 () -> intake.hasAlgae() || intake.hasCoral(),
+                                                 PhotonUtil.Color.TargetClass.ALGAE
+                                         ).asProxy())
+                         ).raceWith(new WaitUntilCommand(intake::atHasAlgaeState))
                         .andThen(this::setStowState)
                         .onlyIf(() -> !intake.hasAlgae() && !intake.barelyHasCoral())
                         .until(() -> !groundAlgaeState.getAsBoolean())
@@ -443,6 +447,8 @@ public class RobotStates {
                 new InstantCommand(swerve::setReefTagOppositeHeadingMode)
                         .andThen(intake::setAlgaeIntakeState)
                         .andThen(orderedTransition(pivot::setLowReefAlgaeState, Pivot.State.LOW_REEF_ALGAE, elevator::setLowReefAlgaeState, Elevator.State.LOW_REEF_ALGAE, wrist::setLowReefAlgaeState))
+                        .andThen(new WaitUntilCommand(intake::atHasAlgaeState))
+                        .andThen(this::setStowState)
                         .onlyIf(() -> !intake.hasAlgae() && !intake.barelyHasCoral())
                         .until(() -> !lowReefAlgaeState.getAsBoolean())
         );
@@ -451,6 +457,8 @@ public class RobotStates {
                 new InstantCommand(swerve::setReefTagHeadingMode)
                         .andThen(intake::setAlgaeIntakeState)
                         .andThen(orderedTransition(pivot::setHighReefAlgaeState, Pivot.State.HIGH_REEF_ALGAE, elevator::setHighReefAlgaeState, Elevator.State.HIGH_REEF_ALGAE, wrist::setHighReefAlgaeState))
+                        .andThen(new WaitUntilCommand(intake::atHasAlgaeState))
+                        .andThen(this::setStowState)
                         .onlyIf(() -> !intake.hasAlgae() && !intake.barelyHasCoral())
                         .until(() -> !highReefAlgaeState.getAsBoolean())
         );

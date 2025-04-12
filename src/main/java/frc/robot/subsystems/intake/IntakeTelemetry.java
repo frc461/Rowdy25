@@ -19,7 +19,8 @@ public class IntakeTelemetry {
     private final StringPublisher currentStatePub = intakeTelemetryTable.getStringTopic("Intake State").publish();
     private final DoublePublisher proximityPub = intakeTelemetryTable.getDoubleTopic("Canandcolor Proximity").publish();
     private final DoubleEntry proximityObjectDetectionThresholdEntry = intakeTelemetryTable.getDoubleTopic("Canandcolor Proximity Object Detection Threshold").getEntry(Constants.IntakeConstants.DEFAULT_PROXIMITY_OBJECT_DETECTION_THRESHOLD);
-    private final BooleanPublisher intakeStallingPub = intakeTelemetryTable.getBooleanTopic("Intake Coral is Stuck").publish();
+    private final BooleanPublisher intakeStallingPub = intakeTelemetryTable.getBooleanTopic("Intake Stalling").publish();
+    private final StringPublisher stallIntakePub = intakeTelemetryTable.getStringTopic("Intake Stall Intent").publish();
     private final DoublePublisher intakeCurrentPub = intakeTelemetryTable.getDoubleTopic("Intake Current").publish();
 
     public void publishValues() {
@@ -32,6 +33,7 @@ public class IntakeTelemetry {
         proximityObjectDetectionThresholdEntry.set(proximityObjectDetectionThresholdEntry.get()); // TODO SHOP: TEST ENTRY
         intake.setProximityObjectDetectionThreshold.accept(proximityObjectDetectionThresholdEntry.get());
         intakeStallingPub.set(intake.hasAlgaeOrCoralStuck.getAsBoolean());
+        stallIntakePub.set(intake.stallIntent.name());
         intakeCurrentPub.set(intake.getCurrent());
 
         logValues();
