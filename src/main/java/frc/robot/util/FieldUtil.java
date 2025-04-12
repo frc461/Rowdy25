@@ -25,6 +25,10 @@ public final class FieldUtil {
                 pose.getY() >= origin2d.getY() && pose.getY() <= origin2d.getY() + FIELD_WIDTH;
     }
 
+    public static DriverStation.Alliance getAllianceSide(Pose2d currentPose) {
+        return currentPose.getX() < FIELD_LENGTH / 2 ? DriverStation.Alliance.Blue : DriverStation.Alliance.Red;
+    }
+
     public enum AprilTag {
         ID_1(layout2025.getTagPose(1).orElse(new Pose3d())),
         ID_2(layout2025.getTagPose(2).orElse(new Pose3d())),
@@ -247,8 +251,9 @@ public final class FieldUtil {
             return TagManager.getTagLocations2d(getAlgaeScoringTags());
         }
 
-        public static List<Pose2d> getProcessorTagPoses() {
-            return List.of(AprilTag.ID_3.pose2d, AprilTag.ID_16.pose2d);
+        public static Pose2d getCurrentAllianceSideProcessorTagPose(Pose2d currentPose) {
+            return getAllianceSide(currentPose) == DriverStation.Alliance.Red ?
+                    AprilTag.ID_3.pose2d : AprilTag.ID_16.pose2d;
         }
 
         public static List<Pose2d> getNetTagPoses() {
@@ -258,10 +263,6 @@ public final class FieldUtil {
 
         public static Pose2d getNearestAlgaeScoringTagPose(Pose2d currentPose) {
             return currentPose.nearest(getAlgaeScoringTagPoses());
-        }
-
-        public static Pose2d getNearestProcessorTagPose(Pose2d currentPose) {
-            return currentPose.nearest(getProcessorTagPoses());
         }
 
         public static Pose2d getNearestNetTagPose(Pose2d currentPose) {

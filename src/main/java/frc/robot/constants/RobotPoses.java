@@ -231,8 +231,8 @@ public class RobotPoses {
     }
 
     public static class AlgaeScoring {
-        public static Pose2d getNearestRobotPoseAtProcessor(Pose2d currentPose) {
-            return FieldUtil.AlgaeScoring.getNearestProcessorTagPose(currentPose).plus(new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0, 0, Rotation2d.kZero));
+        public static Pose2d getCurrentAllianceSideRobotPoseAtProcessor(Pose2d currentPose) {
+            return FieldUtil.AlgaeScoring.getCurrentAllianceSideProcessorTagPose(currentPose).plus(new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0, 0, Rotation2d.kZero));
         }
 
         public static Pose2d getRobotPoseAtNetCenter(Pose2d currentPose) {

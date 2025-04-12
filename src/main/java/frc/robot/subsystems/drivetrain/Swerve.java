@@ -397,7 +397,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                         this,
                         fieldCentric,
                         robotStates.elevator::getPosition,
-                        localizer.nearestRobotPoseAtProcessor.plus(new Transform2d(
+                        localizer.currentAllianceSideRobotPoseAtProcessor.plus(new Transform2d(
                                 Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_TRANSITION,
                                 0,
                                 Rotation2d.kZero
@@ -407,7 +407,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                                 this,
                                 fieldCentric,
                                 robotStates.elevator::getPosition,
-                                localizer.nearestRobotPoseAtProcessor
+                                localizer.currentAllianceSideRobotPoseAtProcessor
 
                         )).andThen(
                                 new WaitUntilCommand(robotStates.atProcessorState.and(robotStates::atScoringLocation))
