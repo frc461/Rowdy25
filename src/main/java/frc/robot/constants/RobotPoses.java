@@ -136,17 +136,21 @@ public class RobotPoses {
             };
         }
 
-        public static List<Pose2d> getRobotPosesNearReef(boolean algaeIsHigh) {
-            return FieldUtil.Reef.getReefTagPoses().stream().map(reefTagPose -> reefTagPose.plus(getTagToRobotPoseNearReef(algaeIsHigh))).toList();
+        public static List<Pose2d> getRobotPosesNearReef(boolean algaeIsHigh, boolean bothReefs) {
+            return FieldUtil.Reef.getReefTagPoses(bothReefs).stream().map(reefTagPose -> reefTagPose.plus(getTagToRobotPoseNearReef(algaeIsHigh))).toList();
+        }
+
+        public static Pose2d getNearestRobotPoseNearReef(boolean algaeIsHigh, Pose2d currentPose, boolean bothReefs) {
+            return currentPose.nearest(getRobotPosesNearReef(algaeIsHigh, bothReefs));
         }
 
         public static Pose2d getNearestRobotPoseNearReef(boolean algaeIsHigh, Pose2d currentPose) {
-            return currentPose.nearest(getRobotPosesNearReef(algaeIsHigh));
+            return getNearestRobotPoseNearReef(algaeIsHigh, currentPose, false);
         }
 
         public static List<Pose2d> getRobotPosesAtBranches(RobotScoringSetting mode) { // Where robot should be to be centered at branches (to score)
             List<Pose2d> robotPosesAtEachBranch = new ArrayList<>();
-            FieldUtil.Reef.getReefTagPoses().forEach(reefTagPose -> {
+            FieldUtil.Reef.getReefTagPoses(false).forEach(reefTagPose -> {
                 robotPosesAtEachBranch.add(reefTagPose.plus(mode.leftOffset));
                 robotPosesAtEachBranch.add(reefTagPose.plus(mode.rightOffset));
             });
@@ -196,8 +200,8 @@ public class RobotPoses {
         }
 
         public static Pair<Pose2d, Pose2d> getNearestRobotPosesAtBranchPair(RobotScoringSetting mode, Pose2d currentPose) {
-            Pose2d nearestReefTagPose = FieldUtil.Reef.getNearestReefTagPose(currentPose);
-            if (FieldUtil.Reef.getOutsideReefTags().contains(FieldUtil.Reef.getNearestReefTag(currentPose))) {
+            Pose2d nearestReefTagPose = FieldUtil.Reef.getNearestReefTagPose(currentPose, false);
+            if (FieldUtil.Reef.getOutsideReefTags().contains(FieldUtil.Reef.getNearestReefTag(currentPose, false))) {
                 return new Pair<>(
                         nearestReefTagPose.plus(mode.rightOffset),
                         nearestReefTagPose.plus(mode.leftOffset)
@@ -218,11 +222,11 @@ public class RobotPoses {
             );
         }
 
-        public static Pose2d getNearestRobotPoseAtAlgaeReef(Pose2d currentPose) {
-            if (FieldUtil.Reef.getAlgaeReefLevelFromTag(FieldUtil.Reef.getNearestReefTag(currentPose)) == FieldUtil.Reef.AlgaeLocation.HIGH) {
-                return FieldUtil.Reef.getNearestReefTagPose(currentPose).plus(new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0 + Units.inchesToMeters(2), 0, Rotation2d.kPi));
+        public static Pose2d getNearestRobotPoseAtAlgaeReef(Pose2d currentPose, boolean algaeIsHigh) {
+            if (algaeIsHigh) {
+                return FieldUtil.Reef.getNearestReefTagPose(currentPose, true).plus(new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0 + Units.inchesToMeters(2), 0, Rotation2d.kPi));
             }
-            return FieldUtil.Reef.getNearestReefTagPose(currentPose).plus(new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0, 0, Rotation2d.kZero));
+            return FieldUtil.Reef.getNearestReefTagPose(currentPose, true).plus(new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0, 0, Rotation2d.kZero));
         }
     }
 

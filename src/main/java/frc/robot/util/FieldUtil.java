@@ -157,9 +157,6 @@ public final class FieldUtil {
             }
         }
 
-        public static final Transform2d LEFT_BRANCH_OFFSET_FROM_TAG = new Transform2d(Units.inchesToMeters(-1.207349), Units.inchesToMeters(-6.469731), Rotation2d.kZero);
-        public static final Transform2d RIGHT_BRANCH_OFFSET_FROM_TAG = new Transform2d(Units.inchesToMeters(-1.207349), Units.inchesToMeters(6.469731), Rotation2d.kZero);
-
         public enum ScoringLocation {
             A, B, C, D, E, F, G, H, I, J, K, L
         }
@@ -173,10 +170,12 @@ public final class FieldUtil {
             }
         }
 
-        public static List<AprilTag> getReefTags() {
-            return Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red
-                    ? List.of(AprilTag.ID_7, AprilTag.ID_8, AprilTag.ID_9, AprilTag.ID_10, AprilTag.ID_11, AprilTag.ID_6)
-                    : List.of(AprilTag.ID_18, AprilTag.ID_17, AprilTag.ID_22, AprilTag.ID_21, AprilTag.ID_20, AprilTag.ID_19);
+        public static List<AprilTag> getReefTags(boolean bothReefs) {
+            return bothReefs ? List.of(AprilTag.ID_7, AprilTag.ID_8, AprilTag.ID_9, AprilTag.ID_10, AprilTag.ID_11, AprilTag.ID_6,
+                    AprilTag.ID_18, AprilTag.ID_17, AprilTag.ID_22, AprilTag.ID_21, AprilTag.ID_20, AprilTag.ID_19) :
+                    Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red
+                            ? List.of(AprilTag.ID_7, AprilTag.ID_8, AprilTag.ID_9, AprilTag.ID_10, AprilTag.ID_11, AprilTag.ID_6)
+                            : List.of(AprilTag.ID_18, AprilTag.ID_17, AprilTag.ID_22, AprilTag.ID_21, AprilTag.ID_20, AprilTag.ID_19);
         }
 
         public static List<AprilTag> getOutsideReefTags() {
@@ -204,25 +203,12 @@ public final class FieldUtil {
                     );
         }
 
-        public static List<Pose2d> getReefTagPoses() {
-            return TagManager.getTagLocations2d(getReefTags());
+        public static List<Pose2d> getReefTagPoses(boolean bothReefs) {
+            return TagManager.getTagLocations2d(getReefTags(bothReefs));
         }
 
-        public static List<Pose2d> getBranchPoses() { // Where branches are
-            List<Pose2d> branchPoses = new ArrayList<>();
-            getReefTagPoses().forEach(reefTagPose -> {
-                branchPoses.add(reefTagPose.plus(LEFT_BRANCH_OFFSET_FROM_TAG));
-                branchPoses.add(reefTagPose.plus(RIGHT_BRANCH_OFFSET_FROM_TAG));
-            });
-            return branchPoses;
-        }
-
-        public static Pose2d getNearestReefTagPose(Pose2d currentPose) {
-            return currentPose.nearest(getReefTagPoses());
-        }
-
-        public static Pose2d getNearestBranchPose(Pose2d currentPose) {
-            return currentPose.nearest(getBranchPoses());
+        public static Pose2d getNearestReefTagPose(Pose2d currentPose, boolean bothReefs) {
+            return currentPose.nearest(getReefTagPoses(bothReefs));
         }
 
         public enum AlgaeLocation {
@@ -230,8 +216,8 @@ public final class FieldUtil {
             HIGH
         }
 
-        public static AprilTag getNearestReefTag(Pose2d currentPose) {
-            return TagManager.getPosesToTags().getOrDefault(getNearestReefTagPose(currentPose), AprilTag.INVALID);
+        public static AprilTag getNearestReefTag(Pose2d currentPose, boolean bothReefs) {
+            return TagManager.getPosesToTags().getOrDefault(getNearestReefTagPose(currentPose, bothReefs), AprilTag.INVALID);
         }
 
         public static AlgaeLocation getAlgaeReefLevelFromTag(AprilTag tag) {

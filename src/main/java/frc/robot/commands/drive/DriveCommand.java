@@ -183,7 +183,7 @@ public class DriveCommand extends Command {
     }
 
     private double getL1ScoreHeading(Pose2d currentPose) {
-        Pose2d nearestTagPose = FieldUtil.Reef.getNearestReefTagPose(currentPose);
+        Pose2d nearestTagPose = FieldUtil.Reef.getNearestReefTagPose(currentPose, false);
         Pose2d relativePose = currentPose.relativeTo(nearestTagPose);
         return relativePose.getY() < 0
                 ? nearestTagPose.getRotation().rotateBy(Rotation2d.fromDegrees(15)).getDegrees()

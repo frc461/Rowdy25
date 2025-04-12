@@ -146,7 +146,7 @@ public class PathfindToPoseAvoidingReefCommand extends Command {
         if (RobotPoses.Reef.sameSide(currentPose, targetPose)) {
             return targetPose;
         } else if (currentPose.getTranslation().getDistance(nearestReefCenter) < FieldUtil.Reef.REEF_APOTHEM + Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 1.3) {
-            Translation2d targetTranslation = new Pose2d(nearestReefCenter, FieldUtil.Reef.getNearestReefTagPose(currentPose).getRotation())
+            Translation2d targetTranslation = new Pose2d(nearestReefCenter, FieldUtil.Reef.getNearestReefTagPose(currentPose, true).getRotation())
                     .plus(new Transform2d(2.0, 0, Rotation2d.kZero))
                     .getTranslation();
             return new Pose2d(targetTranslation, currentPose.getRotation());

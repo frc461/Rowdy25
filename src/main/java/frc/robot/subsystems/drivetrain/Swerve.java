@@ -398,7 +398,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                         fieldCentric,
                         robotStates.elevator::getPosition,
                         localizer.robotPoseAtProcessor.plus(new Transform2d(
-                                Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_DIRECT_DRIVE,
+                                Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_TRANSITION,
                                 0,
                                 Rotation2d.kZero
                         ))
