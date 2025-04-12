@@ -231,24 +231,24 @@ public class RobotPoses {
     }
 
     public static class AlgaeScoring {
-        public static Pose2d getRobotPoseAtProcessor() {
-            return FieldUtil.AlgaeScoring.getProcessorTagPose().plus(new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0, 0, Rotation2d.kZero));
+        public static Pose2d getNearestRobotPoseAtProcessor(Pose2d currentPose) {
+            return FieldUtil.AlgaeScoring.getNearestProcessorTagPose(currentPose).plus(new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0, 0, Rotation2d.kZero));
         }
 
-        public static Pose2d getRobotPoseAtNetCenter() {
-            return FieldUtil.AlgaeScoring.getNetTagPose().plus(new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0, 0, Rotation2d.kPi));
+        public static Pose2d getRobotPoseAtNetCenter(Pose2d currentPose) {
+            return FieldUtil.AlgaeScoring.getNearestNetTagPose(currentPose).plus(new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0, 0, Rotation2d.kPi));
         }
 
-        public static Pose2d getInnermostRobotPoseAtNet() {
-            return FieldUtil.AlgaeScoring.getNetTagPose().plus(new Transform2d(
+        public static Pose2d getInnermostRobotPoseAtNet(Pose2d currentPose) {
+            return FieldUtil.AlgaeScoring.getNearestNetTagPose(currentPose).plus(new Transform2d(
                     Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0,
                     FieldUtil.AlgaeScoring.NET_SAFE_HALF_LENGTH,
                     Rotation2d.kPi
             ));
         }
 
-        public static Pose2d getOutermostRobotPoseAtNet() {
-            Pose2d robotPoseAtNetCenter = getRobotPoseAtNetCenter();
+        public static Pose2d getOutermostRobotPoseAtNet(Pose2d currentPose) {
+            Pose2d robotPoseAtNetCenter = getRobotPoseAtNetCenter(currentPose);
             return new Pose2d(
                     robotPoseAtNetCenter.getX(),
                     Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red

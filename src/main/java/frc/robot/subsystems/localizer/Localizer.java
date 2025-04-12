@@ -59,8 +59,8 @@ public class Localizer {
     public Pair<Pose2d, Pose2d> nearestRobotPosesNearBranchPair = new Pair<>(new Pose2d(), new Pose2d());
     public Pose2d nearestReefTagPoseBothReefs = new Pose2d();
 
-    public final Pose2d robotPoseAtProcessor;
     public Pose2d randomizedRobotPoseAtNet = new Pose2d();
+    public Pose2d nearestRobotPoseAtProcessor = new Pose2d();
     public Pose2d nearestRobotPoseAtCoralStation = new Pose2d();
     public Pose2d nearestRobotPoseAtAlgaeReef = new Pose2d();
     public Pose2d nearestRobotPoseNearAlgaeReef = new Pose2d();
@@ -83,9 +83,6 @@ public class Localizer {
 
         configureQuestOffset();
         LimelightUtil.configureRobotToCameraOffset();
-
-        robotPoseAtProcessor = RobotPoses.AlgaeScoring.getRobotPoseAtProcessor();
-        randomizedRobotPoseAtNet = RobotPoses.AlgaeScoring.getRobotPoseAtNetCenter();
     }
 
     public Pose2d getStrategyPose() {
@@ -121,7 +118,7 @@ public class Localizer {
     }
 
     public double getProcessorScoringHeading() {
-        return robotPoseAtProcessor.getRotation().getDegrees();
+        return nearestRobotPoseAtProcessor.getRotation().getDegrees();
     }
 
     public double getNetScoringHeading() {
@@ -129,8 +126,9 @@ public class Localizer {
     }
 
     public Pose2d randomizeNetScoringPose() {
-        randomizedRobotPoseAtNet = RobotPoses.AlgaeScoring.getInnermostRobotPoseAtNet().interpolate(
-                RobotPoses.AlgaeScoring.getOutermostRobotPoseAtNet(),
+        Pose2d currentPose = getStrategyPose();
+        randomizedRobotPoseAtNet = RobotPoses.AlgaeScoring.getInnermostRobotPoseAtNet(currentPose).interpolate(
+                RobotPoses.AlgaeScoring.getOutermostRobotPoseAtNet(currentPose),
                 Math.random()
         );
         return randomizedRobotPoseAtNet;
@@ -140,7 +138,7 @@ public class Localizer {
         Pose2d currentPose = getStrategyPose();
         return switch (robotState) {
             case L1_CORAL, L2_CORAL, L3_CORAL, L4_CORAL -> currentPose.getTranslation().getDistance(nearestRobotPoseAtBranch.getTranslation());
-            case PROCESSOR -> currentPose.getTranslation().getDistance(robotPoseAtProcessor.getTranslation());
+            case PROCESSOR -> currentPose.getTranslation().getDistance(nearestRobotPoseAtProcessor.getTranslation());
             case NET -> currentPose.getTranslation().getDistance(randomizedRobotPoseAtNet.getTranslation());
             case CORAL_STATION -> currentPose.getTranslation().getDistance(nearestRobotPoseAtCoralStation.getTranslation());
             case LOW_REEF_ALGAE, HIGH_REEF_ALGAE -> currentPose.getTranslation().getDistance(nearestRobotPoseAtAlgaeReef.getTranslation());
@@ -154,7 +152,7 @@ public class Localizer {
             case L1_CORAL, L2_CORAL, L3_CORAL, L4_CORAL ->
                     nearestRobotPoseAtBranch.minus(new Pose2d(currentPose.getTranslation(), nearestRobotPoseAtBranch.getRotation())).getTranslation();
             case PROCESSOR ->
-                    robotPoseAtProcessor.minus(new Pose2d(currentPose.getTranslation(), robotPoseAtProcessor.getRotation())).getTranslation();
+                    nearestRobotPoseAtProcessor.minus(new Pose2d(currentPose.getTranslation(), nearestRobotPoseAtProcessor.getRotation())).getTranslation();
             case NET ->
                     randomizedRobotPoseAtNet.minus(new Pose2d(currentPose.getTranslation(), randomizedRobotPoseAtNet.getRotation())).getTranslation();
             case CORAL_STATION ->
@@ -328,6 +326,7 @@ public class Localizer {
         nearestRobotPosesNearBranchPair = RobotPoses.Reef.getNearestRobotPosesNearBranchPair(currentRobotScoringSetting, currentPose);
         nearestReefTagPoseBothReefs = FieldUtil.Reef.getNearestReefTagPose(currentPose, true);
 
+        nearestRobotPoseAtProcessor = RobotPoses.AlgaeScoring.getNearestRobotPoseAtProcessor(currentPose);
         nearestRobotPoseAtCoralStation = getStrategyPose().nearest(List.of(
                 RobotPoses.CoralStation.getRobotPosesAtEachCoralStation().get(0).interpolate(Constants.FAR_LEFT_CORAL_STATION.apply(Constants.ALLIANCE_SUPPLIER), 0.25),
                 RobotPoses.CoralStation.getRobotPosesAtEachCoralStation().get(1).interpolate(Constants.FAR_RIGHT_CORAL_STATION.apply(Constants.ALLIANCE_SUPPLIER), 0.25)

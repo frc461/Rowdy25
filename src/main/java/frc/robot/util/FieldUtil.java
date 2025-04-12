@@ -247,18 +247,25 @@ public final class FieldUtil {
             return TagManager.getTagLocations2d(getAlgaeScoringTags());
         }
 
-        public static Pose2d getProcessorTagPose() {
-            return Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red ?
-                    AprilTag.ID_3.pose2d : AprilTag.ID_16.pose2d;
+        public static List<Pose2d> getProcessorTagPoses() {
+            return List.of(AprilTag.ID_3.pose2d, AprilTag.ID_16.pose2d);
         }
 
-        public static Pose2d getNetTagPose() {
+        public static List<Pose2d> getNetTagPoses() {
             return Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red ?
-                    AprilTag.ID_5.pose2d : AprilTag.ID_14.pose2d;
+                    List.of(AprilTag.ID_5.pose2d, AprilTag.ID_15.pose2d) : List.of(AprilTag.ID_14.pose2d, AprilTag.ID_4.pose2d);
         }
 
         public static Pose2d getNearestAlgaeScoringTagPose(Pose2d currentPose) {
             return currentPose.nearest(getAlgaeScoringTagPoses());
+        }
+
+        public static Pose2d getNearestProcessorTagPose(Pose2d currentPose) {
+            return currentPose.nearest(getProcessorTagPoses());
+        }
+
+        public static Pose2d getNearestNetTagPose(Pose2d currentPose) {
+            return currentPose.nearest(getNetTagPoses());
         }
 
         public static AprilTag getNearestAlgaeScoringTag(Pose2d currentPose) {
