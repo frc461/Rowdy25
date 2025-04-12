@@ -205,7 +205,7 @@ public final class AutoManager {
                             nextAlgaeLocation ->
                                     triggersToBind.add(autoEventLooper.addTrigger(
                                             currentScoringOrAlgaeLocation + "," + nextScoringOrAlgaeLocation,
-                                            () -> Commands.waitSeconds(0.5)
+                                            () -> Commands.waitSeconds(1.0)
                                                     .andThen(robotStates.swerve.pathFindToAlgaeOnReef(robotStates, nextAlgaeLocation))
                                                     .andThen(robotStates::setStowState)
                                                     .andThen(robotStates.swerve.pathFindToNet(robotStates))

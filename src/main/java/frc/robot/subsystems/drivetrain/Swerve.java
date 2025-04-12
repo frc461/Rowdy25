@@ -347,13 +347,22 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                         robotStates.elevator::getPosition,
                         localizer.nearestRobotPoseNearAlgaeReef
                 ).until(() -> robotStates.atTransitionStateLocation(RobotStates.State.LOW_REEF_ALGAE) && robotStates.atReefAlgaeState.getAsBoolean())
-                        .andThen(new DirectMoveToPoseCommand(
-                                this,
-                                fieldCentric,
-                                robotStates.elevator::getPosition,
-                                localizer.nearestRobotPoseAtAlgaeReef,
-                                2.0
-                        )).alongWith(
+                        .andThen(
+                                new DirectMoveToPoseCommand(
+                                        this,
+                                        fieldCentric,
+                                        robotStates.elevator::getPosition,
+                                        localizer.nearestRobotPoseAtAlgaeReef,
+                                        2.0
+                                ).andThen(Commands.waitSeconds(0.5))
+                                        .andThen(new DirectMoveToPoseCommand(
+                                                this,
+                                                fieldCentric,
+                                                robotStates.elevator::getPosition,
+                                                localizer.nearestRobotPoseNearAlgaeReef,
+                                                2.0
+                                        ))
+                        ).alongWith(
                                 new WaitUntilCommand(() -> robotStates.atTransitionStateLocation(RobotStates.State.HIGH_REEF_ALGAE))
                                         .andThen(() -> robotStates.toggleReefAlgaeState(localizer.nearestAlgaeIsHigh, true))
                         ),
@@ -369,13 +378,22 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                         robotStates.elevator::getPosition,
                         RobotPoses.Reef.getRobotPoseNearReef(side)
                 ).until(() -> robotStates.atTransitionStateLocation(RobotStates.State.LOW_REEF_ALGAE) && robotStates.atReefAlgaeState.getAsBoolean())
-                        .andThen(new DirectMoveToPoseCommand(
-                                this,
-                                fieldCentric,
-                                robotStates.elevator::getPosition,
-                                RobotPoses.Reef.getRobotPoseAtAlgaeReef(side),
-                                2.0
-                        )).alongWith(
+                        .andThen(
+                                new DirectMoveToPoseCommand(
+                                        this,
+                                        fieldCentric,
+                                        robotStates.elevator::getPosition,
+                                        RobotPoses.Reef.getRobotPoseAtAlgaeReef(side),
+                                        2.0
+                                ).andThen(Commands.waitSeconds(0.25))
+                                        .andThen(new DirectMoveToPoseCommand(
+                                                this,
+                                                fieldCentric,
+                                                robotStates.elevator::getPosition,
+                                                RobotPoses.Reef.getRobotPoseNearReef(side),
+                                                2.0
+                                        ))
+                        ).alongWith(
                                 new WaitUntilCommand(() -> robotStates.atTransitionStateLocation(RobotStates.State.HIGH_REEF_ALGAE, true))
                                         .andThen(() -> robotStates.toggleReefAlgaeState(FieldUtil.Reef.Side.algaeIsHigh(side)))
                         ),
