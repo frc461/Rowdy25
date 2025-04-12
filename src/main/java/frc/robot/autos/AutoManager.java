@@ -2,6 +2,7 @@ package frc.robot.autos;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.pathplanner.lib.path.PathPlannerPath;
@@ -50,7 +51,7 @@ public final class AutoManager {
     }
 
     private StartPosition startPosition = null;
-    private List<Pair<FieldUtil.Reef.ScoringLocation, FieldUtil.Reef.Level>> scoringLocations = null;
+    private List<String> scoringOrAlgaeLocations = null;
     private String coralStationOverride = null;
     private boolean push = false; // Whether to push alliance partner off first
     private boolean groundIntake = false; // Whether or not to use ground intake states instead of coral station states
@@ -64,21 +65,24 @@ public final class AutoManager {
         SmartDashboard.putData("Start Position", startPositionChooser);
         startPositionChooser.onChange(startPosition -> {
             this.startPosition = startPosition;
-            if (this.startPosition != null && this.scoringLocations != null && !this.scoringLocations.isEmpty()) {
+            if (this.startPosition != null && this.scoringOrAlgaeLocations != null && !this.scoringOrAlgaeLocations.isEmpty()) {
                 currentCommand = generateAutoEventLooper(robotStates).cmd();
             }
         });
-
-        MultipleChooser<Pair<FieldUtil.Reef.ScoringLocation, FieldUtil.Reef.Level>> scoringLocationsChooser = new MultipleChooser<>();
+        
+        MultipleChooser<String> scoringOrAlgaeLocationsChooser = new MultipleChooser<>();
         for (FieldUtil.Reef.ScoringLocation location : FieldUtil.Reef.ScoringLocation.values()) {
             for (FieldUtil.Reef.Level level : FieldUtil.Reef.Level.values()) {
-                scoringLocationsChooser.addOption(location.name() + level.level, new Pair<>(location, level));
+                scoringOrAlgaeLocationsChooser.addOption(location.name() + level.level, location.name() + level.level);
             }
         }
-        SmartDashboard.putData("Scoring Locations", scoringLocationsChooser);
-        scoringLocationsChooser.onChange(scoringLocations -> {
-            this.scoringLocations = scoringLocations;
-            if (startPosition != null && this.scoringLocations != null && !this.scoringLocations.isEmpty()) {
+        for (FieldUtil.Reef.Side side : FieldUtil.Reef.Side.values()) {
+            scoringOrAlgaeLocationsChooser.addOption(side.name(), side.name());
+        }
+        SmartDashboard.putData("Scoring or Algae Locations", scoringOrAlgaeLocationsChooser);
+        scoringOrAlgaeLocationsChooser.onChange( scoringOrAlgaeLocations -> {
+            this.scoringOrAlgaeLocations = scoringOrAlgaeLocations;
+            if (startPosition != null && this.scoringOrAlgaeLocations != null && !this.scoringOrAlgaeLocations.isEmpty()) {
                 currentCommand = generateAutoEventLooper(robotStates).cmd();
             }
         });
@@ -89,7 +93,7 @@ public final class AutoManager {
         SmartDashboard.putData("Coral Station Preference", coralStationOverrideChooser);
         coralStationOverrideChooser.onChange(coralStationOverride -> {
             this.coralStationOverride = coralStationOverride;
-            if (startPosition != null && this.scoringLocations != null && !this.scoringLocations.isEmpty()) {
+            if (startPosition != null && this.scoringOrAlgaeLocations != null && !this.scoringOrAlgaeLocations.isEmpty()) {
                 currentCommand = generateAutoEventLooper(robotStates).cmd();
             }
         });
@@ -100,7 +104,7 @@ public final class AutoManager {
         SmartDashboard.putData("Push Alliance Partner First", pushChooser);
         pushChooser.onChange(push -> {
             this.push = push;
-            if (startPosition != null && this.scoringLocations != null && !this.scoringLocations.isEmpty()) {
+            if (startPosition != null && this.scoringOrAlgaeLocations != null && !this.scoringOrAlgaeLocations.isEmpty()) {
                 currentCommand = generateAutoEventLooper(robotStates).cmd();
             }
         });
@@ -111,7 +115,7 @@ public final class AutoManager {
         SmartDashboard.putData("Intake Type", groundIntakeChooser);
         groundIntakeChooser.onChange(groundIntake -> {
             this.groundIntake = groundIntake;
-            if (startPosition != null && this.scoringLocations != null && !this.scoringLocations.isEmpty()) {
+            if (startPosition != null && this.scoringOrAlgaeLocations != null && !this.scoringOrAlgaeLocations.isEmpty()) {
                 currentCommand = generateAutoEventLooper(robotStates).cmd();
             }
         });
@@ -127,44 +131,85 @@ public final class AutoManager {
     private AutoEventLooper generateAutoEventLooper(
             RobotStates robotStates
     ) {
-        List<Pair<FieldUtil.Reef.ScoringLocation, FieldUtil.Reef.Level>> currentScoringLocations = new ArrayList<>(this.scoringLocations);
+        List<String> currentScoringLocations = new ArrayList<>(this.scoringOrAlgaeLocations);
 
         AutoEventLooper autoEventLooper = new AutoEventLooper("AutoEventLooper");
         List<AutoTrigger> triggersToBind = new ArrayList<>();
 
-        Pair<FieldUtil.Reef.ScoringLocation, FieldUtil.Reef.Level> firstScoringLocation = currentScoringLocations.get(0);
-
-        triggersToBind.add(autoEventLooper.addTrigger(
-                this.startPosition.index + "," + firstScoringLocation.getFirst().name(),
-                () -> new InstantCommand(() -> robotStates.swerve.localizer.setPoses(getStartingPose(startPosition)))
-                        .onlyIf(() -> startPosition.index != 0)
-                        .andThen(robotStates::setStowState)
-                        .andThen(robotStates.swerve.pushAlliancePartnerOut()).onlyIf(() -> push)
-                        .andThen(robotStates.swerve.pathFindToScoringLocation(robotStates, firstScoringLocation.getFirst(), firstScoringLocation.getSecond()))
-        ));
+        String firstScoringOrAlgaeLocation = currentScoringLocations.get(0);
+        getScoringLocation(firstScoringOrAlgaeLocation).ifPresentOrElse(
+                firstScoringLocation -> triggersToBind.add(autoEventLooper.addTrigger(
+                        this.startPosition.index + "," + firstScoringOrAlgaeLocation,
+                        () -> new InstantCommand(() -> robotStates.swerve.localizer.setPoses(getStartingPose(startPosition)))
+                                .onlyIf(() -> startPosition.index != 0)
+                                .andThen(robotStates::setStowState)
+                                .andThen(robotStates.swerve.pushAlliancePartnerOut()).onlyIf(() -> push)
+                                .andThen(robotStates.swerve.pathFindToScoringLocation(robotStates, firstScoringLocation.getFirst(), firstScoringLocation.getSecond()))
+                )),
+                () -> getAlgaeLocation(firstScoringOrAlgaeLocation).ifPresent(
+                        firstAlgaeLocation -> triggersToBind.add(autoEventLooper.addTrigger(
+                                this.startPosition.index + "," + firstScoringOrAlgaeLocation,
+                                () -> new InstantCommand(() -> robotStates.swerve.localizer.setPoses(getStartingPose(startPosition)))
+                                        .onlyIf(() -> startPosition.index != 0)
+                                        .andThen(robotStates::setStowState)
+                                        .andThen(robotStates.swerve.pushAlliancePartnerOut()).onlyIf(() -> push)
+                                        .andThen(robotStates.swerve.pathFindToAlgaeOnReef(robotStates, firstAlgaeLocation))
+                                        .andThen(robotStates::setStowState)
+                                        .andThen(robotStates.swerve.pathFindToNet(robotStates))
+                        ))
+                )
+        );
 
         while (!currentScoringLocations.isEmpty()) {
-            Pair<FieldUtil.Reef.ScoringLocation, FieldUtil.Reef.Level> currentScoringLocation = currentScoringLocations.remove(0);
+            String currentScoringOrAlgaeLocation = currentScoringLocations.remove(0);
+            Pose2d currentScoringOrAlgaePose = getScoringLocation(currentScoringOrAlgaeLocation).map(
+                    currentScoringLocation -> RobotPoses.Reef.getRobotPoseAtBranch(
+                            robotStates.swerve.localizer.currentRobotScoringSetting,
+                            currentScoringLocation.getFirst()
+                    )
+            ).orElseGet(
+                    () -> getAlgaeLocation(currentScoringOrAlgaeLocation).map(
+                            RobotPoses.Reef::getRobotPoseAtAlgaeReef
+                    ).orElseGet(Pose2d::new)
+            );
 
             if (currentScoringLocations.isEmpty()) {
                 break;
             }
 
-            Pair<FieldUtil.Reef.ScoringLocation, FieldUtil.Reef.Level> nextScoringLocation = currentScoringLocations.get(0);
+            String nextScoringOrAlgaeLocation = currentScoringLocations.get(0);
 
             AtomicBoolean scoringNext = new AtomicBoolean(false);
 
-            triggersToBind.add(autoEventLooper.addTrigger(
-                    currentScoringLocation.getFirst().name() + "," + nextScoringLocation.getFirst().name(),
-                    () -> Commands.waitSeconds(0.5) // TODO SHOP: MINIMIZE THIS
-                            .andThen(groundIntake
-                                    ? getPathFindingCommandToGroundIntakeCoral(robotStates, currentScoringLocation.getFirst(), nextScoringLocation.getFirst())
-                                    : getPathFindingCommandToCoralStation(robotStates, currentScoringLocation.getFirst(), nextScoringLocation.getFirst()))
-                            .andThen(new WaitUntilCommand(() -> robotStates.stowState.getAsBoolean() || robotStates.intake.coralEntered()))
-                            .andThen(() -> scoringNext.set(true))
-                            .andThen(robotStates.swerve.pathFindToScoringLocation(robotStates, nextScoringLocation.getFirst(), nextScoringLocation.getSecond()))
-                            .andThen(() -> scoringNext.set(false))
-                            .until(() -> scoringNext.get() && !robotStates.intake.barelyHasCoral() && !robotStates.atScoringLocation() || robotStates.intake.coralStuck())
+            getScoringLocation(nextScoringOrAlgaeLocation).ifPresentOrElse(
+                    nextScoringLocation ->
+                            triggersToBind.add(autoEventLooper.addTrigger(
+                                    currentScoringOrAlgaeLocation + "," + nextScoringOrAlgaeLocation,
+                                    () -> Commands.waitSeconds(0.5) // TODO SHOP: MINIMIZE THIS
+                                            .andThen(groundIntake
+                                                    ? getPathFindingCommandToGroundIntakeCoral(robotStates, currentScoringOrAlgaePose, RobotPoses.Reef.getRobotPoseAtBranch(
+                                                            robotStates.swerve.localizer.currentRobotScoringSetting,
+                                                            nextScoringLocation.getFirst()
+                                                    )) : getPathFindingCommandToCoralStation(robotStates, currentScoringOrAlgaePose, RobotPoses.Reef.getRobotPoseAtBranch(
+                                                            robotStates.swerve.localizer.currentRobotScoringSetting,
+                                                            nextScoringLocation.getFirst()
+                                                    ))
+                                            )
+                                            .andThen(new WaitUntilCommand(() -> robotStates.stowState.getAsBoolean() || robotStates.intake.coralEntered()))
+                                            .andThen(() -> scoringNext.set(true))
+                                            .andThen(robotStates.swerve.pathFindToScoringLocation(robotStates, nextScoringLocation.getFirst(), nextScoringLocation.getSecond()))
+                                            .andThen(() -> scoringNext.set(false))
+                                            .until(() -> scoringNext.get() && !robotStates.intake.barelyHasCoral() && !robotStates.atScoringLocation() || robotStates.intake.coralStuck())
+                            )),
+                    () -> getAlgaeLocation(nextScoringOrAlgaeLocation).ifPresent(
+                            nextAlgaeLocation ->
+                                    triggersToBind.add(autoEventLooper.addTrigger(
+                                            currentScoringOrAlgaeLocation + "," + nextScoringOrAlgaeLocation,
+                                            () -> Commands.waitSeconds(0.5)
+                                                    .andThen(robotStates.swerve.pathFindToAlgaeOnReef(robotStates, nextAlgaeLocation))
+                                                    .andThen(robotStates::setStowState)
+                                                    .andThen(robotStates.swerve.pathFindToNet(robotStates))
+                                    ))
             ));
         }
 
@@ -182,6 +227,26 @@ public final class AutoManager {
         }
 
         return autoEventLooper;
+    }
+
+    private Optional<Pair<FieldUtil.Reef.ScoringLocation, FieldUtil.Reef.Level>> getScoringLocation(String scoringLocation) {
+        for (FieldUtil.Reef.ScoringLocation location : FieldUtil.Reef.ScoringLocation.values()) {
+            for (FieldUtil.Reef.Level level : FieldUtil.Reef.Level.values()) {
+                if (scoringLocation.equals(location.name() + level.level)) {
+                    return Optional.of(new Pair<>(location, level));
+                }
+            }
+        }
+        return Optional.empty();
+    }
+
+    private Optional<FieldUtil.Reef.Side> getAlgaeLocation(String algaeLocation) {
+        for (FieldUtil.Reef.Side side : FieldUtil.Reef.Side.values()) {
+            if (algaeLocation.equals(side.name())) {
+                return Optional.of(side);
+            }
+        }
+        return Optional.empty();
     }
 
     private String getMostEfficientCoralStation(Pose2d currentLocation, Pose2d nextLocation) {
@@ -205,12 +270,10 @@ public final class AutoManager {
         return Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red ? FlippingUtil.flipFieldPose(startingPoseBlue) : startingPoseBlue;
     }
 
-    private Command getPathFindingCommandToCoralStation(RobotStates robotStates, FieldUtil.Reef.ScoringLocation current, FieldUtil.Reef.ScoringLocation next) {
+    private Command getPathFindingCommandToCoralStation(RobotStates robotStates, Pose2d current, Pose2d next) {
         String coralStation = this.coralStationOverride == null
-                ? getMostEfficientCoralStation(
-                        RobotPoses.Reef.getRobotPoseAtBranch(robotStates.swerve.localizer.currentRobotScoringSetting, current),
-                        RobotPoses.Reef.getRobotPoseAtBranch(robotStates.swerve.localizer.currentRobotScoringSetting, next)
-                ) : this.coralStationOverride;
+                ? getMostEfficientCoralStation(current, next)
+                : this.coralStationOverride;
 
         if (coralStation.equals("station-1")) {
             return robotStates.swerve.pathFindToLeftCoralStation(robotStates);
@@ -218,12 +281,10 @@ public final class AutoManager {
         return robotStates.swerve.pathFindToRightCoralStation(robotStates);
     }
 
-    private Command getPathFindingCommandToGroundIntakeCoral(RobotStates robotStates, FieldUtil.Reef.ScoringLocation current, FieldUtil.Reef.ScoringLocation next) {
+    private Command getPathFindingCommandToGroundIntakeCoral(RobotStates robotStates, Pose2d current, Pose2d next) {
         String coralStation = this.coralStationOverride == null
-                ? getMostEfficientCoralStation(
-                        RobotPoses.Reef.getRobotPoseAtBranch(robotStates.swerve.localizer.currentRobotScoringSetting, current),
-                        RobotPoses.Reef.getRobotPoseAtBranch(robotStates.swerve.localizer.currentRobotScoringSetting, next)
-                ) : this.coralStationOverride;
+                ? getMostEfficientCoralStation(current, next)
+                : this.coralStationOverride;
 
         if (coralStation.equals("station-1")) {
             return robotStates.swerve.pathFindToLeftCoralStationGroundIntakeCoral(robotStates);
