@@ -80,8 +80,8 @@ public class RobotPoses {
 
         public enum RobotScoringSetting {
             L1(
-                    new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0 + Units.inchesToMeters(4.1), Units.inchesToMeters(-8.9469731), Rotation2d.fromDegrees(15)), // TODO SHOP: TEST THIS
-                    new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0 + Units.inchesToMeters(4.1), Units.inchesToMeters(8.9469731), Rotation2d.fromDegrees(-15))
+                    new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0 + Units.inchesToMeters(3.1), Units.inchesToMeters(-10.9469731), Rotation2d.kZero),
+                    new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0 + Units.inchesToMeters(3.1), Units.inchesToMeters(10.9469731), Rotation2d.kZero)
             ),
             L2(
                     new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0 + Units.inchesToMeters(6.1), Units.inchesToMeters(-6.9469731), Rotation2d.kPi),

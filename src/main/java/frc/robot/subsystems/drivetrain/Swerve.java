@@ -321,13 +321,13 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                                 fieldCentric,
                                 robotStates.elevator::getPosition,
                                 RobotPoses.Reef.getRobotPoseNearBranch(localizer.currentRobotScoringSetting, location)
-                        )).until(() -> robotStates.atTransitionStateLocation(RobotStates.State.L4_CORAL) && localizer.sameSideAsReefScoringLocation(location))
+                        )).until(() -> robotStates.atTransitionStateLocation(RobotStates.State.L4_CORAL))
                         .andThen(new DirectMoveToPoseCommand(
                                 this,
                                 fieldCentric,
                                 robotStates.elevator::getPosition,
                                 RobotPoses.Reef.getRobotPoseAtBranch(localizer.currentRobotScoringSetting, location),
-                                Constants.MAX_VEL
+                                robotStates.getCurrentAutoLevel() == FieldUtil.Reef.Level.L4 ? 2.5 : Constants.MAX_VEL
                         )).raceWith(new WaitUntilCommand(new Trigger(() -> robotStates.nearStateLocation(RobotStates.State.L4_CORAL)).debounce(1))).andThen(
                                 new WaitUntilCommand(robotStates.atAutoScoreState)
                                         .andThen(robotStates::toggleAutoLevelCoralState)
