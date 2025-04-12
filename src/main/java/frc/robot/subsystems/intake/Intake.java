@@ -77,7 +77,7 @@ public class Intake extends SubsystemBase {
         beamBreak = new DigitalInput(Constants.IntakeConstants.BEAMBREAK_DIO_PORT);
         currentState = State.IDLE;
 
-        hasAlgaeOrCoralStuck = new Trigger(() -> Math.abs(getCurrent()) > 25.0).debounce(0.5, Debouncer.DebounceType.kRising);
+        hasAlgaeOrCoralStuck = new Trigger(() -> Math.abs(getCurrent()) > 40.0).debounce(0.1, Debouncer.DebounceType.kRising);
         maintainAlgae = new Trigger(() -> maintainAlgaeCurrentOverride && Math.abs(getCurrent()) > 5.0).debounce(0.25, Debouncer.DebounceType.kFalling);
     }
 
