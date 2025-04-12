@@ -159,6 +159,21 @@ public final class FieldUtil {
                     case KL -> getReefCorners().get(5);
                 };
             }
+
+            public static AprilTag getTag(Side side) {
+                return switch (side) {
+                    case AB -> getReefTags(false).get(0);
+                    case CD -> getReefTags(false).get(1);
+                    case EF -> getReefTags(false).get(2);
+                    case GH -> getReefTags(false).get(3);
+                    case IJ -> getReefTags(false).get(4);
+                    case KL -> getReefTags(false).get(5);
+                };
+            }
+
+            public static boolean algaeIsHigh(Side side) {
+                return getAlgaeReefLevelFromTag(getTag(side)) == AlgaeLocation.HIGH;
+            }
         }
 
         public enum ScoringLocation {
@@ -257,7 +272,7 @@ public final class FieldUtil {
         }
 
         public static List<Pose2d> getNetTagPoses() {
-            return Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red ?
+            return Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Blue ? // TODO: CHANGE BACK TO RED FOR WORLDS
                     List.of(AprilTag.ID_5.pose2d, AprilTag.ID_15.pose2d) : List.of(AprilTag.ID_14.pose2d, AprilTag.ID_4.pose2d);
         }
 

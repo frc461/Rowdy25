@@ -22,7 +22,6 @@ import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.wrist.Wrist;
 import frc.robot.util.DoubleTrueTrigger;
 import frc.robot.util.FieldUtil;
-import frc.robot.util.FieldUtil.Reef.Level;
 import frc.robot.util.vision.PhotonUtil;
 
 import java.util.Arrays;
@@ -139,8 +138,8 @@ public class RobotStates {
         return swerve.localizer.atTransitionStateLocation(robotState, false);
     }
 
-    public boolean atTransitionStateLocation(RobotStates.State robotState, boolean auto) {
-        return swerve.localizer.atTransitionStateLocation(robotState, auto);
+    public boolean atTransitionStateLocation(RobotStates.State robotState, boolean autoTransition) {
+        return swerve.localizer.atTransitionStateLocation(robotState, autoTransition);
     }
 
     public boolean nearStateLocation(RobotStates.State robotState) {
@@ -243,14 +242,14 @@ public class RobotStates {
         currentState = currentState == State.HIGH_REEF_ALGAE ? State.STOW : State.HIGH_REEF_ALGAE;
     }
 
-    public void toggleNearestReefAlgaeState(boolean high, boolean override) {
+    public void toggleReefAlgaeState(boolean high, boolean override) {
         currentState = high
                 ? currentState == State.HIGH_REEF_ALGAE && !override ? State.STOW : State.HIGH_REEF_ALGAE
                 : currentState == State.LOW_REEF_ALGAE && !override ? State.STOW : State.LOW_REEF_ALGAE;
     }
 
-    public void toggleNearestReefAlgaeState(boolean high) {
-        toggleNearestReefAlgaeState(high, false);
+    public void toggleReefAlgaeState(boolean high) {
+        toggleReefAlgaeState(high, false);
     }
 
     public void toggleProcessorState(boolean override) {
