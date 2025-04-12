@@ -272,7 +272,7 @@ public final class FieldUtil {
         }
 
         public static List<Pose2d> getNetTagPoses() {
-            return Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Blue ? // TODO: CHANGE BACK TO RED FOR WORLDS
+            return Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red ?
                     List.of(AprilTag.ID_5.pose2d, AprilTag.ID_15.pose2d) : List.of(AprilTag.ID_14.pose2d, AprilTag.ID_4.pose2d);
         }
 
