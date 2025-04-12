@@ -82,7 +82,7 @@ public class Pivot extends SubsystemBase {
     );
 
     private double error, currentG, lastManualPosition;
-    private boolean cageIntakeOverride;
+    private boolean cageIntakeOverride, activateUpLatch;
 
     private final PivotTelemetry pivotTelemetry = new PivotTelemetry(this);
 
@@ -202,7 +202,7 @@ public class Pivot extends SubsystemBase {
     }
 
     public int getUpRatchetPulseWidth() {
-        return getState() == State.CLIMB ? RatchetState.OFF.pulseWidth : RatchetState.ON.pulseWidth;
+        return activateUpLatch ? RatchetState.OFF.pulseWidth : RatchetState.ON.pulseWidth;
     }
 
     public int getDownRatchetPulseWidth() {
@@ -246,6 +246,7 @@ public class Pivot extends SubsystemBase {
     }
 
     private void setState(State newState) {
+        activateUpLatch = newState == State.MANUAL ? activateUpLatch : newState == State.CLIMB;
         currentState = newState;
     }
 

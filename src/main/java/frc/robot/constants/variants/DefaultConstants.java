@@ -266,7 +266,7 @@ public final class DefaultConstants {
         public static final double PROCESSOR = 0;
         public static final double NET = 44;
         public static final double PREPARE_CLIMB = 0;
-        public static final double CLIMB = 0;
+        public static final double CLIMB = 5.5;
     }
 
     public final static class IntakeConstants {
@@ -341,7 +341,7 @@ public final class DefaultConstants {
         public static final double PROCESSOR = 22.1;
         public static final double NET = 90;
         public static final double PREPARE_CLIMB = 90;
-        public static final double CLIMB = 15;
+        public static final double CLIMB = 75;
     }
 
     public final static class WristConstants {
