@@ -141,20 +141,6 @@ public enum RobotIdentity {
         Constants.VisionConstants.QuestNavConstants.TRANSLATION_ERROR_TOLERANCE = DefaultConstants.VisionConstants.QuestNavConstants.TRANSLATION_ERROR_TOLERANCE;
         Constants.VisionConstants.QuestNavConstants.ROTATION_ERROR_TOLERANCE = DefaultConstants.VisionConstants.QuestNavConstants.ROTATION_ERROR_TOLERANCE;
         Constants.VisionConstants.QuestNavConstants.MIN_TAG_DIST_TO_BE_FAR = DefaultConstants.VisionConstants.QuestNavConstants.MIN_TAG_DIST_TO_BE_FAR;
-
-        Constants.ClimbConstants.ID = DefaultConstants.ClimbConstants.ID;
-        Constants.ClimbConstants.CURRENT_LIMIT = DefaultConstants.ClimbConstants.CURRENT_LIMIT;
-        Constants.ClimbConstants.MOTOR_INVERT = DefaultConstants.ClimbConstants.MOTOR_INVERT;
-        Constants.ClimbConstants.NEUTRAL_MODE = DefaultConstants.ClimbConstants.NEUTRAL_MODE;
-        Constants.ClimbConstants.RATCHET_CHANNEL = DefaultConstants.ClimbConstants.RATCHET_CHANNEL;
-        Constants.ClimbConstants.RATCHET_ON = DefaultConstants.ClimbConstants.RATCHET_ON;
-        Constants.ClimbConstants.RATCHET_OFF = DefaultConstants.ClimbConstants.RATCHET_OFF;
-        Constants.ClimbConstants.INTAKE_ID = DefaultConstants.ClimbConstants.INTAKE_ID;
-        Constants.ClimbConstants.INTAKE_CURRENT_LIMIT = DefaultConstants.ClimbConstants.INTAKE_CURRENT_LIMIT;
-        Constants.ClimbConstants.INTAKE_MOTOR_INVERT = DefaultConstants.ClimbConstants.INTAKE_MOTOR_INVERT;
-        Constants.ClimbConstants.STOW = DefaultConstants.ClimbConstants.IDLE;
-        Constants.ClimbConstants.PREPARE_CLIMB = DefaultConstants.ClimbConstants.PREPARE_CLIMB;
-        Constants.ClimbConstants.CLIMB = DefaultConstants.ClimbConstants.CLIMB;
               
         Constants.ElevatorConstants.LEAD_ID = DefaultConstants.ElevatorConstants.LEAD_ID;
         Constants.ElevatorConstants.FOLLOWER_ID = DefaultConstants.ElevatorConstants.FOLLOWER_ID;
@@ -209,17 +195,22 @@ public enum RobotIdentity {
 
         Constants.PivotConstants.LEAD_ID = DefaultConstants.PivotConstants.LEAD_ID;
         Constants.PivotConstants.FOLLOWER_ID = DefaultConstants.PivotConstants.FOLLOWER_ID;
+        Constants.PivotConstants.INTAKE_ID = DefaultConstants.PivotConstants.INTAKE_ID;
         Constants.PivotConstants.CURRENT_LIMIT = DefaultConstants.PivotConstants.CURRENT_LIMIT;
         Constants.PivotConstants.MOTOR_INVERT = DefaultConstants.PivotConstants.MOTOR_INVERT;
+        Constants.PivotConstants.INTAKE_MOTOR_INVERT = DefaultConstants.PivotConstants.INTAKE_MOTOR_INVERT;
         Constants.PivotConstants.NEUTRAL_MODE = DefaultConstants.PivotConstants.NEUTRAL_MODE;
         Constants.PivotConstants.SENSOR_TO_DEGREE_RATIO = DefaultConstants.PivotConstants.SENSOR_TO_DEGREE_RATIO;
         Constants.PivotConstants.AXIS_POSITION = DefaultConstants.PivotConstants.AXIS_POSITION;
         Constants.PivotConstants.ENCODER_ID = DefaultConstants.PivotConstants.ENCODER_ID;
         Constants.PivotConstants.ENCODER_ABSOLUTE_OFFSET = DefaultConstants.PivotConstants.ENCODER_ABSOLUTE_OFFSET;
         Constants.PivotConstants.ENCODER_INVERT = DefaultConstants.PivotConstants.ENCODER_INVERT;
-        Constants.PivotConstants.RATCHET_CHANNEL = DefaultConstants.PivotConstants.RATCHET_CHANNEL;
-        Constants.PivotConstants.RATCHET_ON = DefaultConstants.PivotConstants.RATCHET_ON;
-        Constants.PivotConstants.RATCHET_OFF = DefaultConstants.PivotConstants.RATCHET_OFF;
+        Constants.PivotConstants.UP_RATCHET_CHANNEL = DefaultConstants.PivotConstants.UP_RATCHET_CHANNEL;
+        Constants.PivotConstants.UP_RATCHET_ON = DefaultConstants.PivotConstants.UP_RATCHET_ON;
+        Constants.PivotConstants.UP_RATCHET_OFF = DefaultConstants.PivotConstants.UP_RATCHET_OFF;
+        Constants.PivotConstants.DOWN_RATCHET_CHANNEL = DefaultConstants.PivotConstants.DOWN_RATCHET_CHANNEL;
+        Constants.PivotConstants.DOWN_RATCHET_ON = DefaultConstants.PivotConstants.DOWN_RATCHET_ON;
+        Constants.PivotConstants.DOWN_RATCHET_OFF = DefaultConstants.PivotConstants.DOWN_RATCHET_OFF;
         Constants.PivotConstants.G = DefaultConstants.PivotConstants.G;
         Constants.PivotConstants.V = DefaultConstants.PivotConstants.V;
         Constants.PivotConstants.A = DefaultConstants.PivotConstants.A;
@@ -379,8 +370,8 @@ public enum RobotIdentity {
         Constants.PivotConstants.AXIS_POSITION = CompConstants.PivotConstants.AXIS_POSITION;
         Constants.PivotConstants.ENCODER_ABSOLUTE_OFFSET = CompConstants.PivotConstants.ENCODER_ABSOLUTE_OFFSET;
         Constants.PivotConstants.ENCODER_INVERT = CompConstants.PivotConstants.ENCODER_INVERT;
-        Constants.PivotConstants.RATCHET_ON = CompConstants.PivotConstants.RATCHET_ON;
-        Constants.PivotConstants.RATCHET_OFF = CompConstants.PivotConstants.RATCHET_OFF;
+        Constants.PivotConstants.DOWN_RATCHET_ON = CompConstants.PivotConstants.RATCHET_ON;
+        Constants.PivotConstants.DOWN_RATCHET_OFF = CompConstants.PivotConstants.RATCHET_OFF;
         Constants.PivotConstants.G = CompConstants.PivotConstants.G;
         Constants.PivotConstants.V = CompConstants.PivotConstants.V;
         Constants.PivotConstants.A = CompConstants.PivotConstants.A;

@@ -165,29 +165,6 @@ public final class Constants {
         }
     }
 
-    public final static class ClimbConstants {
-        // motor config
-        public static int ID;
-        public static double CURRENT_LIMIT;
-        public static InvertedValue MOTOR_INVERT;
-        public static NeutralModeValue NEUTRAL_MODE;
-
-        // ratchet
-        public static ServoChannel.ChannelId RATCHET_CHANNEL;
-        public static int RATCHET_ON;
-        public static int RATCHET_OFF;
-
-        // intake
-        public static int INTAKE_ID;
-        public static double INTAKE_CURRENT_LIMIT;
-        public static InvertedValue INTAKE_MOTOR_INVERT;
-
-        // presets
-        public static double STOW;
-        public static double PREPARE_CLIMB;
-        public static double CLIMB; 
-    }
-
     public final static class ElevatorConstants {
         // motor config
         public static int LEAD_ID;
@@ -255,8 +232,10 @@ public final class Constants {
         // motor config
         public static int LEAD_ID;
         public static int FOLLOWER_ID;
+        public static int INTAKE_ID;
         public static double CURRENT_LIMIT;
         public static InvertedValue MOTOR_INVERT;
+        public static InvertedValue INTAKE_MOTOR_INVERT;
         public static NeutralModeValue NEUTRAL_MODE;
 
         // mechanism characterization
@@ -268,10 +247,15 @@ public final class Constants {
         public static double ENCODER_ABSOLUTE_OFFSET;
         public static SensorDirectionValue ENCODER_INVERT;
 
-        // ratchet config
-        public static ServoChannel.ChannelId RATCHET_CHANNEL;
-        public static int RATCHET_ON;
-        public static int RATCHET_OFF;
+        // up ratchet config
+        public static ServoChannel.ChannelId UP_RATCHET_CHANNEL;
+        public static int UP_RATCHET_ON;
+        public static int UP_RATCHET_OFF;
+
+        // down ratchet config
+        public static ServoChannel.ChannelId DOWN_RATCHET_CHANNEL;
+        public static int DOWN_RATCHET_ON;
+        public static int DOWN_RATCHET_OFF;
 
         // pid & tolerance
         public static double G;

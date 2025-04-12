@@ -214,31 +214,6 @@ public final class DefaultConstants {
         }
     }
 
-    public final static class ClimbConstants {
-        // motor config
-        public static final int ID = 55;
-        public static final double CURRENT_LIMIT = 40;
-        public static final InvertedValue MOTOR_INVERT = InvertedValue.Clockwise_Positive;
-        public static final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Coast;
-
-        // ratchet
-        public static final ServoChannel.ChannelId RATCHET_CHANNEL = ServoChannel.ChannelId.kChannelId1;
-        public static final int RATCHET_ON = 1115;
-        public static final int RATCHET_OFF = 1250;
-
-        // intake
-        public static final int INTAKE_ID = 56;
-        public static final double INTAKE_CURRENT_LIMIT = 40;
-        public static final InvertedValue INTAKE_MOTOR_INVERT = InvertedValue.Clockwise_Positive;
-
-        
-        // presets
-        public static final double IDLE = 0;
-        public static final double PREPARE_CLIMB = 225;
-        public static final double CLIMB = 45;
-    }
-
-
     public final static class ElevatorConstants {
         // motor config
         public static final int LEAD_ID = 31;
@@ -290,7 +265,7 @@ public final class DefaultConstants {
         public static final double HIGH_REEF_ALGAE = 3.0;
         public static final double PROCESSOR = 0;
         public static final double NET = 44;
-        public static final double PREPARE_CLIMB = 6.0;
+        public static final double PREPARE_CLIMB = 0;
         public static final double CLIMB = 0;
     }
 
@@ -308,8 +283,10 @@ public final class DefaultConstants {
         // motor config
         public static final int LEAD_ID = 51;
         public static final int FOLLOWER_ID = 52;
+        public static final int INTAKE_ID = 55;
         public static final double CURRENT_LIMIT = 40;
         public static final InvertedValue MOTOR_INVERT = InvertedValue.Clockwise_Positive;
+        public static final InvertedValue INTAKE_MOTOR_INVERT = InvertedValue.CounterClockwise_Positive;
         public static final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Coast;
 
         // mechanism characterization
@@ -322,10 +299,15 @@ public final class DefaultConstants {
         public static final double ENCODER_ABSOLUTE_OFFSET = 0.06250135632;
         public static final SensorDirectionValue ENCODER_INVERT = SensorDirectionValue.CounterClockwise_Positive;
 
-        // ratchet config
-        public static final ServoChannel.ChannelId RATCHET_CHANNEL = ServoChannel.ChannelId.kChannelId0;
-        public static final int RATCHET_ON = 1050;
-        public static final int RATCHET_OFF = 1200;
+        // up ratchet config
+        public static final ServoChannel.ChannelId UP_RATCHET_CHANNEL = ServoChannel.ChannelId.kChannelId1;
+        public static final int UP_RATCHET_ON = 1750;
+        public static final int UP_RATCHET_OFF = 1450;
+
+        // down ratchet config
+        public static final ServoChannel.ChannelId DOWN_RATCHET_CHANNEL = ServoChannel.ChannelId.kChannelId0;
+        public static final int DOWN_RATCHET_ON = 1050;
+        public static final int DOWN_RATCHET_OFF = 1200;
 
         // pid & tolerance
         public static final double G = 0.2269;
@@ -358,7 +340,7 @@ public final class DefaultConstants {
         public static final double HIGH_REEF_ALGAE = 105;
         public static final double PROCESSOR = 22.1;
         public static final double NET = 90;
-        public static final double PREPARE_CLIMB = 105;
+        public static final double PREPARE_CLIMB = 90;
         public static final double CLIMB = 15;
     }
 

@@ -71,10 +71,9 @@ public class RobotContainer {
 
         driverXbox.povUp().onTrue(new InstantCommand(() -> robotStates.swerve.localizer.setRotations(Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red ? Rotation2d.kPi : Rotation2d.kZero)));
         driverXbox.povDown().onTrue(new InstantCommand(robotStates.swerve.localizer::syncRotations));
-        driverXbox.povLeft().onTrue(new InstantCommand(() -> robotStates.climb.move(-0.9)));
-        driverXbox.povLeft().onFalse(new InstantCommand(() -> robotStates.climb.stop(true)));
-        driverXbox.povRight().onTrue(new InstantCommand(() -> robotStates.climb.move(0.9)));
-        driverXbox.povRight().onFalse(new InstantCommand(() -> robotStates.climb.stop(false)));
+        driverXbox.povLeft().onTrue(new InstantCommand(robotStates.pivot::activateCageIntake));
+        driverXbox.povLeft().onFalse(new InstantCommand(robotStates.pivot::stopCageIntake));
+        driverXbox.povRight().onTrue(new InstantCommand(robotStates::escalateClimb));
 
         driverXbox.leftStick().onTrue(new InstantCommand(() -> robotStates.swerve.localizer.setPoses(Constants.CENTER_OF_RIGHT_CORAL_STATION.apply(Constants.ALLIANCE_SUPPLIER))));
         driverXbox.rightStick().onTrue(new InstantCommand(() -> robotStates.swerve.localizer.setPoses(Constants.CENTER_OF_LEFT_CORAL_STATION.apply(Constants.ALLIANCE_SUPPLIER))));

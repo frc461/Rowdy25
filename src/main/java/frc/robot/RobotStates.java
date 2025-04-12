@@ -13,7 +13,6 @@ import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.PivotCommand;
 import frc.robot.commands.WristCommand;
 import frc.robot.constants.Constants;
-import frc.robot.subsystems.climb.Climb;
 import frc.robot.subsystems.Lights;
 import frc.robot.subsystems.drivetrain.Swerve;
 import frc.robot.subsystems.elevator.Elevator;
@@ -52,7 +51,6 @@ public class RobotStates {
     }
 
     public final Swerve swerve = new Swerve();
-    public final Climb climb = new Climb();
     public final Elevator elevator = new Elevator();
     public final Intake intake = new Intake();
     public final Pivot pivot = new Pivot();

@@ -6,6 +6,7 @@ import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.servohub.ServoChannel;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -45,9 +46,14 @@ public class Pivot extends SubsystemBase {
         }
     }
 
+    public enum IntakeState {
+        IDLE,
+        INTAKE;
+    }
+
     public enum RatchetState {
-        ON(Constants.PivotConstants.RATCHET_ON), // Pivot can move
-        OFF(Constants.PivotConstants.RATCHET_OFF); // Pivot cannot move
+        ON(Constants.PivotConstants.DOWN_RATCHET_ON), // Pivot can move
+        OFF(Constants.PivotConstants.DOWN_RATCHET_OFF); // Pivot cannot move
 
         private final int pulseWidth;
 
@@ -58,8 +64,8 @@ public class Pivot extends SubsystemBase {
 
     private State currentState;
 
-    private final TalonFX pivot;
-    private final ServoChannel ratchet;
+    private final TalonFX pivot, intake;
+    private final ServoChannel upRatchet, downRatchet;
     private final MotionMagicExpoVoltage request;
 
     private final GravityGainsCalculator gravityGainsCalculator = new GravityGainsCalculator(
@@ -76,6 +82,7 @@ public class Pivot extends SubsystemBase {
     );
 
     private double error, currentG, lastManualPosition;
+    private boolean cageIntakeOverride;
 
     private final PivotTelemetry pivotTelemetry = new PivotTelemetry(this);
 
@@ -115,9 +122,23 @@ public class Pivot extends SubsystemBase {
             pivot2.setControl(new Follower(Constants.PivotConstants.LEAD_ID, true));
         }
 
-        ratchet = Constants.SERVO_HUB.getServoChannel(Constants.PivotConstants.RATCHET_CHANNEL);
-        ratchet.setEnabled(true);
-        ratchet.setPowered(true);
+        intake = new TalonFX(Constants.PivotConstants.INTAKE_ID);
+        intake.getConfigurator().apply(new TalonFXConfiguration()
+                .withFeedback(new FeedbackConfigs())
+                .withMotorOutput(new MotorOutputConfigs()
+                        .withInverted(Constants.PivotConstants.INTAKE_MOTOR_INVERT)
+                        .withNeutralMode(NeutralModeValue.Coast))
+                .withCurrentLimits(new CurrentLimitsConfigs()
+                        .withSupplyCurrentLimit(Constants.PivotConstants.CURRENT_LIMIT))
+        );
+
+        upRatchet = Constants.SERVO_HUB.getServoChannel(Constants.PivotConstants.UP_RATCHET_CHANNEL);
+        upRatchet.setEnabled(true);
+        upRatchet.setPowered(true);
+
+        downRatchet = Constants.SERVO_HUB.getServoChannel(Constants.PivotConstants.DOWN_RATCHET_CHANNEL);
+        downRatchet.setEnabled(true);
+        downRatchet.setPowered(true);
 
         request = new MotionMagicExpoVoltage(getTarget());
 
@@ -164,8 +185,12 @@ public class Pivot extends SubsystemBase {
         };
     }
 
-    public RatchetState getRatchetState() {
+    public RatchetState getUpRatchetState() {
         return getState() == State.CLIMB ? RatchetState.OFF : RatchetState.ON;
+    }
+
+    public RatchetState getDownRatchetState() {
+        return RatchetState.ON;
     }
 
     public double getPosition() {
@@ -176,8 +201,12 @@ public class Pivot extends SubsystemBase {
         return getState() == State.MANUAL ? lastManualPosition : getState().position;
     }
 
-    public int getRatchetPulseWidth() {
-        return RatchetState.ON.pulseWidth; // getState() == State.CLIMB ? RatchetState.OFF.pulseWidth : RatchetState.ON.pulseWidth;
+    public int getUpRatchetPulseWidth() {
+        return getState() == State.CLIMB ? RatchetState.OFF.pulseWidth : RatchetState.ON.pulseWidth;
+    }
+
+    public int getDownRatchetPulseWidth() {
+        return RatchetState.ON.pulseWidth;
     }
 
     public boolean validStartPosition() {
@@ -192,8 +221,12 @@ public class Pivot extends SubsystemBase {
         return currentG;
     }
 
-    public double getRatchetStateValue() {
-        return ratchet.getPulseWidth();
+    public double getUpRatchetStateValue() {
+        return upRatchet.getPulseWidth();
+    }
+
+    public double getDownRatchetStateValue() {
+        return downRatchet.getPulseWidth();
     }
 
     public boolean isAtState(State state) {
@@ -314,6 +347,14 @@ public class Pivot extends SubsystemBase {
         setState(State.CLIMB);
     }
 
+    public void activateCageIntake() {
+        cageIntakeOverride = true;
+    }
+
+    public void stopCageIntake() {
+        cageIntakeOverride = false;
+    }
+
     public void holdTarget(double elevatorPosition, double wristPosition) {
         currentG = gravityGainsCalculator.calculateGFromPositions(getPosition(), wristPosition, elevatorPosition);
         pivot.setControl(request.withPosition(getTarget()).withFeedForward(currentG));
@@ -333,6 +374,13 @@ public class Pivot extends SubsystemBase {
 
         Lights.setLights((validStartPosition()) && DriverStation.isDisabled());
 
-        ratchet.setPulseWidth(getRatchetPulseWidth());
+        upRatchet.setPulseWidth(getUpRatchetPulseWidth());
+        downRatchet.setPulseWidth(getDownRatchetPulseWidth());
+
+        if (currentState == State.PREPARE_CLIMB || cageIntakeOverride) {
+            intake.set(0.6);
+        } else {
+            intake.set(0.0);
+        }
     }
 }
