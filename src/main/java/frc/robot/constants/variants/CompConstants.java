@@ -135,11 +135,11 @@ public final class CompConstants {
         public static final double GROUND_ALGAE = 14;
         public static final double L1_CORAL = 38.0;
         public static final double L2_CORAL_AT_BRANCH = 95.0;
-        public static final double L2_CORAL_ONE_CORAL_FROM_BRANCH = 94.0;
+        public static final double L2_CORAL_ONE_CORAL_FROM_BRANCH = 93.0;
         public static final double L3_CORAL_AT_BRANCH = 95.0;
-        public static final double L3_CORAL_ONE_CORAL_FROM_BRANCH = 90.0;
+        public static final double L3_CORAL_ONE_CORAL_FROM_BRANCH = 89.0;
         public static final double L4_CORAL_AT_BRANCH = 96.0;
-        public static final double L4_CORAL_ONE_CORAL_FROM_BRANCH = 90.0;
+        public static final double L4_CORAL_ONE_CORAL_FROM_BRANCH = 89.0;
         public static final double LOW_REEF_ALGAE = 57;
         public static final double HIGH_REEF_ALGAE = 90.0;
         public static final double PROCESSOR = 11;
@@ -187,7 +187,7 @@ public final class CompConstants {
         public static final double L3_CORAL_AT_BRANCH = 60;
         public static final double L3_CORAL_ONE_CORAL_FROM_BRANCH = 270;
         public static final double L4_CORAL_AT_BRANCH = 75;
-        public static final double L4_CORAL_ONE_CORAL_FROM_BRANCH = 267;
+        public static final double L4_CORAL_ONE_CORAL_FROM_BRANCH = 275;
         public static final double LOW_REEF_ALGAE = 85;
         public static final double HIGH_REEF_ALGAE = 245;
         public static final double PROCESSOR = 120;
