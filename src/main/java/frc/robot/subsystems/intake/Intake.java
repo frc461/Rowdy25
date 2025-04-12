@@ -114,11 +114,11 @@ public class Intake extends SubsystemBase {
     }
 
     public boolean coralStuck() {
-        return hasAlgaeOrCoralStuck.getAsBoolean() && stallIntent == StallIntent.CORAL_STUCK; // TODO SHOP: TEST THIS
+        return hasAlgaeOrCoralStuck.getAsBoolean() && stallIntent == StallIntent.CORAL_STUCK;
     }
 
     public boolean hasAlgae() {
-        return maintainAlgae.getAsBoolean() || hasAlgaeOrCoralStuck.getAsBoolean() && stallIntent == StallIntent.HAS_ALGAE; // TODO SHOP: TEST THIS
+        return maintainAlgae.getAsBoolean() || hasAlgaeOrCoralStuck.getAsBoolean() && stallIntent == StallIntent.HAS_ALGAE;
     }
 
     public boolean atIdleState() {
@@ -176,6 +176,7 @@ public class Intake extends SubsystemBase {
     }
 
     public void setOuttakeState() {
+        stallIntent = StallIntent.CORAL_STUCK;
         maintainAlgaeCurrentOverride = false;
         setState(State.OUTTAKE);
     }
