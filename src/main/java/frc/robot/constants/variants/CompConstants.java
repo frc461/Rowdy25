@@ -82,7 +82,7 @@ public final class CompConstants {
         public static final double L2_CORAL_AT_BRANCH = 0;
         public static final double L2_CORAL_ONE_CORAL_FROM_BRANCH = 5.1;
         public static final double L3_CORAL_AT_BRANCH = 18.5;
-        public static final double L3_CORAL_ONE_CORAL_FROM_BRANCH = 19.6;
+        public static final double L3_CORAL_ONE_CORAL_FROM_BRANCH = 15.5;
         public static final double L4_CORAL_AT_BRANCH = 45.5;
         public static final double L4_CORAL_ONE_CORAL_FROM_BRANCH = 40.5;
         public static final double LOW_REEF_ALGAE = 0;
@@ -114,11 +114,11 @@ public final class CompConstants {
         public static final int RATCHET_OFF = 1600;
 
         // pid & tolerance
-        public static final double G = 0.2269;
-        public static final double V = 6.35 / 2 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps) -> V / (rotor rps)
+        public static final double G = 0.26;
+        public static final double V = 6.75 / 2 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps) -> V / (rotor rps)
         public static final double A = 0.09 / 2 / ROTOR_TO_MECHANISM_RATIO; // V / (mech rps^2) -> V / (rotor rps^2)
-        public static final double P = 0.15;
-        public static final double I = 0;
+        public static final double P = 0.3;
+        public static final double I = 0.0;
         public static final double D = 0.01;
         public static final double EXPO_V = V / 0.45; // 45% of the actual max velocity, as it will allocate 1 / 0.4 = 2.5 times the voltage to 1 rps
         public static final double EXPO_A = A / 0.025; // 2.5% of the actual max acceleration
@@ -135,9 +135,9 @@ public final class CompConstants {
         public static final double GROUND_ALGAE = 14;
         public static final double L1_CORAL = 38.0;
         public static final double L2_CORAL_AT_BRANCH = 95.0;
-        public static final double L2_CORAL_ONE_CORAL_FROM_BRANCH = 93.0;
+        public static final double L2_CORAL_ONE_CORAL_FROM_BRANCH = 89.0;
         public static final double L3_CORAL_AT_BRANCH = 95.0;
-        public static final double L3_CORAL_ONE_CORAL_FROM_BRANCH = 89.0;
+        public static final double L3_CORAL_ONE_CORAL_FROM_BRANCH = 88.0;
         public static final double L4_CORAL_AT_BRANCH = 96.0;
         public static final double L4_CORAL_ONE_CORAL_FROM_BRANCH = 89.0;
         public static final double LOW_REEF_ALGAE = 57;
@@ -175,7 +175,7 @@ public final class CompConstants {
 
         // presets
         public static final BiFunction<Double, Double, Double> LOWER_LIMIT = (elevatorPosition, pivotPosition) -> (double) (pivotPosition < 30 ? 45 : elevatorPosition > 1.5 && elevatorPosition < 12 ? 115 : 45);
-        public static final Function<Double, Double> UPPER_LIMIT = (elevatorPosition) -> (double) (elevatorPosition > 5 ? 295 : 160);
+        public static final Function<Double, Double> UPPER_LIMIT = (elevatorPosition) -> (double) (elevatorPosition > 4.0 ? 295 : 160);
         public static final double STOW = 120;
         public static final double CORAL_STATION = 115;
         public static final double CORAL_STATION_OBSTRUCTED = 120;
@@ -183,7 +183,7 @@ public final class CompConstants {
         public static final double GROUND_ALGAE = 90;
         public static final double L1_CORAL = 96.5;
         public static final double L2_CORAL_AT_BRANCH = 45;
-        public static final double L2_CORAL_ONE_CORAL_FROM_BRANCH = 266;
+        public static final double L2_CORAL_ONE_CORAL_FROM_BRANCH = 270;
         public static final double L3_CORAL_AT_BRANCH = 60;
         public static final double L3_CORAL_ONE_CORAL_FROM_BRANCH = 270;
         public static final double L4_CORAL_AT_BRANCH = 75;
