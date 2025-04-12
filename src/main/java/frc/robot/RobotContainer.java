@@ -117,7 +117,7 @@ public class RobotContainer {
         opXbox.leftBumper().onTrue(new InstantCommand(robotStates::toggleAutoLevelCoralState)); // TODO: IMPLEMENT LIST OF CORAL
         opXbox.rightBumper().onTrue(new InstantCommand(robotStates::setStowState));
 
-        opXbox.a().onTrue(new InstantCommand(robotStates::escalateClimb));
+        opXbox.a().onTrue(new InstantCommand(robotStates::toggleGroundAlgaeState));
 
         opXbox.b().onTrue(new InstantCommand(robotStates::toggleHighReefAlgaeState));
 

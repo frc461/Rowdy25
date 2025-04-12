@@ -106,7 +106,7 @@ public final class CompConstants {
         public static final Translation2d AXIS_POSITION = new Translation2d(-9.417377, 9.257139);
 
         // encoder config
-        public static final double ENCODER_ABSOLUTE_OFFSET = 0.5849656304;
+        public static final double ENCODER_ABSOLUTE_OFFSET = 0.66455615231;
         public static final SensorDirectionValue ENCODER_INVERT = SensorDirectionValue.CounterClockwise_Positive;
 
         // ratchet config
@@ -132,7 +132,7 @@ public final class CompConstants {
         public static final double CORAL_STATION = 57.5;
         public static final double CORAL_STATION_OBSTRUCTED = 53;
         public static final double GROUND_CORAL = 3.5;
-        public static final double GROUND_ALGAE = 4.5;
+        public static final double GROUND_ALGAE = 14;
         public static final double L1_CORAL = 38.0;
         public static final double L2_CORAL_AT_BRANCH = 95.0;
         public static final double L2_CORAL_ONE_CORAL_FROM_BRANCH = 94.0;
@@ -180,7 +180,7 @@ public final class CompConstants {
         public static final double CORAL_STATION = 115;
         public static final double CORAL_STATION_OBSTRUCTED = 120;
         public static final double GROUND_CORAL = 150;
-        public static final double GROUND_ALGAE = 150;
+        public static final double GROUND_ALGAE = 84;
         public static final double L1_CORAL = 96.5;
         public static final double L2_CORAL_AT_BRANCH = 45;
         public static final double L2_CORAL_ONE_CORAL_FROM_BRANCH = 266;

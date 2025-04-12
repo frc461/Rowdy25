@@ -378,14 +378,14 @@ public class RobotStates {
         );
 
         groundAlgaeState.onTrue(
-                new InstantCommand(swerve::setObjectHeadingMode)
+                new InstantCommand(swerve::setIdleMode)
                         .andThen(orderedTransition(pivot::setGroundAlgaeState, Pivot.State.GROUND_ALGAE, elevator::setGroundAlgaeState, Elevator.State.GROUND_ALGAE, wrist::setGroundAlgaeState))
                         .andThen(intake::setAlgaeIntakeState)
-                        .andThen(new WaitUntilCommand(PhotonUtil.Color::hasAlgaeTargets))
-                        .andThen(swerve.directMoveToObject(
-                                () -> intake.hasAlgae() || intake.hasCoral(),
-                                PhotonUtil.Color.TargetClass.ALGAE
-                        ).asProxy())
+                        // .andThen(new WaitUntilCommand(PhotonUtil.Color::hasAlgaeTargets))
+                        // .andThen(swerve.directMoveToObject(
+                        //         () -> intake.hasAlgae() || intake.hasCoral(),
+                        //         PhotonUtil.Color.TargetClass.ALGAE
+                        // ).asProxy())
                         .andThen(this::setStowState)
                         .onlyIf(() -> !intake.hasAlgae() && !intake.barelyHasCoral())
                         .until(() -> !groundAlgaeState.getAsBoolean())
