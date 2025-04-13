@@ -250,6 +250,7 @@ public final class DefaultConstants {
         public static final double LOWER_LIMIT = 0;
         public static final double UPPER_LIMIT = 46;
         public static final double STOW = 0;
+        public static final double L2_L3_L4_STOW = 5.5;
         public static final double CORAL_STATION = 0;
         public static final double CORAL_STATION_OBSTRUCTED = 0;
         public static final double GROUND_CORAL = 0;
@@ -325,6 +326,7 @@ public final class DefaultConstants {
         public static final double LOWER_LIMIT = 0;
         public static final double UPPER_LIMIT = 105;
         public static final double STOW = 75;
+        public static final double L2_L3_L4_STOW = 75;
         public static final double CORAL_STATION = 50;
         public static final double CORAL_STATION_OBSTRUCTED = 50;
         public static final double GROUND_CORAL = 3.5;
@@ -379,6 +381,7 @@ public final class DefaultConstants {
         public static final BiFunction<Double, Double, Double> LOWER_LIMIT = (elevatorPosition, pivotPosition) -> (double) (pivotPosition < 45 ? 125 : elevatorPosition > 1.5 && elevatorPosition < 12 ? 125 : 45);
         public static final Function<Double, Double> UPPER_LIMIT = (elevatorPosition) -> (double) (elevatorPosition > 5 ? 295 : 160);
         public static final double STOW = 125;
+        public static final double L2_L3_L4_STOW = 200;
         public static final double CORAL_STATION = 125;
         public static final double CORAL_STATION_OBSTRUCTED = 125;
         public static final double GROUND_CORAL = 150;

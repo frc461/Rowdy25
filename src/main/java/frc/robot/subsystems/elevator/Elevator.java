@@ -16,6 +16,7 @@ public class Elevator extends SubsystemBase {
     public enum State {
         MANUAL(Constants.ElevatorConstants.LOWER_LIMIT),
         STOW(Constants.ElevatorConstants.STOW),
+        L2_L3_L4_STOW(Constants.ElevatorConstants.L2_L3_L4_STOW),
         CORAL_STATION(Constants.ElevatorConstants.CORAL_STATION),
         CORAL_STATION_OBSTRUCTED(Constants.ElevatorConstants.CORAL_STATION_OBSTRUCTED),
         GROUND_ALGAE(Constants.ElevatorConstants.GROUND_ALGAE),
@@ -170,6 +171,10 @@ public class Elevator extends SubsystemBase {
 
     public void setStowState() {
         setState(State.STOW);
+    }
+
+    public void setL2L3L4StowState() {
+        setState(State.L2_L3_L4_STOW);
     }
 
     public void setCoralStationState() {

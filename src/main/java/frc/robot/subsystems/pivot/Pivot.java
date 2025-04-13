@@ -20,6 +20,7 @@ public class Pivot extends SubsystemBase {
     public enum State {
         MANUAL(Constants.PivotConstants.LOWER_LIMIT),
         STOW(Constants.PivotConstants.STOW),
+        L2_L3_L4_STOW(Constants.PivotConstants.L2_L3_L4_STOW),
         PERPENDICULAR(90.0),
         CORAL_STATION(Constants.PivotConstants.CORAL_STATION),
         CORAL_STATION_OBSTRUCTED(Constants.PivotConstants.CORAL_STATION_OBSTRUCTED),
@@ -44,11 +45,6 @@ public class Pivot extends SubsystemBase {
         State(double position) {
             this.position = position;
         }
-    }
-
-    public enum IntakeState {
-        IDLE,
-        INTAKE;
     }
 
     public enum RatchetState {
@@ -257,6 +253,10 @@ public class Pivot extends SubsystemBase {
 
     public void setStowState() {
         setState(State.STOW);
+    }
+
+    public void setL2L3L4StowState() {
+        setState(State.L2_L3_L4_STOW);
     }
 
     public void setPerpendicularState() {

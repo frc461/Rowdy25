@@ -167,6 +167,7 @@ public enum RobotIdentity {
         Constants.ElevatorConstants.LOWER_LIMIT = DefaultConstants.ElevatorConstants.LOWER_LIMIT;
         Constants.ElevatorConstants.UPPER_LIMIT = DefaultConstants.ElevatorConstants.UPPER_LIMIT;
         Constants.ElevatorConstants.STOW = DefaultConstants.ElevatorConstants.STOW;
+        Constants.ElevatorConstants.L2_L3_L4_STOW = DefaultConstants.ElevatorConstants.L2_L3_L4_STOW;
         Constants.ElevatorConstants.CORAL_STATION = DefaultConstants.ElevatorConstants.CORAL_STATION;
         Constants.ElevatorConstants.CORAL_STATION_OBSTRUCTED = DefaultConstants.ElevatorConstants.CORAL_STATION_OBSTRUCTED;
         Constants.ElevatorConstants.GROUND_CORAL = DefaultConstants.ElevatorConstants.GROUND_CORAL;
@@ -224,6 +225,7 @@ public enum RobotIdentity {
         Constants.PivotConstants.LOWER_LIMIT = DefaultConstants.PivotConstants.LOWER_LIMIT;
         Constants.PivotConstants.UPPER_LIMIT = DefaultConstants.PivotConstants.UPPER_LIMIT;
         Constants.PivotConstants.STOW = DefaultConstants.PivotConstants.STOW;
+        Constants.PivotConstants.L2_L3_L4_STOW = DefaultConstants.PivotConstants.L2_L3_L4_STOW;
         Constants.PivotConstants.CORAL_STATION = DefaultConstants.PivotConstants.CORAL_STATION;
         Constants.PivotConstants.CORAL_STATION_OBSTRUCTED = DefaultConstants.PivotConstants.CORAL_STATION_OBSTRUCTED;
         Constants.PivotConstants.GROUND_CORAL = DefaultConstants.PivotConstants.GROUND_CORAL;
@@ -266,6 +268,7 @@ public enum RobotIdentity {
         Constants.WristConstants.LOWER_LIMIT = DefaultConstants.WristConstants.LOWER_LIMIT;
         Constants.WristConstants.UPPER_LIMIT = DefaultConstants.WristConstants.UPPER_LIMIT;
         Constants.WristConstants.STOW = DefaultConstants.WristConstants.STOW;
+        Constants.WristConstants.L2_L3_L4_STOW = DefaultConstants.WristConstants.L2_L3_L4_STOW;
         Constants.WristConstants.CORAL_STATION = DefaultConstants.WristConstants.CORAL_STATION;
         Constants.WristConstants.CORAL_STATION_OBSTRUCTED = DefaultConstants.WristConstants.CORAL_STATION_OBSTRUCTED;
         Constants.WristConstants.GROUND_CORAL = DefaultConstants.WristConstants.GROUND_CORAL;
@@ -346,6 +349,7 @@ public enum RobotIdentity {
         Constants.ElevatorConstants.LOWER_LIMIT = CompConstants.ElevatorConstants.LOWER_LIMIT;
         Constants.ElevatorConstants.UPPER_LIMIT = CompConstants.ElevatorConstants.UPPER_LIMIT;
         Constants.ElevatorConstants.STOW = CompConstants.ElevatorConstants.STOW;
+        Constants.ElevatorConstants.L2_L3_L4_STOW = CompConstants.ElevatorConstants.L2_L3_L4_STOW;
         Constants.ElevatorConstants.CORAL_STATION = CompConstants.ElevatorConstants.CORAL_STATION;
         Constants.ElevatorConstants.CORAL_STATION_OBSTRUCTED = CompConstants.ElevatorConstants.CORAL_STATION_OBSTRUCTED;
         Constants.ElevatorConstants.GROUND_CORAL = CompConstants.ElevatorConstants.GROUND_CORAL;
@@ -385,6 +389,7 @@ public enum RobotIdentity {
         Constants.PivotConstants.LOWER_LIMIT = CompConstants.PivotConstants.LOWER_LIMIT;
         Constants.PivotConstants.UPPER_LIMIT = CompConstants.PivotConstants.UPPER_LIMIT;
         Constants.PivotConstants.STOW = CompConstants.PivotConstants.STOW;
+        Constants.PivotConstants.L2_L3_L4_STOW = CompConstants.PivotConstants.L2_L3_L4_STOW;
         Constants.PivotConstants.CORAL_STATION = CompConstants.PivotConstants.CORAL_STATION;
         Constants.PivotConstants.CORAL_STATION_OBSTRUCTED = CompConstants.PivotConstants.CORAL_STATION_OBSTRUCTED;
         Constants.PivotConstants.GROUND_CORAL = CompConstants.PivotConstants.GROUND_CORAL;
@@ -421,6 +426,7 @@ public enum RobotIdentity {
         Constants.WristConstants.LOWER_LIMIT = CompConstants.WristConstants.LOWER_LIMIT;
         Constants.WristConstants.UPPER_LIMIT = CompConstants.WristConstants.UPPER_LIMIT;
         Constants.WristConstants.STOW = CompConstants.WristConstants.STOW;
+        Constants.WristConstants.L2_L3_L4_STOW = CompConstants.WristConstants.L2_L3_L4_STOW;
         Constants.WristConstants.CORAL_STATION = CompConstants.WristConstants.CORAL_STATION;
         Constants.WristConstants.CORAL_STATION_OBSTRUCTED = CompConstants.WristConstants.CORAL_STATION_OBSTRUCTED;
         Constants.WristConstants.GROUND_CORAL = CompConstants.WristConstants.GROUND_CORAL;

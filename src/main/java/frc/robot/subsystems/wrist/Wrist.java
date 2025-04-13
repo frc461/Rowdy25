@@ -15,6 +15,7 @@ public class Wrist extends SubsystemBase {
     public enum State {
         MANUAL(Constants.WristConstants.LOWER_LIMIT.apply(0.0, 50.0)),
         STOW(Constants.WristConstants.STOW),
+        L2_L3_L4_STOW(Constants.WristConstants.L2_L3_L4_STOW),
         CORAL_STATION(Constants.WristConstants.CORAL_STATION),
         CORAL_STATION_OBSTRUCTED(Constants.WristConstants.CORAL_STATION_OBSTRUCTED),
         GROUND_CORAL(Constants.WristConstants.GROUND_CORAL),
@@ -139,6 +140,10 @@ public class Wrist extends SubsystemBase {
 
     public void setStowState() {
         setState(State.STOW);
+    }
+
+    public void setL2L3L4StowState() {
+        setState(State.L2_L3_L4_STOW);
     }
 
     public void setCoralStationState() {

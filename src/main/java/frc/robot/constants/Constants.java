@@ -198,6 +198,7 @@ public final class Constants {
         public static double LOWER_LIMIT;
         public static double UPPER_LIMIT;
         public static double STOW;
+        public static double L2_L3_L4_STOW;
         public static double CORAL_STATION;
         public static double CORAL_STATION_OBSTRUCTED;
         public static double GROUND_CORAL;
@@ -273,6 +274,7 @@ public final class Constants {
         public static double LOWER_LIMIT;
         public static double UPPER_LIMIT;
         public static double STOW;
+        public static double L2_L3_L4_STOW;
         public static double CORAL_STATION;
         public static double CORAL_STATION_OBSTRUCTED;
         public static double GROUND_CORAL;
@@ -326,6 +328,7 @@ public final class Constants {
         public static BiFunction<Double, Double, Double> LOWER_LIMIT;
         public static Function<Double, Double> UPPER_LIMIT;
         public static double STOW;
+        public static double L2_L3_L4_STOW;
         public static double CORAL_STATION;
         public static double CORAL_STATION_OBSTRUCTED;
         public static double GROUND_CORAL;

@@ -30,6 +30,7 @@ import dev.doglog.DogLog;
 public class RobotStates {
     public enum State {
         STOW,
+        L2_L3_L4_STOW,
         MANUAL,
         OUTTAKE,
         OUTTAKE_L1,
@@ -61,6 +62,7 @@ public class RobotStates {
     private final SendableChooser<State> stateChooser = new SendableChooser<>();
 
     public final Trigger stowState = new Trigger(() -> currentState == State.STOW);
+    public final Trigger l2L3L4StowState = new Trigger(() -> currentState == State.L2_L3_L4_STOW);
     public final Trigger outtakeState = new Trigger(() -> currentState == State.OUTTAKE);
     public final Trigger outtakeL1State = new Trigger(() -> currentState == State.OUTTAKE_L1);
     public final Trigger intakeOutState = new Trigger(() -> currentState == State.INTAKE_OUT);
@@ -85,6 +87,7 @@ public class RobotStates {
     public final Trigger atState = new Trigger(() -> elevator.isAtTarget() && pivot.isAtTarget() && wrist.isAtTarget());
 
     public final Trigger atStowState = new Trigger(() -> wrist.isAtState(Wrist.State.STOW)).and(() -> elevator.isAtState(Elevator.State.STOW)).and(() -> pivot.isAtState(Pivot.State.STOW));
+    public final Trigger atL2L3L4StowState = new Trigger(() -> wrist.isAtState(Wrist.State.L2_L3_L4_STOW)).and(() -> elevator.isAtState(Elevator.State.L2_L3_L4_STOW)).and(() -> pivot.isAtState(Pivot.State.L2_L3_L4_STOW));
     public final Trigger atCoralStationState = new Trigger(() -> wrist.isAtState(Wrist.State.CORAL_STATION)).and(() -> elevator.isAtState(Elevator.State.CORAL_STATION)).and(() -> pivot.isAtState(Pivot.State.CORAL_STATION));
     public final Trigger atCoralStationObstructedState = new Trigger(() -> wrist.isAtState(Wrist.State.CORAL_STATION_OBSTRUCTED)).and(() -> elevator.isAtState(Elevator.State.CORAL_STATION_OBSTRUCTED)).and(() -> pivot.isAtState(Pivot.State.CORAL_STATION_OBSTRUCTED));
     public final Trigger atGroundCoralState = new Trigger(() -> wrist.isAtState(Wrist.State.GROUND_CORAL)).and(() -> elevator.isAtState(Elevator.State.GROUND_CORAL)).and(() -> pivot.isAtState(Pivot.State.GROUND_CORAL));
@@ -146,6 +149,10 @@ public class RobotStates {
 
     public void setStowState() {
         currentState = State.STOW;
+    }
+
+    public void setL2L3L4StowState() {
+        currentState = State.L2_L3_L4_STOW;
     }
 
     public void setManualState() {
@@ -278,7 +285,7 @@ public class RobotStates {
 
     private Command orderedTransition(Runnable setPivotState, Pivot.State pivotState, Runnable setElevatorState, Elevator.State elevatorState, Runnable setWristState) {
         return new ConditionalCommand(
-                new InstantCommand(wrist::setStowState) // TODO SHOP: TEST CHECK IF MOVE THROUGH STOW E.G., L4 TO GROUND
+                new InstantCommand(wrist::setStowState)
                         .andThen(new WaitUntilCommand(wrist::nearTarget))
                         .andThen(movePivotToPerpendicular(swerve.localizer.trustCameras))
                         .andThen(
@@ -312,6 +319,25 @@ public class RobotStates {
                 new InstantCommand(swerve::setIdleMode)
                         .andThen(intake::setIdleState)
                         .andThen(orderedTransition(pivot::setStowState, Pivot.State.STOW, elevator::setStowState, Elevator.State.STOW, wrist::setStowState))
+                        .alongWith(
+                                new WaitUntilCommand(() -> intake.barelyHasCoral() && currentAutoLevel != FieldUtil.Reef.Level.L1)
+                                        .andThen(this::setL2L3L4StowState)
+                        )
+        );
+
+        l2L3L4StowState.onTrue( // TODO SHOP: TEST THIS
+                new InstantCommand(swerve::setIdleMode)
+                        .andThen(intake::setIdleState)
+                        .andThen(orderedTransition(
+                                pivot::setL2L3L4StowState,
+                                Pivot.State.L2_L3_L4_STOW,
+                                elevator::setL2L3L4StowState,
+                                Elevator.State.L2_L3_L4_STOW,
+                                wrist::setL2L3L4StowState
+                        )).alongWith(
+                                new WaitUntilCommand(() -> !intake.barelyHasCoral() || currentAutoLevel == FieldUtil.Reef.Level.L1)
+                                        .andThen(this::setStowState)
+                        )
         );
 
         outtakeState.onTrue(
