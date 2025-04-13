@@ -63,16 +63,15 @@ public class RobotContainer {
         driverXbox.a().onTrue(new InstantCommand(robotStates.swerve::toggleAutoHeading)
                         .andThen(robotStates.swerve.localizer::toggleTrustCameras)
                         .andThen(
-                                new InstantCommand(() -> driverXbox.setRumble(GenericHID.RumbleType.kBothRumble, 0.5))
-                                        .andThen(Commands.waitSeconds(0.25))
-                                        .andThen(() -> driverXbox.setRumble(GenericHID.RumbleType.kBothRumble, 0))
-                                        .onlyIf(robotStates.swerve::isAutoHeading)
+                                Commands.runEnd(
+                                        () -> driverXbox.setRumble(GenericHID.RumbleType.kBothRumble, 0.5),
+                                        () -> driverXbox.setRumble(GenericHID.RumbleType.kBothRumble, 0)
+                                ).withTimeout(0.25).onlyIf(robotStates.swerve::isAutoHeading)
                         ));
 
         driverXbox.povUp().onTrue(new InstantCommand(() -> robotStates.swerve.localizer.setRotations(Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red ? Rotation2d.kPi : Rotation2d.kZero)));
         driverXbox.povDown().onTrue(new InstantCommand(robotStates.swerve.localizer::syncRotations));
-        driverXbox.povLeft().onTrue(new InstantCommand(robotStates.pivot::activateCageIntake));
-        driverXbox.povLeft().onFalse(new InstantCommand(robotStates.pivot::stopCageIntake));
+        driverXbox.povLeft().whileTrue(Commands.runEnd(robotStates.pivot::activateCageIntake, robotStates.pivot::stopCageIntake));
         driverXbox.povRight().onTrue(new InstantCommand(robotStates::escalateClimb));
 
         driverXbox.leftStick().onTrue(new InstantCommand(() -> robotStates.swerve.localizer.setPoses(Constants.CENTER_OF_RIGHT_CORAL_STATION.apply(Constants.ALLIANCE_SUPPLIER))));
@@ -105,10 +104,8 @@ public class RobotContainer {
 
         opXbox.povUp().onTrue(new InstantCommand(() -> robotStates.setCurrentAutoLevel(FieldUtil.Reef.Level.L2)));
 
-        opXbox.leftTrigger().onTrue(new InstantCommand(() -> robotStates.intake.setIntakeState(true)));
-        opXbox.leftTrigger().onFalse(new InstantCommand(robotStates.intake::setIdleState));
-        opXbox.rightTrigger().onTrue(new InstantCommand(robotStates.intake::setOuttakeState));
-        opXbox.rightTrigger().onFalse(new InstantCommand(robotStates.intake::setIdleState));
+        opXbox.leftTrigger().whileTrue(Commands.runEnd(() -> robotStates.intake.setIntakeState(true), robotStates.intake::setIdleState));
+        opXbox.rightTrigger().onTrue(Commands.runEnd(robotStates.intake::setOuttakeState, robotStates.intake::setIdleState));
 
         opXbox.leftStick().onTrue(new InstantCommand(robotStates::toggleNetState));
         opXbox.rightStick().onTrue(new InstantCommand(robotStates::toggleProcessorState));
