@@ -354,7 +354,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                                         robotStates.elevator::getPosition,
                                         localizer.nearestRobotPoseAtAlgaeReef,
                                         2.0
-                                ).andThen(Commands.waitSeconds(0.5))
+                                ).andThen(Commands.waitSeconds(0.25))
                                         .andThen(new DirectMoveToPoseCommand(
                                                 this,
                                                 fieldCentric,
@@ -362,7 +362,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                                                 localizer.nearestRobotPoseNearAlgaeReef,
                                                 2.0
                                         ))
-                        ).alongWith(
+                        ).andThen(robotStates::setStowState).alongWith(
                                 new WaitUntilCommand(() -> robotStates.atTransitionStateLocation(RobotStates.State.HIGH_REEF_ALGAE))
                                         .andThen(() -> robotStates.toggleReefAlgaeState(localizer.nearestAlgaeIsHigh, true))
                         ),
@@ -393,7 +393,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                                                 RobotPoses.Reef.getRobotPoseNearReef(side),
                                                 2.0
                                         ))
-                        ).alongWith(
+                        ).andThen(robotStates::setStowState).alongWith(
                                 new WaitUntilCommand(() -> robotStates.atTransitionStateLocation(RobotStates.State.HIGH_REEF_ALGAE, true))
                                         .andThen(() -> robotStates.toggleReefAlgaeState(FieldUtil.Reef.Side.algaeIsHigh(side)))
                         ),
@@ -401,7 +401,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
         );
     }
 
-    public Command pathFindToNet(RobotStates robotStates) { // TODO SHOP: TEST RANDOMIZED NET PATHFINDING
+    public Command pathFindToNet(RobotStates robotStates) {
         return Commands.defer(
                 () -> new PathfindToPoseAvoidingReefCommand(
                         this,
