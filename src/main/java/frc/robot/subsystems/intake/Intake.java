@@ -102,7 +102,7 @@ public class Intake extends SubsystemBase {
     }
 
     public boolean coralEntered() {
-        return getProximity() < proximityObjectDetectionThreshold;
+        return false;
     }
 
     public boolean barelyHasCoral() {
