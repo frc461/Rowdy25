@@ -470,8 +470,8 @@ public class RobotStates {
                 new InstantCommand(swerve::setReefTagOppositeHeadingMode)
                         .andThen(intake::setAlgaeIntakeState)
                         .andThen(orderedTransition(pivot::setLowReefAlgaeState, Pivot.State.LOW_REEF_ALGAE, elevator::setLowReefAlgaeState, Elevator.State.LOW_REEF_ALGAE, wrist::setLowReefAlgaeState))
-                        .andThen(new WaitUntilCommand(intake::atHasAlgaeState))
-                        .andThen(intake::setIdleState)
+                        .andThen(new WaitUntilCommand(() -> intake.atHasAlgaeState() && !swerve.localizer.nearStateLocation(State.LOW_REEF_ALGAE)))
+                        .andThen(this::setStowState)
                         .onlyIf(() -> !intake.hasAlgae() && !intake.barelyHasCoral())
                         .until(() -> !lowReefAlgaeState.getAsBoolean())
         );
@@ -480,9 +480,8 @@ public class RobotStates {
                 new InstantCommand(swerve::setReefTagHeadingMode)
                         .andThen(intake::setAlgaeIntakeState)
                         .andThen(orderedTransition(pivot::setHighReefAlgaeState, Pivot.State.HIGH_REEF_ALGAE, elevator::setHighReefAlgaeState, Elevator.State.HIGH_REEF_ALGAE, wrist::setHighReefAlgaeState))
-                        .andThen(new WaitUntilCommand(intake::atHasAlgaeState))
-                        .andThen(swerve::setIdleMode)
-                        .andThen(intake::setIdleState)
+                        .andThen(new WaitUntilCommand(() -> intake.atHasAlgaeState() && !swerve.localizer.nearStateLocation(State.LOW_REEF_ALGAE)))
+                        .andThen(this::setStowState)
                         .onlyIf(() -> !intake.hasAlgae() && !intake.barelyHasCoral())
                         .until(() -> !highReefAlgaeState.getAsBoolean())
         );

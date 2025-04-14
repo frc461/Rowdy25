@@ -143,6 +143,7 @@ public final class AutoManager {
                         () -> new InstantCommand(() -> robotStates.swerve.localizer.setPoses(getStartingPose(startPosition)))
                                 .onlyIf(() -> startPosition.index != 0)
                                 .andThen(robotStates::setStowState)
+                                .andThen(new InstantCommand(robotStates::setL2L3L4StowState).onlyIf(() -> firstScoringLocation.getSecond() != FieldUtil.Reef.Level.L1))
                                 .andThen(robotStates.swerve.pushAlliancePartnerOut()).onlyIf(() -> push)
                                 .andThen(robotStates.swerve.pathFindToScoringLocation(robotStates, firstScoringLocation.getFirst(), firstScoringLocation.getSecond()))
                 )),
@@ -154,7 +155,6 @@ public final class AutoManager {
                                         .andThen(robotStates::setStowState)
                                         .andThen(robotStates.swerve.pushAlliancePartnerOut()).onlyIf(() -> push)
                                         .andThen(robotStates.swerve.pathFindToAlgaeOnReef(robotStates, firstAlgaeLocation))
-                                        .andThen(robotStates::setStowState)
                                         .andThen(robotStates.swerve.pathFindToNet(robotStates))
                         ))
                 )
@@ -205,9 +205,8 @@ public final class AutoManager {
                             nextAlgaeLocation ->
                                     triggersToBind.add(autoEventLooper.addTrigger(
                                             currentScoringOrAlgaeLocation + "," + nextScoringOrAlgaeLocation,
-                                            () -> Commands.waitSeconds(1.0)
+                                            () -> Commands.waitSeconds(FieldUtil.Reef.Side.algaeIsHigh(nextAlgaeLocation) ? 0.5 : 1.0)
                                                     .andThen(robotStates.swerve.pathFindToAlgaeOnReef(robotStates, nextAlgaeLocation))
-                                                    .andThen(robotStates::setStowState)
                                                     .andThen(robotStates.swerve.pathFindToNet(robotStates))
                                     ))
             ));
