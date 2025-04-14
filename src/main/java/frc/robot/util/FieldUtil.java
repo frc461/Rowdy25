@@ -15,6 +15,9 @@ public final class FieldUtil {
     public static final double FIELD_WIDTH = layout2025.getFieldWidth();
     public static final Pose3d ORIGIN = layout2025.getOrigin();
 
+    public static final double STARTING_LINE_X_BLUE = Units.inchesToMeters(297.5);
+    public static final double STARTING_LINE_X_RED = FIELD_LENGTH - Units.inchesToMeters(297.5);
+
     public static boolean isInField(Pose3d pose) {
         return isInField(pose.toPose2d());
     }

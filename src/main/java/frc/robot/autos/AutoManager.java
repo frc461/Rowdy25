@@ -174,6 +174,12 @@ public final class AutoManager {
             );
 
             if (currentScoringLocations.isEmpty()) {
+                if (robotStates.swerve.localizer.onStartingLine()) {
+                    triggersToBind.add(autoEventLooper.addTrigger(
+                            currentScoringOrAlgaeLocation + "," + "away",
+                            () -> robotStates.swerve.moveAwayFromStartingLine(robotStates)
+                    ));
+                }
                 break;
             }
 

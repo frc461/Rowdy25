@@ -15,6 +15,13 @@ import java.util.List;
 import static edu.wpi.first.units.Units.Meters;
 
 public class RobotPoses {
+    public static Pose2d getNearestRobotPoseAwayFromStartingLine(Pose2d currentPose) {
+        return currentPose.nearest(List.of(
+                new Pose2d(FieldUtil.STARTING_LINE_X_BLUE - Constants.ROBOT_WIDTH_WITH_BUMPERS.in(Meters), currentPose.getY(), currentPose.getRotation()),
+                new Pose2d(FieldUtil.STARTING_LINE_X_RED + Constants.ROBOT_WIDTH_WITH_BUMPERS.in(Meters), currentPose.getY(), currentPose.getRotation())
+        ));
+    }
+
     public static class CoralStation {
         public static List<Pose2d> getRobotPosesAtEachCoralStation() {
             return FieldUtil.CoralStation.getCoralStationTagPoses().stream().map(coralStationTagPose -> coralStationTagPose.plus(

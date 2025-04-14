@@ -195,7 +195,17 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                 .andThen(this::forceStop);
     }
 
-    // TODO SHOP: TEST ALL PATHFINDING
+    public Command moveAwayFromStartingLine(RobotStates robotStates) {
+        return Commands.defer(
+                () -> new PathfindToPoseAvoidingReefCommand(
+                        this,
+                        fieldCentric,
+                        robotStates.elevator::getPosition,
+                        localizer.nearestRobotPoseAwayFromStartingLine
+                ).onlyIf(localizer::onStartingLine),
+                Set.of(this)
+        );
+    }
 
     public Command pathFindToLeftCoralStationGroundIntakeCoral(RobotStates robotStates) {
         return Commands.defer(

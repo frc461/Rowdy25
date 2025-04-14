@@ -59,6 +59,7 @@ public class Localizer {
     public Pair<Pose2d, Pose2d> nearestRobotPosesNearBranchPair = new Pair<>(new Pose2d(), new Pose2d());
     public Pose2d nearestReefTagPoseBothReefs = new Pose2d();
 
+    public Pose2d nearestRobotPoseAwayFromStartingLine = new Pose2d();
     public Pose2d randomizedRobotPoseAtNet = new Pose2d();
     public Pose2d currentAllianceSideRobotPoseAtProcessor = new Pose2d();
     public Pose2d nearestRobotPoseAtCoralStation = new Pose2d();
@@ -163,6 +164,11 @@ public class Localizer {
 
     public boolean facingAwayFromReef() {
         return Math.abs(nearestReefTagPoseBothReefs.getRotation().minus(getStrategyPose().getRotation()).getDegrees()) < 90.0;
+    }
+
+    public boolean onStartingLine() {
+        double currentXMeters = getStrategyPose().getX();
+        return currentXMeters > FieldUtil.STARTING_LINE_X_BLUE && currentXMeters < FieldUtil.STARTING_LINE_X_RED;
     }
 
     public boolean isAgainstReefWall() {
@@ -321,6 +327,7 @@ public class Localizer {
                 ))
         );
 
+        nearestRobotPoseAwayFromStartingLine = RobotPoses.getNearestRobotPoseAwayFromStartingLine(currentPose);
         nearestRobotPoseAtBranch = RobotPoses.Reef.getNearestRobotPoseAtBranch(currentRobotScoringSetting, currentPose);
         nearestRobotPosesAtBranchPair = RobotPoses.Reef.getNearestRobotPosesAtBranchPair(currentRobotScoringSetting, currentPose);
         nearestRobotPosesNearBranchPair = RobotPoses.Reef.getNearestRobotPosesNearBranchPair(currentRobotScoringSetting, currentPose);
