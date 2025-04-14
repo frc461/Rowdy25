@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.FlippingUtil;
@@ -14,6 +15,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.RobotStates;
 import frc.robot.autos.routines.AutoEventLooper;
 import frc.robot.autos.routines.AutoTrigger;
@@ -186,37 +188,60 @@ public final class AutoManager {
 
             String nextScoringOrAlgaeLocation = currentScoringLocations.get(0);
 
-            AtomicBoolean scoringNext = new AtomicBoolean(false);
+            AtomicBoolean scoringNextCoral = new AtomicBoolean(false);
+            AtomicReference<AutoTrigger> scoreCoralTriggerToBind = new AtomicReference<>();
+
+            AtomicBoolean scoringNextAlgae = new AtomicBoolean(false);
+            AtomicReference<AutoTrigger> scoreAlgaeTriggerToBind = new AtomicReference<>();
 
             getScoringLocation(nextScoringOrAlgaeLocation).ifPresentOrElse(
-                    nextScoringLocation ->
-                            triggersToBind.add(autoEventLooper.addTrigger(
-                                    currentScoringOrAlgaeLocation + "," + nextScoringOrAlgaeLocation,
-                                    () -> Commands.waitSeconds(0.5) // TODO SHOP: MINIMIZE THIS
-                                            .andThen(groundIntake
-                                                    ? getPathFindingCommandToGroundIntakeCoral(robotStates, currentScoringOrAlgaePose, RobotPoses.Reef.getRobotPoseAtBranch(
-                                                            robotStates.swerve.localizer.currentRobotScoringSetting,
-                                                            nextScoringLocation.getFirst()
-                                                    )) : getPathFindingCommandToCoralStation(robotStates, currentScoringOrAlgaePose, RobotPoses.Reef.getRobotPoseAtBranch(
-                                                            robotStates.swerve.localizer.currentRobotScoringSetting,
-                                                            nextScoringLocation.getFirst()
-                                                    ))
-                                            )
-                                            .andThen(new WaitUntilCommand(() -> robotStates.stowState.getAsBoolean() || robotStates.intake.coralEntered()))
-                                            .andThen(() -> scoringNext.set(true))
-                                            .andThen(robotStates.swerve.pathFindToScoringLocation(robotStates, nextScoringLocation.getFirst(), nextScoringLocation.getSecond()))
-                                            .andThen(() -> scoringNext.set(false))
-                                            .until(() -> scoringNext.get() && !robotStates.intake.barelyHasCoral() && !robotStates.atScoringLocation() || robotStates.intake.coralStuck())
-                            )),
+                    nextScoringLocation -> {
+                        scoreCoralTriggerToBind.set(autoEventLooper.addTrigger(
+                                currentScoringOrAlgaeLocation + "," + nextScoringOrAlgaeLocation,
+                                () -> Commands.waitSeconds(0.5) // TODO SHOP: MINIMIZE THIS
+                                        .andThen(groundIntake
+                                                ? getPathFindingCommandToGroundIntakeCoral(robotStates, currentScoringOrAlgaePose, RobotPoses.Reef.getRobotPoseAtBranch(
+                                                        robotStates.swerve.localizer.currentRobotScoringSetting,
+                                                        nextScoringLocation.getFirst()
+                                                )) : getPathFindingCommandToCoralStation(robotStates, currentScoringOrAlgaePose, RobotPoses.Reef.getRobotPoseAtBranch(
+                                                        robotStates.swerve.localizer.currentRobotScoringSetting,
+                                                        nextScoringLocation.getFirst()
+                                                ))
+                                        )
+                                        .andThen(new WaitUntilCommand(() -> robotStates.stowState.getAsBoolean() || robotStates.intake.coralEntered()))
+                                        .andThen(() -> scoringNextCoral.set(true))
+                                        .andThen(robotStates.swerve.pathFindToScoringLocation(robotStates, nextScoringLocation.getFirst(), nextScoringLocation.getSecond()))
+                                        .andThen(() -> scoringNextCoral.set(false))
+                        ));
+                        triggersToBind.add(scoreCoralTriggerToBind.get());
+                    },
                     () -> getAlgaeLocation(nextScoringOrAlgaeLocation).ifPresent(
-                            nextAlgaeLocation ->
-                                    triggersToBind.add(autoEventLooper.addTrigger(
-                                            currentScoringOrAlgaeLocation + "," + nextScoringOrAlgaeLocation,
-                                            () -> Commands.waitSeconds(FieldUtil.Reef.Side.algaeIsHigh(nextAlgaeLocation) ? 0.5 : 1.0)
-                                                    .andThen(robotStates.swerve.pathFindToAlgaeOnReef(robotStates, nextAlgaeLocation))
-                                                    .andThen(robotStates.swerve.pathFindToNet(robotStates))
-                                    ))
+                            nextAlgaeLocation -> {
+                                scoreAlgaeTriggerToBind.set(autoEventLooper.addTrigger(
+                                        currentScoringOrAlgaeLocation + "," + nextScoringOrAlgaeLocation,
+                                        () -> Commands.waitSeconds(FieldUtil.Reef.Side.algaeIsHigh(nextAlgaeLocation) ? 0.5 : 1.0)
+                                                .andThen(robotStates.swerve.pathFindToAlgaeOnReef(robotStates, nextAlgaeLocation))
+                                                .andThen(() -> scoringNextAlgae.set(true))
+                                                .andThen(robotStates.swerve.pathFindToNet(robotStates))
+                                                .andThen(() -> scoringNextAlgae.set(false))
+                                ));
+                                triggersToBind.add(scoreAlgaeTriggerToBind.get());
+                            }
             ));
+
+            new Trigger(() -> scoringNextCoral.get() && !robotStates.intake.barelyHasCoral() && !robotStates.atScoringLocation() || robotStates.intake.coralStuck())
+                    .onTrue(new InstantCommand(() -> {
+                        if (scoreCoralTriggerToBind.get() != null) {
+                            scoreCoralTriggerToBind.get().cmd().cancel();
+                        }
+                    }));
+
+            new Trigger(() -> scoringNextAlgae.get() && !robotStates.intake.hasAlgae() && !robotStates.atScoringLocation())
+                    .onTrue(new InstantCommand(() -> {
+                        if (scoreAlgaeTriggerToBind.get() != null) {
+                            scoreAlgaeTriggerToBind.get().cmd().cancel();
+                        }
+                    }));
         }
 
         new Trigger(autoEventLooper.active()).onFalse(
@@ -234,7 +259,7 @@ public final class AutoManager {
                     new InstantCommand(robotStates.intake::setOuttakeState)
                             .andThen(robotStates::setStowState)
                             .andThen(Commands.waitSeconds(0.5))
-                            .andThen(currentTrigger.duplicate().cmd())
+                            .andThen(currentTrigger.cmd())
             );
             currentTrigger.done().onTrue(triggersToBind.isEmpty() ? Commands.none() : triggersToBind.get(0).cmd());
         }
