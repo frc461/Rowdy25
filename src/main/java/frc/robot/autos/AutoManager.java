@@ -66,7 +66,7 @@ public final class AutoManager {
         startPositionChooser.onChange(startPosition -> {
             this.startPosition = startPosition;
             if (this.startPosition != null && this.scoringOrAlgaeLocations != null && !this.scoringOrAlgaeLocations.isEmpty()) {
-                currentCommand = generateAutoEventLooper(robotStates).cmd();
+                currentCommand = generateAutoEventLooperCommand(robotStates);
             }
         });
         
@@ -83,7 +83,7 @@ public final class AutoManager {
         scoringOrAlgaeLocationsChooser.onChange( scoringOrAlgaeLocations -> {
             this.scoringOrAlgaeLocations = scoringOrAlgaeLocations;
             if (startPosition != null && this.scoringOrAlgaeLocations != null && !this.scoringOrAlgaeLocations.isEmpty()) {
-                currentCommand = generateAutoEventLooper(robotStates).cmd();
+                currentCommand = generateAutoEventLooperCommand(robotStates);
             }
         });
 
@@ -94,7 +94,7 @@ public final class AutoManager {
         coralStationOverrideChooser.onChange(coralStationOverride -> {
             this.coralStationOverride = coralStationOverride;
             if (startPosition != null && this.scoringOrAlgaeLocations != null && !this.scoringOrAlgaeLocations.isEmpty()) {
-                currentCommand = generateAutoEventLooper(robotStates).cmd();
+                currentCommand = generateAutoEventLooperCommand(robotStates);
             }
         });
 
@@ -105,7 +105,7 @@ public final class AutoManager {
         pushChooser.onChange(push -> {
             this.push = push;
             if (startPosition != null && this.scoringOrAlgaeLocations != null && !this.scoringOrAlgaeLocations.isEmpty()) {
-                currentCommand = generateAutoEventLooper(robotStates).cmd();
+                currentCommand = generateAutoEventLooperCommand(robotStates);
             }
         });
 
@@ -116,7 +116,7 @@ public final class AutoManager {
         groundIntakeChooser.onChange(groundIntake -> {
             this.groundIntake = groundIntake;
             if (startPosition != null && this.scoringOrAlgaeLocations != null && !this.scoringOrAlgaeLocations.isEmpty()) {
-                currentCommand = generateAutoEventLooper(robotStates).cmd();
+                currentCommand = generateAutoEventLooperCommand(robotStates);
             }
         });
 
@@ -128,7 +128,7 @@ public final class AutoManager {
     }
 
 
-    private AutoEventLooper generateAutoEventLooper(
+    private Command generateAutoEventLooperCommand(
             RobotStates robotStates
     ) {
         List<String> currentScoringLocations = new ArrayList<>(this.scoringOrAlgaeLocations);
@@ -177,7 +177,8 @@ public final class AutoManager {
                 if (robotStates.swerve.localizer.onStartingLine()) {
                     triggersToBind.add(autoEventLooper.addTrigger(
                             currentScoringOrAlgaeLocation + "," + "away",
-                            () -> robotStates.swerve.moveAwayFromStartingLine(robotStates)
+                            () -> Commands.waitSeconds(0.5)
+                                    .andThen(robotStates.swerve.moveAwayFromStartingLine(robotStates))
                     ));
                 }
                 break;
@@ -218,6 +219,13 @@ public final class AutoManager {
             ));
         }
 
+        new Trigger(autoEventLooper.active()).onFalse(
+                new InstantCommand(robotStates::setStowState)
+                        .andThen(Commands.waitSeconds(0.5))
+                        .andThen(robotStates.swerve.moveAwayFromStartingLine(robotStates))
+                        .onlyIf(DriverStation::isAutonomousEnabled) // If net routine happens when auto is about to end, stow so robot can move away from starting line
+        );
+
         autoEventLooper.active().onTrue(triggersToBind.get(0).cmd());
 
         while (!triggersToBind.isEmpty()) {
@@ -231,7 +239,7 @@ public final class AutoManager {
             currentTrigger.done().onTrue(triggersToBind.isEmpty() ? Commands.none() : triggersToBind.get(0).cmd());
         }
 
-        return autoEventLooper;
+        return autoEventLooper.cmd(() -> DriverStation.isAutonomousEnabled() && DriverStation.getMatchTime() <= 2 && robotStates.swerve.localizer.onStartingLine());
     }
 
     private Optional<Pair<FieldUtil.Reef.ScoringLocation, FieldUtil.Reef.Level>> getScoringLocation(String scoringLocation) {
