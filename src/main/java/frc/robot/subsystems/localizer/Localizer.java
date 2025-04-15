@@ -134,6 +134,11 @@ public class Localizer {
         return randomizedRobotPoseAtNet;
     }
 
+    public Pose2d centerNetScoringPose() {
+        randomizedRobotPoseAtNet = RobotPoses.AlgaeScoring.getRobotPoseAtNetCenter(getStrategyPose());
+        return randomizedRobotPoseAtNet;
+    }
+
     public double getDistanceToActionLocation(RobotStates.State robotState) {
         Pose2d currentPose = getStrategyPose();
         return switch (robotState) {

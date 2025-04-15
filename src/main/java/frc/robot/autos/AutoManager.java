@@ -155,7 +155,7 @@ public final class AutoManager {
                                         .andThen(robotStates::setStowState)
                                         .andThen(robotStates.swerve.pushAlliancePartnerOut()).onlyIf(() -> push)
                                         .andThen(robotStates.swerve.pathFindToAlgaeOnReef(robotStates, firstAlgaeLocation))
-                                        .andThen(robotStates.swerve.pathFindToNet(robotStates))
+                                        .andThen(robotStates.swerve.pathFindToNet(robotStates, false))
                         ))
                 )
         );
@@ -185,7 +185,7 @@ public final class AutoManager {
                     nextScoringLocation ->
                             triggersToBind.add(autoEventLooper.addTrigger(
                                     currentScoringOrAlgaeLocation + "," + nextScoringOrAlgaeLocation,
-                                    () -> Commands.waitSeconds(0.5) // TODO SHOP: MINIMIZE THIS
+                                    () -> Commands.waitSeconds(0.5)
                                             .andThen(groundIntake
                                                     ? getPathFindingCommandToGroundIntakeCoral(robotStates, currentScoringOrAlgaePose, RobotPoses.Reef.getRobotPoseAtBranch(
                                                             robotStates.swerve.localizer.currentRobotScoringSetting,
@@ -207,7 +207,7 @@ public final class AutoManager {
                                             currentScoringOrAlgaeLocation + "," + nextScoringOrAlgaeLocation,
                                             () -> Commands.waitSeconds(FieldUtil.Reef.Side.algaeIsHigh(nextAlgaeLocation) ? 0.5 : 1.0)
                                                     .andThen(robotStates.swerve.pathFindToAlgaeOnReef(robotStates, nextAlgaeLocation))
-                                                    .andThen(robotStates.swerve.pathFindToNet(robotStates))
+                                                    .andThen(robotStates.swerve.pathFindToNet(robotStates, false))
                                     ))
             ));
         }

@@ -401,13 +401,13 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
         );
     }
 
-    public Command pathFindToNet(RobotStates robotStates) {
+    public Command pathFindToNet(RobotStates robotStates, boolean randomized) {
         return Commands.defer(
                 () -> new PathfindToPoseAvoidingReefCommand(
                         this,
                         fieldCentric,
                         robotStates.elevator::getPosition,
-                        localizer.randomizeNetScoringPose().plus(new Transform2d(
+                        (randomized ? localizer.randomizeNetScoringPose() : localizer.centerNetScoringPose()).plus(new Transform2d(
                                 Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_DIRECT_DRIVE,
                                 0,
                                 Rotation2d.kZero
