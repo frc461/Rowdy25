@@ -220,6 +220,7 @@ public enum RobotIdentity {
         Constants.PivotConstants.D = DefaultConstants.PivotConstants.D;
         Constants.PivotConstants.EXPO_V = DefaultConstants.PivotConstants.EXPO_V;
         Constants.PivotConstants.EXPO_A = DefaultConstants.PivotConstants.EXPO_A;
+        Constants.PivotConstants.EXPO_V_SLOW = DefaultConstants.PivotConstants.EXPO_V_SLOW;
         Constants.PivotConstants.SAFE_TOLERANCE = DefaultConstants.PivotConstants.SAFE_TOLERANCE;
         Constants.PivotConstants.AT_TARGET_TOLERANCE = DefaultConstants.PivotConstants.AT_TARGET_TOLERANCE;
         Constants.PivotConstants.LOWER_LIMIT = DefaultConstants.PivotConstants.LOWER_LIMIT;
@@ -344,6 +345,7 @@ public enum RobotIdentity {
         Constants.ElevatorConstants.D = CompConstants.ElevatorConstants.D;
         Constants.ElevatorConstants.EXPO_V = CompConstants.ElevatorConstants.EXPO_V;
         Constants.ElevatorConstants.EXPO_A = CompConstants.ElevatorConstants.EXPO_A;
+        Constants.PivotConstants.EXPO_V_SLOW = CompConstants.PivotConstants.EXPO_V_SLOW;
         Constants.ElevatorConstants.SAFE_TOLERANCE = CompConstants.ElevatorConstants.SAFE_TOLERANCE;
         Constants.ElevatorConstants.AT_TARGET_TOLERANCE = CompConstants.ElevatorConstants.AT_TARGET_TOLERANCE;
         Constants.ElevatorConstants.LOWER_LIMIT = CompConstants.ElevatorConstants.LOWER_LIMIT;

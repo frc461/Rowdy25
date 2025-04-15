@@ -17,6 +17,22 @@ import frc.robot.util.GravityGainsCalculator;
 import frc.robot.subsystems.Lights;
 
 public class Pivot extends SubsystemBase {
+    public enum MotionMagicProfile {
+        NORMAL(new MotionMagicConfigs()
+                .withMotionMagicCruiseVelocity(0)
+                .withMotionMagicExpo_kV(Constants.PivotConstants.EXPO_V)
+                .withMotionMagicExpo_kA(Constants.PivotConstants.EXPO_A)),
+        SLOW(new MotionMagicConfigs()
+                .withMotionMagicCruiseVelocity(0)
+                .withMotionMagicExpo_kV(Constants.PivotConstants.EXPO_V_SLOW)
+                .withMotionMagicExpo_kA(Constants.PivotConstants.EXPO_A));
+
+        final MotionMagicConfigs config;
+        MotionMagicProfile(MotionMagicConfigs config) {
+            this.config = config;
+        }
+    }
+
     public enum State {
         MANUAL(Constants.PivotConstants.LOWER_LIMIT),
         STOW(Constants.PivotConstants.STOW),
@@ -59,6 +75,7 @@ public class Pivot extends SubsystemBase {
     }
 
     private State currentState;
+    private MotionMagicProfile currentMotionMagicProfile;
 
     private final TalonFX pivot, intake;
     private final ServoChannel upRatchet, downRatchet;
@@ -84,6 +101,7 @@ public class Pivot extends SubsystemBase {
 
     public Pivot() {
         currentState = State.STOW;
+        currentMotionMagicProfile = MotionMagicProfile.NORMAL;
 
         CANcoder encoder = new CANcoder(Constants.PivotConstants.ENCODER_ID);
         encoder.getConfigurator().apply(new CANcoderConfiguration()
@@ -109,10 +127,7 @@ public class Pivot extends SubsystemBase {
                         .withKP(Constants.PivotConstants.P)
                         .withKI(Constants.PivotConstants.I)
                         .withKD(Constants.PivotConstants.D))
-                .withMotionMagic(new MotionMagicConfigs()
-                        .withMotionMagicCruiseVelocity(0)
-                        .withMotionMagicExpo_kV(Constants.PivotConstants.EXPO_V)
-                        .withMotionMagicExpo_kA(Constants.PivotConstants.EXPO_A)));
+                .withMotionMagic(currentMotionMagicProfile.config));
 
         try (TalonFX pivot2 = new TalonFX(Constants.PivotConstants.FOLLOWER_ID)) {
             pivot2.setControl(new Follower(Constants.PivotConstants.LEAD_ID, true));
@@ -241,6 +256,16 @@ public class Pivot extends SubsystemBase {
         return (state.position - State.STOW.position) * (getPosition() - State.STOW.position) < 0;
     }
 
+    public void setNormalMotionMagicProfile() {
+        currentMotionMagicProfile = MotionMagicProfile.NORMAL;
+        pivot.getConfigurator().refresh(currentMotionMagicProfile.config);
+    }
+
+    public void setSlowMotionMagicProfile() {
+        currentMotionMagicProfile = MotionMagicProfile.SLOW;
+        pivot.getConfigurator().refresh(currentMotionMagicProfile.config);
+    }
+
     private void setState(State newState) {
         activateUpLatch = newState == State.MANUAL ? activateUpLatch : newState == State.CLIMB;
         currentState = newState;
@@ -345,6 +370,7 @@ public class Pivot extends SubsystemBase {
     }
 
     public void setClimbState() {
+        setSlowMotionMagicProfile();
         setState(State.CLIMB);
     }
 

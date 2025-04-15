@@ -512,11 +512,12 @@ public class RobotStates {
                         ).until(() -> !prepareClimbState.getAsBoolean())
         );
 
-        climbState.onTrue(
+        climbState.onTrue( // TODO SHOP: TEST SLOWER PIVOT
                 new InstantCommand(swerve::setIdleMode)
                         .andThen(intake::setIdleState)
                         .andThen(orderedTransition(pivot::setClimbState, Pivot.State.CLIMB, elevator::setClimbState, Elevator.State.CLIMB, wrist::setClimbState))
                         .until(() -> !climbState.getAsBoolean())
+                        .andThen(pivot::setNormalMotionMagicProfile)
         );
     }
     /* Each subsystem will execute their corresponding command periodically */
