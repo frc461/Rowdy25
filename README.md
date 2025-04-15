@@ -116,13 +116,13 @@ ground intake:
 
 Monday, 3/31/2025 to test:
 comp bot:
-- [ ] test proximity threshold network table entry, intake stuck
-- [ ] try high I without the tension
+- [x] test proximity threshold network table entry, intake stuck
+- [x] try high I without the tension
 - [ ] test dynamic autos (intake stuck/incorrect intake)
-- [ ] test/configure distance sensor
+- [x] test/configure distance sensor
 
 ground intake:
-- [ ] (once assembled) ground intake motor setup + logic revamp
+- [x] (once assembled) ground intake motor setup + logic revamp
 - [ ] test pathfinding locations and auto scoring
 - [ ] test auto (with dynamic if possible)
 - [ ] (if possible) test algae net and processor scoring
