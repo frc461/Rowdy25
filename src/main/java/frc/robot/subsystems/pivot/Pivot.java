@@ -258,12 +258,12 @@ public class Pivot extends SubsystemBase {
 
     public void setNormalMotionMagicProfile() {
         currentMotionMagicProfile = MotionMagicProfile.NORMAL;
-        pivot.getConfigurator().refresh(currentMotionMagicProfile.config);
+        pivot.getConfigurator().apply(currentMotionMagicProfile.config);
     }
 
     public void setSlowMotionMagicProfile() {
         currentMotionMagicProfile = MotionMagicProfile.SLOW;
-        pivot.getConfigurator().refresh(currentMotionMagicProfile.config);
+        pivot.getConfigurator().apply(currentMotionMagicProfile.config);
     }
 
     private void setState(State newState) {

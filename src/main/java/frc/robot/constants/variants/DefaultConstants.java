@@ -344,7 +344,7 @@ public final class DefaultConstants {
         public static final double PROCESSOR = 22.1;
         public static final double NET = 90;
         public static final double PREPARE_CLIMB = 90;
-        public static final double CLIMB = 75;
+        public static final double CLIMB = 15;
     }
 
     public final static class WristConstants {
