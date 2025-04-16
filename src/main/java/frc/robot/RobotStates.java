@@ -284,6 +284,10 @@ public class RobotStates {
     }
 
     private Command orderedTransition(Runnable setPivotState, Pivot.State pivotState, Runnable setElevatorState, Elevator.State elevatorState, Runnable setWristState) {
+        return orderedTransition(setPivotState, pivotState, setElevatorState, elevatorState, setWristState, false);
+    }
+
+    private Command orderedTransition(Runnable setPivotState, Pivot.State pivotState, Runnable setElevatorState, Elevator.State elevatorState, Runnable setWristState, boolean fromL2L3L4Stow) {
         return new ConditionalCommand(
                 new InstantCommand(wrist::setStowState)
                         .andThen(new WaitUntilCommand(wrist::nearTarget))
@@ -299,7 +303,7 @@ public class RobotStates {
                         .andThen(new WaitUntilCommand(elevator::nearTarget))
                         .andThen(setWristState),
                 movePivotToPerpendicular(swerve.localizer.trustCameras)
-                        .andThen(wrist::setStowState)
+                        .andThen(new InstantCommand(wrist::setStowState).unless(() -> fromL2L3L4Stow))
                         .andThen(setPivotState)
                         .andThen(new WaitUntilCommand(pivot::nearTarget))
                         .andThen(setElevatorState)
@@ -322,7 +326,7 @@ public class RobotStates {
                         .alongWith(
                                 new WaitUntilCommand(() -> intake.barelyHasCoral() && currentAutoLevel != FieldUtil.Reef.Level.L1)
                                         .andThen(this::setL2L3L4StowState)
-                        )
+                        ).until(() -> !stowState.getAsBoolean())
         );
 
         l2L3L4StowState.onTrue( // TODO SHOP: TEST THIS
@@ -337,7 +341,7 @@ public class RobotStates {
                         )).alongWith(
                                 new WaitUntilCommand(() -> !intake.barelyHasCoral() || currentAutoLevel == FieldUtil.Reef.Level.L1)
                                         .andThen(this::setStowState)
-                        )
+                        ).until(() -> !l2L3L4StowState.getAsBoolean())
         );
 
         outtakeState.onTrue(
@@ -435,7 +439,8 @@ public class RobotStates {
                                 pivot.getL2State(swerve.localizer.currentRobotScoringSetting),
                                 () -> elevator.setL2CoralState(swerve.localizer.currentRobotScoringSetting),
                                 elevator.getL2State(swerve.localizer.currentRobotScoringSetting),
-                                () -> wrist.setL2CoralState(swerve.localizer.currentRobotScoringSetting)
+                                () -> wrist.setL2CoralState(swerve.localizer.currentRobotScoringSetting),
+                                true
                         )).until(() -> !l2CoralState.getAsBoolean())
         );
 
@@ -448,7 +453,8 @@ public class RobotStates {
                                 pivot.getL3State(swerve.localizer.currentRobotScoringSetting),
                                 () -> elevator.setL3CoralState(swerve.localizer.currentRobotScoringSetting),
                                 elevator.getL3State(swerve.localizer.currentRobotScoringSetting),
-                                () -> wrist.setL3CoralState(swerve.localizer.currentRobotScoringSetting)
+                                () -> wrist.setL3CoralState(swerve.localizer.currentRobotScoringSetting),
+                                true
                         )).until(() -> !l3CoralState.getAsBoolean())
         );
 
@@ -461,7 +467,8 @@ public class RobotStates {
                                 pivot.getL4State(swerve.localizer.currentRobotScoringSetting),
                                 () -> elevator.setL4CoralState(swerve.localizer.currentRobotScoringSetting),
                                 elevator.getL4State(swerve.localizer.currentRobotScoringSetting),
-                                () -> wrist.setL4CoralState(swerve.localizer.currentRobotScoringSetting)
+                                () -> wrist.setL4CoralState(swerve.localizer.currentRobotScoringSetting),
+                                true
                         ))
                         .until(() -> !l4CoralState.getAsBoolean())
         );

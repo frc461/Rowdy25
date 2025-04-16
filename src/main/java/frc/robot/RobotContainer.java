@@ -105,7 +105,7 @@ public class RobotContainer {
         opXbox.povUp().onTrue(new InstantCommand(() -> robotStates.setCurrentAutoLevel(FieldUtil.Reef.Level.L2)));
 
         opXbox.leftTrigger().whileTrue(Commands.runEnd(() -> robotStates.intake.setIntakeState(true), robotStates.intake::setIdleState));
-        opXbox.rightTrigger().onTrue(Commands.runEnd(robotStates.intake::setOuttakeState, robotStates.intake::setIdleState));
+        opXbox.rightTrigger().whileTrue(Commands.runEnd(robotStates.intake::setOuttakeState, robotStates.intake::setIdleState));
 
         opXbox.leftStick().onTrue(new InstantCommand(robotStates::toggleNetState));
         opXbox.rightStick().onTrue(new InstantCommand(robotStates::toggleProcessorState));

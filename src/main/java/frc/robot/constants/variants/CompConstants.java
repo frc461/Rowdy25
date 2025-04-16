@@ -74,7 +74,7 @@ public final class CompConstants {
         public static final double LOWER_LIMIT = 0;
         public static final double UPPER_LIMIT = 46;
         public static final double STOW = 0;
-        public static final double L2_L3_L4_STOW = 5.0;
+        public static final double L2_L3_L4_STOW = 4.0;
         public static final double CORAL_STATION = 0;
         public static final double CORAL_STATION_OBSTRUCTED = 3.0;
         public static final double GROUND_CORAL = 0;
@@ -178,7 +178,7 @@ public final class CompConstants {
 
         // presets
         public static final BiFunction<Double, Double, Double> LOWER_LIMIT = (elevatorPosition, pivotPosition) -> (double) (pivotPosition < 30 ? 45 : elevatorPosition > 1.5 && elevatorPosition < 12 ? 115 : 45);
-        public static final Function<Double, Double> UPPER_LIMIT = (elevatorPosition) -> (double) (elevatorPosition > 4.0 ? 295 : 160);
+        public static final Function<Double, Double> UPPER_LIMIT = (elevatorPosition) -> (double) (elevatorPosition > 3.75 ? 295 : 160);
         public static final double STOW = 120;
         public static final double L2_L3_L4_STOW = 200;
         public static final double CORAL_STATION = 115;
