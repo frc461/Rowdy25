@@ -182,8 +182,6 @@ public final class AutoManager {
 
             String nextScoringOrAlgaeLocation = currentScoringLocations.get(0);
 
-            AtomicBoolean scoringNext = new AtomicBoolean(false);
-
             getScoringLocation(nextScoringOrAlgaeLocation).ifPresentOrElse(
                     nextScoringLocation ->
                             triggersToBind.add(autoEventLooper.addTrigger(
@@ -199,10 +197,7 @@ public final class AutoManager {
                                                     ))
                                             )
                                             .andThen(new WaitUntilCommand(() -> robotStates.stowState.getAsBoolean() || robotStates.intake.coralEntered()))
-                                            .andThen(() -> scoringNext.set(true))
                                             .andThen(robotStates.swerve.pathFindToScoringLocation(robotStates, nextScoringLocation.getFirst(), nextScoringLocation.getSecond()))
-                                            .andThen(() -> scoringNext.set(false))
-                                            .until(() -> scoringNext.get() && !robotStates.intake.barelyHasCoral() && !robotStates.atScoringLocation() || robotStates.intake.coralStuck())
                             )),
                     () -> getAlgaeLocation(nextScoringOrAlgaeLocation).ifPresent(
                             nextAlgaeLocation ->
@@ -219,12 +214,6 @@ public final class AutoManager {
 
         while (!triggersToBind.isEmpty()) {
             AutoTrigger currentTrigger = triggersToBind.remove(0);
-            currentTrigger.interrupt().onTrue(
-                    new InstantCommand(robotStates.intake::setOuttakeState)
-                            .andThen(robotStates::setStowState)
-                            .andThen(Commands.waitSeconds(0.5))
-                            .andThen(currentTrigger.duplicate().cmd())
-            );
             currentTrigger.done().onTrue(triggersToBind.isEmpty() ? Commands.none() : triggersToBind.get(0).cmd());
         }
 
