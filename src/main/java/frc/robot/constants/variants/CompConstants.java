@@ -123,7 +123,7 @@ public final class CompConstants {
         public static final double D = 0.01;
         public static final double EXPO_V = V / 0.45; // 45% of the actual max velocity, as it will allocate 1 / 0.4 = 2.5 times the voltage to 1 rps
         public static final double EXPO_A = A / 0.025; // 2.5% of the actual max acceleration
-        public static final double EXPO_V_SLOW = V / 0.15; // 15% of the actual max velocity
+        public static final double EXPO_V_SLOW = V / 0.1; // 10% of the actual max velocity
         public static final double SAFE_TOLERANCE = 20.0;
         public static final double AT_TARGET_TOLERANCE = 2.5;
 
@@ -132,8 +132,8 @@ public final class CompConstants {
         public static final double UPPER_LIMIT = 105;
         public static final double STOW = 75;
         public static final double L2_L3_L4_STOW = 75;
-        public static final double CORAL_STATION = 57.5;
-        public static final double CORAL_STATION_OBSTRUCTED = 53;
+        public static final double CORAL_STATION = 55.2;
+        public static final double CORAL_STATION_OBSTRUCTED = 52;
         public static final double GROUND_CORAL = 3.5;
         public static final double GROUND_ALGAE = 14;
         public static final double L1_CORAL = 38.0;

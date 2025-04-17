@@ -127,8 +127,8 @@ public final class DefaultConstants {
         public static final double DEGREE_TOLERANCE_TO_ACCEPT = 2.5;
         public static final double TRANSLATION_TOLERANCE_TO_ACCEPT = 0.03;
         public static final double TRANSLATION_TOLERANCE_TO_DIRECT_DRIVE = 0.5;
-        public static final double TRANSLATION_TOLERANCE_TO_TRANSITION = 1.5;
-        public static final double TRANSLATION_TOLERANCE_TO_TRANSITION_AUTO = 2.5;
+        public static final double TRANSLATION_TOLERANCE_TO_TRANSITION = 1.8;
+        public static final double TRANSLATION_TOLERANCE_TO_TRANSITION_AUTO = 1.5;
     }
 
     public static final class VisionConstants {
@@ -344,7 +344,7 @@ public final class DefaultConstants {
         public static final double PROCESSOR = 22.1;
         public static final double NET = 90;
         public static final double PREPARE_CLIMB = 90;
-        public static final double CLIMB = 15;
+        public static final double CLIMB = 10;
     }
 
     public final static class WristConstants {
@@ -399,7 +399,7 @@ public final class DefaultConstants {
         public static final double PROCESSOR = 150;
         public static final double NET = 175;
         public static final double PREPARE_CLIMB = 125;
-        public static final double CLIMB = 210;
+        public static final double CLIMB = 235;
     }
 
     public static final class SwerveConstants {
