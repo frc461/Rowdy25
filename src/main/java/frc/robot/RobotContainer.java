@@ -69,6 +69,10 @@ public class RobotContainer {
                                 ).withTimeout(0.25).onlyIf(robotStates.swerve::isAutoHeading)
                         ));
 
+        driverXbox.b().whileTrue(robotStates.swerve.pathFindToProcessor(robotStates));
+
+        driverXbox.x().whileTrue(robotStates.swerve.pathFindToNet(robotStates, true));
+
         driverXbox.povUp().onTrue(new InstantCommand(() -> robotStates.swerve.localizer.setRotations(Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red ? Rotation2d.kPi : Rotation2d.kZero)));
         driverXbox.povDown().onTrue(new InstantCommand(robotStates.swerve.localizer::syncRotations));
         driverXbox.povLeft().whileTrue(Commands.runEnd(robotStates.pivot::activateCageIntake, robotStates.pivot::stopCageIntake));
@@ -91,10 +95,6 @@ public class RobotContainer {
                 robotStates.swerve.pathFindToNearestAlgaeOnReef(robotStates)
                         .unless(robotStates.intake::barelyHasCoral)
         );
-
-        driverXbox.back().whileTrue(robotStates.swerve.pathFindToNet(robotStates, true));
-
-        driverXbox.start().whileTrue(robotStates.swerve.pathFindToProcessor(robotStates));
 
         opXbox.povDown().onTrue(new InstantCommand(() -> robotStates.setCurrentAutoLevel(FieldUtil.Reef.Level.L4)));
 

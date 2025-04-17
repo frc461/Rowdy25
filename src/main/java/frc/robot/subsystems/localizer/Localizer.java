@@ -60,6 +60,7 @@ public class Localizer {
     public Pose2d nearestReefTagPoseBothReefs = new Pose2d();
 
     public Pose2d randomizedRobotPoseAtNet = new Pose2d();
+    public Pose2d nearestRobotPoseAtNetCenter = new Pose2d();
     public Pose2d currentAllianceSideRobotPoseAtProcessor = new Pose2d();
     public Pose2d nearestRobotPoseAtCoralStation = new Pose2d();
     public Pose2d nearestRobotPoseAtAlgaeReef = new Pose2d();
@@ -122,7 +123,7 @@ public class Localizer {
     }
 
     public double getNetScoringHeading() {
-        return RobotPoses.AlgaeScoring.getRobotPoseAtNetCenter(getStrategyPose()).getRotation().getDegrees();
+        return nearestRobotPoseAtNetCenter.getRotation().getDegrees();
     }
 
     public Pose2d randomizeNetScoringPose() {
@@ -135,7 +136,7 @@ public class Localizer {
     }
 
     public Pose2d centerNetScoringPose() {
-        randomizedRobotPoseAtNet = RobotPoses.AlgaeScoring.getRobotPoseAtNetCenter(getStrategyPose());
+        randomizedRobotPoseAtNet = nearestRobotPoseAtNetCenter;
         return randomizedRobotPoseAtNet;
     }
 
@@ -331,6 +332,7 @@ public class Localizer {
         nearestRobotPosesNearBranchPair = RobotPoses.Reef.getNearestRobotPosesNearBranchPair(currentRobotScoringSetting, currentPose);
         nearestReefTagPoseBothReefs = FieldUtil.Reef.getNearestReefTagPose(currentPose, true);
 
+        nearestRobotPoseAtNetCenter = RobotPoses.AlgaeScoring.getRobotPoseAtNetCenter(currentPose);
         currentAllianceSideRobotPoseAtProcessor = RobotPoses.AlgaeScoring.getCurrentAllianceSideRobotPoseAtProcessor(currentPose);
         nearestRobotPoseAtCoralStation = getStrategyPose().nearest(List.of(
                 RobotPoses.CoralStation.getRobotPosesAtEachCoralStation().get(0).interpolate(Constants.FAR_LEFT_CORAL_STATION.apply(Constants.ALLIANCE_SUPPLIER), 0.25),

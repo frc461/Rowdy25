@@ -416,15 +416,15 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                                 0,
                                 Rotation2d.kZero
                         ).inverse())
-                ).until(() -> robotStates.atTransitionStateLocation(RobotStates.State.NET) && robotStates.atNetState.getAsBoolean())
+                ).until(robotStates.atNetState)
                         .andThen(new DirectMoveToPoseCommand(
                                 this,
                                 fieldCentric,
                                 robotStates.elevator::getPosition,
                                 localizer.randomizedRobotPoseAtNet,
                                 1.0
-                        )).raceWith(new WaitUntilCommand(new Trigger(() -> robotStates.nearStateLocation(RobotStates.State.NET)).debounce(0.75))).andThen(
-                                new WaitUntilCommand(robotStates.atNetState).withTimeout(0.5)
+                        )).andThen(new WaitUntilCommand(new Trigger(() -> robotStates.nearStateLocation(RobotStates.State.NET)).debounce(0.5))).andThen(
+                                new WaitUntilCommand(robotStates.atNetState).withTimeout(0.0)
                                         .andThen(robotStates::toggleNetState)
                                         .onlyIf(() -> autoHeading)
                         ).alongWith(
