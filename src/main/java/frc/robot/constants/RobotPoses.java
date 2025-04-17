@@ -170,7 +170,7 @@ public class RobotPoses {
             if (algaeIsHigh) {
                 return FieldUtil.Reef.getNearestReefTagPose(currentPose, true).plus(new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0 + Units.inchesToMeters(2), 0, Rotation2d.kPi));
             }
-            return FieldUtil.Reef.getNearestReefTagPose(currentPose, true).plus(new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0 - Units.inchesToMeters(2), 0, Rotation2d.kZero));
+            return FieldUtil.Reef.getNearestReefTagPose(currentPose, true).plus(new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0 - Units.inchesToMeters(5), 0, Rotation2d.kZero));
         }
 
         public static List<Pose2d> getRobotPosesAtBranches(RobotScoringSetting mode) { // Where robot should be to be centered at branches (to score)
