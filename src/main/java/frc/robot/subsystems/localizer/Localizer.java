@@ -114,7 +114,7 @@ public class Localizer {
     }
 
     public double getNearestReefSideHeading() {
-        return nearestRobotPoseAtBranch.getRotation().getDegrees();
+        return nearestReefTagPoseBothReefs.getRotation().rotateBy(Rotation2d.kPi).getDegrees();
     }
 
     public double getProcessorScoringHeading() {
@@ -122,7 +122,7 @@ public class Localizer {
     }
 
     public double getNetScoringHeading() {
-        return randomizedRobotPoseAtNet.getRotation().getDegrees();
+        return RobotPoses.AlgaeScoring.getRobotPoseAtNetCenter(getStrategyPose()).getRotation().getDegrees();
     }
 
     public Pose2d randomizeNetScoringPose() {

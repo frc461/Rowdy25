@@ -137,16 +137,16 @@ public class RobotStates {
         return swerve.localizer.atScoringLocation(currentState);
     }
 
+    public boolean nearStateLocation(RobotStates.State robotState) {
+        return swerve.localizer.nearStateLocation(robotState);
+    }
+
     public boolean atTransitionStateLocation(RobotStates.State robotState) {
         return swerve.localizer.atTransitionStateLocation(robotState, false);
     }
 
     public boolean atTransitionStateLocation(RobotStates.State robotState, boolean autoTransition) {
         return swerve.localizer.atTransitionStateLocation(robotState, autoTransition);
-    }
-
-    public boolean nearStateLocation(RobotStates.State robotState) {
-        return swerve.localizer.nearStateLocation(robotState);
     }
 
     public void setStowState() {
