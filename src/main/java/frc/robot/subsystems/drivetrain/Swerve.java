@@ -149,6 +149,10 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
         consistentHeading = 0.0;
     }
 
+    public DriveMode getCurrentMode() {
+        return currentMode;
+    }
+
     /**
      * Returns a command that applies the specified control request to this swerve drivetrain.
      *

@@ -42,6 +42,7 @@ public class SwerveTelemetry {
     private final DoubleArrayPublisher cancoderAngles = driveStateTable.getDoubleArrayTopic("Module Cancoder positions").publish();
     private final DoublePublisher driveTimestamp = driveStateTable.getDoubleTopic("Timestamp").publish();
     private final DoublePublisher driveOdometryFrequency = driveStateTable.getDoubleTopic("OdometryFrequency").publish();
+    private final StringPublisher currentDriveMode = driveStateTable.getStringTopic("Current Drive Mode").publish();
     private final DoubleArrayPublisher currentCurrent = driveStateTable.getDoubleArrayTopic("Current Amp Currents").publish();
     private final BooleanPublisher isStuck = driveStateTable.getBooleanTopic("Drivetrain is stuck").publish();
 
@@ -86,6 +87,7 @@ public class SwerveTelemetry {
         driveModulePositions.set(state.ModulePositions);
         driveTimestamp.set(state.Timestamp);
         driveOdometryFrequency.set(1.0 / state.OdometryPeriod);
+        currentDriveMode.set(swerve.getCurrentMode().name());
 
         double[] currents = new double[4];
         double[] positions = new double[4];
