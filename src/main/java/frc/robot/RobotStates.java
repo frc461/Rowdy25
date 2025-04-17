@@ -396,7 +396,7 @@ public class RobotStates {
                         .unless(DriverStation::isAutonomousEnabled)
                         .andThen(orderedTransition(pivot::setCoralStationState, Pivot.State.CORAL_STATION, elevator::setCoralStationState, Elevator.State.CORAL_STATION, wrist::setCoralStationState))
                         .andThen(intake::setCoralIntakeState)
-                        .andThen(new WaitUntilCommand(intake::barelyHasCoral))
+                        .andThen(new WaitUntilCommand(() -> intake.barelyHasCoral() && !swerve.localizer.nearStateLocation(State.CORAL_STATION)))
                         .andThen(this::setStowState)
                         .alongWith(new WaitUntilCommand(() -> !swerve.localizer.isAgainstCoralStation() && swerve.isStuck()).andThen(this::toggleCoralStationObstructedState))
                         .until(() -> !coralStationState.getAsBoolean())
