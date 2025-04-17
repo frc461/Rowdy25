@@ -142,9 +142,12 @@ public final class AutoManager {
                         this.startPosition.index + "," + firstScoringOrAlgaeLocation,
                         () -> new InstantCommand(() -> robotStates.swerve.localizer.setPoses(getStartingPose(startPosition)))
                                 .onlyIf(() -> startPosition.index != 0)
-                                .andThen(robotStates::setStowState)
-                                .andThen(new InstantCommand(robotStates::setL2L3L4StowState).onlyIf(() -> firstScoringLocation.getSecond() != FieldUtil.Reef.Level.L1))
-                                .andThen(robotStates.swerve.pushAlliancePartnerOut()).onlyIf(() -> push)
+                                .andThen(new ConditionalCommand(
+                                        new InstantCommand(robotStates::setStowState),
+                                        new InstantCommand(robotStates::setL2L3L4StowState),
+                                        () -> firstScoringLocation.getSecond() == FieldUtil.Reef.Level.L1
+                                ))
+                                .andThen(robotStates.swerve.pushAlliancePartnerOut().onlyIf(() -> push))
                                 .andThen(robotStates.swerve.pathFindToScoringLocation(robotStates, firstScoringLocation.getFirst(), firstScoringLocation.getSecond()))
                 )),
                 () -> getAlgaeLocation(firstScoringOrAlgaeLocation).ifPresent(
@@ -153,7 +156,7 @@ public final class AutoManager {
                                 () -> new InstantCommand(() -> robotStates.swerve.localizer.setPoses(getStartingPose(startPosition)))
                                         .onlyIf(() -> startPosition.index != 0)
                                         .andThen(robotStates::setStowState)
-                                        .andThen(robotStates.swerve.pushAlliancePartnerOut()).onlyIf(() -> push)
+                                        .andThen(robotStates.swerve.pushAlliancePartnerOut().onlyIf(() -> push))
                                         .andThen(robotStates.swerve.pathFindToAlgaeOnReef(robotStates, firstAlgaeLocation))
                                         .andThen(robotStates.swerve.pathFindToNet(robotStates, false))
                         ))
