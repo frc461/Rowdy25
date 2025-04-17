@@ -73,6 +73,8 @@ public class RobotContainer {
 
         driverXbox.x().whileTrue(robotStates.swerve.pathFindToNet(robotStates, true));
 
+        driverXbox.y().onTrue(new InstantCommand(robotStates::setStowState));
+
         driverXbox.povUp().onTrue(new InstantCommand(() -> robotStates.swerve.localizer.setRotations(Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red ? Rotation2d.kPi : Rotation2d.kZero)));
         driverXbox.povDown().onTrue(new InstantCommand(robotStates.swerve.localizer::syncRotations));
         driverXbox.povLeft().whileTrue(Commands.runEnd(robotStates.pivot::activateCageIntake, robotStates.pivot::stopCageIntake));
