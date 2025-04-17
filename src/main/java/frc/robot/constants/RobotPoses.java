@@ -57,10 +57,10 @@ public class RobotPoses {
 
             for (FieldUtil.Reef.Side side : FieldUtil.Reef.Side.values()) {
                 anglesToEachVertex.addAll(robotCorners.stream()
-                        .map(corner -> FieldUtil.Reef.Side.getLeftVertexPose(side).getTranslation().minus(corner.getTranslation()).getAngle())
+                        .map(corner -> FieldUtil.Reef.Side.getLeftVertexPoseOfNearestReef(currentPose, side).getTranslation().minus(corner.getTranslation()).getAngle())
                         .toList());
                 distancesToEachVertex.addAll(robotCorners.stream()
-                        .map(corner -> FieldUtil.Reef.Side.getLeftVertexPose(side).getTranslation().getDistance(corner.getTranslation()))
+                        .map(corner -> FieldUtil.Reef.Side.getLeftVertexPoseOfNearestReef(currentPose, side).getTranslation().getDistance(corner.getTranslation()))
                         .toList());
             }
 
@@ -156,7 +156,7 @@ public class RobotPoses {
         }
 
         public static Pose2d getNearestRobotPoseNearReef(boolean algaeIsHigh, Pose2d currentPose) {
-            return getNearestRobotPoseNearReef(algaeIsHigh, currentPose, false);
+            return getNearestRobotPoseNearReef(algaeIsHigh, currentPose, true);
         }
 
         public static Pose2d getRobotPoseAtAlgaeReef(FieldUtil.Reef.Side side) {
@@ -258,11 +258,14 @@ public class RobotPoses {
         }
 
         public static Pose2d getInnermostRobotPoseAtNet(Pose2d currentPose) {
-            return FieldUtil.AlgaeScoring.getNearestNetTagPose(currentPose).plus(new Transform2d(
-                    Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0,
-                    FieldUtil.AlgaeScoring.NET_SAFE_HALF_LENGTH,
-                    Rotation2d.kPi
-            ));
+            Pose2d robotPoseAtNetCenter = getRobotPoseAtNetCenter(currentPose);
+            return new Pose2d(
+                    robotPoseAtNetCenter.getX(),
+                    Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red
+                            ? FieldUtil.FIELD_WIDTH / 2 - Constants.ROBOT_WIDTH_WITH_BUMPERS.in(Meters) / 1.5
+                            : FieldUtil.FIELD_WIDTH / 2 + Constants.ROBOT_WIDTH_WITH_BUMPERS.in(Meters) / 1.5,
+                    robotPoseAtNetCenter.getRotation()
+            );
         }
 
         public static Pose2d getOutermostRobotPoseAtNet(Pose2d currentPose) {
