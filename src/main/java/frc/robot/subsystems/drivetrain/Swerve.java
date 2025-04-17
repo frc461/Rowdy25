@@ -354,7 +354,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                                         robotStates.elevator::getPosition,
                                         localizer.nearestRobotPoseAtAlgaeReef,
                                         Constants.MAX_VEL
-                                ).withTimeout(0.5)
+                                ).until(robotStates.intake::algaeStuck)
                                         .andThen(new DirectMoveToPoseCommand(
                                                 this,
                                                 fieldCentric,
@@ -385,7 +385,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                                         robotStates.elevator::getPosition,
                                         RobotPoses.Reef.getRobotPoseAtAlgaeReef(side),
                                         Constants.MAX_VEL
-                                ).andThen(Commands.waitSeconds(0.25))
+                                ).until(robotStates.intake::algaeStuck)
                                         .andThen(new DirectMoveToPoseCommand(
                                                 this,
                                                 fieldCentric,
@@ -419,7 +419,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                                 robotStates.elevator::getPosition,
                                 localizer.randomizedRobotPoseAtNet,
                                 1.0
-                        )).raceWith(new WaitUntilCommand(new Trigger(() -> robotStates.nearStateLocation(RobotStates.State.NET)).debounce(1))).andThen(
+                        )).raceWith(new WaitUntilCommand(new Trigger(() -> robotStates.nearStateLocation(RobotStates.State.NET)).debounce(0.75))).andThen(
                                 new WaitUntilCommand(robotStates.atNetState).withTimeout(0.5)
                                         .andThen(robotStates::toggleNetState)
                                         .onlyIf(() -> autoHeading)

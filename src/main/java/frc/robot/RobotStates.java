@@ -33,6 +33,7 @@ public class RobotStates {
         L2_L3_L4_STOW,
         MANUAL,
         OUTTAKE,
+        OUTTAKE_ALGAE,
         OUTTAKE_L1,
         INTAKE_OUT,
         CORAL_STATION,
@@ -64,6 +65,7 @@ public class RobotStates {
     public final Trigger stowState = new Trigger(() -> currentState == State.STOW);
     public final Trigger l2L3L4StowState = new Trigger(() -> currentState == State.L2_L3_L4_STOW);
     public final Trigger outtakeState = new Trigger(() -> currentState == State.OUTTAKE);
+    public final Trigger outtakeAlgaeState = new Trigger(() -> currentState == State.OUTTAKE_ALGAE);
     public final Trigger outtakeL1State = new Trigger(() -> currentState == State.OUTTAKE_L1);
     public final Trigger intakeOutState = new Trigger(() -> currentState == State.INTAKE_OUT);
     public final Trigger coralStationState = new Trigger(() -> currentState == State.CORAL_STATION);
@@ -163,6 +165,10 @@ public class RobotStates {
         currentState = State.OUTTAKE;
     }
 
+    public void setOuttakeAlgaeState() {
+        currentState = State.OUTTAKE_ALGAE;
+    }
+
     public void setOuttakeL1State() {
         currentState = State.OUTTAKE_L1;
     }
@@ -258,7 +264,7 @@ public class RobotStates {
     }
 
     public void toggleProcessorState(boolean override) {
-        currentState = currentState == State.PROCESSOR && !override ? State.OUTTAKE : State.PROCESSOR;
+        currentState = currentState == State.PROCESSOR && !override ? State.OUTTAKE_ALGAE : State.PROCESSOR;
     }
 
     public void toggleProcessorState() {
@@ -266,7 +272,7 @@ public class RobotStates {
     }
 
     public void toggleNetState(boolean override) {
-        currentState = currentState == State.NET && !override ? State.OUTTAKE : State.NET;
+        currentState = currentState == State.NET && !override ? State.OUTTAKE_ALGAE : State.NET;
     }
 
     public void toggleNetState() {
@@ -347,14 +353,21 @@ public class RobotStates {
         outtakeState.onTrue(
                 new InstantCommand(swerve::setIdleMode)
                         .andThen(intake::setOuttakeState)
-                        .andThen(new WaitUntilCommand(() -> !intake.hasAlgae() && !intake.barelyHasCoral()))
+                        .andThen(new WaitUntilCommand(() -> !intake.barelyHasCoral()))
+                        .andThen(this::setStowState)
+        );
+
+        outtakeAlgaeState.onTrue(
+                new InstantCommand(swerve::setIdleMode)
+                        .andThen(intake::setOuttakeState)
+                        .andThen(Commands.waitSeconds(0.25))
                         .andThen(this::setStowState)
         );
 
         outtakeL1State.onTrue(
                 new InstantCommand(swerve::setIdleMode)
                         .andThen(intake::setOuttakeL1State)
-                        .andThen(new WaitUntilCommand(() -> !intake.hasAlgae() && !intake.barelyHasCoral()))
+                        .andThen(new WaitUntilCommand(() -> !intake.barelyHasCoral()))
                         .andThen(new WaitCommand(0.25))
                         .andThen(this::setStowState)
         );
@@ -362,7 +375,7 @@ public class RobotStates {
         intakeOutState.onTrue(
                 new InstantCommand(swerve::setIdleMode)
                         .andThen(intake::setIntakeOutState)
-                        .andThen(new WaitUntilCommand(() -> !intake.hasAlgae() && !intake.barelyHasCoral()))
+                        .andThen(new WaitUntilCommand(() -> !intake.barelyHasCoral()))
                         .andThen(this::setStowState)
         );
 
@@ -383,8 +396,8 @@ public class RobotStates {
                         .unless(DriverStation::isAutonomousEnabled)
                         .andThen(orderedTransition(pivot::setCoralStationObstructedState, Pivot.State.CORAL_STATION_OBSTRUCTED, elevator::setCoralStationObstructedState, Elevator.State.CORAL_STATION_OBSTRUCTED, wrist::setCoralStationObstructedState))
                         .andThen(intake::setCoralIntakeState)
-                        .andThen(new WaitUntilCommand(intake::atIdleState))
-                        .andThen(this::setStowState)
+                        .andThen(new WaitUntilCommand(intake::barelyHasCoral))
+                        .andThen(this::toggleCoralStationState)
                         .alongWith(new WaitUntilCommand(swerve.localizer::isAgainstCoralStation).andThen(() -> toggleCoralStationState(true)))
                         .onlyIf(() -> !intake.hasAlgae() && !intake.barelyHasCoral())
                         .until(() -> !coralStationObstructedState.getAsBoolean())
@@ -397,7 +410,7 @@ public class RobotStates {
                         .andThen(
                                 new WaitUntilCommand(PhotonUtil.Color::hasCoralTargets)
                                         .andThen(swerve.directMoveToObject(
-                                                () -> intake.hasAlgae() || intake.hasCoral(),
+                                                intake::hasCoral,
                                                 PhotonUtil.Color.TargetClass.CORAL
                                         ).asProxy())
                         ).raceWith(new WaitUntilCommand(intake::atIdleState))

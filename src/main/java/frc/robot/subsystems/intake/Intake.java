@@ -45,7 +45,7 @@ public class Intake extends SubsystemBase {
     private final IntakeTelemetry intakeTelemetry = new IntakeTelemetry(this);
 
     public StallIntent stallIntent = StallIntent.CORAL_STUCK;
-    public Trigger hasAlgaeOrCoralStuck, maintainAlgae;
+    public Trigger hasAlgaeOrCoralStuck;
     private boolean maintainAlgaeCurrentOverride = false;
     private double proximityObjectDetectionThreshold = Constants.IntakeConstants.DEFAULT_PROXIMITY_OBJECT_DETECTION_THRESHOLD;
     public DoubleConsumer setProximityObjectDetectionThreshold = threshold -> proximityObjectDetectionThreshold = threshold;
@@ -78,7 +78,6 @@ public class Intake extends SubsystemBase {
         currentState = State.IDLE;
 
         hasAlgaeOrCoralStuck = new Trigger(() -> Math.abs(getCurrent()) > 40.0).debounce(0.1, Debouncer.DebounceType.kRising);
-        maintainAlgae = new Trigger(() -> maintainAlgaeCurrentOverride && Math.abs(getCurrent()) > 5.0).debounce(0.25, Debouncer.DebounceType.kFalling);
     }
 
     public double getCurrent() {
@@ -117,8 +116,12 @@ public class Intake extends SubsystemBase {
         return hasAlgaeOrCoralStuck.getAsBoolean() && stallIntent == StallIntent.CORAL_STUCK;
     }
 
+    public boolean algaeStuck() {
+        return  hasAlgaeOrCoralStuck.getAsBoolean() && stallIntent == StallIntent.HAS_ALGAE;
+    }
+
     public boolean hasAlgae() {
-        return maintainAlgae.getAsBoolean() || hasAlgaeOrCoralStuck.getAsBoolean() && stallIntent == StallIntent.HAS_ALGAE;
+        return maintainAlgaeCurrentOverride || hasAlgaeOrCoralStuck.getAsBoolean() && stallIntent == StallIntent.HAS_ALGAE;
     }
 
     public boolean atIdleState() {
@@ -149,11 +152,13 @@ public class Intake extends SubsystemBase {
 
     public void setAlgaeIntakeState() {
         stallIntent = StallIntent.HAS_ALGAE;
+        maintainAlgaeCurrentOverride = false;
         setIntakeState(false);
     }
 
     public void setCoralIntakeState() {
         stallIntent = StallIntent.CORAL_STUCK;
+        maintainAlgaeCurrentOverride = false;
         setIntakeState(false);
     }
 

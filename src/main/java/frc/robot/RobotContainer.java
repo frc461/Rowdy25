@@ -89,7 +89,7 @@ public class RobotContainer {
         ));
         driverXbox.leftBumper().and(driverXbox.rightBumper()).whileTrue(
                 robotStates.swerve.pathFindToNearestAlgaeOnReef(robotStates)
-                        .unless(() -> robotStates.intake.hasAlgae() || robotStates.intake.barelyHasCoral())
+                        .unless(robotStates.intake::barelyHasCoral)
         );
 
         driverXbox.back().whileTrue(robotStates.swerve.pathFindToNet(robotStates, true));
