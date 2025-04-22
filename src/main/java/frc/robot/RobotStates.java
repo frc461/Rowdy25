@@ -295,6 +295,10 @@ public class RobotStates {
         currentState = (currentState == State.CLIMB || currentState == State.PREPARE_CLIMB) ? State.CLIMB : State.PREPARE_CLIMB;
     }
 
+    public void setClimbState() {
+        currentState = State.CLIMB;
+    }
+
     private Command movePivotToPerpendicular(boolean trustCameras) {
         return new InstantCommand(pivot::setPerpendicularState)
                 .andThen(new WaitUntilCommand(pivot::isAtTarget))

@@ -98,6 +98,8 @@ public class RobotContainer {
                         .unless(robotStates.intake::barelyHasCoral)
         );
 
+        driverXbox.start().onTrue(new InstantCommand(robotStates::setClimbState));
+
         opXbox.povDown().onTrue(new InstantCommand(() -> robotStates.setCurrentAutoLevel(FieldUtil.Reef.Level.L4)));
 
         opXbox.povRight().onTrue(new InstantCommand(() -> robotStates.setCurrentAutoLevel(FieldUtil.Reef.Level.L1)));

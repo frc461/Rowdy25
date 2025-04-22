@@ -192,8 +192,8 @@ public final class CompConstants {
         public static final double L3_CORAL_ONE_CORAL_FROM_BRANCH = 270;
         public static final double L4_CORAL_AT_BRANCH = 75;
         public static final double L4_CORAL_ONE_CORAL_FROM_BRANCH = 275;
-        public static final double LOW_REEF_ALGAE = 85;
-        public static final double HIGH_REEF_ALGAE = 245;
+        public static final double LOW_REEF_ALGAE = 77;
+        public static final double HIGH_REEF_ALGAE = 243;
         public static final double PROCESSOR = 120;
         public static final double NET = 165;
 
