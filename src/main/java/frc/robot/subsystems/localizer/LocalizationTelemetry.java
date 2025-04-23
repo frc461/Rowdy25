@@ -74,6 +74,7 @@ public class LocalizationTelemetry {
     private final DoubleArrayPublisher photonTopLeftPosePub = robotPoseTable.getDoubleArrayTopic("Photon Top Left Pose").publish();
     private final StructPublisher<Pose2d> photonBackPose2dPub = robotPoseTable.getStructTopic("Photon Back Pose2d", Pose2d.struct).publish();
     private final DoubleArrayPublisher photonBackPosePub = robotPoseTable.getDoubleArrayTopic("Photon Back Pose").publish();
+    private final StructPublisher<Pose2d> nearestRobotPoseAtCoralStation = robotPoseTable.getStructTopic("Nearest Robot Pose At Coral Station", Pose2d.struct).publish();
 
     public void publishValues() {
         localizationStrategyPub.set(localizer.getLocalizationStrategy());
@@ -110,6 +111,7 @@ public class LocalizationTelemetry {
         PhotonUtil.BW.getBestTagPose(PhotonUtil.BW.BWCamera.BACK).ifPresent(
                 poseEstimate -> publishPose(photonBackPose2dPub, photonBackPosePub, photonBackPosePrettyPub, poseEstimate.estimatedPose().toPose2d())
         );
+        nearestRobotPoseAtCoralStation.set(localizer.nearestRobotPoseAtCoralStation);
 
         logValues();
     }

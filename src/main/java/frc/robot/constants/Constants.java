@@ -267,6 +267,7 @@ public final class Constants {
         public static double D;
         public static double EXPO_V;
         public static double EXPO_A;
+        public static double EXPO_V_SLOW;
         public static double SAFE_TOLERANCE;
         public static double AT_TARGET_TOLERANCE;
 

@@ -61,6 +61,7 @@ public class Localizer {
 
     public Pose2d nearestRobotPoseAwayFromStartingLine = new Pose2d();
     public Pose2d randomizedRobotPoseAtNet = new Pose2d();
+    public Pose2d nearestRobotPoseAtNetCenter = new Pose2d();
     public Pose2d currentAllianceSideRobotPoseAtProcessor = new Pose2d();
     public Pose2d nearestRobotPoseAtCoralStation = new Pose2d();
     public Pose2d nearestRobotPoseAtAlgaeReef = new Pose2d();
@@ -115,7 +116,7 @@ public class Localizer {
     }
 
     public double getNearestReefSideHeading() {
-        return nearestRobotPoseAtBranch.getRotation().getDegrees();
+        return nearestReefTagPoseBothReefs.getRotation().rotateBy(Rotation2d.kPi).getDegrees();
     }
 
     public double getProcessorScoringHeading() {
@@ -123,7 +124,7 @@ public class Localizer {
     }
 
     public double getNetScoringHeading() {
-        return randomizedRobotPoseAtNet.getRotation().getDegrees();
+        return nearestRobotPoseAtNetCenter.getRotation().getDegrees();
     }
 
     public Pose2d randomizeNetScoringPose() {
@@ -132,6 +133,11 @@ public class Localizer {
                 RobotPoses.AlgaeScoring.getOutermostRobotPoseAtNet(currentPose),
                 Math.random()
         );
+        return randomizedRobotPoseAtNet;
+    }
+
+    public Pose2d centerNetScoringPose() {
+        randomizedRobotPoseAtNet = nearestRobotPoseAtNetCenter;
         return randomizedRobotPoseAtNet;
     }
 
@@ -176,7 +182,7 @@ public class Localizer {
     }
 
     public boolean isAgainstCoralStation() {
-        return !trustCameras || Math.abs(getRobotRelativeVectorToActionLocation(RobotStates.State.CORAL_STATION).getX()) < 0.21;
+        return !trustCameras || Math.abs(getRobotRelativeVectorToActionLocation(RobotStates.State.CORAL_STATION).getX()) < 0.22;
     }
 
     public boolean sameSideAsReefScoringLocation(FieldUtil.Reef.ScoringLocation scoringLocation) {
@@ -333,6 +339,7 @@ public class Localizer {
         nearestRobotPosesNearBranchPair = RobotPoses.Reef.getNearestRobotPosesNearBranchPair(currentRobotScoringSetting, currentPose);
         nearestReefTagPoseBothReefs = FieldUtil.Reef.getNearestReefTagPose(currentPose, true);
 
+        nearestRobotPoseAtNetCenter = RobotPoses.AlgaeScoring.getRobotPoseAtNetCenter(currentPose);
         currentAllianceSideRobotPoseAtProcessor = RobotPoses.AlgaeScoring.getCurrentAllianceSideRobotPoseAtProcessor(currentPose);
         nearestRobotPoseAtCoralStation = getStrategyPose().nearest(List.of(
                 RobotPoses.CoralStation.getRobotPosesAtEachCoralStation().get(0).interpolate(Constants.FAR_LEFT_CORAL_STATION.apply(Constants.ALLIANCE_SUPPLIER), 0.25),

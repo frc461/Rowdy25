@@ -69,6 +69,12 @@ public class RobotContainer {
                                 ).withTimeout(0.25).onlyIf(robotStates.swerve::isAutoHeading)
                         ));
 
+        driverXbox.b().whileTrue(robotStates.swerve.pathFindToProcessor(robotStates));
+
+        driverXbox.x().whileTrue(robotStates.swerve.pathFindToNet(robotStates, true));
+
+        driverXbox.y().onTrue(new InstantCommand(robotStates::setStowState));
+
         driverXbox.povUp().onTrue(new InstantCommand(() -> robotStates.swerve.localizer.setRotations(Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red ? Rotation2d.kPi : Rotation2d.kZero)));
         driverXbox.povDown().onTrue(new InstantCommand(robotStates.swerve.localizer::syncRotations));
         driverXbox.povLeft().whileTrue(Commands.runEnd(robotStates.pivot::activateCageIntake, robotStates.pivot::stopCageIntake));
@@ -89,12 +95,10 @@ public class RobotContainer {
         ));
         driverXbox.leftBumper().and(driverXbox.rightBumper()).whileTrue(
                 robotStates.swerve.pathFindToNearestAlgaeOnReef(robotStates)
-                        .unless(() -> robotStates.intake.hasAlgae() || robotStates.intake.barelyHasCoral())
+                        .unless(robotStates.intake::barelyHasCoral)
         );
 
-        driverXbox.back().whileTrue(robotStates.swerve.pathFindToNet(robotStates));
-
-        driverXbox.start().whileTrue(robotStates.swerve.pathFindToProcessor(robotStates));
+        driverXbox.start().onTrue(new InstantCommand(robotStates::setClimbState));
 
         opXbox.povDown().onTrue(new InstantCommand(() -> robotStates.setCurrentAutoLevel(FieldUtil.Reef.Level.L4)));
 
@@ -105,7 +109,7 @@ public class RobotContainer {
         opXbox.povUp().onTrue(new InstantCommand(() -> robotStates.setCurrentAutoLevel(FieldUtil.Reef.Level.L2)));
 
         opXbox.leftTrigger().whileTrue(Commands.runEnd(() -> robotStates.intake.setIntakeState(true), robotStates.intake::setIdleState));
-        opXbox.rightTrigger().onTrue(Commands.runEnd(robotStates.intake::setOuttakeState, robotStates.intake::setIdleState));
+        opXbox.rightTrigger().whileTrue(Commands.runEnd(robotStates.intake::setOuttakeState, robotStates.intake::setIdleState));
 
         opXbox.leftStick().onTrue(new InstantCommand(robotStates::toggleNetState));
         opXbox.rightStick().onTrue(new InstantCommand(robotStates::toggleProcessorState));

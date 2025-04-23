@@ -15,7 +15,7 @@ public class IntakeCommand extends Command {
     public void execute() {
         switch (intake.getState()) {
             case INTAKE:
-                if (intake.hasCoral() || intake.hasAlgae()) {
+                if (intake.hasCoral() || intake.algaeStuck()) {
                     intake.setIdleState();
                 } else if (intake.coralEntered() && !intake.beamBreakBroken()) {
                     intake.setIntakeSlowState();
@@ -26,7 +26,7 @@ public class IntakeCommand extends Command {
                 }
                 break;
             case INTAKE_SLOW:
-                if (intake.hasCoral() || intake.hasAlgae()) {
+                if (intake.hasCoral() || intake.algaeStuck()) {
                     intake.setIdleState();
                 } else if (intake.coralEntered() && !intake.beamBreakBroken()) {
                     intake.setIntakeSpeed(0.15);
@@ -46,7 +46,7 @@ public class IntakeCommand extends Command {
                 intake.setIntakeSpeed(-0.5);
                 break;
             case OUTTAKE_SLOW:
-                if (intake.hasCoral() || intake.hasAlgae()) {
+                if (intake.hasCoral() || intake.algaeStuck()) {
                     intake.setIdleState();
                 } else if (intake.coralEntered() && !intake.beamBreakBroken()) {
                     intake.setIntakeSlowState();

@@ -273,16 +273,12 @@ public final class PhotonUtil {
             return multiTagResult.map(
                     multiTargetPNPResult -> {
                         Pose3d bestPose = new Pose3d().plus(multiTargetPNPResult.estimatedPose.best).relativeTo(FieldUtil.ORIGIN).plus(camera.robotToCameraOffset.inverse());
-                        if (getLatestResult(camera).getTargets().stream().map(target -> FieldUtil.AprilTag.getTag(target.getFiducialId()))
-                                .filter(tag -> !FieldUtil.AprilTag.FILTER.contains(tag)).toList().isEmpty()) { // Ensure that none of the tags are not in the filtered list
-                            return new EstimatedRobotPose(
-                                    bestPose,
-                                    getLatestResultTimestamp(camera),
-                                    getLatestResult(camera).getTargets(),
-                                    Constants.VisionConstants.VISION_STD_DEV_MULTITAG_FUNCTION.apply(getBestTagDist(camera))
-                            );
-                        }
-                        return null;
+                        return new EstimatedRobotPose(
+                                bestPose,
+                                getLatestResultTimestamp(camera),
+                                getLatestResult(camera).getTargets(),
+                                Constants.VisionConstants.VISION_STD_DEV_MULTITAG_FUNCTION.apply(getBestTagDist(camera))
+                        );
                     }
             );
         }

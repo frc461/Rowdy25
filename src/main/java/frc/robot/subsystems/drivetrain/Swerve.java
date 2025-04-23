@@ -149,6 +149,10 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
         consistentHeading = 0.0;
     }
 
+    public DriveMode getCurrentMode() {
+        return currentMode;
+    }
+
     /**
      * Returns a command that applies the specified control request to this swerve drivetrain.
      *
@@ -364,7 +368,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                                         robotStates.elevator::getPosition,
                                         localizer.nearestRobotPoseAtAlgaeReef,
                                         Constants.MAX_VEL
-                                ).withTimeout(0.5)
+                                ).until(robotStates.intake::algaeStuck)
                                         .andThen(new DirectMoveToPoseCommand(
                                                 this,
                                                 fieldCentric,
@@ -395,7 +399,7 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                                         robotStates.elevator::getPosition,
                                         RobotPoses.Reef.getRobotPoseAtAlgaeReef(side),
                                         Constants.MAX_VEL
-                                ).andThen(Commands.waitSeconds(0.25))
+                                ).until(robotStates.intake::algaeStuck)
                                         .andThen(new DirectMoveToPoseCommand(
                                                 this,
                                                 fieldCentric,
@@ -411,26 +415,26 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
         );
     }
 
-    public Command pathFindToNet(RobotStates robotStates) {
+    public Command pathFindToNet(RobotStates robotStates, boolean randomized) {
         return Commands.defer(
                 () -> new PathfindToPoseAvoidingReefCommand(
                         this,
                         fieldCentric,
                         robotStates.elevator::getPosition,
-                        localizer.randomizeNetScoringPose().plus(new Transform2d(
+                        (randomized ? localizer.randomizeNetScoringPose() : localizer.centerNetScoringPose()).plus(new Transform2d(
                                 Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_DIRECT_DRIVE,
                                 0,
                                 Rotation2d.kZero
                         ).inverse())
-                ).until(() -> robotStates.atTransitionStateLocation(RobotStates.State.NET) && robotStates.atNetState.getAsBoolean())
+                ).until(robotStates.atNetState)
                         .andThen(new DirectMoveToPoseCommand(
                                 this,
                                 fieldCentric,
                                 robotStates.elevator::getPosition,
                                 localizer.randomizedRobotPoseAtNet,
                                 1.0
-                        )).raceWith(new WaitUntilCommand(new Trigger(() -> robotStates.nearStateLocation(RobotStates.State.NET)).debounce(1))).andThen(
-                                new WaitUntilCommand(robotStates.atNetState).withTimeout(0.5)
+                        )).andThen(new WaitUntilCommand(new Trigger(() -> robotStates.nearStateLocation(RobotStates.State.NET)).debounce(0.5))).andThen(
+                                new WaitUntilCommand(robotStates.atNetState).withTimeout(0.0)
                                         .andThen(robotStates::toggleNetState)
                                         .onlyIf(() -> autoHeading)
                         ).alongWith(

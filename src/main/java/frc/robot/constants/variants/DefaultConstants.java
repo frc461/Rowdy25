@@ -127,8 +127,8 @@ public final class DefaultConstants {
         public static final double DEGREE_TOLERANCE_TO_ACCEPT = 2.5;
         public static final double TRANSLATION_TOLERANCE_TO_ACCEPT = 0.03;
         public static final double TRANSLATION_TOLERANCE_TO_DIRECT_DRIVE = 0.5;
-        public static final double TRANSLATION_TOLERANCE_TO_TRANSITION = 1.5;
-        public static final double TRANSLATION_TOLERANCE_TO_TRANSITION_AUTO = 2.5;
+        public static final double TRANSLATION_TOLERANCE_TO_TRANSITION = 1.8;
+        public static final double TRANSLATION_TOLERANCE_TO_TRANSITION_AUTO = 1.5;
     }
 
     public static final class VisionConstants {
@@ -319,6 +319,7 @@ public final class DefaultConstants {
         public static final double D = 0.01;
         public static final double EXPO_V = V / 0.75; // 75% of the actual max velocity, as it will allocate 1 / 0.75 = 1.33333 times the voltage to 1 rps
         public static final double EXPO_A = A / 0.0075; // 0.75% of the actual max acceleration
+        public static final double EXPO_V_SLOW = V / 0.15; // 15% of the actual max velocity
         public static final double SAFE_TOLERANCE = 15.0;
         public static final double AT_TARGET_TOLERANCE = 2.5;
 
@@ -343,7 +344,7 @@ public final class DefaultConstants {
         public static final double PROCESSOR = 22.1;
         public static final double NET = 90;
         public static final double PREPARE_CLIMB = 90;
-        public static final double CLIMB = 75;
+        public static final double CLIMB = 10;
     }
 
     public final static class WristConstants {
@@ -398,7 +399,7 @@ public final class DefaultConstants {
         public static final double PROCESSOR = 150;
         public static final double NET = 175;
         public static final double PREPARE_CLIMB = 125;
-        public static final double CLIMB = 210;
+        public static final double CLIMB = 235;
     }
 
     public static final class SwerveConstants {

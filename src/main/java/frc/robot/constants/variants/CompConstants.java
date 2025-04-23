@@ -74,7 +74,7 @@ public final class CompConstants {
         public static final double LOWER_LIMIT = 0;
         public static final double UPPER_LIMIT = 46;
         public static final double STOW = 0;
-        public static final double L2_L3_L4_STOW = 5.0;
+        public static final double L2_L3_L4_STOW = 4.0;
         public static final double CORAL_STATION = 0;
         public static final double CORAL_STATION_OBSTRUCTED = 3.0;
         public static final double GROUND_CORAL = 0;
@@ -123,6 +123,7 @@ public final class CompConstants {
         public static final double D = 0.01;
         public static final double EXPO_V = V / 0.45; // 45% of the actual max velocity, as it will allocate 1 / 0.4 = 2.5 times the voltage to 1 rps
         public static final double EXPO_A = A / 0.025; // 2.5% of the actual max acceleration
+        public static final double EXPO_V_SLOW = V / 0.1; // 10% of the actual max velocity
         public static final double SAFE_TOLERANCE = 20.0;
         public static final double AT_TARGET_TOLERANCE = 2.5;
 
@@ -131,8 +132,8 @@ public final class CompConstants {
         public static final double UPPER_LIMIT = 105;
         public static final double STOW = 75;
         public static final double L2_L3_L4_STOW = 75;
-        public static final double CORAL_STATION = 57.5;
-        public static final double CORAL_STATION_OBSTRUCTED = 53;
+        public static final double CORAL_STATION = 55.2;
+        public static final double CORAL_STATION_OBSTRUCTED = 52;
         public static final double GROUND_CORAL = 3.5;
         public static final double GROUND_ALGAE = 14;
         public static final double L1_CORAL = 38.0;
@@ -171,13 +172,13 @@ public final class CompConstants {
         public static final double I = 0.0;
         public static final double D = 0.0;
         public static final double EXPO_V = V / 0.9; // 90% of the actual max velocity, as it will allocate 1 / 0.8 = 1.25 times the voltage to 1 rps
-        public static final double EXPO_A = A / 0.06; // 6% of the actual max accel
+        public static final double EXPO_A = A / 0.1; // 10% of the actual max accel
         public static final double SAFE_TOLERANCE = 50.0;
         public static final double AT_TARGET_TOLERANCE = 2.5;
 
         // presets
         public static final BiFunction<Double, Double, Double> LOWER_LIMIT = (elevatorPosition, pivotPosition) -> (double) (pivotPosition < 30 ? 45 : elevatorPosition > 1.5 && elevatorPosition < 12 ? 115 : 45);
-        public static final Function<Double, Double> UPPER_LIMIT = (elevatorPosition) -> (double) (elevatorPosition > 4.0 ? 295 : 160);
+        public static final Function<Double, Double> UPPER_LIMIT = (elevatorPosition) -> (double) (elevatorPosition > 3.75 ? 295 : 160);
         public static final double STOW = 120;
         public static final double L2_L3_L4_STOW = 200;
         public static final double CORAL_STATION = 115;
@@ -191,8 +192,8 @@ public final class CompConstants {
         public static final double L3_CORAL_ONE_CORAL_FROM_BRANCH = 270;
         public static final double L4_CORAL_AT_BRANCH = 75;
         public static final double L4_CORAL_ONE_CORAL_FROM_BRANCH = 275;
-        public static final double LOW_REEF_ALGAE = 85;
-        public static final double HIGH_REEF_ALGAE = 245;
+        public static final double LOW_REEF_ALGAE = 77;
+        public static final double HIGH_REEF_ALGAE = 243;
         public static final double PROCESSOR = 120;
         public static final double NET = 165;
 

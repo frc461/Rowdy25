@@ -152,6 +152,17 @@ public final class FieldUtil {
         public enum Side {
             AB, CD, EF, GH, IJ, KL;
 
+            public static Pose2d getLeftVertexPoseOfNearestReef(Pose2d currentPose, Side side) {
+                return switch (side) {
+                    case AB -> getReefCornersOfNearestReef(currentPose).get(0);
+                    case CD -> getReefCornersOfNearestReef(currentPose).get(1);
+                    case EF -> getReefCornersOfNearestReef(currentPose).get(2);
+                    case GH -> getReefCornersOfNearestReef(currentPose).get(3);
+                    case IJ -> getReefCornersOfNearestReef(currentPose).get(4);
+                    case KL -> getReefCornersOfNearestReef(currentPose).get(5);
+                };
+            }
+
             public static Pose2d getLeftVertexPose(Side side) {
                 return switch (side) {
                     case AB -> getReefCorners().get(0);
@@ -223,6 +234,24 @@ public final class FieldUtil {
                             new Pose2d(BLUE_REEF_CENTER, Rotation2d.fromDegrees(30)).plus(new Transform2d(REEF_APOTHEM * 2 / Math.sqrt(3), 0, Rotation2d.kZero)),
                             new Pose2d(BLUE_REEF_CENTER, Rotation2d.fromDegrees(90)).plus(new Transform2d(REEF_APOTHEM * 2 / Math.sqrt(3), 0, Rotation2d.kZero))
                     );
+        }
+
+        public static List<Pose2d> getReefCornersOfNearestReef(Pose2d currentPose) {
+            Translation2d nearestReefCenter = getNearestReefCenter(currentPose.getTranslation());
+            return List.of(
+                    new Pose2d(nearestReefCenter, getAllianceSide(currentPose) == DriverStation.Alliance.Red ? Rotation2d.fromDegrees(-30) : Rotation2d.fromDegrees(150))
+                            .plus(new Transform2d(REEF_APOTHEM * 2 / Math.sqrt(3), 0, Rotation2d.kZero)),
+                    new Pose2d(nearestReefCenter, getAllianceSide(currentPose) == DriverStation.Alliance.Red ? Rotation2d.fromDegrees(30) :  Rotation2d.fromDegrees(-150))
+                            .plus(new Transform2d(REEF_APOTHEM * 2 / Math.sqrt(3), 0, Rotation2d.kZero)),
+                    new Pose2d(nearestReefCenter, getAllianceSide(currentPose) == DriverStation.Alliance.Red ? Rotation2d.fromDegrees(90) :  Rotation2d.fromDegrees(-90))
+                            .plus(new Transform2d(REEF_APOTHEM * 2 / Math.sqrt(3), 0, Rotation2d.kZero)),
+                    new Pose2d(nearestReefCenter, getAllianceSide(currentPose) == DriverStation.Alliance.Red ? Rotation2d.fromDegrees(150) :  Rotation2d.fromDegrees(-30))
+                            .plus(new Transform2d(REEF_APOTHEM * 2 / Math.sqrt(3), 0, Rotation2d.kZero)),
+                    new Pose2d(nearestReefCenter, getAllianceSide(currentPose) == DriverStation.Alliance.Red ? Rotation2d.fromDegrees(-150) :  Rotation2d.fromDegrees(30))
+                            .plus(new Transform2d(REEF_APOTHEM * 2 / Math.sqrt(3), 0, Rotation2d.kZero)),
+                    new Pose2d(nearestReefCenter, getAllianceSide(currentPose) == DriverStation.Alliance.Red ? Rotation2d.fromDegrees(-90) :  Rotation2d.fromDegrees(90))
+                            .plus(new Transform2d(REEF_APOTHEM * 2 / Math.sqrt(3), 0, Rotation2d.kZero))
+            );
         }
 
         public static List<Pose2d> getReefTagPoses(boolean bothReefs) {
