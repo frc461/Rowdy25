@@ -19,20 +19,41 @@ import io.github.frc461.rowdy25.constants.Constants;
 import io.github.frc461.rowdy25.util.FieldUtil;
 import io.github.frc461.rowdy25.util.SysID;
 
+/**
+ * RobotContainer is a functional framework instantiated upon robot initialization. The instance would contain all functionality for the robot, including subsystems, commands, and control.
+ *
+ * <p>The RobotContainer class is a fundamental class to initiate functionality, namely the superstructure (mechanism characterization), Xbox controller binds (robot control), telemetry (for verbosity), autonomous control configurations and other automations.
+ *
+ */
 public class RobotContainer {
+    /**
+     * {@link RobotStates} is a robot characterization class. The instance would initialize all subsystems and define the superstructure (with the combination of all subsystems) and its possible states and actions/routines.
+     */
     /* Superstructure */
     private final RobotStates robotStates = new RobotStates();
 
+    /**
+     * {@link AutoManager} is a custom-built autonomous mode configurator for Rowdy25. The instance would initialize the choosers to specify certain aspects of autonomous mode (e.g., which branches to score coral, which algae to grab off the branch and score) and dynamically generate a command containing actions based on the selected option for each chooser.
+     */
     /* Auto Chooser & Configurator */
     private final AutoManager autoManager = new AutoManager(robotStates);
 
+    /**
+     * {@link SysID} is a utility to configure routines that can be run to determine practical electric outputs for motors to achieve a certain condition. In other words, a SysID routine can be applied to a motor to tune its positional control through SVAG (feedforward) or PID (feedback). TODO add information about positional control
+     */
     /* Sys ID */
     private final SysID sysID = new SysID(robotStates.swerve);
 
+    /**
+     * Two {@link CommandXboxController}s are defined to bind robot routines for teleoperated control.
+     */
     /* Controllers */ /* Link to controls here: https://docs.google.com/presentation/d/1jv_hAW3l4z0Rqvi-3pNRN2IdWurtOwojIJf5hFRO108/edit?usp=sharing */
     private final CommandXboxController driverXbox = new CommandXboxController(0);
     private final CommandXboxController opXbox = new CommandXboxController(1);
 
+    /**
+     * Constructor for RobotContainer. Configure superstructure state-based actions (i.e., when the robot enters a state whether automatically or by button press, the superstructure runs a routine). Initialize teleoperated controls. Initialize PathPlanner, local pathfinder (a "warmup command" is executed to facilitate), and PathPlanner {@link NamedCommands}. Configure {@link DogLog} for telemetry.
+     */
     public RobotContainer() {
         robotStates.configureToggleStateTriggers();
         robotStates.setDefaultCommands(driverXbox, opXbox);
@@ -47,6 +68,9 @@ public class RobotContainer {
         FollowPathCommand.warmupCommand().schedule();
     }
 
+    /**
+     * Binds commands to keywords that PathPlanner searches for in PathPlannerUI-configured autonomous routines. As an autonomous routine runs, the linked command is executed when the keyword-associated event marker is triggered.
+     */
     private void configurePathPlannerNamedCommands() {
         NamedCommands.registerCommand(
                 Constants.AutoConstants.OUTTAKE_MARKER,
@@ -59,6 +83,9 @@ public class RobotContainer {
         );
     }
 
+    /**
+     * Binds buttons of Xbox controllers to robot actions through {@link edu.wpi.first.wpilibj2.command.button.Trigger}s. Bindings can be seen <a href="https://docs.google.com/presentation/d/1jv_hAW3l4z0Rqvi-3pNRN2IdWurtOwojIJf5hFRO108/edit?usp=sharing">here</a>.
+     */
     private void configureButtonBindings() {
         driverXbox.a().onTrue(new InstantCommand(robotStates.swerve::toggleAutoHeading)
                         .andThen(robotStates.swerve.localizer::toggleTrustCameras)
@@ -134,10 +161,18 @@ public class RobotContainer {
         sysID.configureBindings(opXbox);
     }
 
+    /**
+     * Forwards the robot states method to update telemetry.
+     */
     public void periodic() {
         robotStates.publishValues();
     }
 
+    /**
+     * Forwards the autonomous manager method to dynamically generate an autonomous command based on selected options from its choosers.
+     *
+     * @return The final autonomous command to be returned to {@link Robot} to be run as a routine.
+     */
     public Command getAutonomousCommand() {
         return autoManager.getFinalAutoCommand();
     }

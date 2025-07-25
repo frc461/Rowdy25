@@ -7,19 +7,19 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import io.github.frc461.rowdy25.constants.RobotIdentity;
 
 /**
- * Robot implements the TimedRobot routined robot program framework.
+ * Robot implements the {@link TimedRobot} routined robot program framework.
  *
- * <p>The Robot class is the base class by which developers add onto the framework to customize functionality i.e., mechanism characterization, robot control, automation.
+ * <p>The Robot class is the base class by which developers add onto the {@link TimedRobot} framework to customize functionality i.e., mechanism characterization, robot control, automation.
  *
  */
 public class Robot extends TimedRobot {
     /**
-     * The command to run at the start of the autonomous period. Note that instead of a timed routine, this command is required for the autonomous period because of the command-based configuration of this project.
+     * The command to run at the start of the autonomous period. Note that instead of a timed routine (Any {@link edu.wpi.first.wpilibj.Timer}-based class), this command is required for the autonomous period because of the command-based configuration of this project.
      */
     private Command autonomousCommand;
 
     /**
-     * The RobotContainer is the primary class structure used to develop robot functionality. The instance contains all functionality for the robot, including subsystems, commands, and control.
+     * The {@link RobotContainer} is a fundamental class to initiate functionality. The instance would contain all functionality for the robot, including subsystems, commands, and control.
      */
     private final RobotContainer robotContainer;
 
