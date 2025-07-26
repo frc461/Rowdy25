@@ -27,7 +27,15 @@ import java.util.Arrays;
 
 import dev.doglog.DogLog;
 
+/**
+ * RobotStates is an integrating component of the functional framework initialized by {@link RobotContainer}. The instance would initialize and integrate all subsystems into a superstructure of the whole robot, a software-defined construct to streamline states and action/routines e.g., transitioning to a coral-scoring state.
+ *
+ * <p>The RobotStates class is a robot characterization class i.e., the subsystems are integrated into one defined system to streamline robot-wide actions for efficiency and organization. Many actions relevant to the robot's objectives require the coordination of the entire robotic system, hence a robot-wide state machine and robot-wide defined actions to satisfy the state machine.
+ */
 public class RobotStates {
+    /**
+     * An enum representing the possible various states of the (whole) robot. Based on the robot's state (with this enum type), each subsystem integrated into the superstructure (robot) would update its respective state, then triggering an action on that subsystem.
+     */
     public enum State {
         STOW,
         L2_L3_L4_STOW,
@@ -52,16 +60,43 @@ public class RobotStates {
         CLIMB
     }
 
+    /**
+     * {@link Swerve} is a Phoenix-based omnidirectional drivetrain subsystem.
+     */
     public final Swerve swerve = new Swerve();
+    /**
+     * {@link Elevator} is a TalonFX Kraken motor-based extension subsystem attached onto the pivot subsystem that extends away for rotational reach.
+     */
     public final Elevator elevator = new Elevator();
+    /**
+     * {@link Intake} is a TalonFX Kraken motor-based subsystem attached to the wrist that grabs and collects coral or algae from the field.
+     */
     public final Intake intake = new Intake();
+    /**
+     * {@link Pivot} is a TalonFX Kraken motor-based subsystem located near the base of the robot that rotates pitch-wise with respect to the front-to-back perspective of the robot base (plane).
+     */
     public final Pivot pivot = new Pivot();
+    /**
+     * {@link Wrist} is a TalonFX Kraken motor-based subsystem attached to the upper end of the elevator that rotates pitch-wise with respect to the front-to-back perspective of the robot base (plane). The pivot and wrist create an extendable, doubly-jointed system.
+     */
     public final Wrist wrist = new Wrist();
 
+    /**
+     * The field storing the current state of the whole robot.
+     */
     private State currentState = State.STOW;
+    /**
+     * The field storing the current branch level that the robot will target during coral scoring.
+     */
     private FieldUtil.Reef.Level currentAutoLevel = FieldUtil.Reef.Level.L4;
+    /**
+     * A chooser that allows selection of any desired robot {@link State} on the {@link SmartDashboard} to override the current state of the whole robot. Transition actions/routines will occur as usual for each subsystem.
+     */
     private final SendableChooser<State> stateChooser = new SendableChooser<>();
 
+    /**
+     * The {@link Trigger} of a certain {@link State} turns true when the current state of the robot matches that state. Actions/routines that require a specific trigger condition (e.g., when a trigger becomes true or false, when a trigger is true or false) will be executed when the condition is met. Note that an action linked to when a trigger BECOMES true or false is only executed once, but an action linked to when a trigger IS true or false is continuously executed until the trigger no longer satisfies the condition.
+     */
     public final Trigger stowState = new Trigger(() -> currentState == State.STOW);
     public final Trigger l2L3L4StowState = new Trigger(() -> currentState == State.L2_L3_L4_STOW);
     public final Trigger outtakeState = new Trigger(() -> currentState == State.OUTTAKE);
@@ -83,7 +118,13 @@ public class RobotStates {
     public final Trigger prepareClimbState = new Trigger(() -> currentState == State.PREPARE_CLIMB);
     public final Trigger climbState = new Trigger(() -> currentState == State.CLIMB);
 
+    /**
+     * A {@link Trigger} that indicates whether the current robot state is any of the coral-scoring states. This trigger to conditionally update the robot state to the coral-scoring state that corresponds to {@link #currentAutoLevel}.
+     */
     private final Trigger isListening = l1CoralState.or(l2CoralState).or(l3CoralState).or(l4CoralState);
+    /**
+     * A boolean that turns true when {@link #isListening} turns true, which causes an update to the robot state. Subsequently, this boolean is reset to false.
+     */
     private boolean needsUpdate = false;
 
     public final Trigger atState = new Trigger(() -> elevator.isAtTarget() && pivot.isAtTarget() && wrist.isAtTarget());
