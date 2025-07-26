@@ -127,13 +127,13 @@ public class RobotContainer {
 
         driverXbox.start().onTrue(new InstantCommand(robotStates::setClimbState));
 
-        opXbox.povDown().onTrue(new InstantCommand(() -> robotStates.setCurrentAutoLevel(FieldUtil.Reef.Level.L4)));
+        opXbox.povDown().onTrue(new InstantCommand(() -> robotStates.setCurrentAutoLevel(FieldUtil.Reef.Level.L2)));
 
         opXbox.povRight().onTrue(new InstantCommand(() -> robotStates.setCurrentAutoLevel(FieldUtil.Reef.Level.L1)));
 
         opXbox.povLeft().onTrue(new InstantCommand(() -> robotStates.setCurrentAutoLevel(FieldUtil.Reef.Level.L3)));
 
-        opXbox.povUp().onTrue(new InstantCommand(() -> robotStates.setCurrentAutoLevel(FieldUtil.Reef.Level.L2)));
+        opXbox.povUp().onTrue(new InstantCommand(() -> robotStates.setCurrentAutoLevel(FieldUtil.Reef.Level.L4)));
 
         opXbox.leftTrigger().whileTrue(Commands.runEnd(() -> robotStates.intake.setIntakeState(true), robotStates.intake::setIdleState));
         opXbox.rightTrigger().whileTrue(Commands.runEnd(robotStates.intake::setOuttakeState, robotStates.intake::setIdleState));
