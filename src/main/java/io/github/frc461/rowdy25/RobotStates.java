@@ -28,35 +28,56 @@ import java.util.Arrays;
 import dev.doglog.DogLog;
 
 /**
- * RobotStates is an integrating component of the functional framework initialized by {@link RobotContainer}. The instance would initialize and integrate all subsystems into a superstructure of the whole robot, a software-defined construct to streamline states and action/routines e.g., transitioning to a coral-scoring state.
+ * RobotStates is an integrating component of the functional framework initialized by {@link RobotContainer}. The instance would initialize and integrate all subsystems into a superstructure of the whole robot (except the drivetrain, which has an independent state system), a software-defined construct to streamline states and action/routines e.g., transitioning to a coral-scoring state.
  *
  * <p>The RobotStates class is a robot characterization class i.e., the subsystems are integrated into one defined system to streamline robot-wide actions for efficiency and organization. Many actions relevant to the robot's objectives require the coordination of the entire robotic system, hence a robot-wide state machine and robot-wide defined actions to satisfy the state machine.
  */
 public class RobotStates {
     /**
-     * An enum representing the possible various states of the (whole) robot. Based on the robot's state (with this enum type), each subsystem integrated into the superstructure (robot) would update its respective state, then triggering an action on that subsystem.
+     * An enum representing the possible various states of the (whole) robot. Based on the robot's state (with this enum type), each subsystem integrated into the superstructure (that is, every subsystem except for the drivetrain) would update its respective state, then triggering an action on that subsystem.
      */
     public enum State {
+        /** The physical robot superstructure is idle. */
         STOW,
+        /** The physical robot superstructure detects possession of a piece of coral and prepared to score L2, L3, L4. */
         L2_L3_L4_STOW,
+        /** The physical robot superstructure has been directly manipulated by joystick input. */
         MANUAL,
+        /** The physical robot superstructure detects possession of a piece of coral and is actively ejecting it from possession out the front of the manipulator. */
         OUTTAKE,
+        /** The physical robot superstructure detects possession of a piece of algae and is actively ejecting it from possession out the front of the manipulator. */
         OUTTAKE_ALGAE,
+        /** The physical robot superstructure detects possession of a piece of coral and is actively ejecting it from possession out the front of the manipulator, but slower to adapt to scoring on the reef on L1. */
         OUTTAKE_L1,
+        /** The physical robot superstructure detects possession of a piece of coral and is actively ejecting it from possession out the back of the manipulator, to adapt to scoring on L2, L3, or L4 in the case that {@link io.github.frc461.rowdy25.subsystems.localizer.Localizer#trustCameras} is toggled off. */
         INTAKE_OUT,
+        /** The physical robot superstructure */
         CORAL_STATION,
+        /** The physical robot superstructure */
         CORAL_STATION_OBSTRUCTED,
+        /** The physical robot superstructure */
         GROUND_CORAL,
+        /** The physical robot superstructure */
         GROUND_ALGAE,
+        /** The physical robot superstructure */
         L1_CORAL,
+        /** The physical robot superstructure */
         L2_CORAL,
+        /** The physical robot superstructure */
         L3_CORAL,
+        /** The physical robot superstructure */
         L4_CORAL,
+        /** The physical robot superstructure */
         LOW_REEF_ALGAE,
+        /** The physical robot superstructure */
         HIGH_REEF_ALGAE,
+        /** The physical robot superstructure */
         PROCESSOR,
+        /** The physical robot superstructure */
         NET,
+        /** The physical robot superstructure */
         PREPARE_CLIMB,
+        /** The physical robot superstructure */
         CLIMB
     }
 
@@ -95,7 +116,9 @@ public class RobotStates {
     private final SendableChooser<State> stateChooser = new SendableChooser<>();
 
     /**
-     * The {@link Trigger} of a certain {@link State} turns true when the current state of the robot matches that state. Actions/routines that require a specific trigger condition (e.g., when a trigger becomes true or false, when a trigger is true or false) will be executed when the condition is met. Note that an action linked to when a trigger BECOMES true or false is only executed once, but an action linked to when a trigger IS true or false is continuously executed until the trigger no longer satisfies the condition.
+     * A {@link Trigger} of the {@link State#STOW} robot state.
+     *
+     * <p>The {@link Trigger} of a certain {@link State} turns true when the current state of the robot matches that state. Actions/routines that require a specific trigger condition (e.g., when a trigger becomes true or false, when a trigger is true or false) will be executed when the condition is met. Note that an action linked to when a trigger BECOMES true or false is only executed once, but an action linked to when a trigger IS true or false is continuously executed until the trigger no longer satisfies the condition.</p>
      */
     public final Trigger stowState = new Trigger(() -> currentState == State.STOW);
     public final Trigger l2L3L4StowState = new Trigger(() -> currentState == State.L2_L3_L4_STOW);
