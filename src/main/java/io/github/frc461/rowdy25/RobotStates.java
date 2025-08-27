@@ -51,33 +51,33 @@ public class RobotStates {
         OUTTAKE_L1,
         /** The physical robot superstructure detects possession of a piece of coral and is actively ejecting it from possession out the back of the manipulator, to adapt to scoring on L2, L3, or L4 in the case that {@link io.github.frc461.rowdy25.subsystems.localizer.Localizer#trustCameras} is toggled off. */
         INTAKE_OUT,
-        /** The physical robot superstructure */
+        /** The physical robot superstructure is oriented to obtain a piece of coral while up against the coral station. */
         CORAL_STATION,
-        /** The physical robot superstructure */
+        /** The physical robot superstructure is oriented to obtain a piece of coral while one coral width's away from the coral station. */
         CORAL_STATION_OBSTRUCTED,
-        /** The physical robot superstructure */
+        /** The physical robot superstructure is oriented to obtain a piece of coral on the ground. */
         GROUND_CORAL,
-        /** The physical robot superstructure */
+        /** The physical robot superstructure is oriented to obtain a piece of algae on the ground. */
         GROUND_ALGAE,
-        /** The physical robot superstructure */
+        /** The physical robot superstructure is oriented to line up with and be prepared to score on the reef on L1. */
         L1_CORAL,
-        /** The physical robot superstructure */
+        /** The physical robot superstructure is oriented to line up with and be prepared to score on the reef on L2. */
         L2_CORAL,
-        /** The physical robot superstructure */
+        /** The physical robot superstructure is oriented to line up with and be prepared to score on the reef on L3. */
         L3_CORAL,
-        /** The physical robot superstructure */
+        /** The physical robot superstructure is oriented to line up with and be prepared to score on the reef on L4. */
         L4_CORAL,
-        /** The physical robot superstructure */
+        /** The physical robot superstructure is oriented to line up with and be prepared to obtain a piece of algae on the lower side of the reef. */
         LOW_REEF_ALGAE,
-        /** The physical robot superstructure */
+        /** The physical robot superstructure is oriented to line up with and be prepared to obtain a piece of algae on the upper side of the reef. */
         HIGH_REEF_ALGAE,
-        /** The physical robot superstructure */
+        /** The physical robot superstructure is oriented to line up with and be prepared to score in the processor. */
         PROCESSOR,
-        /** The physical robot superstructure */
+        /** The physical robot superstructure is oriented to line up with and be prepared to score in the net. */
         NET,
-        /** The physical robot superstructure */
+        /** The physical robot superstructure is oriented to line up with the barge prior to entering the climb state. */
         PREPARE_CLIMB,
-        /** The physical robot superstructure */
+        /** The physical robot superstructure is oriented in an optimized position while engaged with the barge. */
         CLIMB
     }
 
@@ -121,24 +121,119 @@ public class RobotStates {
      * <p>The {@link Trigger} of a certain {@link State} turns true when the current state of the robot matches that state. Actions/routines that require a specific trigger condition (e.g., when a trigger becomes true or false, when a trigger is true or false) will be executed when the condition is met. Note that an action linked to when a trigger BECOMES true or false is only executed once, but an action linked to when a trigger IS true or false is continuously executed until the trigger no longer satisfies the condition.</p>
      */
     public final Trigger stowState = new Trigger(() -> currentState == State.STOW);
+    /**
+     * A {@link Trigger} of the {@link State#L2_L3_L4_STOW} robot state.
+     *
+     * <p>The {@link Trigger} of a certain {@link State} turns true when the current state of the robot matches that state. Actions/routines that require a specific trigger condition (e.g., when a trigger becomes true or false, when a trigger is true or false) will be executed when the condition is met. Note that an action linked to when a trigger BECOMES true or false is only executed once, but an action linked to when a trigger IS true or false is continuously executed until the trigger no longer satisfies the condition.</p>
+     */
     public final Trigger l2L3L4StowState = new Trigger(() -> currentState == State.L2_L3_L4_STOW);
+    /**
+     * A {@link Trigger} of the {@link State#OUTTAKE} robot state.
+     *
+     * <p>The {@link Trigger} of a certain {@link State} turns true when the current state of the robot matches that state. Actions/routines that require a specific trigger condition (e.g., when a trigger becomes true or false, when a trigger is true or false) will be executed when the condition is met. Note that an action linked to when a trigger BECOMES true or false is only executed once, but an action linked to when a trigger IS true or false is continuously executed until the trigger no longer satisfies the condition.</p>
+     */
     public final Trigger outtakeState = new Trigger(() -> currentState == State.OUTTAKE);
+    /**
+     * A {@link Trigger} of the {@link State#OUTTAKE_ALGAE} robot state.
+     *
+     * <p>The {@link Trigger} of a certain {@link State} turns true when the current state of the robot matches that state. Actions/routines that require a specific trigger condition (e.g., when a trigger becomes true or false, when a trigger is true or false) will be executed when the condition is met. Note that an action linked to when a trigger BECOMES true or false is only executed once, but an action linked to when a trigger IS true or false is continuously executed until the trigger no longer satisfies the condition.</p>
+     */
     public final Trigger outtakeAlgaeState = new Trigger(() -> currentState == State.OUTTAKE_ALGAE);
+    /**
+     * A {@link Trigger} of the {@link State#OUTTAKE_L1} robot state.
+     *
+     * <p>The {@link Trigger} of a certain {@link State} turns true when the current state of the robot matches that state. Actions/routines that require a specific trigger condition (e.g., when a trigger becomes true or false, when a trigger is true or false) will be executed when the condition is met. Note that an action linked to when a trigger BECOMES true or false is only executed once, but an action linked to when a trigger IS true or false is continuously executed until the trigger no longer satisfies the condition.</p>
+     */
     public final Trigger outtakeL1State = new Trigger(() -> currentState == State.OUTTAKE_L1);
+    /**
+     * A {@link Trigger} of the {@link State#INTAKE_OUT} robot state.
+     *
+     * <p>The {@link Trigger} of a certain {@link State} turns true when the current state of the robot matches that state. Actions/routines that require a specific trigger condition (e.g., when a trigger becomes true or false, when a trigger is true or false) will be executed when the condition is met. Note that an action linked to when a trigger BECOMES true or false is only executed once, but an action linked to when a trigger IS true or false is continuously executed until the trigger no longer satisfies the condition.</p>
+     */
     public final Trigger intakeOutState = new Trigger(() -> currentState == State.INTAKE_OUT);
+    /**
+     * A {@link Trigger} of the {@link State#CORAL_STATION} robot state.
+     *
+     * <p>The {@link Trigger} of a certain {@link State} turns true when the current state of the robot matches that state. Actions/routines that require a specific trigger condition (e.g., when a trigger becomes true or false, when a trigger is true or false) will be executed when the condition is met. Note that an action linked to when a trigger BECOMES true or false is only executed once, but an action linked to when a trigger IS true or false is continuously executed until the trigger no longer satisfies the condition.</p>
+     */
     public final Trigger coralStationState = new Trigger(() -> currentState == State.CORAL_STATION);
+    /**
+     * A {@link Trigger} of the {@link State#CORAL_STATION_OBSTRUCTED} robot state.
+     *
+     * <p>The {@link Trigger} of a certain {@link State} turns true when the current state of the robot matches that state. Actions/routines that require a specific trigger condition (e.g., when a trigger becomes true or false, when a trigger is true or false) will be executed when the condition is met. Note that an action linked to when a trigger BECOMES true or false is only executed once, but an action linked to when a trigger IS true or false is continuously executed until the trigger no longer satisfies the condition.</p>
+     */
     public final Trigger coralStationObstructedState = new Trigger(() -> currentState == State.CORAL_STATION_OBSTRUCTED);
+    /**
+     * A {@link Trigger} of the {@link State#GROUND_CORAL} robot state.
+     *
+     * <p>The {@link Trigger} of a certain {@link State} turns true when the current state of the robot matches that state. Actions/routines that require a specific trigger condition (e.g., when a trigger becomes true or false, when a trigger is true or false) will be executed when the condition is met. Note that an action linked to when a trigger BECOMES true or false is only executed once, but an action linked to when a trigger IS true or false is continuously executed until the trigger no longer satisfies the condition.</p>
+     */
     public final Trigger groundCoralState = new Trigger(() -> currentState == State.GROUND_CORAL);
+    /**
+     * A {@link Trigger} of the {@link State#GROUND_ALGAE} robot state.
+     *
+     * <p>The {@link Trigger} of a certain {@link State} turns true when the current state of the robot matches that state. Actions/routines that require a specific trigger condition (e.g., when a trigger becomes true or false, when a trigger is true or false) will be executed when the condition is met. Note that an action linked to when a trigger BECOMES true or false is only executed once, but an action linked to when a trigger IS true or false is continuously executed until the trigger no longer satisfies the condition.</p>
+     */
     public final Trigger groundAlgaeState = new Trigger(() -> currentState == State.GROUND_ALGAE);
+    /**
+     * A {@link Trigger} of the {@link State#L1_CORAL} robot state.
+     *
+     * <p>The {@link Trigger} of a certain {@link State} turns true when the current state of the robot matches that state. Actions/routines that require a specific trigger condition (e.g., when a trigger becomes true or false, when a trigger is true or false) will be executed when the condition is met. Note that an action linked to when a trigger BECOMES true or false is only executed once, but an action linked to when a trigger IS true or false is continuously executed until the trigger no longer satisfies the condition.</p>
+     */
     public final Trigger l1CoralState = new Trigger(() -> currentState == State.L1_CORAL);
+    /**
+     * A {@link Trigger} of the {@link State#L2_CORAL} robot state.
+     *
+     * <p>The {@link Trigger} of a certain {@link State} turns true when the current state of the robot matches that state. Actions/routines that require a specific trigger condition (e.g., when a trigger becomes true or false, when a trigger is true or false) will be executed when the condition is met. Note that an action linked to when a trigger BECOMES true or false is only executed once, but an action linked to when a trigger IS true or false is continuously executed until the trigger no longer satisfies the condition.</p>
+     */
     public final Trigger l2CoralState = new Trigger(() -> currentState == State.L2_CORAL);
+    /**
+     * A {@link Trigger} of the {@link State#L3_CORAL} robot state.
+     *
+     * <p>The {@link Trigger} of a certain {@link State} turns true when the current state of the robot matches that state. Actions/routines that require a specific trigger condition (e.g., when a trigger becomes true or false, when a trigger is true or false) will be executed when the condition is met. Note that an action linked to when a trigger BECOMES true or false is only executed once, but an action linked to when a trigger IS true or false is continuously executed until the trigger no longer satisfies the condition.</p>
+     */
     public final Trigger l3CoralState = new Trigger(() -> currentState == State.L3_CORAL);
+    /**
+     * A {@link Trigger} of the {@link State#L4_CORAL} robot state.
+     *
+     * <p>The {@link Trigger} of a certain {@link State} turns true when the current state of the robot matches that state. Actions/routines that require a specific trigger condition (e.g., when a trigger becomes true or false, when a trigger is true or false) will be executed when the condition is met. Note that an action linked to when a trigger BECOMES true or false is only executed once, but an action linked to when a trigger IS true or false is continuously executed until the trigger no longer satisfies the condition.</p>
+     */
     public final Trigger l4CoralState = new Trigger(() -> currentState == State.L4_CORAL);
+    /**
+     * A {@link Trigger} of the {@link State#LOW_REEF_ALGAE} robot state.
+     *
+     * <p>The {@link Trigger} of a certain {@link State} turns true when the current state of the robot matches that state. Actions/routines that require a specific trigger condition (e.g., when a trigger becomes true or false, when a trigger is true or false) will be executed when the condition is met. Note that an action linked to when a trigger BECOMES true or false is only executed once, but an action linked to when a trigger IS true or false is continuously executed until the trigger no longer satisfies the condition.</p>
+     */
     public final Trigger lowReefAlgaeState = new Trigger(() -> currentState == State.LOW_REEF_ALGAE);
+    /**
+     * A {@link Trigger} of the {@link State#HIGH_REEF_ALGAE} robot state.
+     *
+     * <p>The {@link Trigger} of a certain {@link State} turns true when the current state of the robot matches that state. Actions/routines that require a specific trigger condition (e.g., when a trigger becomes true or false, when a trigger is true or false) will be executed when the condition is met. Note that an action linked to when a trigger BECOMES true or false is only executed once, but an action linked to when a trigger IS true or false is continuously executed until the trigger no longer satisfies the condition.</p>
+     */
     public final Trigger highReefAlgaeState = new Trigger(() -> currentState == State.HIGH_REEF_ALGAE);
+    /**
+     * A {@link Trigger} of the {@link State#PROCESSOR} robot state.
+     *
+     * <p>The {@link Trigger} of a certain {@link State} turns true when the current state of the robot matches that state. Actions/routines that require a specific trigger condition (e.g., when a trigger becomes true or false, when a trigger is true or false) will be executed when the condition is met. Note that an action linked to when a trigger BECOMES true or false is only executed once, but an action linked to when a trigger IS true or false is continuously executed until the trigger no longer satisfies the condition.</p>
+     */
     public final Trigger processorState = new Trigger(() -> currentState == State.PROCESSOR);
+    /**
+     * A {@link Trigger} of the {@link State#NET} robot state.
+     *
+     * <p>The {@link Trigger} of a certain {@link State} turns true when the current state of the robot matches that state. Actions/routines that require a specific trigger condition (e.g., when a trigger becomes true or false, when a trigger is true or false) will be executed when the condition is met. Note that an action linked to when a trigger BECOMES true or false is only executed once, but an action linked to when a trigger IS true or false is continuously executed until the trigger no longer satisfies the condition.</p>
+     */
     public final Trigger netState = new Trigger(() -> currentState == State.NET);
+    /**
+     * A {@link Trigger} of the {@link State#PREPARE_CLIMB} robot state.
+     *
+     * <p>The {@link Trigger} of a certain {@link State} turns true when the current state of the robot matches that state. Actions/routines that require a specific trigger condition (e.g., when a trigger becomes true or false, when a trigger is true or false) will be executed when the condition is met. Note that an action linked to when a trigger BECOMES true or false is only executed once, but an action linked to when a trigger IS true or false is continuously executed until the trigger no longer satisfies the condition.</p>
+     */
     public final Trigger prepareClimbState = new Trigger(() -> currentState == State.PREPARE_CLIMB);
+    /**
+     * A {@link Trigger} of the {@link State#CLIMB} robot state.
+     *
+     * <p>The {@link Trigger} of a certain {@link State} turns true when the current state of the robot matches that state. Actions/routines that require a specific trigger condition (e.g., when a trigger becomes true or false, when a trigger is true or false) will be executed when the condition is met. Note that an action linked to when a trigger BECOMES true or false is only executed once, but an action linked to when a trigger IS true or false is continuously executed until the trigger no longer satisfies the condition.</p>
+     */
     public final Trigger climbState = new Trigger(() -> currentState == State.CLIMB);
 
     /**
@@ -150,28 +245,91 @@ public class RobotStates {
      */
     private boolean needsUpdate = false;
 
+    /**
+     * A {@link Trigger} that indicates whether the current positions of each subsystem within the superstructure are at its target position, which defines whether the superstructure is at its current state.
+     */
     public final Trigger atState = new Trigger(() -> elevator.isAtTarget() && pivot.isAtTarget() && wrist.isAtTarget());
 
+    /**
+     * A {@link Trigger} that indicates whether the current positions of each subsystem within the superstructure are at the positions that correspond to the {@link State#STOW} robot state.
+     */
     public final Trigger atStowState = new Trigger(() -> wrist.isAtState(Wrist.State.STOW)).and(() -> elevator.isAtState(Elevator.State.STOW)).and(() -> pivot.isAtState(Pivot.State.STOW));
+    /**
+     * A {@link Trigger} that indicates whether the current positions of each subsystem within the superstructure are at the positions that correspond to the {@link State#L2_L3_L4_STOW} robot state.
+     */
     public final Trigger atL2L3L4StowState = new Trigger(() -> wrist.isAtState(Wrist.State.L2_L3_L4_STOW)).and(() -> elevator.isAtState(Elevator.State.L2_L3_L4_STOW)).and(() -> pivot.isAtState(Pivot.State.L2_L3_L4_STOW));
+    /**
+     * A {@link Trigger} that indicates whether the current positions of each subsystem within the superstructure are at the positions that correspond to the {@link State#CORAL_STATION} robot state.
+     */
     public final Trigger atCoralStationState = new Trigger(() -> wrist.isAtState(Wrist.State.CORAL_STATION)).and(() -> elevator.isAtState(Elevator.State.CORAL_STATION)).and(() -> pivot.isAtState(Pivot.State.CORAL_STATION));
+    /**
+     * A {@link Trigger} that indicates whether the current positions of each subsystem within the superstructure are at the positions that correspond to the {@link State#CORAL_STATION_OBSTRUCTED} robot state.
+     */
     public final Trigger atCoralStationObstructedState = new Trigger(() -> wrist.isAtState(Wrist.State.CORAL_STATION_OBSTRUCTED)).and(() -> elevator.isAtState(Elevator.State.CORAL_STATION_OBSTRUCTED)).and(() -> pivot.isAtState(Pivot.State.CORAL_STATION_OBSTRUCTED));
+    /**
+     * A {@link Trigger} that indicates whether the current positions of each subsystem within the superstructure are at the positions that correspond to the {@link State#GROUND_CORAL} robot state.
+     */
     public final Trigger atGroundCoralState = new Trigger(() -> wrist.isAtState(Wrist.State.GROUND_CORAL)).and(() -> elevator.isAtState(Elevator.State.GROUND_CORAL)).and(() -> pivot.isAtState(Pivot.State.GROUND_CORAL));
+    /**
+     * A {@link Trigger} that indicates whether the current positions of each subsystem within the superstructure are at the positions that correspond to the {@link State#GROUND_ALGAE} robot state.
+     */
     public final Trigger atGroundAlgaeState = new Trigger(() -> wrist.isAtState(Wrist.State.GROUND_ALGAE)).and(() -> elevator.isAtState(Elevator.State.GROUND_ALGAE)).and(() -> pivot.isAtState(Pivot.State.GROUND_ALGAE));
+    /**
+     * A {@link Trigger} that indicates whether the current positions of each subsystem within the superstructure are at the positions that correspond to the {@link State#L1_CORAL} robot state.
+     */
     public final Trigger atL1CoralState = new Trigger(() -> wrist.isAtState(Wrist.State.L1_CORAL)).and(() -> elevator.isAtState(Elevator.State.L1_CORAL)).and(() -> pivot.isAtState(Pivot.State.L1_CORAL));
+    /**
+     * A {@link Trigger} that indicates whether the current positions of each subsystem within the superstructure are at the positions that correspond to the {@link State#L2_CORAL} robot state.
+     */
     public final Trigger atL2CoralState = new Trigger(() -> wrist.isAtState(Wrist.State.L2_CORAL_AT_BRANCH)).and(() -> elevator.isAtState(Elevator.State.L2_CORAL_AT_BRANCH)).and(() -> pivot.isAtState(Pivot.State.L2_CORAL_AT_BRANCH));
+    /**
+     * A {@link Trigger} that indicates whether the current positions of each subsystem within the superstructure are at the positions that correspond to the {@link State#L2_CORAL} robot state while one coral width's away from the reef.
+     */
     public final Trigger atL2CoralOneCoralFromBranchState = new Trigger(() -> wrist.isAtState(Wrist.State.L2_CORAL_ONE_CORAL_FROM_BRANCH)).and(() -> elevator.isAtState(Elevator.State.L2_CORAL_ONE_CORAL_FROM_BRANCH)).and(() -> pivot.isAtState(Pivot.State.L2_CORAL_ONE_CORAL_FROM_BRANCH));
+    /**
+     * A {@link Trigger} that indicates whether the current positions of each subsystem within the superstructure are at the positions that correspond to the {@link State#L3_CORAL} robot state.
+     */
     public final Trigger atL3CoralState = new Trigger(() -> wrist.isAtState(Wrist.State.L3_CORAL_AT_BRANCH)).and(() -> elevator.isAtState(Elevator.State.L3_CORAL_AT_BRANCH)).and(() -> pivot.isAtState(Pivot.State.L3_CORAL_AT_BRANCH));
+    /**
+     * A {@link Trigger} that indicates whether the current positions of each subsystem within the superstructure are at the positions that correspond to the {@link State#L3_CORAL} robot state while one coral width's away from the reef.
+     */
     public final Trigger atL3CoralOneCoralFromBranchState = new Trigger(() -> wrist.isAtState(Wrist.State.L3_CORAL_ONE_CORAL_FROM_BRANCH)).and(() -> elevator.isAtState(Elevator.State.L3_CORAL_ONE_CORAL_FROM_BRANCH)).and(() -> pivot.isAtState(Pivot.State.L3_CORAL_ONE_CORAL_FROM_BRANCH));
+    /**
+     * A {@link Trigger} that indicates whether the current positions of each subsystem within the superstructure are at the positions that correspond to the {@link State#L4_CORAL} robot state.
+     */
     public final Trigger atL4CoralState = new Trigger(() -> wrist.isAtState(Wrist.State.L4_CORAL_AT_BRANCH)).and(() -> elevator.isAtState(Elevator.State.L4_CORAL_AT_BRANCH)).and(() -> pivot.isAtState(Pivot.State.L4_CORAL_AT_BRANCH));
+    /**
+     * A {@link Trigger} that indicates whether the current positions of each subsystem within the superstructure are at the positions that correspond to the {@link State#L4_CORAL} robot state while one coral width's away from the reef.
+     */
     public final Trigger atL4CoralOneCoralFromBranchState = new Trigger(() -> wrist.isAtState(Wrist.State.L4_CORAL_ONE_CORAL_FROM_BRANCH)).and(() -> elevator.isAtState(Elevator.State.L4_CORAL_ONE_CORAL_FROM_BRANCH)).and(() -> pivot.isAtState(Pivot.State.L4_CORAL_ONE_CORAL_FROM_BRANCH));
+    /**
+     * A {@link Trigger} that indicates whether the current positions of each subsystem within the superstructure are at the positions that correspond to the {@link State#LOW_REEF_ALGAE} robot state.
+     */
     public final Trigger atLowReefAlgaeState = new Trigger(() -> wrist.isAtState(Wrist.State.LOW_REEF_ALGAE)).and(() -> elevator.isAtState(Elevator.State.LOW_REEF_ALGAE)).and(() -> pivot.isAtState(Pivot.State.LOW_REEF_ALGAE));
+    /**
+     * A {@link Trigger} that indicates whether the current positions of each subsystem within the superstructure are at the positions that correspond to the {@link State#HIGH_REEF_ALGAE} robot state.
+     */
     public final Trigger atHighReefAlgaeState= new Trigger(() -> wrist.isAtState(Wrist.State.HIGH_REEF_ALGAE)).and(() -> elevator.isAtState(Elevator.State.HIGH_REEF_ALGAE)).and(() -> pivot.isAtState(Pivot.State.HIGH_REEF_ALGAE));
+    /**
+     * A {@link Trigger} that indicates whether the current positions of each subsystem within the superstructure are at the positions that correspond to the {@link State#LOW_REEF_ALGAE} or {@link State#HIGH_REEF_ALGAE} robot states.
+     */
     public final Trigger atReefAlgaeState = atLowReefAlgaeState.or(atHighReefAlgaeState);
+    /**
+     * A {@link Trigger} that indicates whether the current positions of each subsystem within the superstructure are at the positions that correspond to the {@link State#PROCESSOR} robot state.
+     */
     public final Trigger atProcessorState = new Trigger(() -> wrist.isAtState(Wrist.State.PROCESSOR)).and(() -> elevator.isAtState(Elevator.State.PROCESSOR)).and(() -> pivot.isAtState(Pivot.State.PROCESSOR));
+    /**
+     * A {@link Trigger} that indicates whether the current positions of each subsystem within the superstructure are at the positions that correspond to the {@link State#NET} robot state.
+     */
     public final Trigger atNetState = new Trigger(() -> wrist.isAtState(Wrist.State.NET)).and(() -> elevator.isAtState(Elevator.State.NET)).and(() -> pivot.isAtState(Pivot.State.NET));
+    /**
+     * A {@link Trigger} that indicates whether the current positions of each subsystem within the superstructure are at the positions that correspond to the {@link State#CLIMB} robot state.
+     */
     public final Trigger atClimbState = new Trigger(() -> wrist.isAtState(Wrist.State.CLIMB)).and(() -> elevator.isAtState(Elevator.State.CLIMB)).and(() -> pivot.isAtState(Pivot.State.CLIMB));
 
+    /**
+     * A {@link Trigger} that indicates whether the current positions of each subsystem within the superstructure are at the positions that correspond to any coral-scoring robot state.
+     */
     public final Trigger atAutoScoreState = atL1CoralState.or(atL2CoralState).or(atL3CoralState).or(atL4CoralState)
             .or(atL2CoralOneCoralFromBranchState).or(atL3CoralOneCoralFromBranchState).or(atL4CoralOneCoralFromBranchState);
 
