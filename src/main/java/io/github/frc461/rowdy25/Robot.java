@@ -24,7 +24,7 @@ public class Robot extends TimedRobot {
     private final RobotContainer robotContainer;
 
     /**
-     * Constructor for Robot. Initialize constants based on the MAC-address identity. Forward the local TCP ports for PhotonVision and Limelight configs to a remote host or port.
+     * Constructor for {@link Robot}. Initialize constants based on the MAC-address identity. Forward the local TCP ports for PhotonVision and Limelight configs to a remote host or port.
      */
     public Robot() {
         RobotIdentity.initializeConstants();

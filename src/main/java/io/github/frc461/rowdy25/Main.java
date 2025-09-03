@@ -8,6 +8,9 @@ import edu.wpi.first.wpilibj.RobotBase;
  * <p>The conventional Java main method executes as usual after project deployment.
  */
 public final class Main {
+    /**
+     * Constructor for {@link Main}. Remains for formality.
+     */
     private Main() {}
 
     public static void main(String... args) {

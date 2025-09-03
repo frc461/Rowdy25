@@ -52,7 +52,7 @@ public class RobotContainer {
     private final CommandXboxController opXbox = new CommandXboxController(1);
 
     /**
-     * Constructor for RobotContainer. Configure superstructure state-based actions (i.e., when the robot enters a state whether automatically or by button press, the superstructure runs a routine). Initialize teleoperated controls. Initialize PathPlanner, local pathfinder (a "warmup command" is executed to facilitate), and PathPlanner {@link NamedCommands}. Configure {@link DogLog} for telemetry.
+     * Constructor for {@link RobotContainer}. Configure superstructure state-based actions (i.e., when the robot enters a state whether automatically or by button press, the superstructure runs a routine). Initialize teleoperated controls. Initialize PathPlanner, local pathfinder (a "warmup command" is executed to facilitate), and PathPlanner {@link NamedCommands}. Configure {@link DogLog} for telemetry.
      */
     public RobotContainer() {
         robotStates.configureToggleStateTriggers();
@@ -169,7 +169,7 @@ public class RobotContainer {
     }
 
     /**
-     * Forwards the autonomous manager method to dynamically generate an autonomous command based on selected options from its choosers.
+     * Forwards the autonomous manager method to dynamically generate an autonomous command based on selected options from the manager's choosers.
      *
      * @return The final autonomous command to be returned to {@link Robot} to be run as a routine.
      */

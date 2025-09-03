@@ -333,9 +333,18 @@ public class RobotStates {
     public final Trigger atAutoScoreState = atL1CoralState.or(atL2CoralState).or(atL3CoralState).or(atL4CoralState)
             .or(atL2CoralOneCoralFromBranchState).or(atL3CoralOneCoralFromBranchState).or(atL4CoralOneCoralFromBranchState);
 
+    /**
+     * A {@link NetworkTable} entry that publishes information including robot/superstructure state telemetry.
+     */
     private final NetworkTable robotStatesTelemetryTable = Constants.NT_INSTANCE.getTable("RobotStates");
+    /**
+     * A {@link StringPublisher} that publishes the current state of the robot in the {@link #robotStatesTelemetryTable} {@link NetworkTable}.
+     */
     private final StringPublisher robotStatesPub = robotStatesTelemetryTable.getStringTopic("Current Robot State").publish();
 
+    /**
+     * Constructor for {@link RobotStates}. Configures the LED strips on the robot in the {@link Lights} class (NOTE: The physical feature on the robot does not exist). Adds all {@link State}s into {@link #stateChooser} and puts the chooser onto the {@link SmartDashboard}.
+     */
     public RobotStates() {
         Lights.configureLights();
 
@@ -344,10 +353,20 @@ public class RobotStates {
         SmartDashboard.putData("Robot State Chooser", stateChooser);
     }
 
+    /**
+     * Getter method for {@link #currentAutoLevel}. Used as a conditional to variate various automated actions based on the reef level represented by the {@link #currentAutoLevel} field.
+     *
+     * @return The current branch level that the robot will target during coral scoring.
+     */
     public FieldUtil.Reef.Level getCurrentAutoLevel() {
         return currentAutoLevel;
     }
 
+    /**
+     * Setter method for {@link #currentAutoLevel}. Used in manual tele-op control or autonomous mode while targeting a specified coral scoring location.
+     *
+     * @param level The branch level to mutate the current target level to during coral scoring.
+     */
     public void setCurrentAutoLevel(FieldUtil.Reef.Level level) {
         currentAutoLevel = level;
         swerve.localizer.setL1RobotScoringSettingOverride(currentAutoLevel == FieldUtil.Reef.Level.L1);
