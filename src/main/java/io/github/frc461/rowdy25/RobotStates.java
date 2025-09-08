@@ -30,7 +30,13 @@ import dev.doglog.DogLog;
 /**
  * RobotStates is an integrating component of the functional framework initialized by {@link RobotContainer}. The instance would initialize and integrate all subsystems into a superstructure of the whole robot (except the drivetrain, which has an independent state system), a software-defined construct to streamline states and action/routines for example, transitioning to a coral-scoring state.
  *
- * <p>The RobotStates class is a robot characterization class, that is, the subsystems are integrated into one defined system to streamline robot-wide actions for efficiency and organization. Many actions relevant to the robot's objectives require the coordination of the entire robotic system, hence a robot-wide state machine and robot-wide defined actions to satisfy the state machine.
+ * <p>The RobotStates class is a robot characterization class, that is, the subsystems are integrated into one defined system to streamline robot-wide actions for efficiency and organization. Many actions relevant to the robot's objectives require the coordination of the entire robotic system, hence a robot-wide state machine and robot-wide defined actions to satisfy the state machine.</p>
+ *
+ * <p>Copyright (c) 2025 461 Boosters First, Inc. dba Westside Robotics - The Rowdy 25.</p>
+ *
+ * @author Eugene Zhang, <a href="https://github.com/e500">GitHub</a>
+ * @author Aneesh Terani, <a href="https://github.com/aterani">GitHub</a>
+ *
  */
 public class RobotStates {
     /**

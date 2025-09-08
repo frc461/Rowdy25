@@ -17,7 +17,7 @@ import java.util.function.Supplier;
  * An object that represents an autonomous start or dynamic path.
  *
  * <p>This loop is used to handle autonomous trigger logic and schedule commands. This loop should
- * **not** be shared across multiple autonomous routines.
+ * **not** be shared across multiple autonomous routines. </p>
  *
  * @see Robot Your Mom
  */

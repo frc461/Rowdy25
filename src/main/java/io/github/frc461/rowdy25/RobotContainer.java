@@ -22,7 +22,12 @@ import io.github.frc461.rowdy25.util.SysID;
 /**
  * RobotContainer is a functional framework instantiated upon robot initialization. The instance would contain all functionality for the robot, including subsystems, commands, and control.
  *
- * <p>The RobotContainer class is a fundamental class to initiate functionality, namely the superstructure (integrated mechanism characterization), Xbox controller binds (robot control), telemetry (for verbosity), autonomous control configurations and other automations.
+ * <p>The RobotContainer class is a fundamental class to initiate functionality, namely the superstructure (integrated mechanism characterization), Xbox controller binds (robot control), telemetry (for verbosity), autonomous control configurations and other automations.</p>
+ *
+ * <p>Copyright (c) 2025 461 Boosters First, Inc. dba Westside Robotics - The Rowdy 25.</p>
+ *
+ * @author Eugene Zhang, <a href="https://github.com/e500">GitHub</a>
+ * @author Aneesh Terani, <a href="https://github.com/aterani">GitHub</a>
  *
  */
 public class RobotContainer {
