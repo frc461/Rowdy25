@@ -374,10 +374,23 @@ public class RobotStates {
         needsUpdate = isListening.getAsBoolean();
     }
 
+    /**
+     * Determines whether the location of the robot (using localization techniques in {@link io.github.frc461.rowdy25.subsystems.localizer.Localizer}) on the field is less than a tolerance distance threshold away from the nearest scoring location of the current robot location.
+     *
+     * @return True if the robot is at a scoring location, false otherwise.
+     */
     public boolean atScoringLocation() {
         return swerve.localizer.atScoringLocation(currentState);
     }
 
+    /**
+     * Determines whether the location of the robot (using localization techniques in {@link io.github.frc461.rowdy25.subsystems.localizer.Localizer}) on the field is less than a tolerance distance threshold away from the corresponding location of the specified robot state.
+     *
+     * <p>Certain robot states correspond to specific locations on the field e.g., {@link State#CORAL_STATION} corresponds to the nearest of the two preset coral station locations to the current location of the robot.</p>
+     *
+     * @param robotState The robot state whose nearest corresponding field location (to the current robot location) is to be compared with the current robot location.
+     * @return True if the robot is near the specified robot state's corresponding field location, false otherwise.
+     */
     public boolean nearStateLocation(RobotStates.State robotState) {
         return swerve.localizer.nearStateLocation(robotState);
     }
