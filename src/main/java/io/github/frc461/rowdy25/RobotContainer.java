@@ -33,7 +33,7 @@ public class RobotContainer {
     private final RobotStates robotStates = new RobotStates();
 
     /**
-     * {@link AutoManager} is a custom-built autonomous mode configurator for Rowdy25. The instance would initialize the choosers to specify certain aspects of autonomous mode (e.g., which branches to score coral, which algae to grab off the branch and score) and dynamically generate a command containing actions based on the selected option for each chooser.
+     * {@link AutoManager} is a custom-built autonomous mode configurator for Rowdy25. The instance would initialize the choosers to specify certain aspects of autonomous mode (for example, which branches to score coral, which algae to grab off the branch and score) and dynamically generate a command containing actions based on the selected option for each chooser.
      */
     /* Auto Chooser & Configurator */
     private final AutoManager autoManager = new AutoManager(robotStates);
@@ -52,7 +52,7 @@ public class RobotContainer {
     private final CommandXboxController opXbox = new CommandXboxController(1);
 
     /**
-     * Constructor for {@link RobotContainer}. Configure superstructure state-based actions (i.e., when the robot enters a state whether automatically or by button press, the superstructure runs a routine). Initialize teleoperated controls. Initialize PathPlanner, local pathfinder (a "warmup command" is executed to facilitate), and PathPlanner {@link NamedCommands}. Configure {@link DogLog} for telemetry.
+     * Constructor for {@link RobotContainer}. Configure superstructure state-based actions (that is, when the robot enters a state whether automatically or by button press, the superstructure runs a routine). Initialize teleoperated controls. Initialize PathPlanner, local pathfinder (a "warmup command" is executed to facilitate), and PathPlanner {@link NamedCommands}. Configure {@link DogLog} for telemetry.
      */
     public RobotContainer() {
         robotStates.configureToggleStateTriggers();

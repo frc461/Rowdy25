@@ -302,7 +302,7 @@ public final class PhotonUtil {
             Pose3d poseToReturn;
             double distToApply;
 
-            // Disambiguate using the current pose i.e., choose the pose most consistent with the robot's current rotation
+            // Disambiguate using the current pose, that is, choose the pose most consistent with the robot's current rotation
             double ambiguity = getLatestResult(camera).getBestTarget().getPoseAmbiguity();
             if (ambiguity < 0.15) {
                 poseToReturn = poseBest;

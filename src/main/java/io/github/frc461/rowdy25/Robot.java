@@ -9,7 +9,7 @@ import io.github.frc461.rowdy25.constants.RobotIdentity;
 /**
  * Robot implements the {@link TimedRobot} routined robot program framework.
  *
- * <p>The Robot class is the base class by which developers add onto the {@link TimedRobot} framework to customize functionality i.e., mechanism characterization, robot control, automation.
+ * <p>The Robot class is the base class by which developers add onto the {@link TimedRobot} framework to customize functionality, that is, mechanism characterization, robot control, automation.
  *
  */
 public class Robot extends TimedRobot {
