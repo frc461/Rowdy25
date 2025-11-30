@@ -124,121 +124,122 @@ public class RobotStates {
     /**
      * A {@link Trigger} of the {@link State#STOW} robot state.
      *
-     * <p>The {@link Trigger} of a certain {@link State} turns true when the current state of the robot matches that state. Actions/routines that require a specific trigger condition (for example, when a trigger becomes true or false, when a trigger is true or false) will be executed when the condition is met. Note that an action linked to when a trigger BECOMES true or false is only executed once, but an action linked to when a trigger IS true or false is continuously executed until the trigger no longer satisfies the condition.</p>
+     * <p>Represents the condition of whether the current state of the robot {@link #currentState} matches {@link State#STOW}. When the state of the robot becomes {@link State#STOW}, this trigger becomes true, which triggers the routine to transition the robot and its subsystems into the physical state corresponding to the {@link State#STOW} state.</p>
+     * <p>The {@link Trigger} of a certain {@link State} represents the condition of whether the current state of the robot {@link #currentState} matches that state. Much of the program's automation relies on specific conditions of these triggers of each {@link State} (e.g., when the trigger becomes true or false, whenever the trigger is true or false).</p>
      */
     public final Trigger stowState = new Trigger(() -> currentState == State.STOW);
     /**
      * A {@link Trigger} of the {@link State#L2_L3_L4_STOW} robot state.
      *
-     * <p>The {@link Trigger} of a certain {@link State} turns true when the current state of the robot matches that state. Actions/routines that require a specific trigger condition (for example, when a trigger becomes true or false, when a trigger is true or false) will be executed when the condition is met. Note that an action linked to when a trigger BECOMES true or false is only executed once, but an action linked to when a trigger IS true or false is continuously executed until the trigger no longer satisfies the condition.</p>
+     * <p>The {@link Trigger} of a certain {@link State} represents the condition of whether the current state of the robot {@link #currentState} matches that state. Much of the program's automation relies on specific conditions of these triggers of each {@link State} (e.g., when the trigger becomes true or false, whenever the trigger is true or false).</p>
      */
     public final Trigger l2L3L4StowState = new Trigger(() -> currentState == State.L2_L3_L4_STOW);
     /**
      * A {@link Trigger} of the {@link State#OUTTAKE} robot state.
      *
-     * <p>The {@link Trigger} of a certain {@link State} turns true when the current state of the robot matches that state. Actions/routines that require a specific trigger condition (for example, when a trigger becomes true or false, when a trigger is true or false) will be executed when the condition is met. Note that an action linked to when a trigger BECOMES true or false is only executed once, but an action linked to when a trigger IS true or false is continuously executed until the trigger no longer satisfies the condition.</p>
+     * <p>The {@link Trigger} of a certain {@link State} represents the condition of whether the current state of the robot {@link #currentState} matches that state. Much of the program's automation relies on specific conditions of these triggers of each {@link State} (e.g., when the trigger becomes true or false, whenever the trigger is true or false).</p>
      */
     public final Trigger outtakeState = new Trigger(() -> currentState == State.OUTTAKE);
     /**
      * A {@link Trigger} of the {@link State#OUTTAKE_ALGAE} robot state.
      *
-     * <p>The {@link Trigger} of a certain {@link State} turns true when the current state of the robot matches that state. Actions/routines that require a specific trigger condition (for example, when a trigger becomes true or false, when a trigger is true or false) will be executed when the condition is met. Note that an action linked to when a trigger BECOMES true or false is only executed once, but an action linked to when a trigger IS true or false is continuously executed until the trigger no longer satisfies the condition.</p>
+     * <p>The {@link Trigger} of a certain {@link State} represents the condition of whether the current state of the robot {@link #currentState} matches that state. Much of the program's automation relies on specific conditions of these triggers of each {@link State} (e.g., when the trigger becomes true or false, whenever the trigger is true or false).</p>
      */
     public final Trigger outtakeAlgaeState = new Trigger(() -> currentState == State.OUTTAKE_ALGAE);
     /**
      * A {@link Trigger} of the {@link State#OUTTAKE_L1} robot state.
      *
-     * <p>The {@link Trigger} of a certain {@link State} turns true when the current state of the robot matches that state. Actions/routines that require a specific trigger condition (for example, when a trigger becomes true or false, when a trigger is true or false) will be executed when the condition is met. Note that an action linked to when a trigger BECOMES true or false is only executed once, but an action linked to when a trigger IS true or false is continuously executed until the trigger no longer satisfies the condition.</p>
+     * <p>The {@link Trigger} of a certain {@link State} represents the condition of whether the current state of the robot {@link #currentState} matches that state. Much of the program's automation relies on specific conditions of these triggers of each {@link State} (e.g., when the trigger becomes true or false, whenever the trigger is true or false).</p>
      */
     public final Trigger outtakeL1State = new Trigger(() -> currentState == State.OUTTAKE_L1);
     /**
      * A {@link Trigger} of the {@link State#INTAKE_OUT} robot state.
      *
-     * <p>The {@link Trigger} of a certain {@link State} turns true when the current state of the robot matches that state. Actions/routines that require a specific trigger condition (for example, when a trigger becomes true or false, when a trigger is true or false) will be executed when the condition is met. Note that an action linked to when a trigger BECOMES true or false is only executed once, but an action linked to when a trigger IS true or false is continuously executed until the trigger no longer satisfies the condition.</p>
+     * <p>The {@link Trigger} of a certain {@link State} represents the condition of whether the current state of the robot {@link #currentState} matches that state. Much of the program's automation relies on specific conditions of these triggers of each {@link State} (e.g., when the trigger becomes true or false, whenever the trigger is true or false).</p>
      */
     public final Trigger intakeOutState = new Trigger(() -> currentState == State.INTAKE_OUT);
     /**
      * A {@link Trigger} of the {@link State#CORAL_STATION} robot state.
      *
-     * <p>The {@link Trigger} of a certain {@link State} turns true when the current state of the robot matches that state. Actions/routines that require a specific trigger condition (for example, when a trigger becomes true or false, when a trigger is true or false) will be executed when the condition is met. Note that an action linked to when a trigger BECOMES true or false is only executed once, but an action linked to when a trigger IS true or false is continuously executed until the trigger no longer satisfies the condition.</p>
+     * <p>The {@link Trigger} of a certain {@link State} represents the condition of whether the current state of the robot {@link #currentState} matches that state. Much of the program's automation relies on specific conditions of these triggers of each {@link State} (e.g., when the trigger becomes true or false, whenever the trigger is true or false).</p>
      */
     public final Trigger coralStationState = new Trigger(() -> currentState == State.CORAL_STATION);
     /**
      * A {@link Trigger} of the {@link State#CORAL_STATION_OBSTRUCTED} robot state.
      *
-     * <p>The {@link Trigger} of a certain {@link State} turns true when the current state of the robot matches that state. Actions/routines that require a specific trigger condition (for example, when a trigger becomes true or false, when a trigger is true or false) will be executed when the condition is met. Note that an action linked to when a trigger BECOMES true or false is only executed once, but an action linked to when a trigger IS true or false is continuously executed until the trigger no longer satisfies the condition.</p>
+     * <p>The {@link Trigger} of a certain {@link State} represents the condition of whether the current state of the robot {@link #currentState} matches that state. Much of the program's automation relies on specific conditions of these triggers of each {@link State} (e.g., when the trigger becomes true or false, whenever the trigger is true or false).</p>
      */
     public final Trigger coralStationObstructedState = new Trigger(() -> currentState == State.CORAL_STATION_OBSTRUCTED);
     /**
      * A {@link Trigger} of the {@link State#GROUND_CORAL} robot state.
      *
-     * <p>The {@link Trigger} of a certain {@link State} turns true when the current state of the robot matches that state. Actions/routines that require a specific trigger condition (for example, when a trigger becomes true or false, when a trigger is true or false) will be executed when the condition is met. Note that an action linked to when a trigger BECOMES true or false is only executed once, but an action linked to when a trigger IS true or false is continuously executed until the trigger no longer satisfies the condition.</p>
+     * <p>The {@link Trigger} of a certain {@link State} represents the condition of whether the current state of the robot {@link #currentState} matches that state. Much of the program's automation relies on specific conditions of these triggers of each {@link State} (e.g., when the trigger becomes true or false, whenever the trigger is true or false).</p>
      */
     public final Trigger groundCoralState = new Trigger(() -> currentState == State.GROUND_CORAL);
     /**
      * A {@link Trigger} of the {@link State#GROUND_ALGAE} robot state.
      *
-     * <p>The {@link Trigger} of a certain {@link State} turns true when the current state of the robot matches that state. Actions/routines that require a specific trigger condition (for example, when a trigger becomes true or false, when a trigger is true or false) will be executed when the condition is met. Note that an action linked to when a trigger BECOMES true or false is only executed once, but an action linked to when a trigger IS true or false is continuously executed until the trigger no longer satisfies the condition.</p>
+     * <p>The {@link Trigger} of a certain {@link State} represents the condition of whether the current state of the robot {@link #currentState} matches that state. Much of the program's automation relies on specific conditions of these triggers of each {@link State} (e.g., when the trigger becomes true or false, whenever the trigger is true or false).</p>
      */
     public final Trigger groundAlgaeState = new Trigger(() -> currentState == State.GROUND_ALGAE);
     /**
      * A {@link Trigger} of the {@link State#L1_CORAL} robot state.
      *
-     * <p>The {@link Trigger} of a certain {@link State} turns true when the current state of the robot matches that state. Actions/routines that require a specific trigger condition (for example, when a trigger becomes true or false, when a trigger is true or false) will be executed when the condition is met. Note that an action linked to when a trigger BECOMES true or false is only executed once, but an action linked to when a trigger IS true or false is continuously executed until the trigger no longer satisfies the condition.</p>
+     * <p>The {@link Trigger} of a certain {@link State} represents the condition of whether the current state of the robot {@link #currentState} matches that state. Much of the program's automation relies on specific conditions of these triggers of each {@link State} (e.g., when the trigger becomes true or false, whenever the trigger is true or false).</p>
      */
     public final Trigger l1CoralState = new Trigger(() -> currentState == State.L1_CORAL);
     /**
      * A {@link Trigger} of the {@link State#L2_CORAL} robot state.
      *
-     * <p>The {@link Trigger} of a certain {@link State} turns true when the current state of the robot matches that state. Actions/routines that require a specific trigger condition (for example, when a trigger becomes true or false, when a trigger is true or false) will be executed when the condition is met. Note that an action linked to when a trigger BECOMES true or false is only executed once, but an action linked to when a trigger IS true or false is continuously executed until the trigger no longer satisfies the condition.</p>
+     * <p>The {@link Trigger} of a certain {@link State} represents the condition of whether the current state of the robot {@link #currentState} matches that state. Much of the program's automation relies on specific conditions of these triggers of each {@link State} (e.g., when the trigger becomes true or false, whenever the trigger is true or false).</p>
      */
     public final Trigger l2CoralState = new Trigger(() -> currentState == State.L2_CORAL);
     /**
      * A {@link Trigger} of the {@link State#L3_CORAL} robot state.
      *
-     * <p>The {@link Trigger} of a certain {@link State} turns true when the current state of the robot matches that state. Actions/routines that require a specific trigger condition (for example, when a trigger becomes true or false, when a trigger is true or false) will be executed when the condition is met. Note that an action linked to when a trigger BECOMES true or false is only executed once, but an action linked to when a trigger IS true or false is continuously executed until the trigger no longer satisfies the condition.</p>
+     * <p>The {@link Trigger} of a certain {@link State} represents the condition of whether the current state of the robot {@link #currentState} matches that state. Much of the program's automation relies on specific conditions of these triggers of each {@link State} (e.g., when the trigger becomes true or false, whenever the trigger is true or false).</p>
      */
     public final Trigger l3CoralState = new Trigger(() -> currentState == State.L3_CORAL);
     /**
      * A {@link Trigger} of the {@link State#L4_CORAL} robot state.
      *
-     * <p>The {@link Trigger} of a certain {@link State} turns true when the current state of the robot matches that state. Actions/routines that require a specific trigger condition (for example, when a trigger becomes true or false, when a trigger is true or false) will be executed when the condition is met. Note that an action linked to when a trigger BECOMES true or false is only executed once, but an action linked to when a trigger IS true or false is continuously executed until the trigger no longer satisfies the condition.</p>
+     * <p>The {@link Trigger} of a certain {@link State} represents the condition of whether the current state of the robot {@link #currentState} matches that state. Much of the program's automation relies on specific conditions of these triggers of each {@link State} (e.g., when the trigger becomes true or false, whenever the trigger is true or false).</p>
      */
     public final Trigger l4CoralState = new Trigger(() -> currentState == State.L4_CORAL);
     /**
      * A {@link Trigger} of the {@link State#LOW_REEF_ALGAE} robot state.
      *
-     * <p>The {@link Trigger} of a certain {@link State} turns true when the current state of the robot matches that state. Actions/routines that require a specific trigger condition (for example, when a trigger becomes true or false, when a trigger is true or false) will be executed when the condition is met. Note that an action linked to when a trigger BECOMES true or false is only executed once, but an action linked to when a trigger IS true or false is continuously executed until the trigger no longer satisfies the condition.</p>
+     * <p>The {@link Trigger} of a certain {@link State} represents the condition of whether the current state of the robot {@link #currentState} matches that state. Much of the program's automation relies on specific conditions of these triggers of each {@link State} (e.g., when the trigger becomes true or false, whenever the trigger is true or false).</p>
      */
     public final Trigger lowReefAlgaeState = new Trigger(() -> currentState == State.LOW_REEF_ALGAE);
     /**
      * A {@link Trigger} of the {@link State#HIGH_REEF_ALGAE} robot state.
      *
-     * <p>The {@link Trigger} of a certain {@link State} turns true when the current state of the robot matches that state. Actions/routines that require a specific trigger condition (for example, when a trigger becomes true or false, when a trigger is true or false) will be executed when the condition is met. Note that an action linked to when a trigger BECOMES true or false is only executed once, but an action linked to when a trigger IS true or false is continuously executed until the trigger no longer satisfies the condition.</p>
+     * <p>The {@link Trigger} of a certain {@link State} represents the condition of whether the current state of the robot {@link #currentState} matches that state. Much of the program's automation relies on specific conditions of these triggers of each {@link State} (e.g., when the trigger becomes true or false, whenever the trigger is true or false).</p>
      */
     public final Trigger highReefAlgaeState = new Trigger(() -> currentState == State.HIGH_REEF_ALGAE);
     /**
      * A {@link Trigger} of the {@link State#PROCESSOR} robot state.
      *
-     * <p>The {@link Trigger} of a certain {@link State} turns true when the current state of the robot matches that state. Actions/routines that require a specific trigger condition (for example, when a trigger becomes true or false, when a trigger is true or false) will be executed when the condition is met. Note that an action linked to when a trigger BECOMES true or false is only executed once, but an action linked to when a trigger IS true or false is continuously executed until the trigger no longer satisfies the condition.</p>
+     * <p>The {@link Trigger} of a certain {@link State} represents the condition of whether the current state of the robot {@link #currentState} matches that state. Much of the program's automation relies on specific conditions of these triggers of each {@link State} (e.g., when the trigger becomes true or false, whenever the trigger is true or false).</p>
      */
     public final Trigger processorState = new Trigger(() -> currentState == State.PROCESSOR);
     /**
      * A {@link Trigger} of the {@link State#NET} robot state.
      *
-     * <p>The {@link Trigger} of a certain {@link State} turns true when the current state of the robot matches that state. Actions/routines that require a specific trigger condition (for example, when a trigger becomes true or false, when a trigger is true or false) will be executed when the condition is met. Note that an action linked to when a trigger BECOMES true or false is only executed once, but an action linked to when a trigger IS true or false is continuously executed until the trigger no longer satisfies the condition.</p>
+     * <p>The {@link Trigger} of a certain {@link State} represents the condition of whether the current state of the robot {@link #currentState} matches that state. Much of the program's automation relies on specific conditions of these triggers of each {@link State} (e.g., when the trigger becomes true or false, whenever the trigger is true or false).</p>
      */
     public final Trigger netState = new Trigger(() -> currentState == State.NET);
     /**
      * A {@link Trigger} of the {@link State#PREPARE_CLIMB} robot state.
      *
-     * <p>The {@link Trigger} of a certain {@link State} turns true when the current state of the robot matches that state. Actions/routines that require a specific trigger condition (for example, when a trigger becomes true or false, when a trigger is true or false) will be executed when the condition is met. Note that an action linked to when a trigger BECOMES true or false is only executed once, but an action linked to when a trigger IS true or false is continuously executed until the trigger no longer satisfies the condition.</p>
+     * <p>The {@link Trigger} of a certain {@link State} represents the condition of whether the current state of the robot {@link #currentState} matches that state. Much of the program's automation relies on specific conditions of these triggers of each {@link State} (e.g., when the trigger becomes true or false, whenever the trigger is true or false).</p>
      */
     public final Trigger prepareClimbState = new Trigger(() -> currentState == State.PREPARE_CLIMB);
     /**
      * A {@link Trigger} of the {@link State#CLIMB} robot state.
      *
-     * <p>The {@link Trigger} of a certain {@link State} turns true when the current state of the robot matches that state. Actions/routines that require a specific trigger condition (for example, when a trigger becomes true or false, when a trigger is true or false) will be executed when the condition is met. Note that an action linked to when a trigger BECOMES true or false is only executed once, but an action linked to when a trigger IS true or false is continuously executed until the trigger no longer satisfies the condition.</p>
+     * <p>The {@link Trigger} of a certain {@link State} represents the condition of whether the current state of the robot {@link #currentState} matches that state. Much of the program's automation relies on specific conditions of these triggers of each {@link State} (e.g., when the trigger becomes true or false, whenever the trigger is true or false).</p>
      */
     public final Trigger climbState = new Trigger(() -> currentState == State.CLIMB);
 
@@ -247,7 +248,7 @@ public class RobotStates {
      */
     private final Trigger isListening = l1CoralState.or(l2CoralState).or(l3CoralState).or(l4CoralState);
     /**
-     * A boolean that turns true when {@link #isListening} turns true, which causes an update to the robot state. Subsequently, this boolean is reset to false.
+     * A boolean that turns true when {@link #isListening} turns true, which triggers an update to the robot state. Subsequently, this boolean is reset to false.
      */
     private boolean needsUpdate = false;
 
