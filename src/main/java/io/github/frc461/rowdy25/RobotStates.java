@@ -1,5 +1,22 @@
 package io.github.frc461.rowdy25;
 
+/*
+ * Copyright (C) 2025-present 461 Boosters FIRST, Inc. dba Westside Robotics - The Rowdy 25.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.StringPublisher;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -32,58 +49,56 @@ import dev.doglog.DogLog;
  *
  * <p>The RobotStates class is a robot characterization class, that is, the subsystems are integrated into one defined system to streamline robot-wide actions for efficiency and organization. Many actions relevant to the robot's objectives require the coordination of the entire robotic system, hence a robot-wide state machine and robot-wide defined actions to satisfy the state machine.</p>
  *
- * <p>Copyright (c) 2025 461 Boosters First, Inc. dba Westside Robotics - The Rowdy 25.</p>
- *
  * @author Eugene Zhang, <a href="https://github.com/e500">GitHub</a>
  * @author Aneesh Terani, <a href="https://github.com/aterani">GitHub</a>
  *
  */
 public class RobotStates {
     /**
-     * An enum representing the possible various states of the (whole) robot. Based on the robot's state (with this enum type), each subsystem integrated into the superstructure (that is, every subsystem except for the drivetrain) would update its respective state, then triggering an action on that subsystem.
+     * An enum representing the possible various states describing the robot. Based on the robot's state (with this enum type), each subsystem integrated into the superstructure (that is, every subsystem except for the drivetrain) would update its respective state, then triggering a delegated action on that subsystem.
      */
     public enum State {
-        /** The physical robot superstructure is idle. */
+        /** The superstructure is idle. The physical position of the superstructure includes a slightly turned-down pivot with the wrist and elevator down leaning towards the center of the robot. */
         STOW,
-        /** The physical robot superstructure detects possession of a piece of coral and prepared to score L2, L3, L4. */
+        /** The superstructure detects possession of a coral game-piece and is prepared to score L2, L3, L4. This specialized stowed position is distinct from a regular stowed position, as the pivot and wrist are physically rotated further away from the center of the robot. This orientation improves efficiency when transitioning to a scoring state on the higher levels of the reef. */
         L2_L3_L4_STOW,
-        /** The physical robot superstructure has been directly manipulated by joystick input. */
+        /** The superstructure has been manipulated by joystick input. */ // TODO FINISH PHYSICAL DESCRIPTIONS
         MANUAL,
-        /** The physical robot superstructure detects possession of a piece of coral and is actively ejecting it from possession out the front of the manipulator. */
+        /** The superstructure detects possession of a coral game-piece and is actively ejecting it from possession out the front of the manipulator. */
         OUTTAKE,
-        /** The physical robot superstructure detects possession of a piece of algae and is actively ejecting it from possession out the front of the manipulator. */
+        /** The superstructure detects possession of an algae game-piece and is actively ejecting it from possession out the front of the manipulator. */
         OUTTAKE_ALGAE,
-        /** The physical robot superstructure detects possession of a piece of coral and is actively ejecting it from possession out the front of the manipulator, but slower to adapt to scoring on the reef on L1. */
+        /** The superstructure detects possession of a coral game-piece and is actively ejecting it from possession out the front of the manipulator, but slower to adapt to scoring on the reef on L1. */
         OUTTAKE_L1,
-        /** The physical robot superstructure detects possession of a piece of coral and is actively ejecting it from possession out the back of the manipulator, to adapt to scoring on L2, L3, or L4 in the case that {@link io.github.frc461.rowdy25.subsystems.localizer.Localizer#trustCameras} is toggled off. */
+        /** The superstructure detects possession of a coral game-piece and is actively ejecting it from possession out the back of the manipulator, to adapt to scoring on L2, L3, or L4 in the case that {@link io.github.frc461.rowdy25.subsystems.localizer.Localizer#trustCameras} is toggled off. */
         INTAKE_OUT,
-        /** The physical robot superstructure is oriented to obtain a piece of coral while up against the coral station. */
+        /** The superstructure is oriented to obtain a coral game-piece while up against the coral station. */
         CORAL_STATION,
-        /** The physical robot superstructure is oriented to obtain a piece of coral while one coral width's away from the coral station. */
+        /** The superstructure is oriented to obtain a coral game-piece while one coral width's away from the coral station. */
         CORAL_STATION_OBSTRUCTED,
-        /** The physical robot superstructure is oriented to obtain a piece of coral on the ground. */
+        /** The superstructure is oriented to obtain a coral game-piece on the ground. */
         GROUND_CORAL,
-        /** The physical robot superstructure is oriented to obtain a piece of algae on the ground. */
+        /** The superstructure is oriented to obtain an algae game-piece on the ground. */
         GROUND_ALGAE,
-        /** The physical robot superstructure is oriented to line up with and be prepared to score on the reef on L1. */
+        /** The superstructure is oriented to line up with and be prepared to score on the reef on L1. */
         L1_CORAL,
-        /** The physical robot superstructure is oriented to line up with and be prepared to score on the reef on L2. */
+        /** The superstructure is oriented to line up with and be prepared to score on the reef on L2. */
         L2_CORAL,
-        /** The physical robot superstructure is oriented to line up with and be prepared to score on the reef on L3. */
+        /** The superstructure is oriented to line up with and be prepared to score on the reef on L3. */
         L3_CORAL,
-        /** The physical robot superstructure is oriented to line up with and be prepared to score on the reef on L4. */
+        /** The superstructure is oriented to line up with and be prepared to score on the reef on L4. */
         L4_CORAL,
-        /** The physical robot superstructure is oriented to line up with and be prepared to obtain a piece of algae on the lower side of the reef. */
+        /** The superstructure is oriented to line up with and be prepared to obtain an algae game-piece on the lower side of the reef. */
         LOW_REEF_ALGAE,
-        /** The physical robot superstructure is oriented to line up with and be prepared to obtain a piece of algae on the upper side of the reef. */
+        /** The superstructure is oriented to line up with and be prepared to obtain an algae game-piece on the upper side of the reef. */
         HIGH_REEF_ALGAE,
-        /** The physical robot superstructure is oriented to line up with and be prepared to score in the processor. */
+        /** The superstructure is oriented to line up with and be prepared to score in the processor. */
         PROCESSOR,
-        /** The physical robot superstructure is oriented to line up with and be prepared to score in the net. */
+        /** The superstructure is oriented to line up with and be prepared to score in the net. */
         NET,
-        /** The physical robot superstructure is oriented to line up with the barge prior to entering the climb state. */
+        /** The superstructure is oriented to line up with the barge prior to entering the climb state. */
         PREPARE_CLIMB,
-        /** The physical robot superstructure is oriented in an optimized position while engaged with the barge. */
+        /** The superstructure is oriented in an optimized position while engaged with the barge. */
         CLIMB
     }
 
@@ -124,18 +139,21 @@ public class RobotStates {
     /**
      * A {@link Trigger} of the {@link State#STOW} robot state.
      *
-     * <p>Represents the condition of whether the current state of the robot {@link #currentState} matches {@link State#STOW}. When the state of the robot becomes {@link State#STOW}, this trigger becomes true, which triggers the routine to transition the robot and its subsystems into the physical state corresponding to the {@link State#STOW} state.</p>
+     * <p>This field represents the condition of whether the current state of the robot {@link #currentState} matches {@link State#STOW}. As an application, the routine to transition the robot and its subsystems into the physical state corresponding to the {@link State#STOW} state is executed when {@link #currentState} becomes {@link State#STOW}, and this trigger becomes representative of true.</p>
+     *
      * <p>The {@link Trigger} of a certain {@link State} represents the condition of whether the current state of the robot {@link #currentState} matches that state. Much of the program's automation relies on specific conditions of these triggers of each {@link State} (e.g., when the trigger becomes true or false, whenever the trigger is true or false).</p>
      */
     public final Trigger stowState = new Trigger(() -> currentState == State.STOW);
     /**
      * A {@link Trigger} of the {@link State#L2_L3_L4_STOW} robot state.
      *
+     * <p>This field represents the condition of whether the current state of the robot {@link #currentState} matches {@link State#L2_L3_L4_STOW}. As an application, after collecting a coral game-piece from a coral station, the {@link #currentState} is set to {@link State#L2_L3_L4_STOW} if {@link #currentAutoLevel} is {@link FieldUtil.Reef.Level#L2} or above, triggering a routine to transition the robot into physical state corresponding to the {@link State#L2_L3_L4_STOW} state.</p>
+     *
      * <p>The {@link Trigger} of a certain {@link State} represents the condition of whether the current state of the robot {@link #currentState} matches that state. Much of the program's automation relies on specific conditions of these triggers of each {@link State} (e.g., when the trigger becomes true or false, whenever the trigger is true or false).</p>
      */
     public final Trigger l2L3L4StowState = new Trigger(() -> currentState == State.L2_L3_L4_STOW);
     /**
-     * A {@link Trigger} of the {@link State#OUTTAKE} robot state.
+     * A {@link Trigger} of the {@link State#OUTTAKE} robot state. // TODO FINISH FIELD APPLICATIONS
      *
      * <p>The {@link Trigger} of a certain {@link State} represents the condition of whether the current state of the robot {@link #currentState} matches that state. Much of the program's automation relies on specific conditions of these triggers of each {@link State} (e.g., when the trigger becomes true or false, whenever the trigger is true or false).</p>
      */

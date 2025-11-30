@@ -1,5 +1,22 @@
 package io.github.frc461.rowdy25;
 
+/*
+ * Copyright (C) 2025-present 461 Boosters FIRST, Inc. dba Westside Robotics - The Rowdy 25.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -10,7 +27,6 @@ import io.github.frc461.rowdy25.constants.RobotIdentity;
  * Robot implements the {@link TimedRobot} routined robot program framework.
  *
  * <p>The Robot class is the base class by which developers add onto the {@link TimedRobot} framework to customize functionality, that is, mechanism characterization, robot control, automation.</p>
- * <p>Copyright (c) 2025 461 Boosters First, Inc. dba Westside Robotics - The Rowdy 25.</p>
  *
  * @author Eugene Zhang, <a href="https://github.com/ez500">GitHub</a>
  * @author Aneesh Terani, <a href="https://github.com/aterani">GitHub</a>
