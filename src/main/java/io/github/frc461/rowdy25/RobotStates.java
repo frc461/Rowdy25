@@ -62,29 +62,29 @@ public class RobotStates {
         STOW,
         /** The superstructure detects possession of a coral game-piece and is prepared to score L2, L3, L4. This specialized stowed position is distinct from a regular stowed position, as the pivot and wrist are physically rotated further away from the center of the robot. This orientation improves efficiency when transitioning to a scoring state on the higher levels of the reef. */
         L2_L3_L4_STOW,
-        /** The superstructure has been manipulated by joystick input. */ // TODO FINISH PHYSICAL DESCRIPTIONS
+        /** The superstructure has been manipulated by joystick input. The physical positions of the robot are variable, as controlled by joystick input. */
         MANUAL,
-        /** The superstructure detects possession of a coral game-piece and is actively ejecting it from possession out the front of the manipulator. */
+        /** The superstructure detects possession of a coral game-piece and is actively ejecting it from possession out the front of the manipulator. The physical position of the superstructure is identical to the physical position of the robot in its previous state. */
         OUTTAKE,
-        /** The superstructure detects possession of an algae game-piece and is actively ejecting it from possession out the front of the manipulator. */
+        /** The superstructure detects possession of an algae game-piece and is actively ejecting it from possession out the front of the manipulator. The physical position of the superstructure is identical to the physical position of the robot in its previous state (either the {@link State#NET} or {@link State#PROCESSOR} states). */
         OUTTAKE_ALGAE,
-        /** The superstructure detects possession of a coral game-piece and is actively ejecting it from possession out the front of the manipulator, but slower to adapt to scoring on the reef on L1. */
+        /** The superstructure detects possession of a coral game-piece and is actively ejecting it from possession out the front of the manipulator, but slower to adapt to scoring on the reef on L1. The physical position of the superstructure is identical to the physical position of the robot in the {@link State#L1_CORAL} state.*/
         OUTTAKE_L1,
-        /** The superstructure detects possession of a coral game-piece and is actively ejecting it from possession out the back of the manipulator, to adapt to scoring on L2, L3, or L4 in the case that {@link io.github.frc461.rowdy25.subsystems.localizer.Localizer#trustCameras} is toggled off. */
+        /** The superstructure detects possession of a coral game-piece and is actively ejecting it from possession out the back of the manipulator, to adapt to scoring on L2, L3, or L4 in the case that {@link io.github.frc461.rowdy25.subsystems.localizer.Localizer#trustCameras} is toggled false (cameras are not trustworthy). The physical position of the superstructure is identical to the physical position of the robot in its previous state (any of the {@link State#L2_CORAL}, {@link State#L3_CORAL}, or {@link State#L4_CORAL} states). */
         INTAKE_OUT,
-        /** The superstructure is oriented to obtain a coral game-piece while up against the coral station. */
+        /** The superstructure is oriented to obtain a coral game-piece while up against the coral station. The physical position of the superstructure includes a slightly turned-down pivot with the elevator down and wrist lined up with the slope of the coral station slot to receive a coral game-piece. */
         CORAL_STATION,
-        /** The superstructure is oriented to obtain a coral game-piece while one coral width's away from the coral station. */
+        /** The superstructure is oriented to obtain a coral game-piece while one coral width's away from the coral station. The physical position of the superstructure is similar to the {@link State#CORAL_STATION} state but with a slightly extended elevator. */
         CORAL_STATION_OBSTRUCTED,
-        /** The superstructure is oriented to obtain a coral game-piece on the ground. */
+        /** The superstructure is oriented to obtain a coral game-piece on the ground. The physical position of the superstructure includes an almost-horizontal pivot with the wrist parallel to the ground ready to obtain any coral game-piece on the ground. */
         GROUND_CORAL,
-        /** The superstructure is oriented to obtain an algae game-piece on the ground. */
+        /** The superstructure is oriented to obtain an algae game-piece on the ground. The physical position of the superstructure is similar to the {@link State#GROUND_CORAL} state but with the elevator tilted upward to account for the size of the algae game-piece. */
         GROUND_ALGAE,
-        /** The superstructure is oriented to line up with and be prepared to score on the reef on L1. */
+        /** The superstructure is oriented to line up with and be prepared to score on the reef on L1. The physical position of the superstructure is similar to the {@link State#GROUND_ALGAE} state but with the wrist more consistently lined up with the L1 scoring trough on the reef. */
         L1_CORAL,
-        /** The superstructure is oriented to line up with and be prepared to score on the reef on L2. */
+        /** The superstructure is oriented to line up with and be prepared to score on the reef on L2. The physical position of the superstructure includes an upright pivot and unextended elevator with a wrist turned over toward the branch if {@link io.github.frc461.rowdy25.subsystems.localizer.Localizer#trustCameras} is toggled true, or down between the elevator frame for passthrough outtake (intake-out) if toggled false. */
         L2_CORAL,
-        /** The superstructure is oriented to line up with and be prepared to score on the reef on L3. */
+        /** The superstructure is oriented to line up with and be prepared to score on the reef on L3. */ // TODO FINISH PHYSICAL DESCRIPTIONS
         L3_CORAL,
         /** The superstructure is oriented to line up with and be prepared to score on the reef on L4. */
         L4_CORAL,
