@@ -84,21 +84,21 @@ public class RobotStates {
         L1_CORAL,
         /** The superstructure is oriented to line up with and be prepared to score on the reef on L2. The physical position of the superstructure includes an upright pivot and unextended elevator with a wrist turned over toward the branch if {@link io.github.frc461.rowdy25.subsystems.localizer.Localizer#trustCameras} is toggled true, or down between the elevator frame for passthrough outtake (intake-out) if toggled false. */
         L2_CORAL,
-        /** The superstructure is oriented to line up with and be prepared to score on the reef on L3. */ // TODO FINISH PHYSICAL DESCRIPTIONS
+        /** The superstructure is oriented to line up with and be prepared to score on the reef on L3. The physical position of the superstructure is similar to the {@link State#L2_CORAL} state but with a slightly extended elevator, with the same conditional wrist position on the value of {@link io.github.frc461.rowdy25.subsystems.localizer.Localizer#trustCameras}. */
         L3_CORAL,
-        /** The superstructure is oriented to line up with and be prepared to score on the reef on L4. */
+        /** The superstructure is oriented to line up with and be prepared to score on the reef on L4. The physical position of the superstructure is similar to the {@link State#L2_CORAL} state but with the elevator almost completely extended, with the same conditional wrist position on the value of {@link io.github.frc461.rowdy25.subsystems.localizer.Localizer#trustCameras}. */
         L4_CORAL,
-        /** The superstructure is oriented to line up with and be prepared to obtain an algae game-piece on the lower side of the reef. */
+        /** The superstructure is oriented to line up with and be prepared to obtain an algae game-piece on the lower side of the reef. The physical position of the superstructure is similar to the {@link State#L2_CORAL} state but with a wrist that extends more upward toward the lower algae slot between L2 and L3 on the reef. */
         LOW_REEF_ALGAE,
-        /** The superstructure is oriented to line up with and be prepared to obtain an algae game-piece on the upper side of the reef. */
+        /** The superstructure is oriented to line up with and be prepared to obtain an algae game-piece on the upper side of the reef. The physical position of the superstructure is similar to the {@link State#LOW_REEF_ALGAE} state but with an extended elevator and lower/more rotated wrist toward the higher algae slot above L3 on the reef. */
         HIGH_REEF_ALGAE,
-        /** The superstructure is oriented to line up with and be prepared to score in the processor. */
+        /** The superstructure is oriented to line up with and be prepared to score in the processor. The physical position of the superstructure is similar to the {@link State#GROUND_ALGAE} state but with a slightly more upward pivot and slightly extended elevator, keeping the obtained algae game-piece off the ground. */
         PROCESSOR,
-        /** The superstructure is oriented to line up with and be prepared to score in the net. */
+        /** The superstructure is oriented to line up with and be prepared to score in the net. The physical position of the superstructure is similar to the {@link State#L4_CORAL} state but with a completely extended elevator and wrist rotated more upwards for maximum height. */
         NET,
-        /** The superstructure is oriented to line up with the barge prior to entering the climb state. */
+        /** The superstructure is oriented to line up with the barge prior to entering the climb state. The physical position of the superstructure includes an upright pivot, a slightly extended elevator, and the wrist rotated upward inline with elevator. */
         PREPARE_CLIMB,
-        /** The superstructure is oriented in an optimized position while engaged with the barge. */
+        /** The superstructure is oriented in an optimized position while engaged with the barge. The physical position of the superstructure includes an almost horizontal pivot, an unextended elevator, and the wrist rotated completely upward from the ground. */
         CLIMB
     }
 
