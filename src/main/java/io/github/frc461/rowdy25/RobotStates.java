@@ -262,7 +262,7 @@ public class RobotStates {
     public final Trigger climbState = new Trigger(() -> currentState == State.CLIMB);
 
     /**
-     * A {@link Trigger} that indicates whether the current robot state is any of the coral-scoring states. This trigger to conditionally update the robot state to the coral-scoring state that corresponds to {@link #currentAutoLevel}.
+     * A {@link Trigger} that indicates whether the current robot state is any of the coral-scoring states. This trigger conditionally updates the robot state to the coral-scoring state that corresponds to {@link #currentAutoLevel}.
      */
     private final Trigger isListening = l1CoralState.or(l2CoralState).or(l3CoralState).or(l4CoralState);
     /**
@@ -400,7 +400,7 @@ public class RobotStates {
     }
 
     /**
-     * Determines whether the location of the robot (using localization techniques in {@link io.github.frc461.rowdy25.subsystems.localizer.Localizer}) on the field is less than a tolerance distance threshold away from the nearest scoring location of the current robot location.
+     * Determines whether the location of the robot (using localization techniques in {@link io.github.frc461.rowdy25.subsystems.localizer.Localizer}) on the field is less than a tolerance distance threshold (determined by {@link Constants.AutoConstants#TRANSLATION_TOLERANCE_TO_ACCEPT}) away from the nearest scoring location of the current robot location.
      *
      * @return True if the robot is at a scoring location, false otherwise.
      */
@@ -409,7 +409,7 @@ public class RobotStates {
     }
 
     /**
-     * Determines whether the location of the robot (using localization techniques in {@link io.github.frc461.rowdy25.subsystems.localizer.Localizer}) on the field is less than a tolerance distance threshold away from the corresponding location of the specified robot state.
+     * Determines whether the location of the robot (using localization techniques in {@link io.github.frc461.rowdy25.subsystems.localizer.Localizer}) on the field is less than a tolerance distance threshold (determined by {@link Constants.AutoConstants#TRANSLATION_TOLERANCE_TO_DIRECT_DRIVE}) away from the field location corresponding of the specified robot state.
      *
      * <p>Certain robot states correspond to specific locations on the field for example, {@link State#CORAL_STATION} corresponds to the nearest of the two preset coral station locations to the current location of the robot.</p>
      *
@@ -420,105 +420,197 @@ public class RobotStates {
         return swerve.localizer.nearStateLocation(robotState);
     }
 
+    /**
+     * Determines whether the location of the robot (using localization techniques in {@link io.github.frc461.rowdy25.subsystems.localizer.Localizer}) on the field is less than a tolerance distance threshold (determined by {@link Constants.AutoConstants#TRANSLATION_TOLERANCE_TO_TRANSITION}) away from the transition location of the specified robot state on the field. The transition location of a robot state (which is contained within an automated routine) is the location past which the robot is set to the robot state (within the routine).
+     *
+     * <p>Certain robot states correspond to specific locations on the field for example, {@link State#CORAL_STATION} corresponds to the nearest of the two preset coral station locations to the current location of the robot.</p>
+     *
+     * @param robotState The robot state whose nearest corresponding field location (to the current robot location) is to be compared with the current robot location.
+     * @return True if the robot is within a transition tolerance threshold distance from the specified robot state's corresponding field location, false otherwise.
+     */
     public boolean atTransitionStateLocation(RobotStates.State robotState) {
         return swerve.localizer.atTransitionStateLocation(robotState, false);
     }
 
+    /**
+     * Determines whether the location of the robot (using localization techniques in {@link io.github.frc461.rowdy25.subsystems.localizer.Localizer}) on the field is less than a tolerance distance threshold (determined by {@link Constants.AutoConstants#TRANSLATION_TOLERANCE_TO_TRANSITION} or {@link Constants.AutoConstants#TRANSLATION_TOLERANCE_TO_TRANSITION_AUTO}) away from the transition location of the specified robot state on the field. The transition location of a robot state (which is contained within an automated routine) is the location past which the robot is set to the robot state (within the routine). This method differentiates between autonomous and teleoperated modes when determining the tolerance distance threshold.
+     *
+     * <p>Certain robot states correspond to specific locations on the field for example, {@link State#CORAL_STATION} corresponds to the nearest of the two preset coral station locations to the current location of the robot.</p>
+     *
+     * @param robotState The robot state whose nearest corresponding field location (to the current robot location) is to be compared with the current robot location.
+     * @param autoTransition A boolean that determines whether the robot is in autonomous mode (true) or teleoperated mode (false) for selecting the conditional tolerance distance threshold.
+     * @return True if the robot is within a transition tolerance threshold distance from the specified robot state's corresponding field location, false otherwise.
+     */
     public boolean atTransitionStateLocation(RobotStates.State robotState, boolean autoTransition) {
         return swerve.localizer.atTransitionStateLocation(robotState, autoTransition);
     }
 
+    /**
+     * Sets the current robot state to {@link State#STOW}.
+     */
     public void setStowState() {
         currentState = State.STOW;
     }
 
+    /**
+     * Sets the current robot state to {@link State#L2_L3_L4_STOW}.
+     */
     public void setL2L3L4StowState() {
         currentState = State.L2_L3_L4_STOW;
     }
 
+    /**
+     * Sets the current robot state to {@link State#MANUAL}.
+     */
     public void setManualState() {
         currentState = State.MANUAL;
     }
 
+    /**
+     * Sets the current robot state to {@link State#OUTTAKE}.
+     */
     public void setOuttakeState() {
         currentState = State.OUTTAKE;
     }
 
+    /**
+     * Sets the current robot state to {@link State#OUTTAKE_ALGAE}.
+     */
     public void setOuttakeAlgaeState() {
         currentState = State.OUTTAKE_ALGAE;
     }
 
+    /**
+     * Sets the current robot state to {@link State#OUTTAKE_L1}.
+     */
     public void setOuttakeL1State() {
         currentState = State.OUTTAKE_L1;
     }
 
+    /**
+     * Sets the current robot state to {@link State#INTAKE_OUT}.
+     */
     public void setIntakeOutState() {
         currentState = State.INTAKE_OUT;
     }
 
+    /**
+     * Toggles the current robot state between {@link State#CORAL_STATION} and {@link State#STOW}.
+     */
     public void toggleCoralStationState() {
         toggleCoralStationState(false);
     }
 
+    /**
+     * Toggles the current robot state between {@link State#CORAL_STATION} and {@link State#STOW}. Only toggles if the intake does not have coral.
+     *
+     * @param override A boolean that, when true, forces the robot state to {@link State#CORAL_STATION} regardless of the current state.
+     */
     public void toggleCoralStationState(boolean override) {
         if (!intake.barelyHasCoral()) {
             currentState = (currentState == State.CORAL_STATION || currentState == State.CORAL_STATION_OBSTRUCTED) && !override ? State.STOW : State.CORAL_STATION;
         }
     }
 
+    /**
+     * Toggles the current robot state between {@link State#CORAL_STATION_OBSTRUCTED} and {@link State#STOW}. Only toggles if the intake does not have coral.
+     */
     public void toggleCoralStationObstructedState() {
         if (!intake.barelyHasCoral()) {
             currentState = currentState == State.CORAL_STATION_OBSTRUCTED ? State.STOW : State.CORAL_STATION_OBSTRUCTED;
         }
     }
 
+    /**
+     * Toggles the current robot state between {@link State#GROUND_CORAL} and {@link State#STOW}. Only toggles if the intake does not have coral.
+     */
     public void toggleGroundCoralState() {
         if (!intake.barelyHasCoral()) {
             currentState = currentState == State.GROUND_CORAL ? State.STOW : State.GROUND_CORAL;
         }
     }
 
+    /**
+     * Toggles the current robot state between {@link State#GROUND_ALGAE} and {@link State#STOW}. Only toggles if the intake does not have coral.
+     */
     public void toggleGroundAlgaeState() {
         if (!intake.barelyHasCoral()) {
             currentState = currentState == State.GROUND_ALGAE ? State.STOW : State.GROUND_ALGAE;
         }
     }
 
+    /**
+     * Toggles the current robot state between {@link State#L1_CORAL} and {@link State#OUTTAKE_L1}.
+     *
+     * @param override A boolean that, when true, forces the robot state to {@link State#L1_CORAL} regardless of the current state.
+     */
     public void toggleL1CoralState(boolean override) {
         currentState = currentState == State.L1_CORAL && !override ? State.OUTTAKE_L1 : State.L1_CORAL;
     }
 
+    /**
+     * Toggles the current robot state between {@link State#L1_CORAL} and {@link State#OUTTAKE_L1}.
+     */
     public void toggleL1CoralState() {
         toggleL1CoralState(false);
     }
 
+    /**
+     * Toggles the current robot state between {@link State#L2_CORAL} and either {@link State#OUTTAKE} or {@link State#INTAKE_OUT} depending on the wrist state (determined previously by the scoring mode {@link io.github.frc461.rowdy25.subsystems.localizer.Localizer#currentRobotScoringSetting} of type {@link io.github.frc461.rowdy25.constants.RobotPoses.Reef.RobotScoringSetting}).
+     *
+     * @param override A boolean that, when true, forces the robot state to {@link State#L2_CORAL} regardless of the current state.
+     */
     public void toggleL2CoralState(boolean override) {
         currentState = currentState == State.L2_CORAL && !override ? wrist.getState() == Wrist.State.L2_CORAL_ONE_CORAL_FROM_BRANCH ? State.OUTTAKE :
                 State.INTAKE_OUT : State.L2_CORAL;
     }
 
+    /**
+     * Toggles the current robot state between {@link State#L2_CORAL} and either {@link State#OUTTAKE} or {@link State#INTAKE_OUT} depending on the wrist state (determined previously by the scoring mode {@link io.github.frc461.rowdy25.subsystems.localizer.Localizer#currentRobotScoringSetting} of type {@link io.github.frc461.rowdy25.constants.RobotPoses.Reef.RobotScoringSetting}).
+     */
     public void toggleL2CoralState() {
         toggleL2CoralState(false);
     }
 
+    /**
+     * Toggles the current robot state between {@link State#L3_CORAL} and either {@link State#OUTTAKE} or {@link State#INTAKE_OUT} depending on the wrist state (determined previously by the scoring mode {@link io.github.frc461.rowdy25.subsystems.localizer.Localizer#currentRobotScoringSetting} of type {@link io.github.frc461.rowdy25.constants.RobotPoses.Reef.RobotScoringSetting}).
+     *
+     * @param override A boolean that, when true, forces the robot state to {@link State#L3_CORAL} regardless of the current state.
+     */
     public void toggleL3CoralState(boolean override) {
         currentState = currentState == State.L3_CORAL && !override ? wrist.getState() == Wrist.State.L3_CORAL_ONE_CORAL_FROM_BRANCH ? State.OUTTAKE :
                 State.INTAKE_OUT : State.L3_CORAL;
     }
 
+    /**
+     * Toggles the current robot state between {@link State#L3_CORAL} and either {@link State#OUTTAKE} or {@link State#INTAKE_OUT} depending on the wrist state (determined previously by the scoring mode {@link io.github.frc461.rowdy25.subsystems.localizer.Localizer#currentRobotScoringSetting} of type {@link io.github.frc461.rowdy25.constants.RobotPoses.Reef.RobotScoringSetting}).
+     */
     public void toggleL3CoralState() {
         toggleL3CoralState(false);
     }
 
+    /**
+     * Toggles the current robot state between {@link State#L4_CORAL} and either {@link State#OUTTAKE} or {@link State#INTAKE_OUT} depending on the wrist state (determined previously by the scoring mode {@link io.github.frc461.rowdy25.subsystems.localizer.Localizer#currentRobotScoringSetting} of type {@link io.github.frc461.rowdy25.constants.RobotPoses.Reef.RobotScoringSetting}).
+     *
+     * @param override A boolean that, when true, forces the robot state to {@link State#L4_CORAL} regardless of the current state.
+     */
     public void toggleL4CoralState(boolean override) {
         currentState = currentState == State.L4_CORAL && !override ? wrist.getState() == Wrist.State.L4_CORAL_ONE_CORAL_FROM_BRANCH ? State.OUTTAKE :
                 State.INTAKE_OUT : State.L4_CORAL;
     }
 
+    /**
+     * Toggles the current robot state between {@link State#L4_CORAL} and either {@link State#OUTTAKE} or {@link State#INTAKE_OUT} depending on the wrist state (determined previously by the scoring mode {@link io.github.frc461.rowdy25.subsystems.localizer.Localizer#currentRobotScoringSetting} of type {@link io.github.frc461.rowdy25.constants.RobotPoses.Reef.RobotScoringSetting}).
+     */
     public void toggleL4CoralState() {
         toggleL4CoralState(false);
     }
 
+    /**
+     * Toggles the current robot state between the coral-scoring state that corresponds to {@link #currentAutoLevel} and either {@link State#OUTTAKE}, {@link State#OUTTAKE_L1}, or {@link State#INTAKE_OUT} depending on the wrist state (determined previously by the scoring mode {@link io.github.frc461.rowdy25.subsystems.localizer.Localizer#currentRobotScoringSetting} of type {@link io.github.frc461.rowdy25.constants.RobotPoses.Reef.RobotScoringSetting}).
+     *
+     * @param override A boolean that, when true, forces the robot state to the coral-scoring state that corresponds to {@link #currentAutoLevel} regardless of the current state.
+     */
     public void toggleAutoLevelCoralState(boolean override) {
         switch (currentAutoLevel) {
             case L1 -> toggleL1CoralState(override);
@@ -528,66 +620,135 @@ public class RobotStates {
         }
     }
 
+    /**
+     * Toggles the current robot state between the coral-scoring state that corresponds to {@link #currentAutoLevel} and either {@link State#OUTTAKE}, {@link State#OUTTAKE_L1}, or {@link State#INTAKE_OUT} depending on the wrist state (determined previously by the scoring mode {@link io.github.frc461.rowdy25.subsystems.localizer.Localizer#currentRobotScoringSetting} of type {@link io.github.frc461.rowdy25.constants.RobotPoses.Reef.RobotScoringSetting}).
+     */
     public void toggleAutoLevelCoralState() {
         toggleAutoLevelCoralState(false);
     }
 
+    /**
+     * Toggles the current robot state between {@link State#LOW_REEF_ALGAE} and {@link State#STOW}. Only toggles if the intake does not have coral.
+     */
     public void toggleLowReefAlgaeState() {
         if (!intake.barelyHasCoral()) {
             currentState = currentState == State.LOW_REEF_ALGAE ? State.STOW : State.LOW_REEF_ALGAE;
         }
     }
 
+    /**
+     * Toggles the current robot state between {@link State#HIGH_REEF_ALGAE} and {@link State#STOW}. Only toggles if the intake does not have coral.
+     */
     public void toggleHighReefAlgaeState() {
         if (!intake.barelyHasCoral()) {
             currentState = currentState == State.HIGH_REEF_ALGAE ? State.STOW : State.HIGH_REEF_ALGAE;
         }
     }
 
+    /**
+     * Toggles the current robot state between either {@link State#LOW_REEF_ALGAE} or {@link State#HIGH_REEF_ALGAE} and {@link State#STOW}.
+     *
+     * @param high A boolean that determines whether to toggle to/from {@link State#HIGH_REEF_ALGAE} (true) or {@link State#LOW_REEF_ALGAE} (false).
+     * @param override A boolean that, when true, forces the robot state to either {@link State#HIGH_REEF_ALGAE} or {@link State#LOW_REEF_ALGAE} regardless of the current state.
+     */
     public void toggleReefAlgaeState(boolean high, boolean override) {
         currentState = high
                 ? currentState == State.HIGH_REEF_ALGAE && !override ? State.STOW : State.HIGH_REEF_ALGAE
                 : currentState == State.LOW_REEF_ALGAE && !override ? State.STOW : State.LOW_REEF_ALGAE;
     }
 
+    /**
+     * Toggles the current robot state between either {@link State#LOW_REEF_ALGAE} or {@link State#HIGH_REEF_ALGAE} and {@link State#STOW}.
+     *
+     * @param high A boolean that determines whether to toggle to/from {@link State#HIGH_REEF_ALGAE} (true) or {@link State#LOW_REEF_ALGAE} (false).
+     */
     public void toggleReefAlgaeState(boolean high) {
         toggleReefAlgaeState(high, false);
     }
 
+    /**
+     * Toggles the current robot state between {@link State#PROCESSOR} and {@link State#OUTTAKE_ALGAE}.
+     *
+     * @param override A boolean that, when true, forces the robot state to {@link State#PROCESSOR} regardless of the current state.
+     */
     public void toggleProcessorState(boolean override) {
         currentState = currentState == State.PROCESSOR && !override ? State.OUTTAKE_ALGAE : State.PROCESSOR;
     }
 
+    /**
+     * Toggles the current robot state between {@link State#PROCESSOR} and {@link State#OUTTAKE_ALGAE}.
+     */
     public void toggleProcessorState() {
         toggleProcessorState(false);
     }
 
+    /**
+     * Toggles the current robot state between {@link State#NET} and {@link State#OUTTAKE_ALGAE}.
+     *
+     * @param override A boolean that, when true, forces the robot state to {@link State#NET} regardless of the current state.
+     */
     public void toggleNetState(boolean override) {
         currentState = currentState == State.NET && !override ? State.OUTTAKE_ALGAE : State.NET;
     }
 
+    /**
+     * Toggles the current robot state between {@link State#NET} and {@link State#OUTTAKE_ALGAE}.
+     */
     public void toggleNetState() {
         toggleNetState(false);
     }
 
+    /**
+     * Escalates the current robot state to {@link State#CLIMB} if it is currently {@link State#PREPARE_CLIMB}, or to {@link State#PREPARE_CLIMB} if it is in any other state.
+     */
     public void escalateClimb() {
         currentState = (currentState == State.CLIMB || currentState == State.PREPARE_CLIMB) ? State.CLIMB : State.PREPARE_CLIMB;
     }
 
+    /**
+     * Sets the current robot state to {@link State#CLIMB}.
+     */
     public void setClimbState() {
         currentState = State.CLIMB;
     }
 
+    /**
+     * Moves the pivot to the perpendicular position if the pivot is above 90 degrees and the cameras are not trusted.
+     *
+     * @param trustCameras A boolean that indicates whether the cameras are trusted for pivot positioning.
+     * @return A {@link Command} that sets the pivot state to the {@link Pivot.State#PERPENDICULAR} state based on the aforementioned conditions.
+     */
     private Command movePivotToPerpendicular(boolean trustCameras) {
         return new InstantCommand(pivot::setPerpendicularState)
                 .andThen(new WaitUntilCommand(pivot::isAtTarget))
                 .onlyIf(() -> pivot.getPosition() > 90 && !trustCameras);
     }
 
+    /**
+     * Performs an ordered transition of the superstructure subsystems to the specified states, ensuring safe and non-conflicting movement by stowing the wrist and pivot as necessary, depending on several factors including whether the current elevator state indicates an elevator moving down, whether cameras are trusted, or whether the robot was previously in the {@link State#L2_L3_L4_STOW} state.
+     *
+     * @param setPivotState The runnable/routine that sets the pivot to the desired state.
+     * @param pivotState The target pivot state to transition to.
+     * @param setElevatorState The runnable/routine that sets the elevator to the desired state.
+     * @param elevatorState The target elevator state to transition to.
+     * @param setWristState The runnable/routine that sets the wrist to the desired state.
+     * @return A {@link Command} that performs the ordered transition of the superstructure subsystems to the specified states.
+     */
     private Command orderedTransition(Runnable setPivotState, Pivot.State pivotState, Runnable setElevatorState, Elevator.State elevatorState, Runnable setWristState) {
         return orderedTransition(setPivotState, pivotState, setElevatorState, elevatorState, setWristState, false);
     }
 
+    /**
+     * Performs an ordered transition of the superstructure subsystems to the specified states, ensuring safe and non-conflicting movement by stowing the wrist and pivot as necessary, depending on several factors including whether the current elevator state indicates an elevator moving down, whether cameras are trusted, or whether the robot was previously in the {@link State#L2_L3_L4_STOW} state.
+     *
+     * @param setPivotState The runnable/routine that sets the pivot to the desired state.
+     * @param pivotState The target pivot state to transition to.
+     * @param setElevatorState The runnable/routine that sets the elevator to the desired state.
+     * @param elevatorState The target elevator state to transition to.
+     * @param setWristState The runnable/routine that sets the wrist to the desired state.
+     * @param fromL2L3L4Stow A boolean that indicates whether the robot is transitioning from the {@link State#L2_L3_L4_STOW} state.
+     * @return A {@link Command} that performs the ordered transition of the superstructure subsystems to the specified states.
+     */
     private Command orderedTransition(Runnable setPivotState, Pivot.State pivotState, Runnable setElevatorState, Elevator.State elevatorState, Runnable setWristState, boolean fromL2L3L4Stow) {
         return new ConditionalCommand(
                 new InstantCommand(wrist::setStowState)
@@ -614,6 +775,9 @@ public class RobotStates {
         );
     }
 
+    /**
+     * Configures the triggers that toggle robot states based on various conditions and inputs.
+     */
     public void configureToggleStateTriggers() {
         isListening.and(() -> needsUpdate).onTrue(
                 new InstantCommand(this::toggleAutoLevelCoralState)
@@ -829,8 +993,20 @@ public class RobotStates {
                         .andThen(pivot::setNormalMotionMagicProfile)
         );
     }
-    /* Each subsystem will execute their corresponding command periodically */
 
+    /**
+     * Sets the default commands for each subsystem.
+     *
+     * <p> Each subsystem will execute their corresponding default command periodically given no other commands requiring that subsystem are already registered/running.
+     * <p> Swerve drive uses field-centric control for teleoperated control based on the driver's Xbox controller joystick inputs.
+     * <p> Elevator uses the operator's Xbox controller left joystick X-axis input for manual control.
+     * <p> Pivot uses the operator's Xbox controller left joystick Y-axis input for manual control.
+     * <p> Wrist uses the operator's Xbox controller right joystick Y-axis input for manual control.
+     * <p> Intake uses a command to maintain/managing its states and transitions to obtain/outtake a game-piece, or to idle.
+     *
+     * @param driverXbox A {@link CommandXboxController} object corresponding to the driver's Xbox controller.
+     * @param opXbox A {@link CommandXboxController} object corresponding to the operator's Xbox controller.
+     */
     public void setDefaultCommands(CommandXboxController driverXbox, CommandXboxController opXbox) {
         /* Note that X is defined as forward according to WPILib convention,
         and Y is defined as to the left according to WPILib convention.
@@ -863,12 +1039,18 @@ public class RobotStates {
         );
     }
 
+    /**
+     * Publishes the current robot state to the robot states publisher and logs the current state using DogLog.
+     */
     public void publishValues() {
         robotStatesPub.set(currentState.name());
 
         logValues();
     }
 
+    /**
+     * Logs the current robot state using DogLog.
+     */
     private void logValues() {
         DogLog.log("RobotState", currentState);
     }
