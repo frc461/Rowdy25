@@ -20,20 +20,52 @@ package io.github.frc461.rowdy25.util;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 
+/**
+ * A utility class to calculate gravity compensation gains for a robotic arm with a pivoting joint, a wrist joint, and an elevator mechanism.
+ *
+ * @author Eugene Zhang, <a href="https://github.com/e500">GitHub</a>
+ *
+ */
 public final class GravityGainsCalculator {
+    /** The position of the pivot axis in a 2D plane. */
     private final Translation2d pivotAxisPosition;
+    /** The position of the wrist axis in a 2D plane. */
     private final Translation2d wristAxisPosition;
+    /** The vector from the wrist axis to the zero position (default/stowed) center of mass. */
     private final Translation2d wristAxisToZeroCoM;
+    /** The position of the elevator's center of mass with a zeroed elevator and uprightly/perpendicularly positioned pivot. */
     private final Translation2d elevatorZeroUprightCoM;
+    /** The ratio of the elevator's center of mass movement to stage 2 elevator movement. */
     private final double elevatorCoMToStage2Ratio;
+    /** The limit position of stage 3 of the elevator (in inches). */
     private final double elevatorStage3Limit;
+    /** The ratio of the elevator's center of mass movement to stage 3 elevator movement. */
     private final double elevatorCoMToStage3Ratio;
+    /** The mass of the elevator in pounds. */
     private final double elevatorMassLbs;
+    /** The mass of the wrist in pounds. */
     private final double wristMassLbs;
+    /** The base gravity gain constant to be tuned. */
     private final double kG;
 
+    /** The base length from the pivot axis to the center of mass with a zeroed elevator and uprightly/perpendicularly positioned pivot. */
     private final double baseLengthPivotAxisToZeroCoM;
 
+    /**
+     * Constructs a GravityGainsCalculator with the specified parameters.
+     *
+     * @param pivotAxisPosition The position of the pivot axis in a 2D plane.
+     * @param wristAxisPosition The position of the wrist axis in a 2D plane
+     * @param wristAxisToZeroCoM The vector from the wrist axis to the zero position (default/stowed) center of mass.
+     * @param elevatorZeroUprightCoM The position of the elevator's center of mass with a zeroed elevator and uprightly/perpendicularly positioned pivot.
+     * @param elevatorCoMToStage2Ratio The ratio of the elevator's center of mass movement to stage 2 elevator movement.
+     * @param elevatorStage3Limit The limit position of stage 3 of the elevator (in inches).
+     * @param elevatorCoMToStage3Ratio The ratio of the elevator's center of mass movement to stage 3 elevator movement.
+     * @param elevatorMassLbs The mass of the elevator in pounds.
+     * @param wristMassLbs The mass of the wrist in pounds.
+     * @param kG The base gravity gain constant to be tuned.
+     *
+     */
     public GravityGainsCalculator(
         Translation2d pivotAxisPosition,
         Translation2d wristAxisPosition,
@@ -61,6 +93,15 @@ public final class GravityGainsCalculator {
         this.baseLengthPivotAxisToZeroCoM = pivotAxisPosition.getDistance(zeroCoM);
     }
 
+    /**
+     * Calculates the gravity compensation gain based on the provided pivot position, wrist position, and elevator position.
+     *
+     * @param pivotPosition The angle of the pivot joint in degrees.
+     * @param wristPosition The angle of the wrist joint in degrees.
+     * @param elevatorPosition The position of the elevator in inches.
+     * @return The calculated gravity compensation gain.
+     *
+     */
     public double calculateGFromPositions(
         double pivotPosition,
         double wristPosition,
@@ -86,6 +127,7 @@ public final class GravityGainsCalculator {
         return kG * Math.cos(Math.toRadians(pivotPosition)) * (lengthPivotAxisToCoM / baseLengthPivotAxisToZeroCoM);
     }
 
+    /** Test module for the GravityGainsCalculator class. */
     public static void main(String[] args) {
 
         Translation2d pivotAxisPosition = new Translation2d(-9.417377, 9.257139); // CONSTANT

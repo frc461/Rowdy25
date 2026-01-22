@@ -31,16 +31,32 @@ import io.github.frc461.rowdy25.subsystems.drivetrain.Swerve;
 
 import static edu.wpi.first.units.Units.*;
 
+/**
+ * Test module for running SysId routines on a {@link Swerve} drivetrain.
+ */
 public class SysID {
+    /** The swerve drivetrain to test. */
     private final Swerve swerve;
+    /** A SysId routine for the swerve drivetrain. */
     private final SysIdRoutine swerveRoutine;
 
+    /** Mutable unit of applied voltage for logging. */
     private final MutVoltage appliedVoltage = Volts.mutable(0);
+    /** Mutable unit of translation for logging. */
     private final MutDistance translation = Meters.mutable(0);
+    /** Mutable unit of translational velocity for logging. */
     private final MutLinearVelocity translationalVelocity = MetersPerSecond.mutable(0);
+    /** Mutable unit of rotation for logging. */
     private final MutAngle rotation = Degrees.mutable(0);
+    /** Mutable unit of rotational velocity for logging. */
     private final MutAngularVelocity rotationalVelocity = DegreesPerSecond.mutable(0);
 
+    /**
+     * Creates a new SysID test module for the given swerve drivetrain.
+     *
+     * @param swerve The swerve drivetrain to test
+     *
+     */
     public SysID(Swerve swerve) {
         this.swerve = swerve;
         swerveRoutine = configureSwerveRoutine();
@@ -174,6 +190,12 @@ public class SysID {
         return sysIDTranslationRoutine;
     }
 
+    /**
+     * Binds buttons of the given controller to run SysId routines.
+     *
+     * @param controller The controller to configure
+     *
+     */
     public void configureBindings(CommandXboxController controller) {
         controller.back().and(controller.y()).whileTrue(swerveDynamic(SysIdRoutine.Direction.kForward));
         controller.back().and(controller.x()).whileTrue(swerveDynamic(SysIdRoutine.Direction.kReverse));

@@ -23,7 +23,18 @@ import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.Enumeration;
 
+/**
+ * Utility class for retrieving the MAC address of a connected device.
+ *
+ * @author Eugene Zhang, <a href="https://github.com/e500">GitHub</a>
+ *
+ */
 public final class MacAddress {
+    /**
+     * Gets the MAC address of the first network interface found. Usually would be a RoboRIO when deployed on a robot.
+     *
+     * @return The MAC address as a String in the format "XX-XX-XX-XX-XX-XX". If no MAC address is found, returns an empty string.
+     */
     public static String getMACAddress() {
         try {
             Enumeration<NetworkInterface> networkInterface = NetworkInterface.getNetworkInterfaces();

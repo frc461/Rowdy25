@@ -22,7 +22,19 @@ import edu.wpi.first.math.geometry.Rotation2d;
 
 import java.util.List;
 
+/**
+ * Utility class for operations involving angles represented by {@link Rotation2d}.
+ */
 public class RotationUtil {
+    /**
+     * Checks if a given angle is between two other angles, considering the circular nature of angles, assuming continuous measurement.
+     *
+     * @param angle               The angle to check.
+     * @param lowerAngleThreshold The lower bound angle.
+     * @param upperAngleThreshold The upper bound angle.
+     * @return True if the angle is between the lower and upper bounds, false otherwise.
+     *
+     */
     public static boolean inBetween(Rotation2d angle, Rotation2d lowerAngleThreshold, Rotation2d upperAngleThreshold) {
         if (lowerAngleThreshold.getDegrees() > upperAngleThreshold.getDegrees()) {
             return angle.getDegrees() > lowerAngleThreshold.getDegrees() || angle.getDegrees() < upperAngleThreshold.getDegrees();
@@ -30,6 +42,12 @@ public class RotationUtil {
         return angle.getDegrees() > lowerAngleThreshold.getDegrees() && angle.getDegrees() < upperAngleThreshold.getDegrees();
     }
 
+    /**
+     * Finds the minimum and maximum angles from a list of angles, considering the circular nature of angles.
+     *
+     * @param angles The list of angles to evaluate.
+     * @return A {@link Pair} containing the minimum and maximum angles.
+     */
     public static Pair<Rotation2d, Rotation2d> getBound(List<Rotation2d> angles) {
         Rotation2d min = angles.get(0);
         Rotation2d max = angles.get(0);
