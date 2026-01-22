@@ -21,7 +21,7 @@ public class SwerveSim {
 
         /* Run simulation at a faster rate so PID gains behave more reasonably */
         /* use the measured time delta, get battery voltage from WPILib */
-        new Notifier(() -> {
+        try (Notifier notifier = new Notifier(() -> {
                 final double currentTime = Utils.getCurrentTimeSeconds();
                 double deltaTime = currentTime - lastSimTime;
                 lastSimTime = currentTime;
@@ -29,6 +29,8 @@ public class SwerveSim {
                 /* use the measured time delta, get battery voltage from WPILib */
                 swerve.updateSimState(deltaTime, RobotController.getBatteryVoltage());
                 localizerSim.update(swerve.getState().Pose);
-        }).startPeriodic(SIM_LOOP_PERIOD);
+        })) {
+            notifier.startPeriodic(SIM_LOOP_PERIOD);
+        }
     }
 }
