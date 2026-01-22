@@ -25,6 +25,16 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 
 import java.util.List;
 
+/**
+ * A record representing an estimated robot pose along with associated metadata.
+ *
+ * @author Eugene Zhang, <a href="https://github.com/e500">GitHub</a>
+ * @param estimatedPose   The estimated pose of the robot in 3D space.
+ * @param timestampSeconds The timestamp (in seconds) when the pose was estimated.
+ * @param targetsUsed     A list of PhotonTrackedTarget objects that were used to estimate the pose.
+ * @param stdDevs         A 3x1 matrix representing the standard deviations of the pose estimation in x, y, and z directions.
+ *
+ */
 public record EstimatedRobotPose(Pose3d estimatedPose, double timestampSeconds, List<PhotonTrackedTarget> targetsUsed,
                                  Matrix<N3, N1> stdDevs) {
 }

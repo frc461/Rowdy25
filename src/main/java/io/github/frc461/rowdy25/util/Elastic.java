@@ -25,6 +25,18 @@ import edu.wpi.first.networktables.PubSubOption;
 import edu.wpi.first.networktables.StringPublisher;
 import edu.wpi.first.networktables.StringTopic;
 
+/**
+ * Utility class for sending notifications to the Elastic dashboard via NetworkTables. This class
+ * provides methods to create and send notification objects with various properties such as level,
+ * title, description, display time, and dimensions.
+ *
+ * <p> Notifications are serialized as JSON strings before being published to the NetworkTables topic.
+ *
+ * @author Geeson Wan, <a href="https://github.com/gerseneck">GitHub</a>
+ * @author Eugene Zhang, <a href="https://github.com/e500">GitHub</a>
+ * @author Aneesh Terani, <a href="https://github.com/aterani">GitHub</a>
+ *
+ */
 public final class Elastic {
     private static final StringTopic topic =
         NetworkTableInstance.getDefault().getStringTopic("/Elastic/RobotNotifications");

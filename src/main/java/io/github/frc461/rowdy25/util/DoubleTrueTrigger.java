@@ -22,7 +22,22 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 import java.util.function.BooleanSupplier;
 
+/**
+ * Utility class for creating a Trigger that toggles true when a given condition is true twice in succession within a specified time threshold.
+ *
+ * @author Eugene Zhang, <a href="https://github.com/ez500">GitHub</a>
+ *
+ */
 public final class DoubleTrueTrigger {
+
+    /**
+     * Creates a Trigger that toggles true when the provided condition is true twice in succession within the specified time threshold.
+     *
+     * @param condition     The BooleanSupplier condition with which check for trueness twice in succession.
+     * @param timeThreshold The time threshold in seconds within which the condition must be true twice.
+     * @return A Trigger that activates on the double true condition.
+     *
+     */
     public static Trigger doubleTrue(BooleanSupplier condition, double timeThreshold) {
         return new Trigger(
                 new BooleanSupplier() {
