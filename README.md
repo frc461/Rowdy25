@@ -1,3 +1,9 @@
+In case of glitches when building (resulting from Gradle overriding the default Java version to 25), use the following flag:
+```
+./gradlew -Dorg.gradle.java.home=/path/to/your/jdk
+```
+
+
 TODO:
 
 Alpha bot:
