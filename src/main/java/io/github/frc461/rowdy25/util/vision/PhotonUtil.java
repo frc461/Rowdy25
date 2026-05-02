@@ -32,24 +32,54 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Utility class for interfacing with PhotonVision, a vision processing solution that uses pipelines created with USB cameras. Contains methods to retrieve and process target data from multiple cameras (both color and black-and-white).
+ *
+ * @see <a href="https://docs.photonvision.org/en/latest/">PhotonVision Documentation</a> for more information about using PhotonVision and PhotonLib, the corresponding API library.
+ * @author Eugene Zhang, <a href="https://github.com/e500">GitHub</a>
+ */
 public final class PhotonUtil {
+    /**
+     * Updates the latest vision results for both color and black-and-white cameras.
+     *
+     * @param heading The current heading of the robot.
+     */
     public static void updateResults(Rotation2d heading) {
         Color.updateResults();
         BW.updateResults(heading);
     }
 
+    /**
+     * Nested utility class specifically for processing data from the color camera(s).
+     */
     public static final class Color {
+        /** Enum representing the specific target classes detectable by the color camera. */
         public enum TargetClass {
+            /** Represents an Algae target. */
             ALGAE(0),
+            /** Represents a Coral target. */
             CORAL(1),
+            /** Represents no target. */
             NONE(-1);
 
+            /** The ID of the target class. */
             public final int id;
 
+            /**
+             * Constructs a TargetClass with the specified ID.
+             *
+             * @param id The ID of the target class.
+             */
             TargetClass(int id) {
                 this.id = id;
             }
 
+            /**
+             * Returns the corresponding TargetClass for a given ID.
+             *
+             * @param id The ID of the target class.
+             * @return The TargetClass associated with the ID. Returns NONE if the ID does not match a known class.
+             */
             public static Color.TargetClass fromID(int id) {
                 return switch (id) {
                     case 0 -> ALGAE;
@@ -59,8 +89,10 @@ public final class PhotonUtil {
             }
         }
 
+        /** The standard Color PhotonCamera instance. */
         private static final PhotonCamera COLOR = new PhotonCamera(Constants.NT_INSTANCE, Constants.VisionConstants.PhotonConstants.COLOR_NAME);
 
+        /** The transform representing the position of the color camera relative to the robot. */
         private static final Transform3d robotToCameraOffset = new Transform3d(
                 Constants.VisionConstants.PhotonConstants.COLOR_FORWARD,
                 Constants.VisionConstants.PhotonConstants.COLOR_LEFT,
@@ -72,12 +104,24 @@ public final class PhotonUtil {
                 )
         );
 
+        /** The latest result from the Color camera pipeline. */
         private static PhotonPipelineResult latestResult = new PhotonPipelineResult();
 
+        /**
+         * Checks whether the color camera detects any targets.
+         *
+         * @return A boolean representing whether any targets are currently detected.
+         */
         public static boolean hasTargets() {
             return latestResult.hasTargets();
         }
 
+        /**
+         * Checks whether the color camera detects any targets of a specific class.
+         *
+         * @param targetClass The specific target class to look for.
+         * @return A boolean representing whether targets of the specified class are detected.
+         */
         public static boolean hasTargets(Color.TargetClass targetClass) {
             if (hasTargets()) {
                 for (PhotonTrackedTarget target : latestResult.getTargets()) {
@@ -90,18 +134,39 @@ public final class PhotonUtil {
         }
 
         // TODO SHOP: TEST ALGAE AND CORAL SPECIFIC TARGETING
+        /**
+         * Checks whether the color camera detects any algae targets.
+         *
+         * @return A boolean representing whether algae targets are detected.
+         */
         public static boolean hasAlgaeTargets() {
             return hasTargets(Color.TargetClass.ALGAE);
         }
 
+        /**
+         * Checks whether the color camera detects any coral targets.
+         *
+         * @return A boolean representing whether coral targets are detected.
+         */
         public static boolean hasCoralTargets() {
             return hasTargets(Color.TargetClass.CORAL);
         }
 
+        /**
+         * Retrieves the best tracking target detected by the color camera.
+         *
+         * @return An {@link Optional} containing the best detected object, or empty if none are detected.
+         */
         public static Optional<PhotonTrackedTarget> getBestObject() {
             return hasTargets() ? Optional.of(latestResult.getBestTarget()) : Optional.empty();
         }
 
+        /**
+         * Retrieves the best tracking target of a specific class detected by the color camera.
+         *
+         * @param targetClass The specific target class to look for.
+         * @return An {@link Optional} containing the best detected object of the given class, or empty if none are detected.
+         */
         public static Optional<PhotonTrackedTarget> getBestObject(Color.TargetClass targetClass) {
             if (hasTargets(targetClass)) {
                 for (PhotonTrackedTarget target : latestResult.getTargets()) {
@@ -113,27 +178,60 @@ public final class PhotonUtil {
             return Optional.empty();
         }
 
+        /**
+         * Retrieves the class of the best detected object.
+         *
+         * @return The best object's class, or {@link Color.TargetClass#NONE} if no object is detected.
+         */
         public static Color.TargetClass getBestObjectClass() {
             return getBestObject().map(bestObject -> TargetClass.fromID(bestObject.getDetectedObjectClassID()))
                     .orElse(Color.TargetClass.NONE);
         }
 
+        /**
+         * Retrieves the yaw angle of the best detected object.
+         *
+         * @return The best object's yaw angle in degrees.
+         */
         public static double getBestObjectYaw() {
             return getBestObject().map(PhotonTrackedTarget::getYaw).orElse(0.0);
         }
 
+        /**
+         * Retrieves the pitch angle of the best detected object.
+         *
+         * @return The best object's pitch angle in degrees.
+         */
         public static double getBestObjectPitch() {
             return getBestObject().map(PhotonTrackedTarget::getPitch).orElse(0.0);
         }
 
+        /**
+         * Retrieves the yaw angle of the best detected object of a specific class.
+         *
+         * @param targetClass The specific target class to look for.
+         * @return The yaw angle of the best object of the given class, or 0.0 if none are detected.
+         */
         public static double getBestObjectYaw(Color.TargetClass targetClass) {
             return getBestObject(targetClass).map(PhotonTrackedTarget::getYaw).orElse(0.0);
         }
 
+        /**
+         * Retrieves the pitch angle of the best detected object of a specific class.
+         *
+         * @param targetClass The specific target class to look for.
+         * @return The pitch angle of the best object of the given class, or 0.0 if none are detected.
+         */
         public static double getBestObjectPitch(Color.TargetClass targetClass) {
             return getBestObject(targetClass).map(PhotonTrackedTarget::getPitch).orElse(0.0);
         }
 
+        /**
+         * Computes and returns the 2D translation from the robot to the best detected object of a specific class.
+         *
+         * @param targetClass The class of the object to target.
+         * @return An {@link Optional} containing the {@link Translation2d} to the best object, or empty if none are found.
+         */
         public static Optional<Translation2d> getRobotToBestObject(TargetClass targetClass) {
             if (!hasTargets(targetClass) || getBestObject(targetClass).isEmpty()) {
                 return Optional.empty();
@@ -165,6 +263,9 @@ public final class PhotonUtil {
                     .plus(camToObjectTranslation.rotateBy(robotToCameraOffset.getRotation().toRotation2d().unaryMinus())));
         }
 
+        /**
+         * Updates the latest result using the last unread internal pipeline result and drains the rest of the unread results from the color camera pipeline(s).
+         */
         public static void updateResults() {
             List<PhotonPipelineResult> results = COLOR.getAllUnreadResults();
             if (!results.isEmpty()) {
@@ -173,11 +274,19 @@ public final class PhotonUtil {
         }
     }
 
+    /**
+     * Nested utility class specifically for processing data from the black-and-white camera(s), as well as configuring them.
+     */
     public static final class BW {
+        /** The buffer storing historical robot heading data for localization latency compensation. */
         private static final TimeInterpolatableBuffer<Rotation2d> headingBuffer =
                 TimeInterpolatableBuffer.createBuffer(1.0);
 
+        /**
+         * Enum representing the different black-and-white cameras available on the robot.
+         */
         public enum BWCamera {
+            /** Represents the top right black-and-white camera. */
             TOP_RIGHT(
                     new PhotonCamera(Constants.NT_INSTANCE, Constants.VisionConstants.PhotonConstants.BW_TOP_RIGHT_NAME),
                     new Transform3d(
@@ -191,6 +300,7 @@ public final class PhotonUtil {
                             )
                     )
             ),
+            /** Represents the top left black-and-white camera. */
             TOP_LEFT(
                     new PhotonCamera(Constants.NT_INSTANCE, Constants.VisionConstants.PhotonConstants.BW_TOP_LEFT_NAME),
                     new Transform3d(
@@ -204,6 +314,7 @@ public final class PhotonUtil {
                             )
                     )
             ),
+            /** Represents the back black-and-white camera. */
             BACK(
                     new PhotonCamera(Constants.NT_INSTANCE, Constants.VisionConstants.PhotonConstants.BW_BACK_NAME),
                     new Transform3d(
@@ -218,26 +329,54 @@ public final class PhotonUtil {
                     )
             );
 
+            /** The PhotonCamera instance for this enum constant. */
             final PhotonCamera camera;
+            /** The transform representing the position of the camera relative to the robot. */
             final Transform3d robotToCameraOffset;
+
+            /**
+             * Constructs a BWCamera enum constant.
+             *
+             * @param camera The PhotonCamera instance.
+             * @param robotToCameraOffset The transform representing the camera's position relative to the robot.
+             */
             BWCamera(PhotonCamera camera, Transform3d robotToCameraOffset) {
                 this.camera = camera;
                 this.robotToCameraOffset = robotToCameraOffset;
             }
 
+            /**
+             * Gets the PhotonCamera instance associated with this camera constant.
+             *
+             * @return The PhotonCamera instance.
+             */
             public PhotonCamera getCamera() {
                 return camera;
             }
 
+            /**
+             * Gets the transform representing the position of the camera relative to the robot.
+             *
+             * @return The robot-to-camera offset as a {@link Transform3d}.
+             */
             public Transform3d getRobotToCameraOffset() {
                 return robotToCameraOffset;
             }
         }
 
+        /** The latest result from the top right black-and-white camera. */
         private static PhotonPipelineResult latestResultTopRight = new PhotonPipelineResult();
+        /** The latest result from the top left black-and-white camera. */
         private static PhotonPipelineResult latestResultTopLeft = new PhotonPipelineResult();
+        /** The latest result from the back black-and-white camera. */
         private static PhotonPipelineResult latestResultBack = new PhotonPipelineResult();
 
+        /**
+         * Retrieves the latest PhotonPipelineResult for the specified black-and-white camera.
+         *
+         * @param camera The specific black-and-white camera to read from.
+         * @return The latest PhotonPipelineResult for the camera.
+         */
         public static PhotonPipelineResult getLatestResult(BWCamera camera) {
             return switch (camera) {
                 case TOP_RIGHT -> latestResultTopRight;
@@ -246,6 +385,12 @@ public final class PhotonUtil {
             };
         }
 
+        /**
+         * Checks whether a specified black-and-white camera detects any AprilTags.
+         *
+         * @param camera The specified camera.
+         * @return True if targets are present, false otherwise.
+         */
         public static boolean hasTargets(BWCamera camera) {
             return switch (camera) {
                 case TOP_RIGHT -> latestResultTopRight.hasTargets();
@@ -254,6 +399,12 @@ public final class PhotonUtil {
             };
         }
 
+        /**
+         * Retrieves the timestamp of the latest result from a specified black-and-white camera.
+         *
+         * @param camera The specified camera.
+         * @return The timestamp of the latest result, in seconds.
+         */
         public static double getLatestResultTimestamp(BWCamera camera) {
             return switch (camera) {
                 case TOP_RIGHT -> latestResultTopRight.getTimestampSeconds();
@@ -262,28 +413,63 @@ public final class PhotonUtil {
             };
         }
 
+        /**
+         * Retrieves the ID of the best observed AprilTag from the specified black-and-white camera.
+         *
+         * @param camera The specified camera.
+         * @return The ID of the best AprilTag, or 0.0 if none.
+         */
         public static double getBestTagID(BWCamera camera) {
             return hasTargets(camera) ? getLatestResult(camera).getBestTarget().getFiducialId() : 0.0;
         }
 
+        /**
+         * Retrieves the distance from the camera to the best tag detected by the given camera.
+         *
+         * @param camera The specified camera.
+         * @return The horizontal distance in meters, or 0.0 if no tag is found.
+         */
         public static double getBestTagDist(BWCamera camera) {
             return hasTargets(camera)
                     ? getLatestResult(camera).getBestTarget().getBestCameraToTarget().getTranslation().toTranslation2d().getNorm()
                     : 0.0;
         }
 
+        /**
+         * Checks whether the specified black-and-white camera detects at least two AprilTags.
+         *
+         * @param camera The specified camera.
+         * @return True if multiple tags are seen, false otherwise.
+         */
         public static boolean isMultiTag(BWCamera camera) {
             return getLatestResult(camera).getTargets().size() >= 2;
         }
 
+        /**
+         * Checks whether a detected tag is close enough to be considered reliable (clear).
+         *
+         * @param camera The specific camera.
+         * @return True if the nearest tag is within the valid distance threshold.
+         */
         public static boolean isTagClear(BWCamera camera) {
             return hasTargets(camera) && getBestTagDist(camera) < Constants.VisionConstants.PhotonConstants.BW_MAX_TAG_CLEAR_DIST;
         }
 
+        /**
+         * Checks whether any black-and-white camera on the robot has a reliably clear AprilTag.
+         *
+         * @return True if at least one camera detects a tag within the valid distance threshold.
+         */
         public static boolean isTagClear() {
             return isTagClear(BWCamera.TOP_RIGHT) || isTagClear(BWCamera.TOP_LEFT) || isTagClear(BWCamera.BACK);
         }
 
+        /**
+         * Computes the estimated robot pose using multiple tags from the specified camera.
+         *
+         * @param camera The specified camera.
+         * @return An {@link Optional} containing the estimated robot pose, or empty if computation fails.
+         */
         public static Optional<EstimatedRobotPose> getMultiTagPose(BWCamera camera) {
             Optional<MultiTargetPNPResult> multiTagResult = getLatestResult(camera).getMultiTagResult();
             return multiTagResult.map(
@@ -299,6 +485,13 @@ public final class PhotonUtil {
             );
         }
 
+        /**
+         * Computes the estimated robot pose using a single tag from the specified camera, incorporating the robot's current pose for disambiguation.
+         *
+         * @param camera The specified camera.
+         * @param currentPose The robot's current pose.
+         * @return An {@link Optional} containing the estimated robot pose, or empty if computation fails.
+         */
         public static Optional<EstimatedRobotPose> getSingleTagPose(BWCamera camera, Pose2d currentPose) {
             if (!hasTargets(camera)) {
                 return Optional.empty();
@@ -349,6 +542,12 @@ public final class PhotonUtil {
             ));
         }
 
+        /**
+         * Computes the estimated robot pose using a single tag from the specified camera, utilizing the historical heading buffer. Known to have better accuracy due to a simple algorithm that does not require disambiguation.
+         *
+         * @param camera The specified camera.
+         * @return An {@link Optional} containing the estimated robot pose, or empty if computation fails.
+         */
         private static Optional<EstimatedRobotPose> getSingleTagPose(BWCamera camera) {
             if (!hasTargets(camera)) {
                 return Optional.empty();
@@ -430,10 +629,21 @@ public final class PhotonUtil {
             );
         }
 
+        /**
+         * Computes the best estimate of the robot's pose based on the most reliable tag information from the specified camera.
+         *
+         * @param camera The specified camera.
+         * @return An {@link Optional} containing the best estimated robot pose, or empty if no valid pose can be computed.
+         */
         public static Optional<EstimatedRobotPose> getBestTagPose(BWCamera camera) {
             return BW.isMultiTag(camera) ? getMultiTagPose(camera) : getSingleTagPose(camera);
         }
 
+        /**
+         * Updates the latest result using the last unread internal pipeline result and the robot's heading, and drains the rest of the unread results from the black-and-white camera pipeline(s).
+         *
+         * @param heading The current heading of the robot.
+         */
         public static void updateResults(Rotation2d heading) {
             headingBuffer.addSample(Timer.getFPGATimestamp(), heading);
             for (BWCamera camera : BWCamera.values()) {
