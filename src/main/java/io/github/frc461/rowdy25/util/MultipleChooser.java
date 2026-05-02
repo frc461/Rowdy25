@@ -27,11 +27,10 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Consumer;
 
 /**
- * A class that allows multiple selections from a list of options, typically used in a dashboard interface.
+ * Utility class that allows multiple selections from a list of options, typically used in a dashboard interface.
  *
  * @author Eugene Zhang, <a href="https://github.com/e500">GitHub</a>
- * @param <V> The type of values associated with the options.
- *
+ * @param <V> The value type associated with the options of the chooser.
  */
 public final class MultipleChooser<V> implements Sendable, AutoCloseable {
     /** The key for the default selection property. */
@@ -76,7 +75,6 @@ public final class MultipleChooser<V> implements Sendable, AutoCloseable {
      *
      * @param name  The name of the option.
      * @param value The value associated with the option.
-     *
      */
     public void addOption(String name, V value) {
         options.put(name, value);
@@ -86,7 +84,6 @@ public final class MultipleChooser<V> implements Sendable, AutoCloseable {
      * Sets the default selection for the MultipleChooser.
      *
      * @param options A map of option names to their corresponding values to be set as default selections.
-     *
      */
     public void setDefaultSelection(Map<String, V> options) {
         defaultSelection.clear();
@@ -102,7 +99,6 @@ public final class MultipleChooser<V> implements Sendable, AutoCloseable {
      * Retrieves the currently selected values.
      *
      * @return A list of selected values. If no selections are made, returns the default selections.
-     *
      */
     public List<V> getSelected() {
         lock.lock();
@@ -120,7 +116,6 @@ public final class MultipleChooser<V> implements Sendable, AutoCloseable {
      * Registers a listener to be called when the selection changes.
      *
      * @param listener A Consumer that accepts a list of selected values.
-     *
      */
     public void onChange(Consumer<List<V>> listener) {
         lock.lock();
@@ -137,7 +132,6 @@ public final class MultipleChooser<V> implements Sendable, AutoCloseable {
      * Initializes the Sendable properties for the MultipleChooser.
      *
      * @param builder The SendableBuilder used to define the properties.
-     *
      */
     @Override
     public void initSendable(SendableBuilder builder) {

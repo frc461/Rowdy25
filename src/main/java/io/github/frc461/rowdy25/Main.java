@@ -26,14 +26,18 @@ import edu.wpi.first.wpilibj.RobotBase;
  *
  * @author Eugene Zhang, <a href="https://github.com/e500">GitHub</a>
  * @author Aneesh Terani, <a href="https://github.com/aterani">GitHub</a>
- *
  */
 public final class Main {
     /**
-     * Constructor for {@link Main}. Remains for formality.
+     * Constructor for {@link Main}. Declared private to prevent instantiation.
      */
     private Main() {}
 
+    /**
+     * Initiates the robot instance.
+     *
+     * @param args Custom arguments passed into the main method. Not utilized in this program.
+     */
     public static void main(String... args) {
         RobotBase.startRobot(Robot::new);
     }

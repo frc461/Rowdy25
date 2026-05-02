@@ -45,13 +45,13 @@ import java.util.Arrays;
 import dev.doglog.DogLog;
 
 /**
- * RobotStates is an integrating component of the functional framework initialized by {@link RobotContainer}. The instance would initialize and integrate all subsystems into a superstructure of the whole robot (except the drivetrain, which has an independent state system), a software-defined construct to streamline states and action/routines for example, transitioning to a coral-scoring state.
+ * RobotStates is an integrating component of the functional framework initialized by {@link RobotContainer}. The instance would initialize and integrate all subsystems into a superstructure of the whole robot (except the drivetrain, which has an independent state system), a software-defined construct to streamline states and action/routines, e.g., transitioning to a coral-scoring state.
  *
  * <p>The RobotStates class is a robot characterization class, that is, the subsystems are integrated into one defined system to streamline robot-wide actions for efficiency and organization. Many actions relevant to the robot's objectives require the coordination of the entire robotic system, hence a robot-wide state machine and robot-wide defined actions to satisfy the state machine.</p>
  *
  * @author Eugene Zhang, <a href="https://github.com/e500">GitHub</a>
  * @author Aneesh Terani, <a href="https://github.com/aterani">GitHub</a>
- *
+ * @author Geeson Wan, <a href="https://github.com/gerseneck">GitHub</a>
  */
 public class RobotStates {
     /**
@@ -153,7 +153,7 @@ public class RobotStates {
      */
     public final Trigger l2L3L4StowState = new Trigger(() -> currentState == State.L2_L3_L4_STOW);
     /**
-     * A {@link Trigger} of the {@link State#OUTTAKE} robot state. // TODO FINISH FIELD APPLICATIONS
+     * A {@link Trigger} of the {@link State#OUTTAKE} robot state.
      *
      * <p>The {@link Trigger} of a certain {@link State} represents the condition of whether the current state of the robot {@link #currentState} matches that state. Much of the program's automation relies on specific conditions of these triggers of each {@link State} (e.g., when the trigger becomes true or false, whenever the trigger is true or false).</p>
      */

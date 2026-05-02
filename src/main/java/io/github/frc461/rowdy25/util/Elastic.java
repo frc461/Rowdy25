@@ -34,7 +34,6 @@ import edu.wpi.first.networktables.StringTopic;
  *
  * @author Geeson Wan, <a href="https://github.com/gerseneck">GitHub</a>
  * @author Eugene Zhang, <a href="https://github.com/e500">GitHub</a>
- * @author Aneesh Terani, <a href="https://github.com/aterani">GitHub</a>
  *
  */
 public final class Elastic {

@@ -43,7 +43,6 @@ import io.github.frc461.rowdy25.util.SysID;
  *
  * @author Eugene Zhang, <a href="https://github.com/e500">GitHub</a>
  * @author Aneesh Terani, <a href="https://github.com/aterani">GitHub</a>
- *
  */
 public class RobotContainer {
     /**
@@ -67,7 +66,7 @@ public class RobotContainer {
     /**
      * Two {@link CommandXboxController}s are defined to bind robot routines for teleoperated control.
      */
-    /* Controllers */ /* Link to controls here: https://docs.google.com/presentation/d/1jv_hAW3l4z0Rqvi-3pNRN2IdWurtOwojIJf5hFRO108/edit?usp=sharing */
+    /* Controllers: Link to controls here: https://docs.google.com/presentation/d/1jv_hAW3l4z0Rqvi-3pNRN2IdWurtOwojIJf5hFRO108/edit?usp=sharing */
     private final CommandXboxController driverXbox = new CommandXboxController(0);
     private final CommandXboxController opXbox = new CommandXboxController(1);
 

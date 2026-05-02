@@ -30,7 +30,7 @@ import java.util.*;
  * Utility class for various FRC field-related constants/measurements and constant-based calculations.
  *
  * @author Eugene Zhang, <a href="https://github.com/e500">GitHub</a>
- *
+ * @author Aneesh Terani, <a href="https://github.com/aterani">GitHub</a>
  */
 public final class FieldUtil {
     /** 2025 FRC Field Layout */
@@ -47,7 +47,6 @@ public final class FieldUtil {
      *
      * @param pose The pose to compare with field bounds.
      * @return True if the pose is within the field, false otherwise.
-     *
      */
     public static boolean isInField(Pose3d pose) {
         return isInField(pose.toPose2d());
@@ -58,7 +57,6 @@ public final class FieldUtil {
      *
      * @param pose The 2D pose to compare with field bounds.
      * @return True if the pose is within the field, false otherwise.
-     *
      */
     public static boolean isInField(Pose2d pose) {
         Pose2d origin2d = ORIGIN.toPose2d();
@@ -71,7 +69,6 @@ public final class FieldUtil {
      *
      * @param currentPose The current pose of the robot.
      * @return The alliance side (Blue or Red).
-     *
      */
     public static DriverStation.Alliance getAllianceSide(Pose2d currentPose) {
         return currentPose.getX() < FIELD_LENGTH / 2 ? DriverStation.Alliance.Blue : DriverStation.Alliance.Red;
@@ -149,7 +146,6 @@ public final class FieldUtil {
          *
          * @param tagID The ID of the AprilTag.
          * @return The corresponding AprilTag enum, or INVALID if the ID is not recognized.
-         *
          */
         public static AprilTag getTag(double tagID) {
             return switch ((int) tagID) {
@@ -188,7 +184,6 @@ public final class FieldUtil {
         /**
          * Get a mapping of {@link Pose2d} to AprilTag enums for all valid tags.
          * @return Map of {@link Pose2d} to AprilTag
-         *
          */
         public static Map<Pose2d, AprilTag> getPosesToTags() {
             Map<Pose2d, AprilTag> posesToTags = new HashMap<>();
@@ -201,7 +196,6 @@ public final class FieldUtil {
          *
          * @param tags List of AprilTags
          * @return List of corresponding {@link Pose2d} objects
-         *
          */
         public static List<Pose2d> getTagLocations2d(List<AprilTag> tags) {
             List<Pose2d> tagLocations = new ArrayList<>();
@@ -218,7 +212,6 @@ public final class FieldUtil {
          * Get the AprilTags associated with the coral stations for the current alliance.
          *
          * @return List of AprilTags for the coral stations
-         *
          */
         public static List<AprilTag> getCoralStationTags() {
             return Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red ?
@@ -240,7 +233,6 @@ public final class FieldUtil {
          *
          * @param currentPose The current pose of the robot
          * @return The nearest coral station tag {@link Pose2d}
-         *
          */
         public static Pose2d getNearestCoralStationTagPose(Pose2d currentPose) {
             return currentPose.nearest(getCoralStationTagPoses());
@@ -251,7 +243,6 @@ public final class FieldUtil {
          *
          * @param currentPose The current pose of the robot
          * @return The nearest coral station {@link AprilTag}
-         *
          */
         public static AprilTag getNearestCoralStationTag(Pose2d currentPose) {
             return TagManager.getPosesToTags().getOrDefault(getNearestCoralStationTagPose(currentPose), AprilTag.INVALID);
@@ -273,7 +264,6 @@ public final class FieldUtil {
          *
          * @param translation The translation to compare
          * @return The nearest reef center {@link Translation2d}
-         *
          */
         public static Translation2d getNearestReefCenter(Translation2d translation) {
             return translation.nearest(List.of(RED_REEF_CENTER, BLUE_REEF_CENTER));
@@ -284,7 +274,6 @@ public final class FieldUtil {
          *
          * @param translation The translation to compare
          * @return The angle from the nearest reef center to the position as a {@link Rotation2d}
-         *
          */
         public static Rotation2d getAngleFromNearestReefCenter(Translation2d translation) {
             return translation.minus(getNearestReefCenter(translation)).getAngle();
@@ -295,7 +284,6 @@ public final class FieldUtil {
          *
          * @param pose The pose to compare
          * @return The angle from the nearest reef center to the position as a {@link Rotation2d}
-         *
          */
         public static Rotation2d getAngleFromNearestReefCenter(Pose2d pose) {
             return getAngleFromNearestReefCenter(pose.getTranslation());
@@ -313,7 +301,6 @@ public final class FieldUtil {
              * @param currentPose The current pose of the robot
              * @param side The side of the reef
              * @return The left vertex {@link Pose2d} of the nearest reef for the specified side
-             *
              */
             public static Pose2d getLeftVertexPoseOfNearestReef(Pose2d currentPose, Side side) {
                 return switch (side) {
@@ -331,7 +318,6 @@ public final class FieldUtil {
              *
              * @param side The side of the reef
              * @return The left vertex {@link Pose2d} of the reef for the specified side
-             *
              */
             public static Pose2d getLeftVertexPose(Side side) {
                 return switch (side) {
@@ -349,7 +335,6 @@ public final class FieldUtil {
              *
              * @param side The side of the reef
              * @return The corresponding {@link AprilTag}
-             *
              */
             public static AprilTag getTag(Side side) {
                 return switch (side) {
@@ -367,7 +352,6 @@ public final class FieldUtil {
              *
              * @param side The side of the reef
              * @return True if the algae reef level is high, false otherwise
-             *
              */
             public static boolean algaeIsHigh(Side side) {
                 return getAlgaeReefLevelFromTag(getTag(side)) == AlgaeLocation.HIGH;
@@ -401,7 +385,6 @@ public final class FieldUtil {
          *
          * @param bothReefs Whether to get tags for both reefs or just the current alliance's reef
          * @return List of AprilTags for the reefs
-         *
          */
         public static List<AprilTag> getReefTags(boolean bothReefs) {
             return bothReefs ? List.of(AprilTag.ID_7, AprilTag.ID_8, AprilTag.ID_9, AprilTag.ID_10, AprilTag.ID_11, AprilTag.ID_6,
@@ -415,7 +398,6 @@ public final class FieldUtil {
          * Get the AprilTags associated with the sides facing the center of the field for the reef of the current alliance.
          *
          * @return List of AprilTags for the center-facing reef sides
-         *
          */
         public static List<AprilTag> getOutsideReefTags() {
             return Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red
@@ -427,7 +409,6 @@ public final class FieldUtil {
          * Get the poses of the reef corners for the current alliance.
          *
          * @return List of {@link Pose2d} for the reef corners
-         *
          */
         public static List<Pose2d> getReefCorners() {
             return Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red
@@ -453,7 +434,6 @@ public final class FieldUtil {
          *
          * @param currentPose The current pose of the robot
          * @return List of {@link Pose2d} for the reef corners of the nearest reef
-         *
          */
         public static List<Pose2d> getReefCornersOfNearestReef(Pose2d currentPose) {
             Translation2d nearestReefCenter = getNearestReefCenter(currentPose.getTranslation());
@@ -478,7 +458,6 @@ public final class FieldUtil {
          *
          * @param bothReefs Whether to get poses for both reefs or just the current alliance's reef
          * @return List of {@link Pose2d} for the reef tags
-         *
          */
         public static List<Pose2d> getReefTagPoses(boolean bothReefs) {
             return TagManager.getTagLocations2d(getReefTags(bothReefs));
@@ -490,7 +469,6 @@ public final class FieldUtil {
          * @param currentPose The current pose of the robot
          * @param bothReefs Whether to consider tags from both reefs or just the current alliance's reef
          * @return The nearest reef tag {@link Pose2d}
-         *
          */
         public static Pose2d getNearestReefTagPose(Pose2d currentPose, boolean bothReefs) {
             return currentPose.nearest(getReefTagPoses(bothReefs));
@@ -510,7 +488,6 @@ public final class FieldUtil {
          * @param currentPose The current pose of the robot
          * @param bothReefs Whether to consider tags from both reefs or just the current alliance's reef
          * @return The nearest reef {@link AprilTag}
-         *
          */
         public static AprilTag getNearestReefTag(Pose2d currentPose, boolean bothReefs) {
             return TagManager.getPosesToTags().getOrDefault(getNearestReefTagPose(currentPose, bothReefs), AprilTag.INVALID);
@@ -521,7 +498,6 @@ public final class FieldUtil {
          *
          * @param tag The reef {@link AprilTag}
          * @return The corresponding {@link AlgaeLocation}, or null if the tag is not associated with an algae level
-         *
          */
         public static AlgaeLocation getAlgaeReefLevelFromTag(AprilTag tag) {
             return switch (tag) {
@@ -553,7 +529,6 @@ public final class FieldUtil {
          * Get the AprilTags associated with the algae scoring locations for the current alliance.
          *
          * @return List of AprilTags for the algae scoring locations
-         *
          */
         public static List<AprilTag> getAlgaeScoringTags() {
             return Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red ?
@@ -564,7 +539,6 @@ public final class FieldUtil {
          * Get the 2D poses of the algae scoring tags.
          *
          * @return List of {@link Pose2d} for the algae scoring tags
-         *
          */
         public static List<Pose2d> getAlgaeScoringTagPoses() {
             return TagManager.getTagLocations2d(getAlgaeScoringTags());
@@ -575,7 +549,6 @@ public final class FieldUtil {
          *
          * @param currentPose The current pose of the robot
          * @return The processor tag {@link Pose2d} for the current alliance
-         *
          */
         public static Pose2d getCurrentAllianceSideProcessorTagPose(Pose2d currentPose) {
             return getAllianceSide(currentPose) == DriverStation.Alliance.Red ?
@@ -586,7 +559,6 @@ public final class FieldUtil {
          * Get the net tag poses for the current alliance.
          *
          * @return List of {@link Pose2d} for the net tags
-         *
          */
         public static List<Pose2d> getNetTagPoses() {
             return Constants.ALLIANCE_SUPPLIER.get() == DriverStation.Alliance.Red ?
@@ -598,7 +570,6 @@ public final class FieldUtil {
          *
          * @param currentPose The current pose of the robot
          * @return The nearest algae scoring tag {@link Pose2d}
-         *
          */
         public static Pose2d getNearestAlgaeScoringTagPose(Pose2d currentPose) {
             return currentPose.nearest(getAlgaeScoringTagPoses());
@@ -609,7 +580,6 @@ public final class FieldUtil {
          *
          * @param currentPose The current pose of the robot
          * @return The nearest net tag {@link Pose2d}
-         *
          */
         public static Pose2d getNearestNetTagPose(Pose2d currentPose) {
             return currentPose.nearest(getNetTagPoses());
@@ -620,7 +590,6 @@ public final class FieldUtil {
          *
          * @param currentPose The current pose of the robot
          * @return The nearest algae scoring {@link AprilTag}
-         *
          */
         public static AprilTag getNearestAlgaeScoringTag(Pose2d currentPose) {
             return TagManager.getPosesToTags().getOrDefault(getNearestAlgaeScoringTagPose(currentPose), AprilTag.INVALID);
@@ -631,7 +600,6 @@ public final class FieldUtil {
          *
          * @param tag The algae scoring {@link AprilTag}
          * @return The corresponding {@link ScoringLocation}, or null if the tag is not associated with a scoring location
-         *
          */
         public static ScoringLocation getAlgaeScoringFromTag(AprilTag tag) {
             return switch (tag) {

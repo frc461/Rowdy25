@@ -22,10 +22,9 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 
 /**
- * A Phoenix-sponsored PID controller with trapezoidal motion profiling.
+ * A Phoenix-based PID controller with trapezoidal motion profiling.
  *
  * @author Eugene Zhang, <a href="https://github.com/e500">GitHub</a>
- *
  */
 public class PhoenixProfiledPIDController {
     /** The internal PID controller used for calculations. */
@@ -53,7 +52,6 @@ public class PhoenixProfiledPIDController {
      * @param Ki The integral gain.
      * @param Kd The derivative gain.
      * @param constraints The motion profile constraints.
-     *
      */
     public PhoenixProfiledPIDController(double Kp, double Ki, double Kd, TrapezoidProfile.Constraints constraints) {
         controller = new PhoenixPIDController(Kp, Ki, Kd);
@@ -65,7 +63,6 @@ public class PhoenixProfiledPIDController {
      * Gets the current setpoint state.
      *
      * @return The current setpoint state.
-     *
      */
     public TrapezoidProfile.State getSetpoint() {
         return setpoint;
@@ -75,7 +72,6 @@ public class PhoenixProfiledPIDController {
      * Checks if the controller is at the setpoint.
      *
      * @return True if at setpoint, false otherwise.
-     *
      */
     public boolean atSetpoint() {
         return controller.atSetpoint();
@@ -85,7 +81,6 @@ public class PhoenixProfiledPIDController {
      * Checks if the controller has reached the goal state.
      *
      * @return True if at goal, false otherwise.
-     *
      */
     public boolean atGoal() {
         return atSetpoint() && goal.equals(setpoint);
@@ -95,7 +90,6 @@ public class PhoenixProfiledPIDController {
      * Sets new motion profile constraints.
      *
      * @param constraints The new motion profile constraints.
-     *
      */
     public void setConstraints(TrapezoidProfile.Constraints constraints) {
         this.constraints = constraints;
@@ -108,7 +102,6 @@ public class PhoenixProfiledPIDController {
      * @param Kp The proportional gain.
      * @param Ki The integral gain.
      * @param Kd The derivative gain.
-     *
      */
     public void setPID(double Kp, double Ki, double Kd) {
         controller.setPID(Kp, Ki, Kd);
@@ -118,7 +111,6 @@ public class PhoenixProfiledPIDController {
      * Sets the I-Zone for the controller. This is the time threshold after which the integral term is active.
      *
      * @param iZone The I-Zone value.
-     *
      */
     public void setIZone(double iZone) {
         controller.setIZone(iZone);
@@ -128,7 +120,6 @@ public class PhoenixProfiledPIDController {
      * Sets the goal state for the motion profile.
      *
      * @param goal The goal state.
-     *
      */
     public void setGoal(TrapezoidProfile.State goal) {
         this.goal = goal;
@@ -139,7 +130,6 @@ public class PhoenixProfiledPIDController {
      *
      * @param minimumInput The minimum input value.
      * @param maximumInput The maximum input value.
-     *
      */
     public void enableContinuousInput(double minimumInput, double maximumInput) {
         controller.enableContinuousInput(minimumInput, maximumInput);
@@ -159,7 +149,6 @@ public class PhoenixProfiledPIDController {
      *
      * @param minimumIntegral The minimum integral value.
      * @param maximumIntegral The maximum integral value.
-     *
      */
     public void setIntegratorRange(double minimumIntegral, double maximumIntegral) {
         controller.setIntegratorRange(minimumIntegral, maximumIntegral);
@@ -169,7 +158,6 @@ public class PhoenixProfiledPIDController {
      * Sets the positional tolerance for the controller to consider itself at the setpoint.
      *
      * @param positionalTolerance The positional tolerance.
-     *
      */
     public void setTolerance(double positionalTolerance) {
         controller.setTolerance(positionalTolerance, Double.POSITIVE_INFINITY);
@@ -181,7 +169,6 @@ public class PhoenixProfiledPIDController {
      * @param currentPosition The current position.
      * @param currentTimestamp The current timestamp.
      * @return The control output.
-     *
      */
     public double calculate(double currentPosition, double currentTimestamp) {
         if (controller.isContinuousInputEnabled()) {
@@ -213,7 +200,6 @@ public class PhoenixProfiledPIDController {
      * @param targetState The target state.
      * @param currentTimestamp The current timestamp.
      * @return The control output.
-     *
      */
     public double calculate(double currentPosition, TrapezoidProfile.State targetState, double currentTimestamp) {
         setGoal(targetState);
@@ -227,7 +213,6 @@ public class PhoenixProfiledPIDController {
      * @param targetPosition The target position.
      * @param currentTimestamp The current timestamp.
      * @return The control output.
-     *
      */
     public double calculate(double currentPosition, double targetPosition, double currentTimestamp) {
         setGoal(new TrapezoidProfile.State(targetPosition, 0));
@@ -241,7 +226,6 @@ public class PhoenixProfiledPIDController {
      * @param constraints The motion profile constraints.
      * @param currentTimestamp The current timestamp.
      * @return The control output.
-     *
      */
     public double calculate(double currentPosition, TrapezoidProfile.Constraints constraints, double currentTimestamp) {
         setConstraints(constraints);
@@ -256,7 +240,6 @@ public class PhoenixProfiledPIDController {
      * @param constraints The motion profile constraints.
      * @param currentTimestamp The current timestamp.
      * @return The control output.
-     *
      */
     public double calculate(
             double currentPosition,
@@ -273,7 +256,6 @@ public class PhoenixProfiledPIDController {
      *
      * @param currentState The current state.
      * @param timestamp The current timestamp.
-     *
      */
     public void reset(TrapezoidProfile.State currentState, double timestamp) {
         controller.reset();
@@ -289,7 +271,6 @@ public class PhoenixProfiledPIDController {
      * @param currentPosition The current position.
      * @param currentVelocity The current velocity.
      * @param timestamp The current timestamp.
-     *
      */
     public void reset(double currentPosition, double currentVelocity, double timestamp) {
         reset(new TrapezoidProfile.State(currentPosition, currentVelocity), timestamp);
@@ -300,7 +281,6 @@ public class PhoenixProfiledPIDController {
      *
      * @param currentPosition The current position.
      * @param timestamp The current timestamp.
-     *
      */
     public void reset(double currentPosition, double timestamp) {
         reset(currentPosition, 0.0, timestamp);

@@ -24,6 +24,8 @@ import java.util.List;
 
 /**
  * Utility class for operations involving angles represented by {@link Rotation2d}.
+ *
+ * @author Eugene Zhang, <a href="https://github.com/e500">GitHub</a>
  */
 public class RotationUtil {
     /**
@@ -33,7 +35,6 @@ public class RotationUtil {
      * @param lowerAngleThreshold The lower bound angle.
      * @param upperAngleThreshold The upper bound angle.
      * @return True if the angle is between the lower and upper bounds, false otherwise.
-     *
      */
     public static boolean inBetween(Rotation2d angle, Rotation2d lowerAngleThreshold, Rotation2d upperAngleThreshold) {
         if (lowerAngleThreshold.getDegrees() > upperAngleThreshold.getDegrees()) {

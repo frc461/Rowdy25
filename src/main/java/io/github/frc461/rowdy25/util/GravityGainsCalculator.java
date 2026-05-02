@@ -21,10 +21,9 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 
 /**
- * A utility class to calculate gravity compensation gains for a robotic arm with a pivoting joint, a wrist joint, and an elevator mechanism.
+ * Utility class to calculate gravity compensation gains for a robotic arm with a pivoting joint, a wrist joint, and an elevator mechanism.
  *
  * @author Eugene Zhang, <a href="https://github.com/e500">GitHub</a>
- *
  */
 public final class GravityGainsCalculator {
     /** The position of the pivot axis in a 2D plane. */

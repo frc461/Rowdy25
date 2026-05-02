@@ -30,7 +30,6 @@ import io.github.frc461.rowdy25.constants.RobotIdentity;
  *
  * @author Eugene Zhang, <a href="https://github.com/ez500">GitHub</a>
  * @author Aneesh Terani, <a href="https://github.com/aterani">GitHub</a>
- *
  */
 public class Robot extends TimedRobot {
     /**

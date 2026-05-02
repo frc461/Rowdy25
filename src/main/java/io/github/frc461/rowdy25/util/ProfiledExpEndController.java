@@ -27,7 +27,6 @@ import java.util.function.Supplier;
  * An exponential/function-based controller with trapezoidal motion profiling.
  *
  * @author Eugene Zhang, <a href="https://github.com/e500">GitHub</a>
- *
  */
 public class ProfiledExpEndController {
     /** The timestamp of the last calculation */
@@ -49,7 +48,6 @@ public class ProfiledExpEndController {
      *
      * @param controllerWithExpEnd The function-based controller that takes in the absolute error and returns the control output
      * @param constraints The motion profile constraints
-     *
      */
     public ProfiledExpEndController(Function<Double, Double> controllerWithExpEnd, TrapezoidProfile.Constraints constraints) {
         this.controllerWithExpEnd = controllerWithExpEnd;
@@ -61,7 +59,6 @@ public class ProfiledExpEndController {
      * Gets the current setpoint of the motion profile.
      *
      * @return The current setpoint of the motion profile
-     *
      */
     public TrapezoidProfile.State getSetpoint() {
         return setpoint;
@@ -71,7 +68,6 @@ public class ProfiledExpEndController {
      * Updates the function-based controller.
      *
      * @param controllerWithExpEnd The new function-based controller
-     *
      */
     public void updateController(Function<Double, Double> controllerWithExpEnd) {
         this.controllerWithExpEnd = controllerWithExpEnd;
@@ -81,7 +77,6 @@ public class ProfiledExpEndController {
      * Sets the motion profile constraints.
      *
      * @param constraints The new motion profile constraints
-     *
      */
     public void setConstraints(TrapezoidProfile.Constraints constraints) {
         this.constraints = constraints;
@@ -92,7 +87,6 @@ public class ProfiledExpEndController {
      * Sets the goal state of the motion profile.
      *
      * @param goal The new goal state of the motion profile
-     *
      */
     public void setGoal(TrapezoidProfile.State goal) {
         this.goal = goal;
@@ -104,7 +98,6 @@ public class ProfiledExpEndController {
      * @param currentPosition The current position
      * @param currentTimestamp The current timestamp
      * @return The control output
-     *
      */
     public double calculate(double currentPosition, double currentTimestamp) {
 
@@ -122,7 +115,6 @@ public class ProfiledExpEndController {
      * @param targetState The target state
      * @param currentTimestamp The current timestamp
      * @return The control output
-     *
      */
     public double calculate(double currentPosition, TrapezoidProfile.State targetState, double currentTimestamp) {
         setGoal(targetState);
@@ -136,7 +128,6 @@ public class ProfiledExpEndController {
      * @param targetPosition The target position
      * @param currentTimestamp The current timestamp
      * @return The control output
-     *
      */
     public double calculate(double currentPosition, double targetPosition, double currentTimestamp) {
         setGoal(new TrapezoidProfile.State(targetPosition, 0));
@@ -150,7 +141,6 @@ public class ProfiledExpEndController {
      * @param constraints The motion profile constraints
      * @param currentTimestamp The current timestamp
      * @return The control output
-     *
      */
     public double calculate(double currentPosition, TrapezoidProfile.Constraints constraints, double currentTimestamp) {
         setConstraints(constraints);
@@ -165,7 +155,6 @@ public class ProfiledExpEndController {
      * @param constraints The motion profile constraints
      * @param currentTimestamp The current timestamp
      * @return The control output
-     *
      */
     public double calculate(
             double currentPosition,
@@ -182,7 +171,6 @@ public class ProfiledExpEndController {
      *
      * @param currentState The current state
      * @param timestamp The current timestamp
-     *
      */
     public void reset(TrapezoidProfile.State currentState, double timestamp) {
         setpoint = currentState;
@@ -197,7 +185,6 @@ public class ProfiledExpEndController {
      * @param currentPosition The current position
      * @param currentVelocity The current velocity
      * @param timestamp The current timestamp
-     *
      */
     public void reset(double currentPosition, double currentVelocity, double timestamp) {
         reset(new TrapezoidProfile.State(currentPosition, currentVelocity), timestamp);
@@ -210,7 +197,6 @@ public class ProfiledExpEndController {
      *
      * @param currentPosition The current position
      * @param timestamp The current timestamp
-     *
      */
     public void reset(double currentPosition, double timestamp) {
         reset(currentPosition, 0.0, timestamp);

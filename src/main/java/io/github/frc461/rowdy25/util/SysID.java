@@ -33,6 +33,8 @@ import static edu.wpi.first.units.Units.*;
 
 /**
  * Test module for running SysId routines on a {@link Swerve} drivetrain.
+ *
+ * @author Eugene Zhang, <a href="https://github.com/e500">GitHub</a>
  */
 public class SysID {
     /** The swerve drivetrain to test. */
@@ -55,7 +57,6 @@ public class SysID {
      * Creates a new SysID test module for the given swerve drivetrain.
      *
      * @param swerve The swerve drivetrain to test
-     *
      */
     public SysID(Swerve swerve) {
         this.swerve = swerve;
@@ -193,8 +194,7 @@ public class SysID {
     /**
      * Binds buttons of the given controller to run SysId routines.
      *
-     * @param controller The controller to configure
-     *
+     * @param controller The controller to bind SysID routines on
      */
     public void configureBindings(CommandXboxController controller) {
         controller.back().and(controller.y()).whileTrue(swerveDynamic(SysIdRoutine.Direction.kForward));

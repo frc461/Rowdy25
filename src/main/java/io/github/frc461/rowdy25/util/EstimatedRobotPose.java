@@ -33,7 +33,6 @@ import java.util.List;
  * @param timestampSeconds The timestamp (in seconds) when the pose was estimated.
  * @param targetsUsed     A list of PhotonTrackedTarget objects that were used to estimate the pose.
  * @param stdDevs         A 3x1 matrix representing the standard deviations of the pose estimation in x, y, and z directions.
- *
  */
 public record EstimatedRobotPose(Pose3d estimatedPose, double timestampSeconds, List<PhotonTrackedTarget> targetsUsed,
                                  Matrix<N3, N1> stdDevs) {
