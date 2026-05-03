@@ -29,7 +29,7 @@ import java.util.*;
 /**
  * Utility class for various FRC field-related constants/measurements and constant-based calculations.
  *
- * @author Eugene Zhang, <a href="https://github.com/e500">GitHub</a>
+ * @author Eugene Zhang, <a href="https://github.com/ez500">GitHub</a>
  * @author Aneesh Terani, <a href="https://github.com/aterani">GitHub</a>
  */
 public final class FieldUtil {

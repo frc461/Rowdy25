@@ -26,7 +26,7 @@ import java.util.function.Supplier;
 /**
  * An exponential/function-based controller with trapezoidal motion profiling.
  *
- * @author Eugene Zhang, <a href="https://github.com/e500">GitHub</a>
+ * @author Eugene Zhang, <a href="https://github.com/ez500">GitHub</a>
  */
 public class ProfiledExpEndController {
     /** The timestamp of the last calculation */

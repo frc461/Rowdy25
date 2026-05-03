@@ -29,7 +29,7 @@ import java.util.function.Consumer;
 /**
  * Utility class that allows multiple selections from a list of options, typically used in a dashboard interface.
  *
- * @author Eugene Zhang, <a href="https://github.com/e500">GitHub</a>
+ * @author Eugene Zhang, <a href="https://github.com/ez500">GitHub</a>
  * @param <V> The value type associated with the options of the chooser.
  */
 public final class MultipleChooser<V> implements Sendable, AutoCloseable {

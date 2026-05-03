@@ -41,7 +41,7 @@ import io.github.frc461.rowdy25.util.SysID;
  *
  * <p>The RobotContainer class is a fundamental class to initiate functionality, namely the superstructure (integrated mechanism characterization), Xbox controller binds (robot control), telemetry (for verbosity), autonomous control configurations and other automations.</p>
  *
- * @author Eugene Zhang, <a href="https://github.com/e500">GitHub</a>
+ * @author Eugene Zhang, <a href="https://github.com/ez500">GitHub</a>
  * @author Aneesh Terani, <a href="https://github.com/aterani">GitHub</a>
  */
 public class RobotContainer {

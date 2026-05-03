@@ -25,7 +25,7 @@ import java.util.List;
 /**
  * Utility class for operations involving angles represented by {@link Rotation2d}.
  *
- * @author Eugene Zhang, <a href="https://github.com/e500">GitHub</a>
+ * @author Eugene Zhang, <a href="https://github.com/ez500">GitHub</a>
  */
 public class RotationUtil {
     /**

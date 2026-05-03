@@ -28,7 +28,7 @@ import io.github.frc461.rowdy25.constants.Constants;
  * Utility class for interfacing with the Limelight camera, henceforth called Limelight. This class provides methods to retrieve and process data from the Limelight NetworkTable (e.g., target pose, latency, tag information), as well as various configuration and calibration methods.
  *
  * @see <a href="https://docs.limelightvision.io/docs/docs-limelight/apis/complete-networktables-api">NetworkTables API</a> for information on how to use the Limelight NetworkTable to retrieve/update desired values. Clarify class methods/string key entries in this documentation.
- * @author Eugene Zhang, <a href="https://github.com/e500">GitHub</a>
+ * @author Eugene Zhang, <a href="https://github.com/ez500">GitHub</a>
  */
 public final class LimelightUtil {
     /** The Limelight network table. */

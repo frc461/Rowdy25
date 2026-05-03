@@ -23,7 +23,7 @@ package io.github.frc461.rowdy25.util;
  * <p> Different mathematical models can provide for different error-based response characteristics.
  * <p> If you need to tune your constants to apply to the exponential function, use <a href="https://www.desmos.com/calculator/yknxk8el8y">this link.</a> Useful for smooth, logistic curves.
  *
- * @author Eugene Zhang, <a href="https://github.com/e500">GitHub</a>
+ * @author Eugene Zhang, <a href="https://github.com/ez500">GitHub</a>
  */
 public final class EquationUtil {
 

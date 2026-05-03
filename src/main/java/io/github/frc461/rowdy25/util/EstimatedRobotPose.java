@@ -28,7 +28,7 @@ import java.util.List;
 /**
  * A record representing an estimated robot pose along with associated metadata.
  *
- * @author Eugene Zhang, <a href="https://github.com/e500">GitHub</a>
+ * @author Eugene Zhang, <a href="https://github.com/ez500">GitHub</a>
  * @param estimatedPose   The estimated pose of the robot in 3D space.
  * @param timestampSeconds The timestamp (in seconds) when the pose was estimated.
  * @param targetsUsed     A list of PhotonTrackedTarget objects that were used to estimate the pose.

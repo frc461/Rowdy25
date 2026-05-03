@@ -36,7 +36,7 @@ import java.util.Optional;
  * Utility class for interfacing with PhotonVision, a vision processing solution that uses pipelines created with USB cameras. Contains methods to retrieve and process target data from multiple cameras (both color and black-and-white).
  *
  * @see <a href="https://docs.photonvision.org/en/latest/">PhotonVision Documentation</a> for more information about using PhotonVision and PhotonLib, the corresponding API library.
- * @author Eugene Zhang, <a href="https://github.com/e500">GitHub</a>
+ * @author Eugene Zhang, <a href="https://github.com/ez500">GitHub</a>
  */
 public final class PhotonUtil {
     /**

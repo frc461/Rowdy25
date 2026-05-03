@@ -24,7 +24,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 /**
  * A Phoenix-based PID controller with trapezoidal motion profiling.
  *
- * @author Eugene Zhang, <a href="https://github.com/e500">GitHub</a>
+ * @author Eugene Zhang, <a href="https://github.com/ez500">GitHub</a>
  */
 public class PhoenixProfiledPIDController {
     /** The internal PID controller used for calculations. */

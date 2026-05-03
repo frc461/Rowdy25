@@ -34,7 +34,7 @@ import static edu.wpi.first.units.Units.*;
 /**
  * Test module for running SysId routines on a {@link Swerve} drivetrain.
  *
- * @author Eugene Zhang, <a href="https://github.com/e500">GitHub</a>
+ * @author Eugene Zhang, <a href="https://github.com/ez500">GitHub</a>
  */
 public class SysID {
     /** The swerve drivetrain to test. */

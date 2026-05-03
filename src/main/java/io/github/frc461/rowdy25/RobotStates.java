@@ -49,7 +49,7 @@ import dev.doglog.DogLog;
  *
  * <p>The RobotStates class is a robot characterization class, that is, the subsystems are integrated into one defined system to streamline robot-wide actions for efficiency and organization. Many actions relevant to the robot's objectives require the coordination of the entire robotic system, hence a robot-wide state machine and robot-wide defined actions to satisfy the state machine.</p>
  *
- * @author Eugene Zhang, <a href="https://github.com/e500">GitHub</a>
+ * @author Eugene Zhang, <a href="https://github.com/ez500">GitHub</a>
  * @author Aneesh Terani, <a href="https://github.com/aterani">GitHub</a>
  * @author Geeson Wan, <a href="https://github.com/gerseneck">GitHub</a>
  */

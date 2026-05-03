@@ -33,7 +33,7 @@ import edu.wpi.first.networktables.StringTopic;
  * <p> Notifications are serialized as JSON strings before being published to the NetworkTables topic.
  *
  * @author Geeson Wan, <a href="https://github.com/gerseneck">GitHub</a>
- * @author Eugene Zhang, <a href="https://github.com/e500">GitHub</a>
+ * @author Eugene Zhang, <a href="https://github.com/ez500">GitHub</a>
  *
  */
 public final class Elastic {

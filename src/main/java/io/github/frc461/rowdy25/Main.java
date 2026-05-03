@@ -24,7 +24,7 @@ import edu.wpi.first.wpilibj.RobotBase;
  *
  * <p>The Java main method is the entry point of program execution after project deployment.
  *
- * @author Eugene Zhang, <a href="https://github.com/e500">GitHub</a>
+ * @author Eugene Zhang, <a href="https://github.com/ez500">GitHub</a>
  * @author Aneesh Terani, <a href="https://github.com/aterani">GitHub</a>
  */
 public final class Main {
