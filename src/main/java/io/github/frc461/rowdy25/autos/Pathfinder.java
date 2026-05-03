@@ -36,7 +36,21 @@ import java.util.List;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 
+/**
+ * Utility class for generating autonomous pathfinding commands using PathPlanner's AutoBuilder.
+ * Contains methods for dynamically navigating to specific field elements, like the nearest algae
+ * or coral scoring locations, as well as logic to calculate offset poses to pathfind "close" to a target.
+ *
+ * @author Eugene Zhang, <a href="https://github.com/ez500">GitHub</a>
+ */
 public final class Pathfinder {
+    /**
+     * Constructs a command that pathfinds to the specified target pose with a given goal end velocity.
+     *
+     * @param targetPose The target pose to pathfind to.
+     * @param goalEndVelocity The desired velocity of the robot when it reaches the target pose.
+     * @return A {@link Command} that executes the pathfinding routine.
+     */
     private static Command pathFindToPose(Pose2d targetPose, double goalEndVelocity) {
         return AutoBuilder.pathfindToPose(
                 targetPose,
@@ -45,10 +59,22 @@ public final class Pathfinder {
         );
     }
 
+    /**
+     * Constructs a command that pathfinds to the specified target pose with a default end velocity of 0.0.
+     *
+     * @param targetPose The target pose to pathfind to.
+     * @return A {@link Command} that executes the pathfinding routine.
+     */
     private static Command pathFindToPose(Pose2d targetPose) {
         return pathFindToPose(targetPose, 0.0);
     }
 
+    /**
+     * Constructs a command that pathfinds close to the nearest algae scoring location based on the robot's current pose.
+     *
+     * @param currentPose The current pose of the robot.
+     * @return A {@link Command} for pathfinding to the calculated approach pose.
+     */
     public static Command pathFindToNearestAlgaeScoringLocation(Pose2d currentPose) {
         Pose2d nearestAlgaeScoringPose = FieldUtil.AlgaeScoring.getNearestAlgaeScoringTagPose(currentPose);
         return Pathfinder.pathFindToClosePose(
@@ -61,6 +87,13 @@ public final class Pathfinder {
         );
     }
 
+    /**
+     * Constructs a command that pathfinds close to the nearest coral scoring location at the reef.
+     *
+     * @param mode The scoring setting representing the desired proximity/branch target.
+     * @param currentPose The current pose of the robot.
+     * @return A {@link Command} for pathfinding to the calculated approach pose.
+     */
     public static Command pathFindToNearestCoralScoringLocation(RobotPoses.Reef.RobotScoringSetting mode, Pose2d currentPose) {
         return Pathfinder.pathFindToClosePose(
                 RobotPoses.Reef.getNearestRobotPoseAtBranch(mode, currentPose),
@@ -69,6 +102,16 @@ public final class Pathfinder {
         );
     }
 
+    /**
+     * Constructs a command that pathfinds to a specified clearance distance shifted directly backward from the target pose, i.e., the distance is applied to the target pose as a transform with the opposite rotation as the target pose.
+     *
+     * <p>To help visualize the final calculated pose (by applying the distance as a transform with the opposite rotation as the target pose), imagine the robot is already in the target pose, but moved backward by the specified distance.</p>
+     *
+     * @param targetPose The absolute target pose to back away from.
+     * @param distance The offset distance to maintain from the target.
+     * @param goalEndVelocity The desired velocity upon arrival.
+     * @return A {@link Command} that executes the pathfinding routine to the offset position.
+     */
     public static Command pathFindToClosePose(
             Pose2d targetPose,
             double distance,
@@ -80,6 +123,14 @@ public final class Pathfinder {
         );
     }
 
+    /**
+     * Constructs a command that pathfinds to a specified distance away from the target pose, allowing approach from any angle. The calculating algorithm greedily optimizes by minimizing distance traveled.
+     *
+     * @param currentPose The current pose of the robot.
+     * @param targetPose The central target pose.
+     * @param distance The required radial distance from the target.
+     * @return A {@link Command} for pathfinding.
+     */
     public static Command pathFindToClosePose(
             Pose2d currentPose,
             Pose2d targetPose,
@@ -94,6 +145,16 @@ public final class Pathfinder {
         );
     }
 
+    /**
+     * Constructs a command that pathfinds to an offset pose restricted by an angular threshold window.
+     *
+     * @param currentPose The current pose of the robot.
+     * @param targetPose The central target pose.
+     * @param lowerThreshold The CCW-most boundary of the acceptable angular range around the target.
+     * @param upperThreshold The CW-most boundary of the acceptable angular range around the target.
+     * @param distance The specified clearance distance to maintain from the target.
+     * @return A {@link Command} for pathfinding to the valid close pose.
+     */
     public static Command pathFindToClosePose(
             Pose2d currentPose,
             Pose2d targetPose,
@@ -111,6 +172,18 @@ public final class Pathfinder {
         );
     }
 
+    /**
+     * Constructs a command that pathfinds to an offset pose restricted by an angular threshold window, with a specified end velocity.
+     * Returns an empty command if the robot is already within the specified distance.
+     *
+     * @param currentPose The current pose of the robot.
+     * @param targetPose The central target pose.
+     * @param lowerThreshold The CCW-most boundary of the acceptable angular range.
+     * @param upperThreshold The CW-most boundary of the acceptable angular range.
+     * @param distance The permitted distance to maintain from the target.
+     * @param goalEndVelocity The desired velocity upon arrival.
+     * @return A {@link Command} for pathfinding.
+     */
     public static Command pathFindToClosePose(
             Pose2d currentPose,
             Pose2d targetPose,
@@ -134,14 +207,40 @@ public final class Pathfinder {
         );
     }
 
+    /**
+     * Calculates an offset pose shifted away from the target pose by a specified distance and along a designated angle.
+     *
+     * @param targetPose The original target pose.
+     * @param distance The distance to offset.
+     * @param distanceHeading The angular direction relative to the target's rotation along which to move the pose backward.
+     * @return The offset {@link Pose2d}.
+     */
     public static Pose2d calculateClosePose(Pose2d targetPose, double distance, Rotation2d distanceHeading) {
         return targetPose.plus(new Transform2d(new Translation2d(-distance, distanceHeading), Rotation2d.kZero));
     }
 
+    /**
+     * Calculates an offset pose shifted directly backward from the target pose by a specified distance.
+     *
+     * @param targetPose The original target pose.
+     * @param distance The distance to offset directly backwards.
+     * @return The offset {@link Pose2d}.
+     */
     public static Pose2d calculateClosePose(Pose2d targetPose, double distance) {
         return calculateClosePose(targetPose, distance, Rotation2d.kZero);
     }
 
+    /**
+     * Computes the best approach pose on a circle around the target restricted between two angle boundaries.
+     * Snaps to the boundary angles if the direct line path from the current pose is outside the scope.
+     *
+     * @param currentPose The current pose of the robot.
+     * @param targetPose The central target pose.
+     * @param lowerAngleThreshold The CCW boundary of the target approach area.
+     * @param upperAngleThreshold The CW boundary of the target approach area.
+     * @param distance The radius defining the distance from the target.
+     * @return The calculated constrained {@link Pose2d}.
+     */
     private static Pose2d calculateClosePoseWithAngleScopeAndRadius(
             Pose2d currentPose,
             Pose2d targetPose,
@@ -169,6 +268,11 @@ public final class Pathfinder {
         ));
     }
 
+    /**
+     * Main method used for internal logic testing and verification of interpolated poses/trajectories using console.
+     *
+     * @param args Command-line arguments (unused).
+     */
     public static void main(String[] args) {
         Constants.ALLIANCE_SUPPLIER = () -> DriverStation.Alliance.Blue;
         Constants.ROBOT_LENGTH_WITH_BUMPERS = Inches.of(38.5);
