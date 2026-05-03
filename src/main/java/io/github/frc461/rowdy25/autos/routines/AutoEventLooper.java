@@ -31,7 +31,7 @@ import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
 /**
- * An object that represents an autonomous start or dynamic path.
+ * An object that represents the initialization of a dynamic, autonomous routine.
  *
  * <p>This loop is used to handle autonomous trigger logic and schedule commands. This loop should
  * **not** be shared across multiple autonomous routines. </p>
