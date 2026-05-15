@@ -33,23 +33,68 @@ import io.github.frc461.rowdy25.util.vision.PhotonUtil;
 
 import java.util.function.BooleanSupplier;
 
+/**
+ * An autonomous command that tracks, approaches, and dynamically searches for specific objects (typically visual targets like algae/coral)
+ * using the {@link PhotonUtil.Color} utility. The command proceeds through multiple autonomous tracking stages.
+ *
+ * @author Eugene Zhang, <a href="https://github.com/ez500">GitHub</a>
+ */
 public class SearchForObjectCommand extends Command {
+    /** Enumerates the sequential tracking stages for the command's state machine. */
     public enum CommandStage {
+        /** Actively tracking and driving towards the detected object. */
         TO_OBJECT,
+        /** Looking around if the target is initially lost or missed. */
         SEARCH,
+        /** Pausing after a search stage to wait for the target to reappear before retrying. */
         WAIT
     }
 
+    /** The drivetrain subsystem. */
     private final Swerve swerve;
+
+    /** The field-centric swerve drive request. */
     private final SwerveRequest.FieldCentric fieldCentric;
+
+    /** PID controller responsible for orienting the robot securely towards the dynamic target pose. */
     private final PIDController yawController;
+
+    /** Condition providing the end state where the object has been successfully acquired (e.g. intake limit switch tripped). */
     private final BooleanSupplier objectObtained;
+
+    /** The classification of the object being tracked. */
     private final PhotonUtil.Color.TargetClass objectClass;
+
+    /** The maximal translation speed allowed during the search and approach maneuvers. */
     private final double maxVelocity;
+
+    /** The current active computed pose target the robot is correcting itself towards. */
     private Pose2d targetPose;
-    private boolean xPosDone, yPosDone, yawDone, end;
+
+    /** True if the robot's X translational error is within an acceptable threshold. */
+    private boolean xPosDone;
+
+    /** True if the robot's Y translational error is within an acceptable threshold. */
+    private boolean yPosDone;
+
+    /** True if the robot's angular error relative to the target is within an acceptable threshold. */
+    private boolean yawDone;
+
+    /** Flag indicating that the command should terminate. */
+    private boolean end;
+
+    /** The active tracking stage. */
     private CommandStage currentStage;
 
+    /**
+     * Constructs a SearchForObjectCommand.
+     *
+     * @param swerve The robot's swerve drivetrain.
+     * @param fieldCentric Field-centric drive wrapper request to direct the chassis.
+     * @param objectObtained Condition declaring successful item ingestion/conclusion.
+     * @param objectClass The Photon target class classifying what to search for.
+     * @param maxVelocity The maximum safe approach velocity.
+     */
     public SearchForObjectCommand( // TODO SHOP: TEST THIS
                                    Swerve swerve,
                                    SwerveRequest.FieldCentric fieldCentric,
@@ -80,6 +125,10 @@ public class SearchForObjectCommand extends Command {
         addRequirements(this.swerve);
     }
 
+    /**
+     * Examines the initial vision pipeline layout and seeds the target coordinate. If the object
+     * is completely invisible upon startup, forces an end.
+     */
     @Override
     public void initialize() {
         PhotonUtil.Color.getRobotToBestObject(objectClass).ifPresentOrElse(
@@ -95,6 +144,18 @@ public class SearchForObjectCommand extends Command {
         );
     }
 
+    /**
+     * Regularly reassesses the current pose, actively shifting the drive target toward newly tracked coordinate poses
+     * via state-machine logic that safely accounts for lost camera frames and inconsistent object reads.
+     *
+     * <p>
+     * When the command is initialized, the coral pose is retrieved. If there is no pose, then the command ends.
+     * Otherwise, the robot will drive directly into the pose with a deployed intake to obtain the game piece.
+     * When the robot completes the path to the target pose, if the object is not obtained, it will travel towards
+     * the center of the reef, stop, and wait until a game piece is detected again. When a new pose is obtained, the
+     * state structure repeats. When an object is obtained, the command ends.
+     * </p>
+     */
     @Override
     public void execute() {
         Pose2d currentPose = swerve.localizer.getStrategyPose();
@@ -171,12 +232,22 @@ public class SearchForObjectCommand extends Command {
         }
     }
 
+    /**
+     * Concludes the tracking maneuver, safely overriding drive requests to zero and updating the active heading target.
+     *
+     * @param interrupted Whether the command was externally interrupted or canceled early.
+     */
     @Override
     public void end(boolean interrupted) {
         swerve.forceStop();
         swerve.consistentHeading = swerve.localizer.getStrategyPose().getRotation().getDegrees();
     }
 
+    /**
+     * Concludes whether the tracking phase has naturally finished (i.e. object has been cleanly ingested or command was unable to initially locate it).
+     *
+     * @return True if finished, false otherwise.
+     */
     @Override
     public boolean isFinished() {
         return end;
