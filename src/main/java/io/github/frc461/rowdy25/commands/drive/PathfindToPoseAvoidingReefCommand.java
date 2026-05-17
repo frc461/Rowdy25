@@ -33,16 +33,59 @@ import java.util.function.DoubleSupplier;
 
 import static edu.wpi.first.units.Units.Meters;
 
+/**
+ * A command that pathfinds to a target pose while dynamically avoiding the reef structure.
+ *
+ * <p>
+ * This command uses a temporary target pose that smoothly interpolates around the reef
+ * when the straight-line path would intersect it, using tangent points and reef center
+ * calculations to generate obstacle-avoiding waypoints.
+ * </p>
+ *
+ * @author Eugene Zhang, <a href="https://github.com/ez500">GitHub</a>
+ */
 public class PathfindToPoseAvoidingReefCommand extends Command {
+    /** The swerve drivetrain subsystem. */
     private final Swerve swerve;
-    private final SwerveRequest.FieldCentric fieldCentric;
-    private final PIDController yawController;
-    private final DoubleSupplier elevatorHeight;
-    private final Pose2d targetPose;
-    private final double maxVelocity;
-    private Pose2d smoothTemporaryTargetPose;
-    private boolean xPosDone, yPosDone, yawDone, end;
 
+    /** The field-centric swerve drive request. */
+    private final SwerveRequest.FieldCentric fieldCentric;
+
+    /** PID controller responsible for orienting the robot towards the target pose. */
+    private final PIDController yawController;
+
+    /** Supplier for current elevator height. */
+    private final DoubleSupplier elevatorHeight;
+
+    /** The target pose to pathfind to. */
+    private final Pose2d targetPose;
+
+    /** The maximum allowed velocity. */
+    private final double maxVelocity;
+
+    /** The smoothly interpolated temporary target pose used to avoid the reef. */
+    private Pose2d smoothTemporaryTargetPose;
+
+    /** True if the robot's X translational error is within an acceptable threshold. */
+    private boolean xPosDone;
+
+    /** True if the robot's Y translational error is within an acceptable threshold. */
+    private boolean yPosDone;
+
+    /** True if the robot's angular error relative to the target is within an acceptable threshold. */
+    private boolean yawDone;
+
+    /** Flag indicating that the command should terminate. */
+    private boolean end;
+
+    /**
+     * Constructs a PathfindToPoseAvoidingReefCommand with default maximum velocity.
+     *
+     * @param swerve The swerve drivetrain subsystem.
+     * @param fieldCentric The field-centric drive request configuration.
+     * @param elevatorHeight Supplier for current elevator height.
+     * @param targetPose The target pose to pathfind to.
+     */
     public PathfindToPoseAvoidingReefCommand(
             Swerve swerve,
             SwerveRequest.FieldCentric fieldCentric,
@@ -52,6 +95,15 @@ public class PathfindToPoseAvoidingReefCommand extends Command {
         this(swerve, fieldCentric, elevatorHeight, targetPose, Constants.MAX_VEL);
     }
 
+    /**
+     * Constructs a PathfindToPoseAvoidingReefCommand with specified maximum velocity.
+     *
+     * @param swerve The swerve drivetrain subsystem.
+     * @param fieldCentric The field-centric drive request configuration.
+     * @param elevatorHeight Supplier for current elevator height.
+     * @param targetPose The target pose to pathfind to.
+     * @param maxVelocity The maximum allowed velocity.
+     */
     public PathfindToPoseAvoidingReefCommand(
             Swerve swerve,
             SwerveRequest.FieldCentric fieldCentric,
@@ -82,6 +134,9 @@ public class PathfindToPoseAvoidingReefCommand extends Command {
         addRequirements(this.swerve);
     }
 
+    /**
+     * Initializes the command, computing the initial temporary target pose and resetting completion flags.
+     */
     @Override
     public void initialize() {
         Pose2d currentPose = swerve.localizer.getStrategyPose();
@@ -95,6 +150,15 @@ public class PathfindToPoseAvoidingReefCommand extends Command {
         end = false;
     }
 
+    /**
+     * Executes the command's control logic every 20ms.
+     *
+     * <p>
+     * Updates the smooth temporary target pose to avoid the reef, calculates required
+     * velocity and heading, applies swerve control, and checks position and orientation
+     * tolerances for completion.
+     * </p>
+     */
     @Override
     public void execute() {
         Pose2d currentPose = swerve.localizer.getStrategyPose();
@@ -138,6 +202,16 @@ public class PathfindToPoseAvoidingReefCommand extends Command {
         }
     }
 
+    /**
+     * Updates the smooth temporary target pose by interpolating towards the raw temporary pose.
+     *
+     * <p>
+     * If the distance between the current smooth pose and the raw pose exceeds a threshold,
+     * the smooth pose is moved incrementally towards the raw pose to prevent abrupt directional changes.
+     * </p>
+     *
+     * @param temporaryPose The raw temporary target pose to interpolate towards.
+     */
     private void updateSmoothTargetPose(Pose2d temporaryPose) {
         if (smoothTemporaryTargetPose == null) {
             smoothTemporaryTargetPose = temporaryPose;
@@ -156,6 +230,18 @@ public class PathfindToPoseAvoidingReefCommand extends Command {
         }
     }
 
+    /**
+     * Computes a temporary target pose that avoids driving through the reef.
+     *
+     * <p>
+     * If the robot and target pose are on the same side of the reef, the target pose is used directly.
+     * If the robot is close to the reef, it backs out to a safe distance before navigating around.
+     * Otherwise, a tangent point around the reef is calculated to create an avoidance waypoint.
+     * </p>
+     *
+     * @param currentPose The robot's current pose.
+     * @return A temporary target pose that safely avoids the reef.
+     */
     private Pose2d getTemporaryTargetPose(Pose2d currentPose) {
         Translation2d nearestReefCenter = FieldUtil.Reef.getNearestReefCenter(currentPose.getTranslation());
         Rotation2d reefCenterAngleToRobot = FieldUtil.Reef.getAngleFromNearestReefCenter(currentPose);
@@ -193,12 +279,22 @@ public class PathfindToPoseAvoidingReefCommand extends Command {
         }
     }
 
+    /**
+     * Ends the command, safely stopping all module motion and updating the active heading.
+     *
+     * @param interrupted Whether the command was externally interrupted or canceled early.
+     */
     @Override
     public void end(boolean interrupted) {
         swerve.forceStop();
         swerve.consistentHeading = swerve.localizer.getStrategyPose().getRotation().getDegrees();
     }
 
+    /**
+     * Checks if the command has finished moving to the target pose within tolerances.
+     *
+     * @return True if all positional and rotational tolerances are met, false otherwise.
+     */
     @Override
     public boolean isFinished() {
         return end;

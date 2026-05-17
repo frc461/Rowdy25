@@ -29,15 +29,55 @@ import io.github.frc461.rowdy25.util.EquationUtil;
 
 import java.util.function.DoubleSupplier;
 
+/**
+ * A command that directly moves the robot to a specified pose using field-centric swerve control.
+ *
+ * <p>
+ * This command uses PID control for rotational alignment and calculates velocity based on
+ * distance to target pose, with safety limits based on elevator height.
+ * </p>
+ *
+ * @author Eugene Zhang, <a href="https://github.com/ez500">GitHub</a>
+ */
 public class DirectMoveToPoseCommand extends Command {
+    /** The swerve drivetrain subsystem. */
     private final Swerve swerve;
-    private final SwerveRequest.FieldCentric fieldCentric;
-    private final PIDController yawController;
-    private final DoubleSupplier elevatorHeight;
-    private final Pose2d targetPose;
-    private final double maxVelocity;
-    private boolean xPosDone, yPosDone, yawDone, end;
 
+    /** The field-centric swerve drive request. */
+    private final SwerveRequest.FieldCentric fieldCentric;
+
+    /** PID controller responsible for orienting the robot towards the target pose. */
+    private final PIDController yawController;
+
+    /** Supplier for the current elevator height. */
+    private final DoubleSupplier elevatorHeight;
+
+    /** The target pose to move to. */
+    private final Pose2d targetPose;
+
+    /** The maximum allowed velocity. */
+    private final double maxVelocity;
+
+    /** True if the robot's X translational error is within an acceptable threshold. */
+    private boolean xPosDone;
+
+    /** True if the robot's Y translational error is within an acceptable threshold. */
+    private boolean yPosDone;
+
+    /** True if the robot's angular error relative to the target is within an acceptable threshold. */
+    private boolean yawDone;
+
+    /** Flag indicating that the command should terminate. */
+    private boolean end;
+
+    /**
+     * Constructs a DirectMoveToPoseCommand with default maximum velocity.
+     *
+     * @param swerve The swerve drivetrain subsystem.
+     * @param fieldCentric The field-centric drive request configuration.
+     * @param elevatorHeight Supplier for current elevator height.
+     * @param targetPose The target pose to move to.
+     */
     public DirectMoveToPoseCommand(
             Swerve swerve,
             SwerveRequest.FieldCentric fieldCentric,
@@ -47,6 +87,15 @@ public class DirectMoveToPoseCommand extends Command {
         this(swerve, fieldCentric, elevatorHeight, targetPose, 1.0);
     }
 
+    /**
+     * Constructs a DirectMoveToPoseCommand with specified maximum velocity.
+     *
+     * @param swerve The swerve drivetrain subsystem.
+     * @param fieldCentric The field-centric drive request configuration.
+     * @param elevatorHeight Supplier for current elevator height.
+     * @param targetPose The target pose to move to.
+     * @param maxVelocity The maximum allowed velocity.
+     */
     public DirectMoveToPoseCommand(
             Swerve swerve,
             SwerveRequest.FieldCentric fieldCentric,
@@ -75,6 +124,9 @@ public class DirectMoveToPoseCommand extends Command {
         addRequirements(this.swerve);
     }
 
+    /**
+     * Initializes the command by resetting completion flags.
+     */
     @Override
     public void initialize() {
         xPosDone = false;
@@ -83,6 +135,14 @@ public class DirectMoveToPoseCommand extends Command {
         end = false;
     }
 
+    /**
+     * Executes the command's control logic regularly.
+     *
+     * <p>
+     * Calculates required velocity and heading, applies swerve control,
+     * and checks position and orientation tolerances for completion.
+     * </p>
+     */
     @Override
     public void execute() {
         Pose2d currentPose = swerve.localizer.getStrategyPose();
@@ -125,12 +185,22 @@ public class DirectMoveToPoseCommand extends Command {
         }
     }
 
+    /**
+     * Ends the command, safely stopping all module motion and updating the active heading.
+     *
+     * @param interrupted Whether the command was externally interrupted or canceled early.
+     */
     @Override
     public void end(boolean interrupted) {
         swerve.forceStop();
         swerve.consistentHeading = swerve.localizer.getStrategyPose().getRotation().getDegrees();
     }
 
+    /**
+     * Checks if the command has finished moving to the target pose within tolerances.
+     *
+     * @return True if all positional and rotational tolerances are met, false otherwise.
+     */
     @Override
     public boolean isFinished() {
         return end;

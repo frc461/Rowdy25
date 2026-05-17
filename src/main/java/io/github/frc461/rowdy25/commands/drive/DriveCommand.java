@@ -33,23 +33,79 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
+/**
+ * A command that provides teleoperated swerve drive control with multiple heading modes.
+ *
+ * <p>
+ * This command handles normal driving input, auto-heading toward various targets (reef,
+ * coral station, processor, net, game objects), fast rotation, and drive mode state
+ * management. Velocity and rotational rates are scaled based on elevator height.
+ * </p>
+ *
+ * @author Eugene Zhang, <a href="https://github.com/ez500">GitHub</a>
+ */
 public class DriveCommand extends Command {
+    /** The swerve drivetrain subsystem. */
     private final Swerve swerve;
+
+    /** The field-centric swerve drive request. */
     private final SwerveRequest.FieldCentric fieldCentric;
+
+    /** PID controller responsible for yaw correction during auto-heading modes. */
     private final PIDController yawController;
+
+    /** PID controller responsible for tracking detected game objects. */
     private final PIDController objectDetectionController;
+
+    /** PID controller responsible for maintaining a consistent heading during translation-only drive. */
     private final PIDController headingController;
+
+    /** Supplier for forward/backward translational input. */
     private final DoubleSupplier straight;
+
+    /** Supplier for lateral translational input. */
     private final DoubleSupplier strafe;
+
+    /** Supplier for combined rotational input from joystick and bumper controls. */
     private final DoubleSupplier rot;
+
+    /** Supplier for fast rotation left input. */
     private final BooleanSupplier fastRotationLeft;
+
+    /** Supplier for fast rotation right input. */
     private final BooleanSupplier fastRotationRight;
+
+    /** Supplier for current elevator height. */
     private final DoubleSupplier elevatorHeight;
+
+    /** Supplier for the current drive mode. */
     private final Supplier<Swerve.DriveMode> driveMode;
+
+    /** Supplier for whether auto-heading is enabled. */
     private final BooleanSupplier autoHeading;
+
+    /** The robot's current pose estimate. */
     private Pose2d currentPose;
+
+    /** The robot's current heading in degrees. */
     private double currentHeading;
 
+    /**
+     * Constructs a DriveCommand.
+     *
+     * @param swerve The swerve drivetrain subsystem.
+     * @param fieldCentric The field-centric drive request configuration.
+     * @param elevatorHeight Supplier for current elevator height.
+     * @param straight Supplier for forward/backward translational input.
+     * @param strafe Supplier for lateral translational input.
+     * @param rotJoystick Supplier for rotational joystick input.
+     * @param rotLeft Supplier for left bumper rotation input.
+     * @param rotRight Supplier for right bumper rotation input.
+     * @param fastRotationLeft Supplier for fast rotation left input.
+     * @param fastRotationRight Supplier for fast rotation right input.
+     * @param driveMode Supplier for the current drive mode.
+     * @param autoHeading Supplier for whether auto-heading is enabled.
+     */
     public DriveCommand(
             Swerve swerve,
             SwerveRequest.FieldCentric fieldCentric,
@@ -100,6 +156,10 @@ public class DriveCommand extends Command {
         addRequirements(this.swerve);
     }
 
+    /**
+     * Executes the command's control logic every 20ms, applying swerve drive inputs
+     * based on the current drive mode and driver inputs.
+     */
     @Override
     public void execute() {
         updateMode();
@@ -120,6 +180,13 @@ public class DriveCommand extends Command {
         );
     }
 
+    /**
+     * Updates the drive mode based on current driver inputs.
+     *
+     * <p>
+     * Priorities are: fast rotation > rotation > idle > translating.
+     * </p>
+     */
     private void updateMode() {
         if (swerve.isFullyTeleop()) {
             if (fastRotationLeft.getAsBoolean() || fastRotationRight.getAsBoolean()) {
@@ -134,6 +201,16 @@ public class DriveCommand extends Command {
         }
     }
 
+    /**
+     * Determines the translational velocity for a given axis based on the current drive mode.
+     *
+     * <p>
+     * Certain auto-heading modes clamp velocity for precision approach.
+     * </p>
+     *
+     * @param axis The raw translational input (-1.0 to 1.0).
+     * @return The scaled translational rate in meters per second.
+     */
     private double determineTranslationalRate(double axis) {
         return switch (driveMode.get()) {
             case BRANCH_HEADING, BRANCH_L1_HEADING, REEF_TAG_HEADING, REEF_TAG_OPPOSITE_HEADING, CORAL_STATION_HEADING, PROCESSOR_HEADING, NET_HEADING ->
@@ -146,6 +223,16 @@ public class DriveCommand extends Command {
         };
     }
 
+    /**
+     * Determines the rotational rate based on the current drive mode.
+     *
+     * <p>
+     * Auto-heading modes use PID controllers to orient toward the nearest target heading,
+     * while manual modes use direct joystick input scaled by the appropriate angular velocity.
+     * </p>
+     *
+     * @return The rotational rate in degrees per second.
+     */
     private double determineRotationalRate() {
         return switch (driveMode.get()) {
             case IDLE, ROTATING -> -rot.getAsDouble() * Constants.MAX_CONTROLLED_ANGULAR_VEL.apply(elevatorHeight.getAsDouble());
@@ -199,6 +286,17 @@ public class DriveCommand extends Command {
         };
     }
 
+    /**
+     * Calculates the target heading for scoring at L1 on the nearest reef branch.
+     *
+     * <p>
+     * The heading is offset to the left or right of the nearest reef tag based on
+     * whether the robot is positioned to the left or right of the tag.
+     * </p>
+     *
+     * @param currentPose The robot's current pose.
+     * @return The target heading in degrees for L1 scoring.
+     */
     private double getL1ScoreHeading(Pose2d currentPose) {
         Pose2d nearestTagPose = FieldUtil.Reef.getNearestReefTagPose(currentPose, false);
         Pose2d relativePose = currentPose.relativeTo(nearestTagPose);
