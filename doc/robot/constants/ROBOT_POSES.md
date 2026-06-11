@@ -1,34 +1,23 @@
-﻿# RobotIdentity Class
-[RobotIdentity](../../src/main/java/io/github/frc461/rowdy25/constants/RobotIdentity.java) selects robot-specific constants at startup by detecting the robot's MAC address.
-## Variants
-- **DefaultConstants** - Alpha/prototype bot
-- **CompConstants** - Competition bot (fully tuned)
-- **SimConstants** - WPILib simulation environment
-- **TestConstants** - Bench testing of subsystems
-## Initialization
-RobotIdentity.initializeConstants() is called in the Robot constructor. It reads the RoboRIO's MAC address via MacAddress.getMacAddress() and loads the matching variant's constants.
-## Adding New Robots
-To register a new robot:
-1. Create a new variant MAC constant
-2. Create a variant constants class extending the base variant
-3. Add the mapping in initializeConstants()
-## See Also
-- [Constants](CONSTANTS.md) - Structure of constants
-- Variant classes under src/main/java/io/github/frc461/rowdy25/constants/variants/
-"@ | Out-File -FilePath 'C:\Users\eugen\Projects\Rowdy25\doc\robot\constants\ROBOT_IDENTITY.md' -Encoding UTF8 -Force
-@"
-# RobotPoses Class
-[RobotPoses](../../src/main/java/io/github/frc461/rowdy25/constants/RobotPoses.java) defines all field landmark poses for the Reefscape game.
-## Landmarks
-- **Reef Branches** - Positions for L1-L4 coral scoring
-- **Coral Station** - Pickup location for coral game pieces
-- **Algae Targets** - Reef and processor locations for algae
-- **Processor** - Algae scoring location
-- **Net** - High algae scoring target
-- **Barge** - Climb starting position
+﻿# RobotPoses Class
+
+[RobotPoses](../../src/main/java/io/github/frc461/rowdy25/constants/RobotPoses.java) computes the target robot `Pose2d`s for every field landmark relevant to scoring, intaking, and climbing during the Reefscape game. Where `FieldUtil` describes the *field* (where things are), `RobotPoses` describes where the *robot* should sit relative to those features.
+
+## Landmark Groups
+
+- **Reef Branches** — Robot poses for scoring coral at L1–L4 on every reef branch
+- **Coral Station** — Pickup poses at the left and right coral stations (including obstructed and ground-intake variants)
+- **Algae on Reef** — Approach poses for removing low and high algae from each reef face
+- **Processor** — Robot pose for scoring algae into the processor
+- **Net** — Robot pose for scoring algae into the net (with randomized X for defense)
+
 ## Alliance Awareness
-All poses are defined in blue alliance coordinates. FlippingUtil automatically flips poses for red alliance via DriverStation alliance detection.
+
+All poses are defined in blue-alliance field coordinates. Consumers pass the alliance through `Constants.ALLIANCE_SUPPLIER`; PathPlanner's `FlippingUtil` is used wherever a mirrored red-alliance pose is required.
+
 ## Usage
-Used by [Pathfinder](../autos/PATHFINDER.md) and [FieldUtil](../util/OTHER.md) for autonomous pathfinding and manual control target calculations.
+
+Used by [Pathfinder](../autos/PATHFINDER.md), [AutoManager](../autos/AUTO_MANAGER.md), and the Swerve `pathFindTo*` helpers to compute reachable target poses, and by [FieldUtil](../util/OTHER.md) for nearest-target queries.
+
 ## Tuning
-Verify poses match actual field layout during competition setup.
+
+Verify the underlying field landmark constants (`FieldUtil`, `Constants.VisionConstants`) and any offset values match the actual field layout during competition setup; small offset corrections here are often required after field calibration.

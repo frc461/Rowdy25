@@ -1,26 +1,40 @@
 ﻿# Commands Documentation
-Commands represent actions the robot can perform, extending WPILib's [Command](https://github.wpilib.org/allwpilib/docs/release/java/edu/wpi/first/wpilibj2/command/Command.html) class. The [CommandScheduler](https://github.wpilib.org/allwpilib/docs/release/java/edu/wpi/first/wpilibj2/command/CommandScheduler.html) manages command execution: scheduling them on button presses, state transitions, or directly during autonomous.
+
+Commands represent discrete actions the robot can perform; they extend WPILib's [Command](https://github.wpilib.org/allwpilib/docs/release/java/edu/wpi/first/wpilibj2/command/Command.html) class. The [CommandScheduler](https://github.wpilib.org/allwpilib/docs/release/java/edu/wpi/first/wpilibj2/command/CommandScheduler.html) manages command execution: scheduling them on button presses, state-machine triggers, default-command activation, or directly during autonomous.
+
 ## Command Lifecycle
-- **initialize()** - Called once when scheduled; set initial state
-- **execute()** - Called repeatedly (~50 Hz) while scheduled
-- **isFinished()** - Called repeatedly; command ends when returning true
-- **end(boolean interrupted)** - Called once upon completion or interruption
+
+- **`initialize()`** — Called once when the command is scheduled; sets initial state
+- **`execute()`** — Called every scheduler iteration (~50 Hz) while the command is scheduled
+- **`isFinished()`** — Polled every iteration; the command ends when it returns `true`
+- **`end(boolean interrupted)`** — Called once on completion or interruption
+
 ## Requirements & Scheduling
-Commands declare their subsystem dependencies via ddRequirements(). The scheduler automatically:
-- Prevents conflicting commands on the same subsystem
-- Interrupts lower-priority commands when higher-priority ones are scheduled
-- Runs default commands when no other command requires a subsystem
+
+Commands declare their subsystem dependencies via `addRequirements()`. The scheduler automatically:
+
+- Prevents conflicting commands on the same subsystem from running simultaneously
+- Interrupts a running command when a newly scheduled command requires the same subsystem
+- Runs each subsystem's default command whenever no other command is requiring it
+
 ## Command Composition
-Commands combine via fluent methods:
-- **.andThen(command2)** - Execute sequentially
-- **.alongWith(command2)** - Execute in parallel
-- **.until(condition)** - Interrupt on condition
-- **.onlyIf(condition)** - Only schedule if condition is true
-- **ConditionalCommand(ifTrue, ifFalse, condition)** - Choose based on condition
+
+Commands compose via fluent decorators:
+
+- **`.andThen(command2)`** — Run sequentially
+- **`.alongWith(command2)`** — Run in parallel
+- **`.until(condition)`** — Interrupt when the condition becomes true
+- **`.onlyIf(condition)`** — Schedule only if the condition is true at start
+- **`.unless(condition)`** — Skip the command when the condition is true
+- **`new ConditionalCommand(ifTrue, ifFalse, condition)`** — Choose between two commands based on a condition
+
 ## Rowdy25 Command Categories
-- [Autonomous Commands](AUTO.md) - SearchForObjectCommand, path-following
-- [Drive Commands](DRIVE.md) - DriveCommand, pathfinding, target alignment
-- [Subsystem Commands](SUBSYSTEM_COMMANDS.md) - ElevatorCommand, PivotCommand, WristCommand, IntakeCommand
+
+- [Autonomous Commands](AUTO.md) — `SearchForObjectCommand`, `FollowPathRequiringAlgaeCommand`
+- [Drive Commands](DRIVE.md) — `DriveCommand`, `PathfindToPoseAvoidingReefCommand`, `DirectMoveToPoseCommand`
+- [Subsystem Commands](SUBSYSTEM_COMMANDS.md) — `ElevatorCommand`, `PivotCommand`, `WristCommand`, `IntakeCommand`
+
 ## See Also
-- [RobotContainer](../ROBOT_CONTAINER.md) - Where commands are created and bound
-- [Subsystems](../subsystems) - Lower-level APIs that commands invoke
+
+- [RobotContainer](../ROBOT_CONTAINER.md) — Where commands are instantiated and bound to triggers
+- [Subsystems](../subsystems) — Lower-level APIs that these commands drive

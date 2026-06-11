@@ -1,21 +1,40 @@
 ﻿# RobotStates Class
-The [RobotStates](../../src/main/java/io/github/frc461/rowdy25/RobotStates.java) class is a superstructure that integrates all non-drivetrain subsystems (Elevator, Pivot, Wrist, Intake, Lights) into a coordinated state machine. It manages discrete robot states and ensuring safe, ordered transitions.
+
+The [RobotStates](../../src/main/java/io/github/frc461/rowdy25/RobotStates.java) class is a superstructure that integrates all non-drivetrain subsystems (Elevator, Pivot, Wrist, Intake, Lights) — plus the Swerve drivetrain — into a coordinated state machine. It manages discrete robot states and ensures safe, ordered transitions between them.
+
 ## State Overview
-RobotStates.State is an enum representing 25+ robot states, including:
-- **Stow States**: STOW, L2_L3_L4_STOW - Safe resting positions
-- **Coral Scoring**: GROUND_CORAL, L1_CORAL, L2_CORAL, L3_CORAL, L4_CORAL - Scoring on reef branches
-- **Algae Handling**: GROUND_ALGAE, LOW_REEF_ALGAE, HIGH_REEF_ALGAE, PROCESSOR, NET - Algae removal and scoring
-- **Intake Positions**: CORAL_STATION, CORAL_STATION_OBSTRUCTED - Pickup from stations
-- **Climb**: PREPARE_CLIMB, CLIMB - Barge engagement and climbing
-- **Manual**: MANUAL - Direct joystick control of subsystems
-- **Output**: OUTTAKE, OUTTAKE_ALGAE, OUTTAKE_L1, INTAKE_OUT - Ejection modes
+
+`RobotStates.State` is an enum of 22 robot states, grouped here by intent:
+
+- **Stow** — `STOW`, `L2_L3_L4_STOW` (safe resting positions; the latter is used when transitioning between L2/L3/L4 coral scoring poses)
+- **Coral scoring** — `GROUND_CORAL`, `L1_CORAL`, `L2_CORAL`, `L3_CORAL`, `L4_CORAL`
+- **Algae handling** — `GROUND_ALGAE`, `LOW_REEF_ALGAE`, `HIGH_REEF_ALGAE`, `PROCESSOR`, `NET`
+- **Coral station intake** — `CORAL_STATION`, `CORAL_STATION_OBSTRUCTED`
+- **Climb** — `PREPARE_CLIMB`, `CLIMB`
+- **Manual** — `MANUAL` (direct joystick control of superstructure)
+- **Outtake / output** — `OUTTAKE`, `OUTTAKE_ALGAE`, `OUTTAKE_L1`, `INTAKE_OUT`
+
+A `SendableChooser` (`stateChooser`) is populated with every state so operators can force a state from SmartDashboard during disabled mode.
+
 ## State Transitions
-The [orderedTransition()](../../src/main/java/io/github/frc461/rowdy25/RobotStates.java) method ensures safe transitions by:
-- Moving subsystems in a defined sequence (e.g., stow wrist before rotating pivot through danger zones)
-- Tracking elevator direction to apply correct order
-- Validating state compatibility before executing transitions
+
+The `orderedTransition()` method ensures safe transitions by:
+
+- Sequencing subsystem motion so mechanisms do not collide (e.g., stowing the wrist before rotating the pivot through danger zones)
+- Branching on `elevator.goingDown()` / `goingThroughStow()` to apply the correct ordering depending on direction
+- Validating that the target state is compatible with the current superstructure pose before scheduling commands
+
+State setters (`setStowState()`, `setL2L3L4StowState()`, `setClimbState()`, etc.) and toggles (`toggleNetState()`, `toggleProcessorState()`, `toggleAutoLevelCoralState()`, `toggleCoralStationState()`, `toggleGroundAlgaeState()`, `toggleHighReefAlgaeState()`, `toggleLowReefAlgaeState()`, `toggleAutoHeading()`, etc.) are the primary way other classes request transitions.
+
 ## Triggers & Commands
-State transitions are wired to controller triggers via configureToggleStateTriggers(), automatically scheduling coordinated commands when a state is toggled.
+
+`configureToggleStateTriggers()` wires each state to a WPILib `Trigger` that fires when the state becomes active, automatically scheduling the coordinated command chain for that state. `setDefaultCommands(driverXbox, opXbox)` installs the per-subsystem default commands used during teleop.
+
+## Auto-Level Tracking
+
+The class also tracks the operator-selected reef level (`FieldUtil.Reef.Level`) via `getCurrentAutoLevel()` / `setCurrentAutoLevel(...)`, which is used by pathfinding helpers and the driver's automatic scoring bindings.
+
 ## See Also
-- [Subsystems](subsystems) - Individual subsystem state enums that mirror RobotStates.State
-- [RobotContainer](ROBOT_CONTAINER.md) - Where state triggers are configured
+
+- [Subsystems](subsystems) — Individual subsystem state enums that mirror `RobotStates.State`
+- [RobotContainer](ROBOT_CONTAINER.md) — Where state triggers and toggle bindings are configured

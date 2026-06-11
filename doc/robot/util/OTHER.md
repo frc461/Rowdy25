@@ -1,20 +1,29 @@
 ﻿# Other Utilities
-Miscellaneous helper classes for field math, control, and custom triggers.
+
+Miscellaneous helper classes covering field math, control, characterization, and custom triggers.
+
 ## Field Math
-- **FieldUtil** - Computes target poses (reef branches, coral station, algae, processor, net, barge); calculates offsets for safe approach
-- **RotationUtil** - Angle normalization and conversion utilities
-- **EquationUtil** - Polynomial and interpolation utilities for smooth control
+
+- **`FieldUtil`** — Computes target poses (reef branches, coral stations, algae, processor, net, barge) and "nearest landmark" queries; alliance-aware
+- **`RotationUtil`** — Angle normalization and conversion helpers
+- **`EquationUtil`** — Polynomial / interpolation utilities for smooth control
+
 ## Control & Characterization
-- **SysID** - Motor characterization routines for feedforward and feedback tuning
-- **PhoenixProfiledPIDController** - Motion Magic wrapper with smooth velocity profiles
-- **ProfiledExpEndController** - Exponential end-of-motion deceleration for smooth stops
-- **GravityGainsCalculator** - Utility for computing gravity compensation gains
-## Custom Triggers & Helpers
-- **DoubleTrueTrigger** - Detects simultaneous button presses (useful for modifier keys)
-- **MultipleChooser** - Enhanced SmartDashboard chooser supporting multiple independent selections
-- **EstimatedRobotPose** - Wrapper for vision-based pose measurements
-- **MacAddress** - Robot identification via MAC address (used by RobotIdentity)
-- **Elastic** - Data structure utilities for state composition
+
+- **`SysID`** — Wraps WPILib's `SysIdRoutine` for the Swerve drive subsystem; bound to operator-controller chord triggers in `RobotContainer`
+- **`PhoenixProfiledPIDController`** — Motion-magic-flavored wrapper around `ProfiledPIDController` for Phoenix 6 mechanisms
+- **`ProfiledExpEndController`** — Profiled PID controller with exponential end-of-motion deceleration for smooth stops
+- **`GravityGainsCalculator`** — Utility for computing pivot/wrist gravity feedforward gains from mechanism geometry
+
+## Triggers & Helpers
+
+- **`DoubleTrueTrigger`** — Custom `Trigger` that fires only when two source triggers are simultaneously true (useful for chord bindings like `leftBumper + rightBumper`)
+- **`MultipleChooser`** — Extended `SendableChooser` that supports multiple independent selections (used by `AutoManager`)
+- **`EstimatedRobotPose`** — Wrapper around a vision-derived pose with timestamp and standard deviations
+- **`MacAddress`** — Reads the host machine's MAC address (used by [`RobotIdentity`](../constants/ROBOT_IDENTITY.md))
+- **`Elastic`** — Helpers for publishing Elastic dashboard notifications/widgets
+
 ## See Also
-- [Swerve Drive](../subsystems/DRIVETRAIN.md) - Uses FieldUtil for target calculations
-- [Autonomous](../autos) - Uses FieldUtil and pathfinding utilities
+
+- [Swerve](../subsystems/DRIVETRAIN.md) — Uses `FieldUtil` for target calculations and `SysID` for characterization
+- [Autonomous](../autos) — Uses `FieldUtil` and the pathfinding helpers

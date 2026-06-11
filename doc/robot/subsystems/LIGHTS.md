@@ -1,8 +1,15 @@
 ﻿# Lights Subsystem
-The [Lights](../../src/main/java/io/github/frc461/rowdy25/subsystems/Lights.java) class manages PWM-controlled LED strip indicators (currently disabled on 2025 hardware).
+
+The [Lights](../../src/main/java/io/github/frc461/rowdy25/subsystems/Lights.java) class wraps PWM-controlled LED strip indicators used for visual feedback about robot state. The hardware was disabled on the 2025 competition robot, but the subsystem is left in place so it can be reactivated without changes elsewhere.
+
 ## Purpose
-Provides visual feedback for robot state: stow (green), scoring (red), climb (blue), etc.
+
+Provides at-a-glance feedback to drivers and human pickup partners about the current superstructure state — stow, scoring, intake-ready, algae held, climb, etc.
+
 ## Implementation
-When re-enabled, subscribes to RobotStates to drive LED color based on current state.
+
+When re-enabled, `Lights` reacts to [RobotStates](../ROBOT_STATES.md) transitions to drive LED color and pattern.
+
 ## Status
-Hardware disabled for 2025; code remains for future deployment.
+
+Hardware disabled for 2025; the code remains for future deployment.

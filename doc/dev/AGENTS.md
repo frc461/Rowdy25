@@ -12,18 +12,18 @@ FRC 2025 robot codebase (Team 461 "Westside Robotics"). This document guides AI 
 
 ### Core Subsystem Architecture: State Machines
 
-**`RobotStates.java`** (1058 lines) is the integrating superstructure:
-- Enum `State` with 25+ states: `STOW`, `L1_CORAL`, `L2_CORAL`, `PROCESSOR`, `CLIMB`, etc.
-- Manages coordinated transitions across elevator, pivot, wrist, and intake subsystems
+**`RobotStates.java`** (~1050 lines) is the integrating superstructure:
+- Enum `State` with 22 states: `STOW`, `L2_L3_L4_STOW`, `L1_CORAL`, `L2_CORAL`, `L3_CORAL`, `L4_CORAL`, `GROUND_CORAL`, `GROUND_ALGAE`, `LOW_REEF_ALGAE`, `HIGH_REEF_ALGAE`, `PROCESSOR`, `NET`, `CORAL_STATION`, `CORAL_STATION_OBSTRUCTED`, `PREPARE_CLIMB`, `CLIMB`, `MANUAL`, `OUTTAKE`, `OUTTAKE_ALGAE`, `OUTTAKE_L1`, `INTAKE_OUT`
+- Manages coordinated transitions across the swerve, elevator, pivot, wrist, and intake subsystems
 - Each subsystem has parallel state enums (e.g., `Pivot.State.L2_CORAL_AT_BRANCH`)
-- Uses `Trigger` system for state-based automation: `stowState.onTrue(...)` chains commands
-- Method `orderedTransition()` ensures safe non-conflicting movement (e.g., stow wrist before moving pivot through certain ranges)
+- Uses the `Trigger` system for state-based automation: `stowState.onTrue(...)` chains commands
+- `orderedTransition()` ensures safe non-conflicting movement (e.g., stow wrist before moving pivot through certain ranges); the elevator's `goingDown()` / `goingThroughStow()` predicates select the safe ordering
 
-**Subsystems** (each has `*Telemetry.java` for logging):
-- `Swerve`: Phoenix 6 swerve with LocalADStar pathfinding, multi-camera localization
-- `Elevator`, `Pivot`, `Wrist`: TalonFX Kraken motors with PID/SVAG profiles
-- `Intake`: Motor + sensor-based coral/algae detection
-- `Lights`: LED strips (currently disabled on hardware)
+**Subsystems** (each has a paired `*Telemetry.java` for logging):
+- `Swerve` — Phoenix 6 swerve drivetrain with `LocalADStar` pathfinding and a 12-mode `DriveMode` enum (idle / translating / rotating / fast-rotating / six auto-heading modes); owns a `Localizer` for multi-camera localization
+- `Elevator`, `Pivot`, `Wrist` — TalonFX Kraken motors with Motion Magic Expo, PID + gravity feedforward; pivot adds a servo-hub ratchet for mechanical hold
+- `Intake` — Roller motor + CANandcolor proximity / color sensor + distance sensor for coral and algae detection
+- `Lights` — LED strips (hardware disabled on the 2025 competition robot; code retained)
 
 ### Key Data Flows
 
@@ -55,11 +55,11 @@ FRC 2025 robot codebase (Team 461 "Westside Robotics"). This document guides AI 
 - **Telemetry**: DogLog logs all subsystem states; check `/media/logs/` on roboRIO
 
 ### Robot Identity & Constants
-`RobotIdentity.initializeConstants()` (called in Robot constructor) loads variant constants based on MAC address:
-- `DefaultConstants` (alpha bot)
-- `CompConstants` (competition bot)
-- `SimConstants` (simulation)
-- `TestConstants` (test bench)
+`RobotIdentity.initializeConstants()` (called from the `Robot` constructor) loads variant constants based on MAC address:
+- `DefaultConstants` — baseline values; also the fallback used for the alpha bot (no dedicated variant file)
+- `CompConstants` — competition robot overrides
+- `SimConstants` — simulation overrides
+- `TestConstants` — test-bench overrides
 
 Edit `constants/variants/*.java` for robot-specific PID gains, motor IDs, and presets.
 

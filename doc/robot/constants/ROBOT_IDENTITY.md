@@ -1,28 +1,34 @@
-# RobotIdentity Class
+# RobotIdentity
 
-`RobotIdentity.java` implements the dynamic constant selection used at robot startup.
+[`RobotIdentity`](../../src/main/java/io/github/frc461/rowdy25/constants/RobotIdentity.java) implements the dynamic constant selection used at robot startup.
 
 ## Purpose
 
-Selects which variant of constants to use (Default/Comp/Sim/Test) based on the machine's MAC address. This allows a single codebase to support multiple physical robots and simulation configurations without changing source files at runtime.
+Selects which variant of constants to use (`DefaultConstants` / `CompConstants` / `SimConstants` / `TestConstants`) based on the host's MAC address. This lets one codebase support multiple physical robots and simulation without changing source at runtime.
 
-## How it works
+## How It Works
 
-1. At startup `RobotIdentity.initializeConstants()` is called (from `Robot()` constructor).
-2. The method reads the current host's MAC address using `MacAddress.getMacAddress()`.
-3. The MAC address is matched against a table of known addresses; when a match is found the corresponding variant class (e.g., `CompConstants`) is loaded into the active `Constants` references.
-4. If no match is found, a default variant (usually `DefaultConstants`) is selected.
+1. At startup `RobotIdentity.initializeConstants()` is called from the `Robot()` constructor.
+2. The method reads the current host's MAC address via [`MacAddress.getMacAddress()`](../util/OTHER.md).
+3. The address is matched against `RobotIdentity`'s enum entries; on match the corresponding variant class is loaded into the active [`Constants`](CONSTANTS.md) fields.
+4. If no entry matches, the codebase falls back to `DefaultConstants` (this is also the path used for the alpha bot, which intentionally has no dedicated variant file).
 
-## Adding a new robot
+## Known Variants
 
-To add a new robot/variant:
+| Identity | MAC source                                | Variant class       |
+|----------|-------------------------------------------|---------------------|
+| `ALPHA`  | (fallback — no MAC match)                 | `DefaultConstants`  |
+| `ROWDY`  | Competition RoboRIO                       | `CompConstants`     |
+| `TEST`   | Test-bench RoboRIO                        | `TestConstants`     |
+| `SIM`    | Simulation host                           | `SimConstants`      |
 
-1. Add a new constants variant class under `src/main/java/io/github/frc461/rowdy25/constants/variants/` (copy an existing one and edit values).
-2. Add the new robot's MAC address and mapping entry inside `RobotIdentity.initializeConstants()` so the code can recognize that robot at startup.
-3. Build and deploy to the new RoboRIO; `RobotIdentity` will automatically select the appropriate constants at runtime.
+## Adding a New Robot
+
+1. Add a new constants variant under `src/main/java/io/github/frc461/rowdy25/constants/variants/` (copy an existing one and edit values).
+2. Add a new identity entry in `RobotIdentity` mapping the new RoboRIO MAC address to that variant.
+3. Build and deploy; `RobotIdentity` will automatically select the new constants at runtime.
 
 ## Notes
 
 - Variant files are source-controlled; prefer creating a new variant class instead of altering an existing competition variant.
-- Keep sensitive network or environment information out of constants; variants should only include configuration and calibration values.
-
+- Keep sensitive network or environment information out of constants — variants should only hold configuration and calibration values.
