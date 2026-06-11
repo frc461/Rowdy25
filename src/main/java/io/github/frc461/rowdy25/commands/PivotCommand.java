@@ -1,0 +1,90 @@
+package io.github.frc461.rowdy25.commands;
+
+/*
+ * Copyright (C) 2025-present 461 Boosters FIRST, Inc. dba Westside Robotics - The Rowdy 25.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj2.command.Command;
+import io.github.frc461.rowdy25.RobotStates;
+import io.github.frc461.rowdy25.constants.Constants;
+import io.github.frc461.rowdy25.subsystems.pivot.Pivot;
+
+import java.util.function.DoubleSupplier;
+
+/**
+ * A command that provides manual and automatic control of the pivot subsystem.
+ * <p>
+ * When the manual axis is active (beyond deadband), the pivot is moved directly
+ * and the robot states are set to manual mode. Otherwise, the pivot holds its
+ * target position based on the current elevator and wrist positions.
+ *
+ * @author Eugene Zhang, <a href="https://github.com/ez500">GitHub</a>
+ * @author Leo Minton, <a href="https://github.com/leo-minton">GitHub</a>
+ */
+public class PivotCommand extends Command {
+    /** The pivot subsystem. */
+    private final Pivot pivot;
+
+    /** Supplier for the manual control axis value. */
+    private final DoubleSupplier manualAxisValue;
+
+    /** Supplier for the current elevator position used to determine pivot hold target. */
+    private final DoubleSupplier elevatorPosition;
+
+    /** Supplier for the current wrist position used to determine pivot hold target. */
+    private final DoubleSupplier wristPosition;
+
+    /** The robot states manager for tracking manual/auto mode transitions. */
+    private final RobotStates robotStates;
+
+    /**
+     * Constructs a PivotCommand.
+     *
+     * @param pivot The pivot subsystem.
+     * @param manualAxisValue Supplier for the manual control axis value.
+     * @param elevatorPosition Supplier for the current elevator position.
+     * @param wristPosition Supplier for the current wrist position.
+     * @param robotStates The robot states manager.
+     */
+    public PivotCommand(Pivot pivot, DoubleSupplier manualAxisValue, DoubleSupplier elevatorPosition, DoubleSupplier wristPosition, RobotStates robotStates) {
+        this.pivot = pivot;
+        this.manualAxisValue = manualAxisValue;
+        this.elevatorPosition = elevatorPosition;
+        this.wristPosition = wristPosition;
+        this.robotStates = robotStates;
+        addRequirements(pivot);
+    }
+
+    /**
+     * Executes the command's control logic every 20ms.
+     * <p>
+     * If the manual axis exceeds the deadband, the pivot enters manual state
+     * and moves at a reduced rate. Otherwise, the pivot holds its target
+     * position based on the current elevator and wrist positions.
+     */
+    @Override
+    public void execute() {
+        double axisValue = MathUtil.applyDeadband(manualAxisValue.getAsDouble(), Constants.DEADBAND) * 0.3;
+        if (axisValue != 0.0) {
+            pivot.setManualState();
+            robotStates.setManualState();
+            pivot.move(axisValue);
+        } else {
+            pivot.holdTarget(elevatorPosition.getAsDouble(), wristPosition.getAsDouble());
+        }
+    }
+}

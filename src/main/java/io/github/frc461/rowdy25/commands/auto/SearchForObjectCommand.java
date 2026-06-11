@@ -1,0 +1,255 @@
+package io.github.frc461.rowdy25.commands.auto;
+
+/*
+ * Copyright (C) 2025-present 461 Boosters FIRST, Inc. dba Westside Robotics - The Rowdy 25.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+import com.ctre.phoenix6.swerve.SwerveModule;
+import com.ctre.phoenix6.swerve.SwerveRequest;
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj2.command.Command;
+import io.github.frc461.rowdy25.constants.Constants;
+import io.github.frc461.rowdy25.subsystems.drivetrain.Swerve;
+import io.github.frc461.rowdy25.util.EquationUtil;
+import io.github.frc461.rowdy25.util.FieldUtil;
+import io.github.frc461.rowdy25.util.vision.PhotonUtil;
+
+import java.util.function.BooleanSupplier;
+
+/**
+ * An autonomous command that tracks, approaches, and dynamically searches for specific objects (typically visual targets like algae/coral)
+ * using the {@link PhotonUtil.Color} utility. The command proceeds through multiple autonomous tracking stages.
+ *
+ * @author Eugene Zhang, <a href="https://github.com/ez500">GitHub</a>
+ */
+public class SearchForObjectCommand extends Command {
+    /** Enumerates the sequential tracking stages for the command's state machine. */
+    public enum CommandStage {
+        /** Actively tracking and driving towards the detected object. */
+        TO_OBJECT,
+        /** Looking around if the target is initially lost or missed. */
+        SEARCH,
+        /** Pausing after a search stage to wait for the target to reappear before retrying. */
+        WAIT
+    }
+
+    /** The drivetrain subsystem. */
+    private final Swerve swerve;
+
+    /** The field-centric swerve drive request. */
+    private final SwerveRequest.FieldCentric fieldCentric;
+
+    /** PID controller responsible for orienting the robot securely towards the dynamic target pose. */
+    private final PIDController yawController;
+
+    /** Condition providing the end state where the object has been successfully acquired (e.g. intake limit switch tripped). */
+    private final BooleanSupplier objectObtained;
+
+    /** The classification of the object being tracked. */
+    private final PhotonUtil.Color.TargetClass objectClass;
+
+    /** The maximal translation speed allowed during the search and approach maneuvers. */
+    private final double maxVelocity;
+
+    /** The current active computed pose target the robot is correcting itself towards. */
+    private Pose2d targetPose;
+
+    /** True if the robot's X translational error is within an acceptable threshold. */
+    private boolean xPosDone;
+
+    /** True if the robot's Y translational error is within an acceptable threshold. */
+    private boolean yPosDone;
+
+    /** True if the robot's angular error relative to the target is within an acceptable threshold. */
+    private boolean yawDone;
+
+    /** Flag indicating that the command should terminate. */
+    private boolean end;
+
+    /** The active tracking stage. */
+    private CommandStage currentStage;
+
+    /**
+     * Constructs a SearchForObjectCommand.
+     *
+     * @param swerve The robot's swerve drivetrain.
+     * @param fieldCentric Field-centric drive wrapper request to direct the chassis.
+     * @param objectObtained Condition declaring successful item ingestion/conclusion.
+     * @param objectClass The Photon target class classifying what to search for.
+     * @param maxVelocity The maximum safe approach velocity.
+     */
+    public SearchForObjectCommand( // TODO SHOP: TEST THIS
+                                   Swerve swerve,
+                                   SwerveRequest.FieldCentric fieldCentric,
+                                   BooleanSupplier objectObtained,
+                                   PhotonUtil.Color.TargetClass objectClass,
+                                   double maxVelocity
+    ) {
+        this.swerve = swerve;
+        this.fieldCentric = fieldCentric;
+
+        yawController = new PIDController(
+                Constants.SwerveConstants.ANGULAR_POSITION_P,
+                0,
+                Constants.SwerveConstants.ANGULAR_POSITION_D
+        );
+        yawController.enableContinuousInput(Constants.SwerveConstants.ANGULAR_MINIMUM_ANGLE, Constants.SwerveConstants.ANGULAR_MAXIMUM_ANGLE);
+
+        this.objectObtained = objectObtained;
+        this.objectClass = objectClass;
+        this.maxVelocity = MathUtil.clamp(maxVelocity, 0, Constants.MAX_VEL);
+        targetPose = new Pose2d();
+        xPosDone = false;
+        yPosDone = false;
+        yawDone = false;
+        end = false;
+        currentStage = CommandStage.TO_OBJECT;
+
+        addRequirements(this.swerve);
+    }
+
+    /**
+     * Examines the initial vision pipeline layout and seeds the target coordinate. If the object
+     * is completely invisible upon startup, forces an end.
+     */
+    @Override
+    public void initialize() {
+        PhotonUtil.Color.getRobotToBestObject(objectClass).ifPresentOrElse(
+                robotToObject -> {
+                    targetPose = swerve.localizer.bestCoralPose;
+                    xPosDone = false;
+                    yPosDone = false;
+                    yawDone = false;
+                    end = false;
+                    currentStage = CommandStage.TO_OBJECT;
+                },
+                () -> end = true
+        );
+    }
+
+    /**
+     * Regularly reassesses the current pose, actively shifting the drive target toward newly tracked coordinate poses
+     * via state-machine logic that safely accounts for lost camera frames and inconsistent object reads.
+     *
+     * <p>
+     * When the command is initialized, the coral pose is retrieved. If there is no pose, then the command ends.
+     * Otherwise, the robot will drive directly into the pose with a deployed intake to obtain the game piece.
+     * When the robot completes the path to the target pose, if the object is not obtained, it will travel towards
+     * the center of the reef, stop, and wait until a game piece is detected again. When a new pose is obtained, the
+     * state structure repeats. When an object is obtained, the command ends.
+     * </p>
+     */
+    @Override
+    public void execute() {
+        Pose2d currentPose = swerve.localizer.getStrategyPose();
+
+        switch (currentStage) {
+            case TO_OBJECT:
+                PhotonUtil.Color.getRobotToBestObject(objectClass).ifPresent(robotToObject ->
+                        targetPose = swerve.localizer.bestCoralPose
+                );
+                break;
+            case WAIT:
+                PhotonUtil.Color.getRobotToBestObject(objectClass).ifPresentOrElse(
+                        robotToObject -> currentStage = CommandStage.TO_OBJECT,
+                        () -> targetPose = currentPose
+                );
+                break;
+        }
+
+        if (currentStage == CommandStage.TO_OBJECT || currentStage == CommandStage.SEARCH) {
+            swerve.localizer.setCurrentTemporaryTargetPose(targetPose);
+
+            double velocity = Math.max(
+                    EquationUtil.expOutput(
+                            targetPose.getTranslation().getDistance(currentPose.getTranslation()),
+                            2,
+                            2 / 7.0,
+                            15 / 2.0
+                    ),
+                    Math.min(EquationUtil.linearOutput(targetPose.getTranslation().getDistance(currentPose.getTranslation()), 10, -8), maxVelocity)
+            );
+
+            double velocityHeadingRadians = targetPose.getTranslation().minus(currentPose.getTranslation()).getAngle().getRadians();
+
+            swerve.setControl(
+                    fieldCentric.withDriveRequestType(SwerveModule.DriveRequestType.Velocity)
+                            .withDeadband(0.0)
+                            .withForwardPerspective(SwerveRequest.ForwardPerspectiveValue.BlueAlliance)
+                            .withVelocityX(Math.cos(velocityHeadingRadians) * velocity)
+                            .withVelocityY(Math.sin(velocityHeadingRadians) * velocity)
+                            .withRotationalRate(yawController.calculate(
+                                    currentPose.getRotation().getDegrees(),
+                                    targetPose.getRotation().getDegrees()
+                            ) * Constants.MAX_CONTROLLED_ANGULAR_VEL.apply(0.0))
+            );
+        }
+
+        xPosDone = Math.abs(currentPose.getX() - targetPose.getX())
+                < Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_ACCEPT;
+        yPosDone = Math.abs(currentPose.getY() - targetPose.getY())
+                < Constants.AutoConstants.TRANSLATION_TOLERANCE_TO_ACCEPT;
+        yawDone = Math.abs(MathUtil.inputModulus(currentPose.getRotation().getDegrees() - targetPose.getRotation().getDegrees(), -180, 180))
+                < Constants.AutoConstants.DEGREE_TOLERANCE_TO_ACCEPT;
+
+        if (xPosDone && yPosDone && yawDone) {
+            switch (currentStage) {
+                case TO_OBJECT:
+                    currentStage = CommandStage.SEARCH;
+                    Translation2d nearestReefCenter = FieldUtil.Reef.getNearestReefCenter(currentPose.getTranslation());
+                    Rotation2d reefToLastTargetLocation = nearestReefCenter.minus(targetPose.getTranslation()).getAngle();
+                    targetPose = new Pose2d(
+                            currentPose.getTranslation().interpolate(nearestReefCenter, 0.2),
+                            currentPose.getRotation().interpolate(reefToLastTargetLocation, 0.2)
+                    );
+                    break;
+                case SEARCH:
+                    currentStage = CommandStage.WAIT;
+                    swerve.forceStop();
+                    break;
+            }
+        }
+
+        if (objectObtained.getAsBoolean()) {
+            end = true;
+        }
+    }
+
+    /**
+     * Concludes the tracking maneuver, safely overriding drive requests to zero and updating the active heading target.
+     *
+     * @param interrupted Whether the command was externally interrupted or canceled early.
+     */
+    @Override
+    public void end(boolean interrupted) {
+        swerve.forceStop();
+        swerve.consistentHeading = swerve.localizer.getStrategyPose().getRotation().getDegrees();
+    }
+
+    /**
+     * Concludes whether the tracking phase has naturally finished (i.e. object has been cleanly ingested or command was unable to initially locate it).
+     *
+     * @return True if finished, false otherwise.
+     */
+    @Override
+    public boolean isFinished() {
+        return end;
+    }
+}
