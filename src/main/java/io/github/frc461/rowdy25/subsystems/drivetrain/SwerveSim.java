@@ -22,17 +22,44 @@ import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
 import io.github.frc461.rowdy25.subsystems.localizer.LocalizerSim;
 
+/**
+ * Manages the swerve drivetrain simulation loop.
+ * <p>
+ * Runs at a faster rate than the normal robot periodic to allow PID gains
+ * to behave more reasonably in simulation. Updates both the swerve physics
+ * simulation and the vision system simulation via {@link LocalizerSim}.
+ *
+ * @author Eugene Zhang, <a href="https://github.com/ez500">GitHub</a>
+ */
 public class SwerveSim {
+    /** The swerve drivetrain to simulate. */
     private final Swerve swerve;
+
+    /** The localizer vision system simulator. */
     private final LocalizerSim localizerSim = new LocalizerSim();
 
+    /** Simulation loop period in seconds (5 ms). */
     private static final double SIM_LOOP_PERIOD = 0.005; // 5 ms
+
+    /** Timestamp of the last simulation step. */
     private double lastSimTime;
 
+    /**
+     * Constructs a SwerveSim for the given swerve drivetrain.
+     *
+     * @param swerve The swerve drivetrain to simulate.
+     */
     public SwerveSim(Swerve swerve) {
         this.swerve = swerve;
     }
 
+    /**
+     * Starts the simulation loop using a {@link Notifier}.
+     * <p>
+     * The loop runs at {@link #SIM_LOOP_PERIOD} intervals, updating the
+     * swerve simulation state with the measured time delta and battery
+     * voltage, and updating the vision system simulation.
+     */
     public void startSimThread() {
         lastSimTime = Utils.getCurrentTimeSeconds();
 

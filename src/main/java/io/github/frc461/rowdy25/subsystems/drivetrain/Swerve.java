@@ -55,44 +55,84 @@ import io.github.frc461.rowdy25.util.vision.PhotonUtil;
 import static edu.wpi.first.units.Units.Amps;
 
 /**
- * Class that extends the Phoenix 6 SwerveDrivetrain class and implements
- * Subsystem so it can easily be used in command-based projects.
+ * CTRE Phoenix 6 SwerveDrivetrain subsystem implementation for the Rowdy 25 robot.
+ * <p>
+ * Extends {@link SwerveDrivetrain} and implements {@link Subsystem} for command-based
+ * usage. Manages drive modes (idle, rotating, translating, auto-heading), orchestrates
+ * autonomous pathfinding commands to reef branches, coral stations, algae targets,
+ * the net, and the processor. Integrates with {@link Localizer} for field-relative
+ * localization and provides utility commands for direct pose movement and object tracking.
+ *
+ * @author Eugene Zhang, <a href="https://github.com/ez500">GitHub</a>
+ * @author Geeson Wan, <a href="https://github.com/gerseneck">GitHub</a>
+ * @author Leo Minton, <a href="https://github.com/leo-minton">GitHub</a>
  */
 public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> implements Subsystem {
+    /** Drive mode enumeration defining the robot's current driving behavior. */
     public enum DriveMode {
+        /** No movement. */
         IDLE,
+        /** Rotating at normal speed. */
         ROTATING,
+        /** Rotating at fast speed. */
         FAST_ROTATING,
+        /** Translating without rotating. */
         TRANSLATING,
+        /** Heading toward the nearest reef branch. */
         BRANCH_HEADING,
+        /** Heading toward the nearest L1 reef branch. */
         BRANCH_L1_HEADING,
+        /** Heading toward the nearest reef AprilTag. */
         REEF_TAG_HEADING,
+        /** Heading opposite the nearest reef AprilTag. */
         REEF_TAG_OPPOSITE_HEADING,
+        /** Heading toward a detected vision object. */
         OBJECT_HEADING,
+        /** Heading toward the coral station. */
         CORAL_STATION_HEADING,
+        /** Heading toward the processor. */
         PROCESSOR_HEADING,
+        /** Heading toward the net. */
         NET_HEADING
     }
 
+    /** The current drive mode. */
     private DriveMode currentMode;
 
-    /* An extension to the Swerve subsystem */
+    /** The localization subsystem for field-relative pose estimation. */
     public final Localizer localizer = new Localizer(this);
+
+    /** Telemetry publisher for swerve drivetrain state. */
     private final SwerveTelemetry swerveTelemetry = new SwerveTelemetry(this);
 
+    /** The CTRE Orchestra instance for playing music through swerve motors. */
     public final Orchestra orchestra = new Orchestra();
 
+    /** List of triggers that detect module stalling (current spike + no motion). */
     private final List<Trigger> moduleStuck = new ArrayList<>();
+
+    /** List of boolean suppliers for detecting motor current stalls. */
     private final List<BooleanSupplier> motorStalling = new ArrayList<>();
 
     /* Swerve Command Requests */
+
+    /** Field-centric drive request. */
     private final SwerveRequest.FieldCentric fieldCentric = new SwerveRequest.FieldCentric();
+
+    /** Robot-centric drive request. */
     private final SwerveRequest.RobotCentric robotCentric = new SwerveRequest.RobotCentric();
+
+    /** Swerve drive brake (x-mode) request. */
     private final SwerveRequest.SwerveDriveBrake xMode = new SwerveRequest.SwerveDriveBrake();
 
-    private boolean hasAppliedDefaultRotation; // Keep track if we've ever applied the operator perspective before or not
+    /** Whether the operator perspective has been applied at least once. */
+    private boolean hasAppliedDefaultRotation;
+
+    /** Whether auto-heading is currently active. */
     private boolean autoHeading;
-    public double consistentHeading; // Heading to keep while translating without rotating
+
+    /** The heading to maintain while translating without rotating. */
+    public double consistentHeading;
 
     /**
      * Constructs a CTRE SwerveDrivetrain using the specified constants.
@@ -100,7 +140,6 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
      * This constructs the underlying hardware devices, so users should not construct
      * the devices themselves. If they need the devices, they can access them
      * through getters in the classes.
-     * </p>
      */
     public Swerve() {
         /* ah, */ super(
@@ -167,6 +206,11 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
         consistentHeading = 0.0;
     }
 
+    /**
+     * Returns the current drive mode.
+     *
+     * @return The current drive mode.
+     */
     public DriveMode getCurrentMode() {
         return currentMode;
     }
@@ -174,13 +218,26 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
     /**
      * Returns a command that applies the specified control request to this swerve drivetrain.
      *
-     * @param requestSupplier Function returning the request to apply
-     * @return Command to run
+     * @param requestSupplier Function returning the request to apply.
+     * @return Command to run.
      */
     public Command applyRequest(Supplier<SwerveRequest> requestSupplier) {
         return run(() -> this.setControl(requestSupplier.get()));
     }
 
+    /**
+     * Creates a field-centric drive command with the given input suppliers.
+     *
+     * @param elevatorHeight Supplier for the current elevator height.
+     * @param straight Supplier for the forward/backward joystick axis.
+     * @param strafe Supplier for the left/right joystick axis.
+     * @param rotJoystick Supplier for the rotation joystick axis.
+     * @param rotLeft Supplier for left rotation button.
+     * @param rotRight Supplier for right rotation button.
+     * @param fastRotLeft Supplier for fast left rotation button.
+     * @param fastRotRight Supplier for fast right rotation button.
+     * @return The drive command.
+     */
     public Command driveFieldCentric(
             DoubleSupplier elevatorHeight,
             DoubleSupplier straight,
@@ -207,21 +264,38 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
         );
     }
 
+    /**
+     * Creates a command that moves directly toward a detected object using vision.
+     *
+     * @param objectObtained Supplier that returns true when the object has been obtained.
+     * @param objectLabelClass The type of object to search for (e.g., coral, algae).
+     * @return The object-search command.
+     */
     public Command directMoveToObject(BooleanSupplier objectObtained, PhotonUtil.Color.TargetClass objectLabelClass) {
         return new SearchForObjectCommand(this, fieldCentric, objectObtained, objectLabelClass, 2.5);
     }
 
+    /**
+     * Creates a command that pushes an alliance partner robot out of the way.
+     * Applies a backward robot-centric velocity for 0.5 seconds.
+     *
+     * @return The partner push command.
+     */
     public Command pushAlliancePartnerOut() {
         return applyRequest(() -> robotCentric.withVelocityX(-1.0))
                 .withDeadline(Commands.waitSeconds(0.5))
                 .andThen(this::forceStop);
     }
 
-    // TODO SHOP: TEST ALL PATHFINDING
-
+    /**
+     * Creates a pathfinding command to approach the left coral station and ground-intake coral.
+     *
+     * @param robotStates The robot states subsystem for state tracking.
+     * @return The pathfinding command.
+     */
     public Command pathFindToLeftCoralStationGroundIntakeCoral(RobotStates robotStates) {
         return Commands.defer(
-                () -> new InstantCommand(robotStates::toggleGroundCoralState) // TODO SHOP: EXPERIMENT WITH WHEN TO TOGGLE GROUND CORAL STATE
+                () -> new InstantCommand(robotStates::toggleGroundCoralState)
                         .andThen(new PathfindToPoseAvoidingReefCommand(
                                 this,
                                 fieldCentric,
@@ -235,6 +309,12 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
         );
     }
 
+    /**
+     * Creates a pathfinding command to approach the right coral station and ground-intake coral.
+     *
+     * @param robotStates The robot states subsystem for state tracking.
+     * @return The pathfinding command.
+     */
     public Command pathFindToRightCoralStationGroundIntakeCoral(RobotStates robotStates) {
         return Commands.defer(
                 () -> new InstantCommand(robotStates::toggleGroundCoralState)
@@ -251,6 +331,12 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
         );
     }
 
+    /**
+     * Creates a pathfinding command to approach the left coral station for intake.
+     *
+     * @param robotStates The robot states subsystem for state tracking.
+     * @return The pathfinding command.
+     */
     public Command pathFindToLeftCoralStation(RobotStates robotStates) {
         return Commands.defer(
                 () -> new PathfindToPoseAvoidingReefCommand(
@@ -266,6 +352,12 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
         );
     }
 
+    /**
+     * Creates a pathfinding command to approach the right coral station for intake.
+     *
+     * @param robotStates The robot states subsystem for state tracking.
+     * @return The pathfinding command.
+     */
     public Command pathFindToRightCoralStation(RobotStates robotStates) {
         return Commands.defer(
                 () -> new PathfindToPoseAvoidingReefCommand(
@@ -281,6 +373,13 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
         );
     }
 
+    /**
+     * Creates a pathfinding command to approach the nearest left reef branch for coral scoring.
+     * Transitions from pathfinding to direct drive at the scoring location.
+     *
+     * @param robotStates The robot states subsystem for state tracking.
+     * @return The pathfinding command.
+     */
     public Command pathFindToNearestLeftBranch(RobotStates robotStates) {
         return Commands.defer(
                 () -> new PathfindToPoseAvoidingReefCommand(
@@ -308,6 +407,13 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
         );
     }
 
+    /**
+     * Creates a pathfinding command to approach the nearest right reef branch for coral scoring.
+     * Transitions from pathfinding to direct drive at the scoring location.
+     *
+     * @param robotStates The robot states subsystem for state tracking.
+     * @return The pathfinding command.
+     */
     public Command pathFindToNearestRightBranch(RobotStates robotStates) {
         return Commands.defer(
                 () -> new PathfindToPoseAvoidingReefCommand(
@@ -335,6 +441,15 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
         );
     }
 
+    /**
+     * Creates a pathfinding command to approach a specific pirate branch for coral scoring.
+     * Transitions from pathfinding to direct drive at the scoring location.
+     *
+     * @param robotStates The robot states subsystem for state tracking.
+     * @param location The reef branch scoring location (left or right side).
+     * @param level The reef level (L1-L4).
+     * @return The pathfinding command.
+     */
     public Command pathFindToScoringLocation(RobotStates robotStates, FieldUtil.Reef.ScoringLocation location, FieldUtil.Reef.Level level) {
         return Commands.defer(
                 () -> new InstantCommand(() -> robotStates.setCurrentAutoLevel(level))
@@ -361,6 +476,14 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
         );
     }
 
+    /**
+     * Creates a pathfinding command to approach the nearest algae on the reef for removal.
+     * The robot will drive to the algae, wait until stuck (indicating algae is grabbed),
+     * then back away and stow.
+     *
+     * @param robotStates The robot states subsystem for state tracking.
+     * @return The pathfinding command.
+     */
     public Command pathFindToNearestAlgaeOnReef(RobotStates robotStates) {
         return Commands.defer(
                 () -> new PathfindToPoseAvoidingReefCommand(
@@ -392,6 +515,13 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
         );
     }
 
+    /**
+     * Creates a pathfinding command to approach algae on a specific reef side for removal.
+     *
+     * @param robotStates The robot states subsystem for state tracking.
+     * @param side The reef side to approach.
+     * @return The pathfinding command.
+     */
     public Command pathFindToAlgaeOnReef(RobotStates robotStates, FieldUtil.Reef.Side side) {
         return Commands.defer(
                 () -> new PathfindToPoseAvoidingReefCommand(
@@ -423,6 +553,13 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
         );
     }
 
+    /**
+     * Creates a pathfinding command to approach and score at the net.
+     *
+     * @param robotStates The robot states subsystem for state tracking.
+     * @param randomized Whether to randomize the net scoring position.
+     * @return The pathfinding command.
+     */
     public Command pathFindToNet(RobotStates robotStates, boolean randomized) {
         return Commands.defer(
                 () -> new PathfindToPoseAvoidingReefCommand(
@@ -453,6 +590,12 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
         );
     }
 
+    /**
+     * Creates a pathfinding command to approach and score at the processor.
+     *
+     * @param robotStates The robot states subsystem for state tracking.
+     * @return The pathfinding command.
+     */
     public Command pathFindToProcessor(RobotStates robotStates) {
         return Commands.defer(
                 () -> new PathfindToPoseAvoidingReefCommand(
@@ -483,10 +626,20 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
         );
     }
 
+    /**
+     * Checks if any swerve module is currently stuck (high current + no motion).
+     *
+     * @return True if at least one module is stuck.
+     */
     public boolean isStuck() {
         return moduleStuck.stream().map(Trigger::getAsBoolean).toList().contains(true);
     }
 
+    /**
+     * Checks if the robot is in a fully teleoperated drive mode (not in an auto.heading mode).
+     *
+     * @return True if in IDLE, ROTATING, FAST_ROTATING, or TRANSLATING mode.
+     */
     public boolean isFullyTeleop() {
         return currentMode == DriveMode.IDLE
                 || currentMode == DriveMode.ROTATING
@@ -494,10 +647,16 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                 || currentMode == DriveMode.TRANSLATING;
     }
 
+    /**
+     * Checks if auto-heading is currently active.
+     *
+     * @return True if auto-heading is enabled.
+     */
     public boolean isAutoHeading() {
         return autoHeading;
     }
 
+    /** Stops all swerve module movement immediately. */
     public void forceStop() {
         setControl(fieldCentric
                 .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
@@ -506,58 +665,82 @@ public class Swerve extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> impleme
                 .withRotationalRate(0.0));
     }
 
+    /** Toggles auto-heading on/off. */
     public void toggleAutoHeading() {
         autoHeading = !autoHeading;
     }
 
+    /** Sets the drive mode to IDLE. */
     public void setIdleMode() {
         currentMode = DriveMode.IDLE;
     }
 
+    /** Sets the drive mode to ROTATING. */
     public void setRotatingMode() {
         currentMode = DriveMode.ROTATING;
     }
 
+    /** Sets the drive mode to FAST_ROTATING. */
     public void setFastRotatingMode() {
         currentMode = DriveMode.FAST_ROTATING;
     }
 
+    /** Sets the drive mode to TRANSLATING. */
     public void setTranslatingMode() {
         currentMode = DriveMode.TRANSLATING;
     }
 
+    /** Sets the drive mode to BRANCH_HEADING. */
     public void setBranchHeadingMode() {
         currentMode = DriveMode.BRANCH_HEADING;
     }
 
+    /** Sets the drive mode to BRANCH_L1_HEADING. */
     public void setBranchHeadingL1Mode() {
         currentMode = DriveMode.BRANCH_L1_HEADING;
     }
 
+    /** Sets the drive mode to REEF_TAG_HEADING. */
     public void setReefTagHeadingMode() {
         currentMode = DriveMode.REEF_TAG_HEADING;
     }
 
+    /** Sets the drive mode to REEF_TAG_OPPOSITE_HEADING. */
     public void setReefTagOppositeHeadingMode() {
         currentMode = DriveMode.REEF_TAG_OPPOSITE_HEADING;
     }
 
+    /** Sets the drive mode to OBJECT_HEADING (for vision target tracking). */
     public void setObjectHeadingMode() {
         currentMode = DriveMode.OBJECT_HEADING;
     }
 
+    /** Sets the drive mode to CORAL_STATION_HEADING. */
     public void setCoralStationHeadingMode() {
         currentMode = DriveMode.CORAL_STATION_HEADING;
     }
 
+    /** Sets the drive mode to PROCESSOR_HEADING. */
     public void setProcessorHeadingMode() {
         currentMode = DriveMode.PROCESSOR_HEADING;
     }
 
+    /** Sets the drive mode to NET_HEADING. */
     public void setNetHeadingMode() {
         currentMode = DriveMode.NET_HEADING;
     }
 
+    /**
+     * Periodic subsystem update called by the robot main loop.
+     *
+     * <p>This method ensures the operator perspective rotation is applied once after
+     * startup (or when the Driver Station is disabled), synchronizes heading sources
+     * while disabled, manages Orchestra music playback during enable/disable
+     * transitions, publishes drivetrain telemetry, and forwards periodic updates
+     * to the {@link Localizer} instance.
+     *
+     * @implNote Keep this lightweight; it runs on the main robot thread.
+     */
     @Override
     public void periodic() {
         /*

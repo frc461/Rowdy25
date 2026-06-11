@@ -25,9 +25,25 @@ import org.photonvision.simulation.PhotonCameraSim;
 import org.photonvision.simulation.SimCameraProperties;
 import org.photonvision.simulation.VisionSystemSim;
 
+/**
+ * Simulates the PhotonVision camera system for swerve drivetrain testing.
+ * <p>
+ * Creates simulated camera instances for each black-and-white camera on the robot
+ * (top right, top left, back) with matching physical properties (1280x800 resolution,
+ * 30 FPS, 25ms latency) and registers them with the AprilTag field layout.
+ *
+ * @author Eugene Zhang, <a href="https://github.com/ez500">GitHub</a>
+ */
 public class LocalizerSim {
+    /** The PhotonVision simulation system instance. */
     private final VisionSystemSim visionSim = new VisionSystemSim("main");
 
+    /**
+     * Constructs the LocalizerSim, setting up simulated cameras with calibrated properties.
+     * <p>
+     * Registers all three black-and-white cameras (top right, top left, back) with
+     * the simulation using their measured robot-relative offsets.
+     */
     public LocalizerSim() {
         visionSim.addAprilTags(FieldUtil.layout2025);
 
@@ -47,6 +63,11 @@ public class LocalizerSim {
         visionSim.addCamera(BWBackSim, PhotonUtil.BW.BWCamera.BACK.getRobotToCameraOffset());
     }
 
+    /**
+     * Updates the vision simulation with the current robot pose.
+     *
+     * @param strategyPose The current estimated robot pose for vision simulation.
+     */
     public void update(Pose2d strategyPose) {
         visionSim.update(strategyPose);
     }

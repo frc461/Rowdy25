@@ -21,15 +21,38 @@ import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.util.Color;
 
+/**
+ * Utility class for controlling addressable LED strips.
+ * <p>
+ * Provides static methods to configure and set the LED state (on/off) for
+ * visual robot status indication (e.g. coral presence).
+ *
+ * @author Aneesh Terani, <a href="https://github.com/aterani">GitHub</a>
+ */
 public class Lights {
 
+    /** The addressable LED instance on PWM port 2. */
     private static final AddressableLED lights = new AddressableLED(2);
+
+    /** The LED buffer holding color data for 12 LEDs. */
     private static final AddressableLEDBuffer buffer = new AddressableLEDBuffer(12);
 
+    /**
+     * Configures the LED strip length to match the buffer size.
+     * Must be called once before using {@link #setLights(boolean)}.
+     */
     public static void configureLights() {
         lights.setLength(buffer.getLength());
     }
 
+    /**
+     * Sets all LEDs on or off.
+     * <p>
+     * When on, all LEDs are set to orange. When off, all LEDs are turned off.
+     * This starts continuous LED output.
+     *
+     * @param on If true, turns all LEDs orange; if false, turns all LEDs off.
+     */
     public static void setLights(boolean on) {
         if (on) {
             for (int i = 0; i < buffer.getLength(); i++) {
@@ -44,4 +67,4 @@ public class Lights {
         lights.setData(buffer);
         lights.start();
     }
-}    
+}
