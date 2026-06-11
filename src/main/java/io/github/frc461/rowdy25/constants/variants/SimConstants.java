@@ -17,7 +17,18 @@ package io.github.frc461.rowdy25.constants.variants;
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+/**
+ * Robot-specific constant overrides for simulation.
+ * <p>
+ * These values override the default angular velocity D gains for swerve control
+ * when running in simulation mode, where physical damping is not present.
+ *
+ * @author Eugene Zhang, <a href="https://github.com/ez500">GitHub</a>
+ */
 public final class SimConstants {
+    /** Angular position D gain for yaw control in simulation (no physical damping). */
     public final static double ANGULAR_POSITION_D = 0.0;
+
+    /** Angular object detection D gain for simulation (no physical damping). */
     public final static double ANGULAR_OBJECT_DETECTION_D = 0.00;
 }

@@ -31,20 +31,56 @@ import java.util.List;
 
 import static edu.wpi.first.units.Units.Meters;
 
+/**
+ * Utility class providing computed robot poses relative to field elements.
+ * <p>
+ * Contains static inner classes for computing robot poses at coral stations,
+ * reef branches, and algae scoring locations (processor and net). All poses
+ * account for the robot's physical dimensions with bumpers.
+ *
+ * @author Eugene Zhang, <a href="https://github.com/ez500">GitHub</a>
+ */
 public class RobotPoses {
+    /**
+     * Utility methods for computing robot poses at coral stations.
+     */
     public static class CoralStation {
+        /**
+         * Computes robot poses at each coral station tag, offset by half the robot length.
+         *
+         * @return List of robot poses at each coral station.
+         */
         public static List<Pose2d> getRobotPosesAtEachCoralStation() {
             return FieldUtil.CoralStation.getCoralStationTagPoses().stream().map(coralStationTagPose -> coralStationTagPose.plus(
                     new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0, 0, Rotation2d.kZero)
             )).toList();
         }
 
+        /**
+         * Finds the nearest robot pose at any coral station from the current pose.
+         *
+         * @param currentPose The robot's current pose.
+         * @return The nearest coral station robot pose.
+         */
         public static Pose2d getNearestRobotPoseAtCoralStation(Pose2d currentPose) {
             return currentPose.nearest(getRobotPosesAtEachCoralStation());
         }
     }
 
+    /**
+     * Utility methods for computing robot poses at and near the reef.
+     */
     public static class Reef {
+        /**
+         * Determines whether the robot and target pose are on the same side of the reef.
+         * <p>
+         * Checks if the straight-line path from the robot to the target pose would intersect
+         * the reef by comparing angles to reef vertices and corner distances.
+         *
+         * @param currentPose The robot's current pose.
+         * @param targetPose The target pose to check.
+         * @return True if both poses are on the same side of the reef.
+         */
         public static boolean sameSide(Pose2d currentPose, Pose2d targetPose) {
             List<Pose2d> robotCorners = List.of(
                     currentPose.plus(new Transform2d(
@@ -95,32 +131,51 @@ public class RobotPoses {
             ) || targetPose.getTranslation().getDistance(currentPose.getTranslation()) < lowestDistanceToReefCorner;
         }
 
+        /**
+         * Enum representing the robot's scoring offset relative to a reef branch.
+         * <p>
+         * Each setting defines left and right {@link Transform2d} offsets from
+         * a reef tag pose for different scoring distances.
+         */
         public enum RobotScoringSetting {
+            /** L1 scoring offset with forward offset and lateral branch offset. */
             L1(
                     new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0 + Units.inchesToMeters(3.1), Units.inchesToMeters(-10.9469731), Rotation2d.kZero),
                     new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0 + Units.inchesToMeters(3.1), Units.inchesToMeters(10.9469731), Rotation2d.kZero)
             ),
+            /** L2 scoring offset with forward offset and reversed rotation. */
             L2(
                     new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0 + Units.inchesToMeters(6.1), Units.inchesToMeters(-6.9469731), Rotation2d.kPi),
                     new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0 + Units.inchesToMeters(6.1), Units.inchesToMeters(7.4469731), Rotation2d.kPi)
             ),
+            /** At-branch scoring offset. */
             AT_BRANCH(
                     new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0, Units.inchesToMeters(-6.9469731), Rotation2d.kPi),
                     new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0, Units.inchesToMeters(7.4469731), Rotation2d.kPi)
             ),
+            /** One coral from branch scoring offset. */
             ONE_CORAL_FROM_BRANCH(
                     new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0 + Units.inchesToMeters(4.1), Units.inchesToMeters(-6.9469731), Rotation2d.kPi),
                     new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0 + Units.inchesToMeters(4.1), Units.inchesToMeters(7.4469731), Rotation2d.kPi)
             );
 
+            /** Offset transform for the left branch of the reef face. */
             final Transform2d leftOffset;
+            /** Offset transform for the right branch of the reef face. */
             final Transform2d rightOffset;
+
             RobotScoringSetting(Transform2d leftOffset, Transform2d rightOffset) {
                 this.leftOffset = leftOffset;
                 this.rightOffset = rightOffset;
             }
         }
 
+        /**
+         * Computes the transform from a reef tag pose to the robot pose for algae removal.
+         *
+         * @param algaeIsHigh Whether targeting high or low algae.
+         * @return The transform from tag to robot pose.
+         */
         public static Transform2d getTagToRobotPoseNearReef(boolean algaeIsHigh) {
             if (algaeIsHigh) {
                 return new Transform2d(
@@ -136,6 +191,12 @@ public class RobotPoses {
             );
         }
 
+        /**
+         * Computes the transform from an at-branch robot pose to a near-branch robot pose.
+         *
+         * @param mode The scoring setting to determine offset direction.
+         * @return The transform from at-branch to near-branch pose.
+         */
         public static Transform2d getRobotPoseAtToNearReef(RobotScoringSetting mode) {
             return switch (mode) {
                 case L1 ->
@@ -153,10 +214,23 @@ public class RobotPoses {
             };
         }
 
+        /**
+         * Computes all robot poses near the reef for algae removal.
+         *
+         * @param algaeIsHigh Whether targeting high or low algae.
+         * @param bothReefs   Whether to include both reefs or just the nearest.
+         * @return List of robot poses near reef faces.
+         */
         public static List<Pose2d> getRobotPosesNearReef(boolean algaeIsHigh, boolean bothReefs) {
             return FieldUtil.Reef.getReefTagPoses(bothReefs).stream().map(reefTagPose -> reefTagPose.plus(getTagToRobotPoseNearReef(algaeIsHigh))).toList();
         }
 
+        /**
+         * Gets the robot pose near a specific reef side.
+         *
+         * @param side The reef side to target.
+         * @return The robot pose near that side.
+         */
         public static Pose2d getRobotPoseNearReef(FieldUtil.Reef.Side side) {
             return switch (side) {
                 case AB -> getRobotPosesNearReef(FieldUtil.Reef.Side.algaeIsHigh(side), false).get(0);
@@ -168,14 +242,35 @@ public class RobotPoses {
             };
         }
 
+        /**
+         * Finds the nearest robot pose near a reef from the current pose.
+         *
+         * @param algaeIsHigh Whether targeting high or low algae.
+         * @param currentPose The robot's current pose.
+         * @param bothReefs   Whether to consider both reefs.
+         * @return The nearest robot pose near a reef.
+         */
         public static Pose2d getNearestRobotPoseNearReef(boolean algaeIsHigh, Pose2d currentPose, boolean bothReefs) {
             return currentPose.nearest(getRobotPosesNearReef(algaeIsHigh, bothReefs));
         }
 
+        /**
+         * Finds the nearest robot pose near a reef from the current pose (considers both reefs).
+         *
+         * @param algaeIsHigh Whether targeting high or low algae.
+         * @param currentPose The robot's current pose.
+         * @return The nearest robot pose near a reef.
+         */
         public static Pose2d getNearestRobotPoseNearReef(boolean algaeIsHigh, Pose2d currentPose) {
             return getNearestRobotPoseNearReef(algaeIsHigh, currentPose, true);
         }
 
+        /**
+         * Gets the robot pose for algae removal at a specific reef side.
+         *
+         * @param side The reef side to target.
+         * @return The robot pose for algae removal.
+         */
         public static Pose2d getRobotPoseAtAlgaeReef(FieldUtil.Reef.Side side) {
             if (FieldUtil.Reef.Side.algaeIsHigh(side)) {
                 return FieldUtil.Reef.Side.getTag(side).pose2d.plus(new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0 + Units.inchesToMeters(2), 0, Rotation2d.kPi));
@@ -183,6 +278,13 @@ public class RobotPoses {
             return FieldUtil.Reef.Side.getTag(side).pose2d.plus(new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0 - Units.inchesToMeters(2), 0, Rotation2d.kZero));
         }
 
+        /**
+         * Finds the nearest robot pose for algae removal at a reef.
+         *
+         * @param currentPose The robot's current pose.
+         * @param algaeIsHigh Whether targeting high or low algae.
+         * @return The nearest robot pose for algae removal.
+         */
         public static Pose2d getNearestRobotPoseAtAlgaeReef(Pose2d currentPose, boolean algaeIsHigh) {
             if (algaeIsHigh) {
                 return FieldUtil.Reef.getNearestReefTagPose(currentPose, true).plus(new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0 + Units.inchesToMeters(2), 0, Rotation2d.kPi));
@@ -190,6 +292,14 @@ public class RobotPoses {
             return FieldUtil.Reef.getNearestReefTagPose(currentPose, true).plus(new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0 - Units.inchesToMeters(5), 0, Rotation2d.kZero));
         }
 
+        /**
+         * Computes robot poses at all reef branches for a given scoring setting.
+         * <p>
+         * Generates two poses per reef tag (left and right branch).
+         *
+         * @param mode The scoring setting determining branch offsets.
+         * @return List of robot poses at each branch.
+         */
         public static List<Pose2d> getRobotPosesAtBranches(RobotScoringSetting mode) { // Where robot should be to be centered at branches (to score)
             List<Pose2d> robotPosesAtEachBranch = new ArrayList<>();
             FieldUtil.Reef.getReefTagPoses(false).forEach(reefTagPose -> {
@@ -199,10 +309,23 @@ public class RobotPoses {
             return robotPosesAtEachBranch;
         }
 
+        /**
+         * Computes robot poses near all reef branches for a given scoring setting.
+         *
+         * @param mode The scoring setting determining branch offsets.
+         * @return List of robot poses near each branch.
+         */
         public static List<Pose2d> getRobotPosesNearBranches(RobotScoringSetting mode) {
             return getRobotPosesAtBranches(mode).stream().map(robotPoseAtBranch -> robotPoseAtBranch.plus(getRobotPoseAtToNearReef(mode))).toList();
         }
 
+        /**
+         * Gets the robot pose at a specific branch and scoring setting.
+         *
+         * @param mode     The scoring setting.
+         * @param location The scoring location on the reef.
+         * @return The robot pose at the specified branch.
+         */
         public static Pose2d getRobotPoseAtBranch(RobotScoringSetting mode, FieldUtil.Reef.ScoringLocation location) {
             return switch (location) {
                 case A -> getRobotPosesAtBranches(mode).get(0);
@@ -220,6 +343,13 @@ public class RobotPoses {
             };
         }
 
+        /**
+         * Gets the robot pose near a specific branch and scoring setting.
+         *
+         * @param mode     The scoring setting.
+         * @param location The scoring location on the reef.
+         * @return The robot pose near the specified branch.
+         */
         public static Pose2d getRobotPoseNearBranch(RobotScoringSetting mode, FieldUtil.Reef.ScoringLocation location) { // TODO SHOP: TEST THIS WITH AUTO
             return switch (location) {
                 case A -> getRobotPosesNearBranches(mode).get(0);
@@ -237,10 +367,24 @@ public class RobotPoses {
             };
         }
 
+        /**
+         * Finds the nearest robot pose at any branch from the current pose.
+         *
+         * @param mode        The scoring setting.
+         * @param currentPose The robot's current pose.
+         * @return The nearest robot pose at a branch.
+         */
         public static Pose2d getNearestRobotPoseAtBranch(RobotScoringSetting mode, Pose2d currentPose) {
             return currentPose.nearest(getRobotPosesAtBranches(mode));
         }
 
+        /**
+         * Gets the nearest pair of branch poses (left and right) for the nearest reef face.
+         *
+         * @param mode        The scoring setting.
+         * @param currentPose The robot's current pose.
+         * @return A pair of robot poses (left, right) at the nearest reef face.
+         */
         public static Pair<Pose2d, Pose2d> getNearestRobotPosesAtBranchPair(RobotScoringSetting mode, Pose2d currentPose) {
             Pose2d nearestReefTagPose = FieldUtil.Reef.getNearestReefTagPose(currentPose, false);
             if (FieldUtil.Reef.getOutsideReefTags().contains(FieldUtil.Reef.getNearestReefTag(currentPose, false))) {
@@ -255,6 +399,13 @@ public class RobotPoses {
             );
         }
 
+        /**
+         * Gets the nearest pair of near-branch poses for the nearest reef face.
+         *
+         * @param mode        The scoring setting.
+         * @param currentPose The robot's current pose.
+         * @return A pair of near-branch robot poses (left, right).
+         */
         public static Pair<Pose2d, Pose2d> getNearestRobotPosesNearBranchPair(RobotScoringSetting mode, Pose2d currentPose) {
             Pair<Pose2d, Pose2d> atBranchPoses = getNearestRobotPosesAtBranchPair(mode, currentPose);
             Transform2d atToNear = getRobotPoseAtToNearReef(mode);
@@ -265,15 +416,36 @@ public class RobotPoses {
         }
     }
 
+    /**
+     * Utility methods for computing robot poses at algae scoring locations (processor and net).
+     */
     public static class AlgaeScoring {
+        /**
+         * Gets the robot pose at the processor for the current alliance side.
+         *
+         * @param currentPose The robot's current pose.
+         * @return The robot pose at the alliance-side processor.
+         */
         public static Pose2d getCurrentAllianceSideRobotPoseAtProcessor(Pose2d currentPose) {
             return FieldUtil.AlgaeScoring.getCurrentAllianceSideProcessorTagPose(currentPose).plus(new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0 + 0.5, 0, Rotation2d.kZero));
         }
 
+        /**
+         * Gets the robot pose at the center of the net.
+         *
+         * @param currentPose The robot's current pose.
+         * @return The robot pose centered at the net.
+         */
         public static Pose2d getRobotPoseAtNetCenter(Pose2d currentPose) {
             return FieldUtil.AlgaeScoring.getNearestNetTagPose(currentPose).plus(new Transform2d(Constants.ROBOT_LENGTH_WITH_BUMPERS.in(Meters) / 2.0, 0, Rotation2d.kPi));
         }
 
+        /**
+         * Gets the innermost robot pose at the net (closest to field center).
+         *
+         * @param currentPose The robot's current pose.
+         * @return The innermost net pose.
+         */
         public static Pose2d getInnermostRobotPoseAtNet(Pose2d currentPose) {
             Pose2d robotPoseAtNetCenter = getRobotPoseAtNetCenter(currentPose);
             return new Pose2d(
@@ -285,6 +457,12 @@ public class RobotPoses {
             );
         }
 
+        /**
+         * Gets the outermost robot pose at the net (farthest from field center).
+         *
+         * @param currentPose The robot's current pose.
+         * @return The outermost net pose.
+         */
         public static Pose2d getOutermostRobotPoseAtNet(Pose2d currentPose) {
             Pose2d robotPoseAtNetCenter = getRobotPoseAtNetCenter(currentPose);
             return new Pose2d(

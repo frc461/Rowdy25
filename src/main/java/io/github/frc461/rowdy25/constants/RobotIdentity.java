@@ -25,17 +25,39 @@ import io.github.frc461.rowdy25.constants.variants.SimConstants;
 import io.github.frc461.rowdy25.constants.variants.TestConstants;
 import io.github.frc461.rowdy25.util.MacAddress;
 
+/**
+ * Enum representing different robot hardware identities, identified by MAC address.
+ * <p>
+ * Detects whether the code is running on the ALPHA development robot, ROWDY competition robot,
+ * TEST bed robot, or in SIMULATION mode. Each identity loads the appropriate set of
+ * subsystem-specific constants via {@link #initializeConstants()}.
+ *
+ * @author Eugene Zhang, <a href="https://github.com/ez500">GitHub</a>
+ * @author Geeson Wan, <a href="https://github.com/gerseneck">GitHub</a>
+ * @author Leo Minton, <a href="https://github.com/leo-minton">GitHub</a>
+ */
 public enum RobotIdentity {
+    /** Test bed robot MAC address. */
     TEST("00-80-2F-18-50-1F"),
+    /** Alpha (development) robot MAC address. */
     ALPHA("00-80-2F-34-07-F0"),
+    /** ROWDY (competition) robot MAC address. */
     ROWDY("00-80-2F-33-9F-37"),
+    /** Simulation mode (no MAC address match). */
     SIM("");
 
+    /** The MAC address associated with this robot identity. */
     final String mac;
+
     RobotIdentity(String mac) {
         this.mac = mac;
     }
 
+    /**
+     * Detects the current robot identity by comparing the system MAC address.
+     *
+     * @return The matching {@link RobotIdentity}, or {@link #SIM} if no match is found.
+     */
     private static RobotIdentity getIdentity() {
         String mac = MacAddress.getMACAddress();
         for (RobotIdentity identity : RobotIdentity.values()) {
@@ -46,6 +68,12 @@ public enum RobotIdentity {
         return SIM;
     }
 
+    /**
+     * Initializes all constants in {@link Constants} based on the detected robot identity.
+     * <p>
+     * First loads default constants, then overrides with robot-specific values based on
+     * the detected identity. Publishes the detected robot identity to NetworkTables.
+     */
     public static void initializeConstants() {
         setDefaultConstants();
         NetworkTable identityEntry = Constants.NT_INSTANCE.getTable("Robot");
@@ -69,6 +97,9 @@ public enum RobotIdentity {
         }
     }
 
+    /**
+     * Loads all default constants from {@link DefaultConstants} into {@link Constants}.
+     */
     private static void setDefaultConstants() {
         Constants.IDENTITY = getIdentity();
         Constants.CAN_BUS = DefaultConstants.CAN_BUS;
@@ -323,6 +354,9 @@ public enum RobotIdentity {
         Constants.SwerveConstants.BACK_RIGHT = DefaultConstants.SwerveConstants.BackRight.BACK_RIGHT;
     }
 
+    /**
+     * Overrides constants with competition robot values from {@link CompConstants}.
+     */
     private static void setCompConstants() {
         Constants.VisionConstants.PhotonConstants.BW_TOP_RIGHT_NAME = CompConstants.PhotonConstants.BW_TOP_RIGHT_NAME;
         Constants.VisionConstants.PhotonConstants.BW_TOP_RIGHT_FORWARD = CompConstants.PhotonConstants.BW_TOP_RIGHT_FORWARD;
@@ -477,6 +511,9 @@ public enum RobotIdentity {
         Constants.SwerveConstants.BACK_RIGHT = CompConstants.SwerveConstants.BackRight.BACK_RIGHT;
     }
 
+    /**
+     * Overrides constants with test bed robot values from {@link TestConstants}.
+     */
     private static void setTestConstants() {
         Constants.VisionConstants.PhotonConstants.BW_TOP_RIGHT_NAME = TestConstants.VisionConstants.PhotonConstants.BW_TOP_RIGHT_NAME;
         Constants.VisionConstants.PhotonConstants.BW_TOP_RIGHT_FORWARD = TestConstants.VisionConstants.PhotonConstants.BW_TOP_RIGHT_FORWARD;
@@ -500,6 +537,9 @@ public enum RobotIdentity {
         Constants.SwerveConstants.BACK_RIGHT = TestConstants.SwerveConstants.BackRight.BACK_RIGHT;
     }
 
+    /**
+     * Overrides constants with simulation values from {@link SimConstants}.
+     */
     private static void setSimConstants() {
         Constants.SwerveConstants.ANGULAR_POSITION_D = SimConstants.ANGULAR_POSITION_D;
         Constants.SwerveConstants.ANGULAR_OBJECT_DETECTION_D = SimConstants.ANGULAR_OBJECT_DETECTION_D;
