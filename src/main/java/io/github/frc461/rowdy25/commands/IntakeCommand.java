@@ -20,14 +20,36 @@ package io.github.frc461.rowdy25.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import io.github.frc461.rowdy25.subsystems.intake.Intake;
 
+/**
+ * A command that manages the intake subsystem through a state machine.
+ * <p>
+ * The command handles multiple intake states including normal intake, slow intake,
+ * outtake, override, and algae holding. It transitions between states based on
+ * sensor readings such as beam break detection and coral presence.
+ *
+ * @author Eugene Zhang, <a href="https://github.com/ez500">GitHub</a>
+ */
 public class IntakeCommand extends Command {
+    /** The intake subsystem. */
     private final Intake intake;
 
+    /**
+     * Constructs an IntakeCommand.
+     *
+     * @param intake The intake subsystem.
+     */
     public IntakeCommand(Intake intake) {
         this.intake = intake;
         addRequirements(intake);
     }
 
+    /**
+     * Executes the command's control logic every 20ms.
+     * <p>
+     * Evaluates the current intake state and applies the appropriate motor speed
+     * based on beam break and coral detection sensor feedback. State transitions
+     * occur automatically as conditions change.
+     */
     @Override
     public void execute() {
         switch (intake.getState()) {

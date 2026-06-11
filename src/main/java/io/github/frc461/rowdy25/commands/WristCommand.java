@@ -25,13 +25,42 @@ import io.github.frc461.rowdy25.subsystems.wrist.Wrist;
 
 import java.util.function.DoubleSupplier;
 
+/**
+ * A command that provides manual and automatic control of the wrist subsystem.
+ * <p>
+ * When the manual axis is active (beyond deadband), the wrist is moved directly
+ * and the robot states are set to manual mode. Otherwise, the wrist holds its
+ * target position based on the current pivot position. Additionally, the wrist
+ * target is updated every cycle based on the pivot and elevator positions.
+ *
+ * @author Eugene Zhang, <a href="https://github.com/ez500">GitHub</a>
+ * @author Leo Minton, <a href="https://github.com/leo-minton">GitHub</a>
+ */
 public class WristCommand extends Command {
+    /** The wrist subsystem. */
     private final Wrist wrist;
+
+    /** Supplier for the manual control axis value. */
     private final DoubleSupplier manualAxisValue;
+
+    /** Supplier for the current pivot position used to determine wrist hold target. */
     private final DoubleSupplier pivotPosition;
+
+    /** Supplier for the current elevator position used to determine wrist hold target. */
     private final DoubleSupplier elevatorPosition;
+
+    /** The robot states manager for tracking manual/auto mode transitions. */
     private final RobotStates robotStates;
 
+    /**
+     * Constructs a WristCommand.
+     *
+     * @param wrist The wrist subsystem.
+     * @param manualAxisValue Supplier for the manual control axis value.
+     * @param pivotPosition Supplier for the current pivot position.
+     * @param elevatorPosition Supplier for the current elevator position.
+     * @param robotStates The robot states manager.
+     */
     public WristCommand(Wrist wrist, DoubleSupplier manualAxisValue, DoubleSupplier pivotPosition, DoubleSupplier elevatorPosition, RobotStates robotStates) {
         this.wrist = wrist;
         this.manualAxisValue = manualAxisValue;
@@ -41,6 +70,15 @@ public class WristCommand extends Command {
         addRequirements(wrist);
     }
 
+    /**
+     * Executes the command's control logic every 20ms.
+     * <p>
+     * If the manual axis exceeds the deadband, the wrist enters manual state
+     * and moves at a reduced rate. Otherwise, the wrist holds its target
+     * position based on the current pivot position. The wrist target is updated
+     * each cycle based on the pivot and elevator positions for proper coordinated
+     * motion.
+     */
     @Override
     public void execute() {
         double axisValue = MathUtil.applyDeadband(manualAxisValue.getAsDouble(), Constants.DEADBAND) * 0.25;

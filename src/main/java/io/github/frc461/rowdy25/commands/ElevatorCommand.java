@@ -25,12 +25,37 @@ import io.github.frc461.rowdy25.RobotStates;
 import io.github.frc461.rowdy25.constants.Constants;
 import io.github.frc461.rowdy25.subsystems.elevator.Elevator;
 
+/**
+ * A command that provides manual and automatic control of the elevator subsystem.
+ * <p>
+ * When the manual axis is active (beyond deadband), the elevator is moved directly
+ * and the robot states are set to manual mode. Otherwise, the elevator holds its
+ * current target position based on the pivot position.
+ *
+ * @author Eugene Zhang, <a href="https://github.com/ez500">GitHub</a>
+ * @author Geeson Wan, <a href="https://github.com/gerseneck">GitHub</a>
+ */
 public class ElevatorCommand extends Command {
+    /** The elevator subsystem. */
     private final Elevator elevator;
+
+    /** Supplier for the manual control axis value. */
     private final DoubleSupplier manualAxisValue;
+
+    /** Supplier for the current pivot position used to determine elevator hold target. */
     private final DoubleSupplier pivotPosition;
+
+    /** The robot states manager for tracking manual/auto mode transitions. */
     private final RobotStates robotStates;
 
+    /**
+     * Constructs an ElevatorCommand.
+     *
+     * @param elevator The elevator subsystem.
+     * @param manualAxisValue Supplier for the manual control axis value.
+     * @param pivotPosition Supplier for the current pivot position.
+     * @param robotStates The robot states manager.
+     */
     public ElevatorCommand(Elevator elevator, DoubleSupplier manualAxisValue, DoubleSupplier pivotPosition, RobotStates robotStates) {
         this.elevator = elevator;
         this.manualAxisValue = manualAxisValue;
@@ -39,6 +64,13 @@ public class ElevatorCommand extends Command {
         addRequirements(elevator);
     }
 
+    /**
+     * Executes the command's control logic every 20ms.
+     * <p>
+     * If the manual axis exceeds the deadband, the elevator enters manual state
+     * and moves at a reduced rate. Otherwise, the elevator holds its target
+     * position based on the current pivot position.
+     */
     @Override
     public void execute() {
         double axisValue = MathUtil.applyDeadband(manualAxisValue.getAsDouble(), Constants.DEADBAND) * 0.25;
