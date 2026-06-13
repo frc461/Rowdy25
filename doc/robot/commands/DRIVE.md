@@ -136,7 +136,7 @@ Let:
 
    The tangent direction at $\mathbf{c}$'s side of the reef is $\alpha \pm 90°$; the sign is picked by
    $$
-   \sigma = \operatorname{sign}(\beta - \alpha)
+   \sigma = \mathrm{sign}(\beta - \alpha)
    $$
    (implemented as `Math.copySign(90.0, (β − α).getDegrees())`). This chooses the *shorter* angular path around the reef.
 
@@ -164,8 +164,8 @@ This bounds the per-tick motion of the target by 11 cm and produces a continuous
 Translation speed is a piecewise blend of a logistic ("sigmoid") curve and a clipped linear ramp, evaluated on the **distance to the smoothed target** $d = \lVert \mathbf{s} - \mathbf{c} \rVert$. Using the `EquationUtil` primitives
 
 $$
-\underbrace{f_{\text{sig}}(d;\,M,\,h,\,k) = \dfrac{M}{1 + e^{-k(d - h)}}}_{\texttt{EquationUtil.expOutput}}, \qquad
-\underbrace{f_{\text{lin}}(d;\,K_p,\,b) = K_p\,d + b}_{\texttt{EquationUtil.linearOutput}},
+\underbrace{f_{\text{sig}}(d;\,M,\,h,\,k) = \dfrac{M}{1 + e^{-k(d - h)}}}_{\text{EquationUtil.expOutput}}, \qquad
+\underbrace{f_{\text{lin}}(d;\,K_p,\,b) = K_p\,d + b}_{\text{EquationUtil.linearOutput}},
 $$
 
 the per-tick command is
@@ -174,7 +174,7 @@ $$
 v = \max\!\Big(\;\underbrace{f_{\text{sig}}\!\big(d;\,2,\;\tfrac{2}{7},\;\tfrac{15}{2}\big)}_{\text{logistic close-in floor}},\;\;\underbrace{\min\!\big(f_{\text{lin}}(d;\,10,\,-10),\;v_{\max}\big)}_{\text{linear ramp, capped}}\;\Big),
 $$
 
-with $v_{\max} = \min(\text{ctor max},\;\texttt{MAX\_CONTROLLED\_VEL}(\text{elevatorHeight}))$.
+with $v_{\max} = \min(\text{ctor max},\;\text{MAX_CONTROLLED_VEL}(\text{elevatorHeight}))$.
 
 - The logistic term ($M=2\text{ m/s}$, midpoint $h = 2/7\text{ m}$, steepness $k = 7.5$) saturates at 2 m/s far from target and decays smoothly past the midpoint to ≈0.2 m/s at $d=0$. This is the deceleration profile: it never returns zero, so the controller always commands *some* forward velocity to overcome stiction.
 - The linear term ($K_p = 10$, offset $-10$) is negative for $d < 1$ m and grows past the logistic at larger distances, where it is then clipped by $v_{\max}$. Taking the outer `max` means the logistic dominates close in (and prevents the linear's negative output from stopping the robot prematurely), while the linear branch dominates far out.
@@ -192,7 +192,7 @@ and dispatched as a field-centric `SwerveRequest.FieldCentric.withVelocityX/Y(..
 Heading is a standard PID on the **shortest signed angular error**:
 
 $$
-\dot\theta_{\text{cmd}} = K_p\,e_\theta + K_d\,\dot e_\theta,\quad e_\theta = \operatorname{wrap}_{[-180°,180°]}(\theta^{\text{tmp}} - \theta_c),
+\dot\theta_{\text{cmd}} = K_p\,e_\theta + K_d\,\dot e_\theta,\quad e_\theta = \mathrm{wrap}_{[-180°,180°]}(\theta^{\text{tmp}} - \theta_c),
 $$
 
 implemented with `PIDController.enableContinuousInput(ANGULAR_MINIMUM_ANGLE, ANGULAR_MAXIMUM_ANGLE)` to handle the wrap. The output is scaled by `MAX_CONTROLLED_ANGULAR_VEL(elevatorHeight)`.
@@ -201,9 +201,9 @@ implemented with `PIDController.enableContinuousInput(ANGULAR_MINIMUM_ANGLE, ANG
 
 The command finishes when all three of the following are simultaneously true against the **final** target $p_t$ (not the smoothed intermediate):
 
-- $|x_c - x_t| < $ `TRANSLATION_TOLERANCE_TO_ACCEPT`,
-- $|y_c - y_t| < $ `TRANSLATION_TOLERANCE_TO_ACCEPT`,
-- $|\operatorname{wrap}_{[-180°,180°]}(\theta_c - \theta_t)| < $ `DEGREE_TOLERANCE_TO_ACCEPT`.
+- $|x_c - x_t|<$ `TRANSLATION_TOLERANCE_TO_ACCEPT`,
+- $|y_c - y_t|<$ `TRANSLATION_TOLERANCE_TO_ACCEPT`,
+- $|\mathrm{wrap}_{[-180°,180°]}(\theta_c - \theta_t)|<$ `DEGREE_TOLERANCE_TO_ACCEPT`.
 
 On `end(...)` the chassis is force-stopped and `Swerve.consistentHeading` is set to the current measured heading so the next teleop tick doesn't fight a stale heading lock.
 
