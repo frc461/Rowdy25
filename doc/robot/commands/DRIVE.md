@@ -8,6 +8,97 @@ Swerve drivetrain commands for manual and autonomous control. All live under [`c
 - **`PathfindToPoseAvoidingReefCommand`** — The reef-aware planner used by every `Swerve.pathFindTo*` helper and by all `AutoManager` segments. See [§ Reef-Avoidance Math](#reef-avoidance-math) below.
 - **`DirectMoveToPoseCommand`** — Drives directly toward a target pose with PID, without invoking any planner. Used for short final approaches once the robot is close enough that obstacle avoidance is no longer relevant (e.g., post-vision alignment to a branch face).
 
+## `DriveCommand` (teleop)
+
+`DriveCommand` is the default command for `Swerve`. Each tick it:
+
+1. **Updates the drive mode** (`updateMode()`). Priority cascade (only when `Swerve.isFullyTeleop()`):
+   - Fast rotation requested (LB/RB equivalents that trigger `fastRotationLeft/Right`) → `FAST_ROTATING`.
+   - Joystick rotation magnitude ≥ deadband → `ROTATING`.
+   - Both translation sticks below deadband → `IDLE`.
+   - Otherwise → `TRANSLATING`.
+   When the swerve is *not* `isFullyTeleop()` (i.e., one of the auto-heading modes installed by `RobotStates.set*HeadingMode`), the drive-mode is *not* mutated by this method — the state machine in `RobotStates` retains ownership.
+2. **Reads the current pose / heading** from `Localizer.getStrategyPose()`.
+3. **Updates `swerve.consistentHeading`** — in `TRANSLATING` mode this stays pinned to its previous value (so the chassis holds whatever heading it had when the driver stopped rotating); in any other mode it tracks the live heading.
+4. **Issues the swerve request** with the elevator-height-scaled velocities and the per-mode rotational rate.
+
+### Rotation aggregation
+
+The rotation supplier is:
+
+```java
+rot = () -> Math.abs(rotJoystick.getAsDouble()) > 0.1
+        ? rotJoystick.getAsDouble()
+        : rotRight.getAsDouble() - rotLeft.getAsDouble();
+```
+
+That is: the operator's right stick X (or whichever axis the driver mapped to `rotJoystick`) takes priority above its 10% deadband; otherwise the difference of two trigger-style inputs (`rotRight` minus `rotLeft`) supplies rotation. This lets the driver use either a joystick or the bumper/trigger inputs without explicit mode-switching.
+
+### `determineTranslationalRate(axis)`
+
+Translation rate dispatch on the current `DriveMode`:
+
+- **Auto-heading modes that lock the chassis to a target** (BRANCH_HEADING, REEF_TAG_*, CORAL_STATION_HEADING, PROCESSOR_HEADING, NET_HEADING) clamp the per-axis velocity into `[-1.5, +1.5]` m/s. The intent is "you're aligning to a target — go slow."
+- **OBJECT_HEADING** uses the same clamp *only if* PhotonVision has targets; otherwise it uses the full `MAX_CONTROLLED_VEL(elevatorHeight)` — i.e., if the camera lost the object the driver can sprint to where they think it was.
+- **All other modes** scale by `MAX_CONTROLLED_VEL(elevatorHeight)`.
+
+`MAX_CONTROLLED_VEL` is a `DoubleUnaryOperator` whose value decays with elevator height (see [`Constants`](../constants/CONSTANTS.md)) — that's the "drive slower when extended" anti-tip behavior.
+
+### `determineRotationalRate()`
+
+The big switch. Per mode:
+
+- `IDLE`, `ROTATING` — joystick rotation × `MAX_CONTROLLED_ANGULAR_VEL(elevatorHeight)`.
+- `FAST_ROTATING` — joystick rotation × `MAX_ANGULAR_VEL(elevatorHeight)` (unclamped maximum).
+- `TRANSLATING` — `headingController.calculate(currentHeading, consistentHeading)` × the controlled angular velocity. This is what makes the chassis "lock" its heading the moment you stop rotating; it's a P-controller on the heading you had at the lock-in moment.
+- `BRANCH_HEADING`, `REEF_TAG_HEADING` — if `autoHeading` is on, run a PID toward `Localizer.getNearestReefSideHeading()`. Otherwise pass joystick rotation through. The same pattern repeats for the other landmarks: `BRANCH_L1_HEADING` uses `getL1ScoreHeading(currentPose)`; `REEF_TAG_OPPOSITE_HEADING` adds π to the reef heading; `CORAL_STATION_HEADING`, `PROCESSOR_HEADING`, `NET_HEADING` each pull their own heading from the localizer.
+- `OBJECT_HEADING` — uses a *separate* PID (`objectDetectionController`) on the PhotonVision yaw, *targeting zero* (i.e., center the detected object in the camera's horizontal FOV). Only fires when both `PhotonUtil.Color.hasTargets()` and `autoHeading.getAsBoolean()` are true; otherwise it falls back to joystick rotation. Critically, the separate PID has different gains (`ANGULAR_OBJECT_DETECTION_P/D`) because the pixel-yaw error scale is different from the heading-degrees error scale.
+
+### `getL1ScoreHeading(currentPose)`
+
+```java
+Pose2d nearestTagPose = FieldUtil.Reef.getNearestReefTagPose(currentPose, false);
+Pose2d relativePose   = currentPose.relativeTo(nearestTagPose);
+return relativePose.getY() < 0
+    ? nearestTagPose.getRotation().rotateBy(Rotation2d.fromDegrees(15)).getDegrees()
+    : nearestTagPose.getRotation().rotateBy(Rotation2d.fromDegrees(-15)).getDegrees();
+```
+
+The L1 trough is angled, so scoring requires the chassis to be 15° offset from the reef-face normal *toward the side the robot approached from*. The Y component of the robot-in-tag-frame says which side that is.
+
+### Swerve request
+
+```java
+fieldCentric.withDeadband(MAX_CONTROLLED_VEL(elevatorHeight) * DEADBAND)
+            .withForwardPerspective(OperatorPerspective)
+            .withDriveRequestType(OpenLoopVoltage)
+            .withVelocityX(...).withVelocityY(...).withRotationalRate(...);
+```
+
+`OpenLoopVoltage` (not `Velocity`) for teleop — the open-loop response is snappier and the operator is providing the closed loop. The deadband scales with `MAX_CONTROLLED_VEL` × the joystick deadband constant. `OperatorPerspective` (not `BlueAlliance`) so the chassis honors the driver-station-relative perspective set by `Swerve.setOperatorPerspectiveForward(...)`.
+
+## `DirectMoveToPoseCommand`
+
+A simplified peer of `PathfindToPoseAvoidingReefCommand` with no reef-avoidance, no smoothing, and a fixed (non-temporary) target. Used for *short* final approaches — typically a few tens of centimeters — after the avoidance command has handed off.
+
+The `execute()` body is essentially the same velocity-profile + yaw-PID logic as the avoidance command (§ 3 / § 4 below), but driving directly toward `targetPose` rather than a smoothed waypoint:
+
+```java
+double velocity = Math.max(
+    EquationUtil.expOutput(distance, 2, 2/7.0, 15/2.0),
+    Math.min(EquationUtil.linearOutput(distance, 10, -10), safeMaxVelocity)
+);
+double γ = atan2(target - current);
+withVelocityX(cos(γ) * velocity).withVelocityY(sin(γ) * velocity)
+   .withRotationalRate(yawPID(currentHeading, targetHeading) * MAX_CONTROLLED_ANGULAR_VEL(elevatorHeight));
+```
+
+Same `DriveRequestType.Velocity` and `withForwardPerspective(BlueAlliance)` as the avoidance command — because by this point the chassis is operating in field-frame on a precisely-resolved target, not on driver perspective.
+
+Termination is the same three-tolerance check (X / Y / wrapped-yaw against `TRANSLATION_TOLERANCE_TO_ACCEPT` and `DEGREE_TOLERANCE_TO_ACCEPT`). `end(...)` `forceStop()`s and pins `consistentHeading`.
+
+The default `maxVelocity` is **1.0 m/s** (the constructor's no-arg form) — sometimes overridden to 2.5 m/s for the L4-cap branch in `Swerve.pathFindToScoringLocation`. The relevant cap is whichever of `maxVelocity` and `MAX_CONTROLLED_VEL(elevatorHeight)` is smaller, computed every tick so the cap tightens as the elevator extends mid-approach.
+
 ## Reef-Avoidance Math
 
 `PathfindToPoseAvoidingReefCommand` does *not* invoke PathPlanner's `LocalADStar`. Instead, on every scheduler tick (~20 ms) it recomputes a single **temporary target pose** that the swerve closed-loop chases, and continuously redirects this temporary target around the reef hexagon. This produces a smooth, obstacle-aware trajectory while keeping the controller entirely in-process and reactive to mid-flight pose updates from the [Localizer](../subsystems/LOCALIZER.md).
