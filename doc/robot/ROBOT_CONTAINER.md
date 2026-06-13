@@ -28,5 +28,5 @@ The [RobotContainer](../../src/main/java/io/github/frc461/rowdy25/RobotContainer
 ## See Also
 
 - [RobotStates](ROBOT_STATES.md) — State transition system and toggle helpers
-- [Commands](commands) — Implementation details for the commands bound here
+- [Commands](commands/README.md) — Implementation details for the commands bound here
 - [AutoManager](autos/AUTO_MANAGER.md) — Source of the returned autonomous command

@@ -15,12 +15,12 @@ Selects which variant of constants to use (`DefaultConstants` / `CompConstants` 
 
 ## Known Variants
 
-| Identity | MAC source                                | Variant class       |
-|----------|-------------------------------------------|---------------------|
-| `ALPHA`  | (fallback — no MAC match)                 | `DefaultConstants`  |
-| `ROWDY`  | Competition RoboRIO                       | `CompConstants`     |
-| `TEST`   | Test-bench RoboRIO                        | `TestConstants`     |
-| `SIM`    | Simulation host                           | `SimConstants`      |
+| Identity | MAC source                | Variant class       |
+|----------|---------------------------|---------------------|
+| `ALPHA`  | (fallback — no MAC match) | `DefaultConstants`  |
+| `ROWDY`  | Competition RoboRIO       | `CompConstants`     |
+| `TEST`   | Test-bot RoboRIO          | `TestConstants`     |
+| `SIM`    | Simulation host           | `SimConstants`      |
 
 ## Adding a New Robot
 

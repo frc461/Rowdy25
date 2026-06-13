@@ -16,7 +16,7 @@ All poses are defined in blue-alliance field coordinates. Consumers pass the all
 
 ## Usage
 
-Used by [Pathfinder](../autos/PATHFINDER.md), [AutoManager](../autos/AUTO_MANAGER.md), and the Swerve `pathFindTo*` helpers to compute reachable target poses, and by [FieldUtil](../util/OTHER.md) for nearest-target queries.
+Used by [AutoManager](../autos/AUTO_MANAGER.md) and the Swerve `pathFindTo*` helpers (which build [`PathfindToPoseAvoidingReefCommand`](../commands/DRIVE.md) instances) to compute reachable target poses, and by [FieldUtil](../util/OTHER.md) for nearest-target queries. [`Pathfinder`](../autos/PATHFINDER.md) also reads from these tables but is currently unused by production code.
 
 ## Tuning
 

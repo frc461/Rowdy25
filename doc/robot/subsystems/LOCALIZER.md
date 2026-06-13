@@ -6,7 +6,7 @@ The [Localizer](../../src/main/java/io/github/frc461/rowdy25/subsystems/localize
 
 - **Primary** — WPILib `SwerveDrivePoseEstimator` fuses wheel odometry from `Swerve` with timestamped vision measurements
 - **Alternate** — QuestNav absolute SLAM-based positioning
-- **Cameras** — Limelight (AprilTag MegaTag) and PhotonVision (AprilTag + object detection); see [`util/vision/`](../util/VISION.md)
+- **Cameras** — Limelight (AprilTag MegaTag1) and three PhotonVision black-and-white cameras (multi-tag + single-tag AprilTag PnP) plus a color camera for object detection. See [`util/vision/`](../util/VISION.md) for the per-source math.
 
 ## Localization Strategy
 
@@ -24,9 +24,9 @@ Uses [FieldUtil](../util/OTHER.md) and [RobotPoses](../constants/ROBOT_POSES.md)
 
 ## Integration
 
-- Provides the field-relative pose to [Swerve](DRIVETRAIN.md) for every field-centric drive and pathfinding command
-- Feeds [PathPlanner](../autos/PATHFINDER.md) the starting pose for on-the-fly pathfinding
-- Logs telemetry via DogLog (see `LocalizationTelemetry`)
+- Provides the field-relative pose to [Swerve](DRIVETRAIN.md) for every field-centric drive and pathfinding command via `getStrategyPose()`.
+- Supplies the "current pose" input to [`PathfindToPoseAvoidingReefCommand`](../commands/DRIVE.md), which is what every `Swerve.pathFindTo*(...)` helper builds.
+- Logs telemetry via DogLog (see `LocalizationTelemetry`).
 
 ## Tuning
 

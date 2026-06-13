@@ -4,7 +4,7 @@ This document provides a generic scaffold for developing the software of an FRC 
 
 ## Contents
 
-- [AGENTS.md](AGENTS.md) — Comprehensive overview of Rowdy25 architecture, subsystem state machines, data flows, and developer workflows
+- [AGENTS.md](AGENTS.md) — Comprehensive overview of Rowdy25 architecture, subsystem state machines, data flows, and developer workflows (not for learning, but rather for review or context for an LLM)
 - Development steps (below) — Generic FRC development milestones and checklist
 
 ## Development Steps

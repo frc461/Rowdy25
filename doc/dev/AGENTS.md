@@ -59,7 +59,7 @@ FRC 2025 robot codebase (Team 461 "Westside Robotics"). This document guides AI 
 - `DefaultConstants` — baseline values; also the fallback used for the alpha bot (no dedicated variant file)
 - `CompConstants` — competition robot overrides
 - `SimConstants` — simulation overrides
-- `TestConstants` — test-bench overrides
+- `TestConstants` — test-bot overrides
 
 Edit `constants/variants/*.java` for robot-specific PID gains, motor IDs, and presets.
 

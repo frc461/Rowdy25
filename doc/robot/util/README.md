@@ -17,4 +17,4 @@ The `util` package contains helper classes supporting subsystems and commands: v
 ## See Also
 
 - [Localizer](../subsystems/LOCALIZER.md) — Consumes the vision utilities and `FieldUtil` for pose estimation
-- [Pathfinder](../autos/PATHFINDER.md) — Uses `FieldUtil` for dynamic path generation
+- [Drive Commands](../commands/DRIVE.md) — `PathfindToPoseAvoidingReefCommand` uses `FieldUtil`, `EquationUtil`, and `RotationUtil` for its reef-avoidance math.

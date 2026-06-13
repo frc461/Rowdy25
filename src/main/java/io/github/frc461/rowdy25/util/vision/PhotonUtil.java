@@ -543,10 +543,24 @@ public final class PhotonUtil {
         }
 
         /**
-         * Computes the estimated robot pose using a single tag from the specified camera, utilizing the historical heading buffer. Known to have better accuracy due to a simple algorithm that does not require disambiguation.
+         * Alternate single-tag pose estimator that avoids PnP mirror disambiguation by anchoring the
+         * solution to the historical robot heading (the {@link #headingBuffer} sample interpolated
+         * at the result's timestamp).
+         *
+         * <p>The camera-to-tag bearing is reconstructed from the target's pixel yaw/pitch and the
+         * known camera-to-tag distance, then transformed into a robot pose using the time-aligned
+         * heading. Because the yaw is taken from the gyro rather than from PnP, there is no
+         * two-solution ambiguity to disambiguate, and accuracy is typically better than the
+         * {@link #getSingleTagPose(BWCamera, Pose2d)} disambiguation path when the gyro is
+         * well-calibrated.
+         *
+         * <p>Currently <strong>not</strong> wired into {@link #getBestTagPose(BWCamera)}; the
+         * disambiguation variant is used for production single-tag fixes. This overload remains as
+         * a reference implementation for the heading-locked approach.
          *
          * @param camera The specified camera.
-         * @return An {@link Optional} containing the estimated robot pose, or empty if computation fails.
+         * @return An {@link Optional} containing the estimated robot pose, or empty if computation fails
+         *         (no targets, missing heading sample, missing tag in the field layout, or tag rejected by the filter).
          */
         private static Optional<EstimatedRobotPose> getSingleTagPose(BWCamera camera) {
             if (!hasTargets(camera)) {

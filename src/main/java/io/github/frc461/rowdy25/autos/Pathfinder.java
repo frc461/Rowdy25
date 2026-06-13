@@ -37,9 +37,20 @@ import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 
 /**
- * Utility class for generating autonomous pathfinding commands using PathPlanner's AutoBuilder.
- * Contains methods for dynamically navigating to specific field elements, like the nearest algae
- * or coral scoring locations, as well as logic to calculate offset poses to pathfind "close" to a target.
+ * Utility class wrapping PathPlanner's {@link AutoBuilder#pathfindToPose} with the geometric
+ * helpers needed to compute approach poses around reef branches, coral stations, algae faces, and
+ * other field landmarks.
+ *
+ * <p>Each public method either returns a {@link Pose2d} or returns a {@link Command} backed by
+ * {@code AutoBuilder.pathfindToPose(...)}; the class owns no subsystem and never directly drives
+ * motors.
+ *
+ * <p><strong>Status:</strong> as of the current revision, no production class references this
+ * utility. Both {@code AutoManager} and the {@code Swerve.pathFindTo*(...)} helpers build
+ * {@code PathfindToPoseAvoidingReefCommand} instances directly instead of routing through
+ * PathPlanner's {@code AutoBuilder}. {@code Pathfinder} is retained as a reference for the
+ * close-pose math and as a thin entry point for any future routine that needs raw
+ * {@code AutoBuilder.pathfindToPose} without the in-process reef-avoidance wrapper.
  *
  * @author Eugene Zhang, <a href="https://github.com/ez500">GitHub</a>
  */

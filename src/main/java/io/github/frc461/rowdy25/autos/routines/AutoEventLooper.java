@@ -31,12 +31,20 @@ import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
 /**
- * An object that represents the initialization of a dynamic, autonomous routine.
+ * A polling event loop that scaffolds a dynamic autonomous routine.
  *
- * <p>This loop is used to handle autonomous trigger logic and schedule commands. This loop should
- * **not** be shared across multiple autonomous routines. </p>
+ * <p>The looper owns a single private {@link EventLoop} and a list of {@link AutoTrigger}s. Its
+ * {@link #cmd()} method returns a long-running {@link Command} that, on every scheduler tick,
+ * calls {@link EventLoop#poll()} to re-evaluate every {@link Trigger} bound to it. Trigger rising
+ * edges (e.g., the {@code done()} trigger of one segment) schedule subsequent segments, which
+ * yields the chained behavior used by {@code AutoManager.generateAutoEventLooper(...)}.
  *
- * @see Robot Your Mom
+ * <p>A given {@code AutoEventLooper} instance owns its own loop state and <strong>must not</strong>
+ * be shared across multiple concurrent autonomous routines.
+ *
+ * @see AutoTrigger
+ * @see Robot
+ * @author Eugene Zhang, <a href="https://github.com/ez500">GitHub</a>
  */
 public class AutoEventLooper {
 
@@ -118,6 +126,17 @@ public class AutoEventLooper {
         return observe(() -> isActive && DriverStation.isAutonomousEnabled());
     }
 
+    /**
+     * Registers a new {@link AutoTrigger} on this looper's event loop.
+     *
+     * <p>The supplied {@link Command} is constructed lazily (only on the first call to
+     * {@link AutoTrigger#cmd()}), so it is safe to capture state — such as pose targets — that
+     * was resolved when the surrounding routine was compiled.
+     *
+     * @param name A unique-per-loop label used for telemetry / {@link Command#withName(String)}.
+     * @param command Supplier for the command this trigger schedules when fired.
+     * @return The created {@link AutoTrigger}, already attached to this looper.
+     */
     public AutoTrigger addTrigger(String name, Supplier<Command> command) {
         AutoTrigger trigger = new AutoTrigger(name, command, this);
         triggers.add(trigger);
@@ -205,28 +224,23 @@ public class AutoEventLooper {
     }
 
     /**
-     * Creates a command that will poll this event loop and reset it when it is cancelled.
+     * Creates a command that will poll this event loop every scheduler tick and reset it when canceled
+     * or when autonomous ends.
      *
-     * <p>The command will end instantly and kill the routine if the alliance supplier returns an
-     * empty optional when the command is scheduled.
-     *
-     * @return A command that will poll this event loop and reset it when it is cancelled.
-     * @see #cmd(BooleanSupplier) A version of this method that takes a condition to finish the loop.
+     * @return A command that polls this event loop until autonomous is disabled.
+     * @see #cmd(BooleanSupplier) A version of this method that also accepts an external finish condition.
      */
     public Command cmd() {
         return cmd(() -> false);
     }
 
     /**
-     * Creates a command that will poll this event loop and reset it when it is finished or canceled.
+     * Creates a command that will poll this event loop every scheduler tick and reset it when the
+     * external finish condition becomes true, when autonomous ends, or when the command is canceled.
      *
-     * <p>The command will end instantly and kill the routine if the alliance supplier returns an
-     * empty optional when the command is scheduled.
-     *
-     * @param finishCondition A condition that will finish the loop when it is true.
-     * @return A command that will poll this event loop and reset it when it is finished or canceled.
-     * @see #cmd() A version of this method that doesn't take a condition and never finishes except if
-     *     the alliance supplier returns an empty optional when scheduled.
+     * @param finishCondition An additional condition that, when true, finishes the polling command.
+     * @return A command that polls this event loop until autonomous is disabled or {@code finishCondition} fires.
+     * @see #cmd() A version of this method that polls indefinitely (until autonomous ends).
      */
     public Command cmd(BooleanSupplier finishCondition) {
         return Commands.run(this::poll)

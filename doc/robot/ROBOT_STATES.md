@@ -14,7 +14,7 @@ The [RobotStates](../../src/main/java/io/github/frc461/rowdy25/RobotStates.java)
 - **Manual** — `MANUAL` (direct joystick control of superstructure)
 - **Outtake / output** — `OUTTAKE`, `OUTTAKE_ALGAE`, `OUTTAKE_L1`, `INTAKE_OUT`
 
-A `SendableChooser` (`stateChooser`) is populated with every state so operators can force a state from SmartDashboard during disabled mode.
+A `SendableChooser` (`stateChooser`) is populated with every state so operators can force a state from SmartDashboard for testing purposes.
 
 ## State Transitions
 

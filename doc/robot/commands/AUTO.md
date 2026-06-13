@@ -14,5 +14,5 @@ Both commands are intended to be composed into the larger `AutoEventLooper` sequ
 ## See Also
 
 - [AutoManager](../autos/AUTO_MANAGER.md) — Composes these commands into the final routine
-- [Pathfinder](../autos/PATHFINDER.md) — Underlying pathfinding utility
-- [Routines](../autos/ROUTINES.md) — `AutoEventLooper` and `AutoTrigger`
+- [Drive Commands](DRIVE.md) — `PathfindToPoseAvoidingReefCommand` is the planner the auto routine actually uses for every drive segment.
+- [Routines](../autos/ROUTINES.md) — `AutoEventLooper` and `AutoTrigger` polling model.

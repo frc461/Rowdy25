@@ -66,8 +66,9 @@ This checklist progresses from **conceptual / architectural knowledge** → **de
 **Conceptual foundation:**
 
 - [ ] [Getting Started](README.md) — Deployment and contribution workflow (this file)
-- [ ] [Robot Overview](robot/README.md) — Robot lifecycle and architecture
+- [ ] [Robot Overview](robot/README.md) — Robot overview
 - [ ] [Commands Overview](robot/commands/README.md) — How commands abstract subsystem actions
+- [ ] [Robot Class](robot/ROBOT.md) - Robot lifecycle and architecture
 
 **Development:**
 
