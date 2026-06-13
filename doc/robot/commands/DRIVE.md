@@ -116,18 +116,23 @@ Let:
 `getTemporaryTargetPose(p_c)` selects one of three branches:
 
 1. **Same sextant (no obstacle in the way).** If `RobotPoses.Reef.sameSide(p_c, p_t)` — i.e., $\mathbf{c}$ and $\mathbf{t}$ both lie on the same hex face of the reef when projected onto its sextants — there is no obstacle between them, so the temporary target is the final target:
-   $$
+   
+2. $$
    p^{\text{tmp}} = p_t.
    $$
 
 2. **Robot is inside the danger ring.** If
+   
    $$
    \lVert \mathbf{c} - \mathbf{r} \rVert \;<\; a + \tfrac{L}{1.3},
    $$
+
    the robot is dangerously close to the reef (the divisor 1.3 widens the apothem by a factor of $L/1.3$ — slightly less than half the robot length — to provide a safety margin). In this case the algorithm produces an *escape* waypoint: take the nearest reef-tag pose (which faces outward from the reef face), translate 2.0 m forward along that face's normal, and hold the robot's current rotation so it doesn't spin while escaping:
+   
    $$
    p^{\text{tmp}} = \big(\mathbf{r} + R(\psi)\,(2.0,\,0),\;\theta_c\big),
    $$
+
    where $\psi$ is the heading of the nearest reef tag.
 
 3. **Tangent-around-the-reef waypoint.** Otherwise the robot is outside the danger ring but on the wrong sextant. Compute two angles measured at the reef center:
@@ -135,16 +140,21 @@ Let:
    - $\beta = \angle(\mathbf{t} - \mathbf{r})$ — direction from reef center to target.
 
    The tangent direction at $\mathbf{c}$'s side of the reef is $\alpha \pm 90°$; the sign is picked by
+   
    $$
    \sigma = \mathrm{sign}(\beta - \alpha)
    $$
+
    (implemented as `Math.copySign(90.0, (β − α).getDegrees())`). This chooses the *shorter* angular path around the reef.
 
    The waypoint sits 2.0 m radially outward from the reef center along $\alpha$, then 1.5 m further along the tangent $\alpha + 90°\sigma$:
+   
    $$
    \mathbf{c}_{\text{way}} = \mathbf{r} + R(\alpha)\,(2.0,\,0) + R(\alpha + 90°\sigma)\,(1.5,\,0),
    $$
+
    with rotation interpolated 25 % from current toward target:
+   
    $$
    \theta^{\text{tmp}} = \theta_c \,\overset{0.25}{\longrightarrow}\, \theta_t.
    $$
@@ -182,9 +192,11 @@ with $v_{\max} = \min(v_{\text{ctor}},\ v_{\text{cap}})$, where $v_{\text{cap}}$
 The resulting profile is approximately *constant cruise speed → sigmoid deceleration*, with no discontinuity at the handoff distance.
 
 The velocity vector is steered along
+
 $$
 \hat{\mathbf{v}} = \big(\cos\gamma,\;\sin\gamma\big),\quad \gamma = \angle(\mathbf{s} - \mathbf{c}),
 $$
+
 and dispatched as a field-centric `SwerveRequest.FieldCentric.withVelocityX/Y(...)` with `withDriveRequestType(Velocity)` (closed-loop velocity on the drive motors) and `withForwardPerspective(BlueAlliance)` so the field frame is consistent across alliances.
 
 ### 4. Yaw control
