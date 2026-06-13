@@ -171,10 +171,10 @@ $$
 the per-tick command is
 
 $$
-v = \max\!\Big(\;\underbrace{f_{\text{sig}}\!\big(d;\,2,\;\tfrac{2}{7},\;\tfrac{15}{2}\big)}_{\text{logistic close-in floor}},\;\;\underbrace{\min\!\big(f_{\text{lin}}(d;\,10,\,-10),\;v_{\max}\big)}_{\text{linear ramp, capped}}\;\Big),
+v = \max\Big( \underbrace{f_{\text{sig}}\big(d; 2, \tfrac{2}{7}, \tfrac{15}{2}\big)}_{\text{logistic close-in floor}},\ \underbrace{\min\big(f_{\text{lin}}(d; 10, -10),\ v_{\max}\big)}_{\text{linear ramp, capped}} \Big),
 $$
 
-with $v_{\max} = \min(\text{ctor max},\;\text{MAX_CONTROLLED_VEL}(\text{elevatorHeight}))$.
+with $v_{\max} = \min(v_{\text{ctor}},\ v_{\text{cap}})$, where $v_{\text{cap}}$ is `MAX_CONTROLLED_VEL(elevatorHeight)`.
 
 - The logistic term ($M=2\text{ m/s}$, midpoint $h = 2/7\text{ m}$, steepness $k = 7.5$) saturates at 2 m/s far from target and decays smoothly past the midpoint to ≈0.2 m/s at $d=0$. This is the deceleration profile: it never returns zero, so the controller always commands *some* forward velocity to overcome stiction.
 - The linear term ($K_p = 10$, offset $-10$) is negative for $d < 1$ m and grows past the logistic at larger distances, where it is then clipped by $v_{\max}$. Taking the outer `max` means the logistic dominates close in (and prevents the linear's negative output from stopping the robot prematurely), while the linear branch dominates far out.
