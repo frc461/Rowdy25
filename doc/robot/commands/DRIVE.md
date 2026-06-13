@@ -117,21 +117,21 @@ Let:
 
 1. **Same sextant (no obstacle in the way).** If `RobotPoses.Reef.sameSide(p_c, p_t)` — i.e., $\mathbf{c}$ and $\mathbf{t}$ both lie on the same hex face of the reef when projected onto its sextants — there is no obstacle between them, so the temporary target is the final target:
    
-2. $$
-   p^{\text{tmp}} = p_t.
-   $$
+$$
+p^{\text{tmp}} = p_t.
+$$
 
 2. **Robot is inside the danger ring.** If
    
-   $$
-   \lVert \mathbf{c} - \mathbf{r} \rVert \;<\; a + \tfrac{L}{1.3},
-   $$
+$$
+\lVert \mathbf{c} - \mathbf{r} \rVert \;<\; a + \tfrac{L}{1.3},
+$$
 
    the robot is dangerously close to the reef (the divisor 1.3 widens the apothem by a factor of $L/1.3$ — slightly less than half the robot length — to provide a safety margin). In this case the algorithm produces an *escape* waypoint: take the nearest reef-tag pose (which faces outward from the reef face), translate 2.0 m forward along that face's normal, and hold the robot's current rotation so it doesn't spin while escaping:
    
-   $$
-   p^{\text{tmp}} = \big(\mathbf{r} + R(\psi)\,(2.0,\,0),\;\theta_c\big),
-   $$
+$$
+p^{\text{tmp}} = \big(\mathbf{r} + R(\psi)\,(2.0,\,0),\;\theta_c\big),
+$$
 
    where $\psi$ is the heading of the nearest reef tag.
 
@@ -141,23 +141,23 @@ Let:
 
    The tangent direction at $\mathbf{c}$'s side of the reef is $\alpha \pm 90°$; the sign is picked by
    
-   $$
-   \sigma = \mathrm{sign}(\beta - \alpha)
-   $$
+$$
+\sigma = \mathrm{sign}(\beta - \alpha)
+$$
 
    (implemented as `Math.copySign(90.0, (β − α).getDegrees())`). This chooses the *shorter* angular path around the reef.
 
    The waypoint sits 2.0 m radially outward from the reef center along $\alpha$, then 1.5 m further along the tangent $\alpha + 90°\sigma$:
    
-   $$
-   \mathbf{c}_{\text{way}} = \mathbf{r} + R(\alpha)\,(2.0,\,0) + R(\alpha + 90°\sigma)\,(1.5,\,0),
-   $$
+$$
+\mathbf{c}_{\text{way}} = \mathbf{r} + R(\alpha)\,(2.0,\,0) + R(\alpha + 90°\sigma)\,(1.5,\,0),
+$$
 
    with rotation interpolated 25 % from current toward target:
    
-   $$
-   \theta^{\text{tmp}} = \theta_c \,\overset{0.25}{\longrightarrow}\, \theta_t.
-   $$
+$$
+\theta^{\text{tmp}} = \theta_c \,\overset{0.25}{\longrightarrow}\, \theta_t.
+$$
 
 ### 2. Low-pass smoothing of the temporary target
 
